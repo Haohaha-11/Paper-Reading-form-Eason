@@ -1,0 +1,16 @@
+{
+  "arxiv_id": "2511.11007",
+  "version": "2",
+  "pdf_url": "https://arxiv.org/pdf/2511.11007v2",
+  "abs_url": "https://arxiv.org/abs/2511.11007",
+  "title": "VisMem: Latent Vision Memory Unlocks Potential of Vision-Language Models",
+  "short": "VisMem",
+  "venue": "Arxiv",
+  "year": "2025",
+  "authors": "Xinlei Yu; Chengming Xu; Guibin Zhang; Zhangquan Chen; Yudong Zhang; Yongbo He; Peng-Tao Jiang; Jiangning Zhang; Xiaobin Hu; Shuicheng Yan",
+  "summary": "Despite the remarkable success of Vision-Language Models (VLMs), their performance on a range of complex visual tasks is often hindered by a \"visual processing bottleneck\": a propensity to lose grounding in visual evidence and exhibit a deficit in contextualized visual experience during prolonged generation. Drawing inspiration from human cognitive memory theory, which distinguishes short-term visually-dominant memory and long-term semantically-dominant memory, we propose VisMem, a cognitively-aligned framework that equips VLMs with dynamic latent vision memories, a short-term module for fine-grained perceptual retention and a long-term module for abstract semantic consolidation. These memories are seamlessly invoked during inference, allowing VLMs to maintain both perceptual fidelity and semantic consistency across thinking and generation. Extensive experiments across diverse visual benchmarks for understanding, reasoning, and generation reveal that VisMem delivers a significant average performance boost of 11.0% relative to the vanilla model and outperforms all counterparts, establishing a new paradigm for latent-space memory enhancement. The code will be available: https://github.com/YU-deep/VisMem.git.",
+  "published": "2025-11-14",
+  "updated": "2026-02-05",
+  "comment": "",
+  "task_id": "e1b51f81-33b8-476c-a332-cfbc9a1daf09"
+}

@@ -1,0 +1,16 @@
+{
+  "arxiv_id": "2604.10500",
+  "version": "3",
+  "pdf_url": "https://arxiv.org/pdf/2604.10500v3",
+  "abs_url": "https://arxiv.org/abs/2604.10500",
+  "title": "Visual Enhanced Depth Scaling for Multimodal Latent Reasoning",
+  "short": "Visual-Enhanced-Depth-Scaling",
+  "venue": "Arxiv",
+  "year": "2026",
+  "authors": "Yudong Han; Yong Wang; Zaiquan Yang; Zhen Qu; Liyuan Pan; Xiangxiang Chu",
+  "summary": "Multimodal latent reasoning has emerged as a promising paradigm that replaces explicit Chain-of-Thought (CoT) decoding with implicit feature propagation, simultaneously enhancing representation informativeness and reducing inference latency. By analyzing token-level gradient dynamics during latent training, we reveal two critical observations: (1) visual tokens exhibit significantly higher and more volatile gradient norms than their textual counterparts due to inherent language bias, resulting in systematic visual under-optimization; and (2) semantically simple tokens converge rapidly, whereas complex tokens exhibit persistent gradient instability constrained by fixed architectural depths. To address these limitations, we propose a visual replay module and routing depth scaling to collaboratively enhance visual perception and refine complicated latents for deeper contextual reasoning. The former module leverages causal self-attention to estimate token saliency, reinforcing fine-grained grounding through spatially-coherent constraints. Complementarily, the latter mechanism adaptively allocates additional reasoning steps to complex tokens, enabling deeper contextual refinement. Guided by a curriculum strategy that progressively internalizes explicit CoT into compact latent representations, our framework achieves state-of-the-art performance across diverse benchmarks while delivering substantial inference speedups over explicit CoT baselines.",
+  "published": "2026-04-12",
+  "updated": "2026-04-26",
+  "comment": "11 pages, 6 figures",
+  "task_id": "e2a6338c-b49a-4a52-bd33-1f90fb4b8034"
+}

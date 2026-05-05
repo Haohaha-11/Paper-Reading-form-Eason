@@ -20,6 +20,7 @@ paper-reading/
 | 课题 | 论文数 | 说明 |
 |------|--------|------|
 | [One-Step Diffusion Super-Resolution](topics/One-Step-Diffusion-Super-Resolution/) | 5 | one-step diffusion / flow based image super-resolution，覆盖 OSEDiff、OFTSR、TinySR、RCOD-SR、CODSR |
+| [VisMem for Med Image](topics/VisMem-for-Med-Image/) | 5 | latent vision memory / latent reasoning / medical image VLM，覆盖 VisMem、MedSynapse-V、AlignVLM 等 |
 
 ## 推荐流程
 
