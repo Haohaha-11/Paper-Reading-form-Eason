@@ -1,0 +1,4 @@
+{
+  "error": "Command '['curl', '-sS', '--fail', '--max-time', '30', 'https://api.semanticscholar.org/graph/v1/paper/ArXiv:2512.14061?fields=paperId,title,year,citationCount,referenceCount,influentialCitationCount,tldr,url,externalIds']' returned non-zero exit status 22.",
+  "output": "curl: (22) The requested URL returned error: 429\n"
+}

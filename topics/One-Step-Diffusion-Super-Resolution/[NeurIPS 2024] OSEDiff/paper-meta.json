@@ -1,0 +1,12 @@
+{
+  "arxiv_id": "2406.08177",
+  "version": "v3",
+  "pdf_url": "https://arxiv.org/pdf/2406.08177v3",
+  "abs_url": "https://arxiv.org/abs/2406.08177",
+  "title": "One-Step Effective Diffusion Network for Real-World Image Super-Resolution",
+  "short": "OSEDiff",
+  "venue": "NeurIPS",
+  "year": "2024",
+  "authors": "Rongyuan Wu; Lingchen Sun; Zhiyuan Ma; Lei Zhang",
+  "task_id": "84b4c599-3fa8-45aa-8a46-ea89dbaeda11"
+}

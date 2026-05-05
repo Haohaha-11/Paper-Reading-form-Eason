@@ -1,0 +1,12 @@
+{
+  "arxiv_id": "2412.09465",
+  "version": "v3",
+  "pdf_url": "https://arxiv.org/pdf/2412.09465v3",
+  "abs_url": "https://arxiv.org/abs/2412.09465",
+  "title": "OFTSR: One-Step Flow for Image Super-Resolution with Tunable Fidelity-Realism Trade-offs",
+  "short": "OFTSR",
+  "venue": "ICLR",
+  "year": "2026",
+  "authors": "Yuanzhi Zhu; Ruiqing Wang; Shilin Lu; Junnan Li; Hanshu Yan; Kai Zhang",
+  "task_id": "bd3c0a76-03cd-4db0-bd1c-48e1d4965ba8"
+}

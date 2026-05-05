@@ -1,0 +1,7 @@
+result.zip
+layout.json
+.env
+.env.*
+!.env.example
+.mineru_token
+secrets/

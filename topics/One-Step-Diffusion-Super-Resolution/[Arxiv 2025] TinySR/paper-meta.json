@@ -1,0 +1,12 @@
+{
+  "arxiv_id": "2508.17434",
+  "version": "v2",
+  "pdf_url": "https://arxiv.org/pdf/2508.17434v2",
+  "abs_url": "https://arxiv.org/abs/2508.17434",
+  "title": "TinySR: Pruning Diffusion for Real-World Image Super-Resolution",
+  "short": "TinySR",
+  "venue": "Arxiv",
+  "year": "2025",
+  "authors": "Linwei Dong; Qingnan Fan; Yuhang Yu; Qi Zhang; Jinwei Chen; Yawei Luo; Changqing Zou",
+  "task_id": "ac4757c8-a169-420b-82c8-31458085eaeb"
+}

@@ -1,0 +1,1509 @@
+[
+    {
+        "type": "text",
+        "text": "One-Step Effective Diffusion Network for Real-World Image Super-Resolution ",
+        "text_level": 1,
+        "bbox": [
+            250,
+            122,
+            750,
+            172
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Rongyuan $\\mathbf { W _ { u } } ^ { 1 , 2 , \\star }$ , Lingchen $\\mathbf { S u n ^ { 1 , 2 , \\star } }$ , Zhiyuan $\\mathbf { M } \\mathbf { a } ^ { 1 , \\star }$ , Lei Zhang1,2,† ",
+        "bbox": [
+            256,
+            223,
+            736,
+            241
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "1The Hong Kong Polytechnic University 2OPPO Research Institute {rong-yuan.wu, ling-chen.sun, zm2354.ma}@connect.polyu.hk, cslzhang $@$ comp.polyu.edu.hk ⋆Equal contribution †Corresponding author ",
+        "bbox": [
+            217,
+            241,
+            779,
+            282
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Abstract ",
+        "text_level": 1,
+        "bbox": [
+            462,
+            318,
+            535,
+            335
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "The pre-trained text-to-image diffusion models have been increasingly employed to tackle the real-world image super-resolution (Real-ISR) problem due to their powerful generative image priors. Most of the existing methods start from random noise to reconstruct the high-quality (HQ) image under the guidance of the given low-quality (LQ) image. While promising results have been achieved, such Real-ISR methods require multiple diffusion steps to reproduce the HQ image, increasing the computational cost. Meanwhile, the random noise introduces uncertainty in the output, which is unfriendly to image restoration tasks. To address these issues, we propose a one-step effective diffusion network, namely OSEDiff, for the Real-ISR problem. We argue that the LQ image contains rich information to restore its HQ counterpart, and hence the given LQ image can be directly taken as the starting point for diffusion, eliminating the uncertainty introduced by random noise sampling. We finetune the pre-trained diffusion network with trainable layers to adapt it to complex image degradations. To ensure that the one-step diffusion model could yield HQ Real-ISR output, we apply variational score distillation in the latent space to conduct KL-divergence regularization. As a result, our OSEDiff model can efficiently and effectively generate HQ images in just one diffusion step. Our experiments demonstrate that OSEDiff achieves comparable or even better Real-ISR results, in terms of both objective metrics and subjective evaluations, than previous diffusion model-based Real-ISR methods that require dozens or hundreds of steps. The source codes are released at https://github.com/cswry/OSEDiff. ",
+        "bbox": [
+            233,
+            351,
+            766,
+            641
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "1 Introduction ",
+        "text_level": 1,
+        "bbox": [
+            174,
+            667,
+            310,
+            685
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Image super-resolution (ISR) [13, 66, 29, 65, 6, 24, 46, 27, 61] is a classical yet still active research problem, which aims to restore a high-quality (HQ) image from its low-quality (LQ) observation suffering from degradations of noise, blur and low-resolution, etc. While one line of ISR research [13, 66, 29, 65, 6] simplifies the degradation process from HQ to LQ images as bicubic downsampling (or downsampling after Gaussian blur) and focus on the study on network architecture design, the trained models can hardly be generalized to real-world LQ images, whose degradations are often unknown and much more complex. Therefore, another increasingly popular line of ISR research is the so-called real-world ISR (Real-ISR) [61, 45] problem, which aims to reproduce perceptually realistic HQ images from the LQ images captured in real-world applications. ",
+        "bbox": [
+            174,
+            700,
+            825,
+            825
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "There are two major issues in training a Real-ISR model. One is how to build the LQ-HQ training image pairs, and another is how to ensure the naturalness of restored images, i.e., how to ensure that the restored images follow the distribution of HQ natural images. For the first issue, some researchers have proposed to collect real-world LQ-HQ image pairs using long-short camera focal lenses [3, 51]. However, this is very costly and can only cover certain types of real-world image degradations. Another more economical way is to simulate the real-world LQ-HQ image pairs by using complex image degradation pipelines. The representative works include BSRGAN [61] and Real-ESRGAN [45], where a random shuffling of basic degradation operators and a high-order degradation model are respectively used to generate LQ-HQ image pairs. ",
+        "bbox": [
+            176,
+            832,
+            825,
+            875
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "This work is supported by the PolyU-OPPO Joint Innovation Lab. ",
+        "bbox": [
+            200,
+            885,
+            588,
+            898
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "38th Conference on Neural Information Processing Systems (NeurIPS 2024). ",
+        "bbox": [
+            174,
+            922,
+            629,
+            936
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "arXiv:2406.08177v3 [eess.IV] 24 Oct 2024 ",
+        "bbox": [
+            22,
+            262,
+            62,
+            727
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "image",
+        "img_path": "images/b7034e0624d1b43b4c76325de23f9df6bed1145a5fc5f3cb3df574a73a5bb4a6.jpg",
+        "image_caption": [
+            "Figure 1: Performance and efficiency comparison among SD-based Real-ISR methods. (a). Performance comparison on the DrealSR benchmark [51]. Metrics like LPIPS and NIQE, where smaller scores indicate better image quality, are inverted and normalized for display. OSEDiff achieves leading scores on most metrics with only one diffusion step. (b). Model efficiency comparison. The inference time is tested on an A100 GPU with $5 1 2 \\times 5 1 2$ input image size. OSEDiff has the fewest trainable parameters and is over 100 times faster than StableSR [42]. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            243,
+            88,
+            746,
+            268
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            174,
+            380,
+            825,
+            464
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "With the given training data, how to train a robust Real-ISR model to output perceptually natural images with high quality becomes a key issue. Simply learning a mapping network between LQ-HQ paired data with pixel-wise losses can lead to over-smoothed results [24, 46]. It is crucial to integrate natural image priors into the learning process to reproduce HQ images. A few methods have been proposed to this end. The perceptual loss [18] explores the texture, color, and structural priors in a pre-trained model such as VGG-16 [38] and AlexNet [23]. The generative adversarial networks (GANs) [14] alternatively train a generator and a discriminator, and they have been adopted for Real-ISR tasks [24, 46, 45, 61, 27, 53]. The generator network aims to synthesize HQ images, while the discriminator network aims to distinguish whether the synthesized image is realistic or not. While great successes have been achieved, especially in the restoration of specific classes of images such as face images [56, 44], GAN-based Real-ISR tends to generate unpleasant details due to the unstable adversarial training and the difficulties in discriminating the image space of diverse natural scenes. ",
+        "bbox": [
+            174,
+            469,
+            825,
+            636
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "The recently developed generative diffusion models (DM) [39, 16], especially the large-scale pretrained text-to-image (T2I) models [37, 36], have demonstrated remarkable performance in various downstream tasks. Having been trained on billions of image-text pairs, the pre-trained T2I models possess powerful natural image priors, which can be well exploited to improve the naturalness and perceptual quality of Real-ISR outputs. Some methods [42, 57, 31, 52, 40, 59] have been developed to employ the pre-trained T2I model for solving the Real-ISR problem. While having shown impressive results in generating richer and more realistic image details than GAN-based methods, the existing SD-based methods have several problems to be further addressed. First, these methods typically take random Gaussian noise as the start point of the diffusion process. Though the LQ images are used as the control signal with a ControlNet module [63], these methods introduce unwanted randomness in the output HQ images [40]. Second, the restored HQ images are usually obtained by tens or even hundreds of diffusion steps, making the Real-ISR process computationally expensive. Though some one-step diffusion based Real-ISR methods [48] have been recently proposed, they fail in achieving high-quality details compared to multi-step methods. ",
+        "bbox": [
+            174,
+            642,
+            825,
+            835
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "To address the aforementioned issues, we propose a One-Step Effective Diffusion network, OSEDiff in short, for the Real-ISR problem. The UNet backbone in pre-trained SD models has strong capability to transfer the input data into another domain, while the given LQ image actually has rich information to restore its HQ counterpart. Therefore, we propose to directly feed the LQ images into the pre-trained SD model without introducing any random noise. Meanwhile, we integrate trainable ",
+        "bbox": [
+            174,
+            842,
+            823,
+            911
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            493,
+            936,
+            503,
+            946
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "LoRA layers [17] into the pre-trained UNet, and finetune the SD model to adapt it to the Real-ISR task. On the other hand, to ensure that the one-step model can still produce HQ natural images as the multi-step models, we utilize variational score distillation (VSD) [49, 58, 10] for KL-divergence regularization. This operation effectively leverages the powerful natural image priors of pre-trained SD models and aligns the distribution of generated images with natural image priors. As illustrated in Fig. 1, our extensive experiments demonstrate that OSEDiff achieves comparable or superior performance measures to state-of-the-art SD-based Real-ISR models, while it significantly reduces the number of inference steps from $N$ to 1 and has the fewest trainable parameters, leading to more than $\\times 1 0 0$ speedup in inference time over previous methods such as StableSR [42]. ",
+        "bbox": [
+            173,
+            90,
+            825,
+            215
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2 Related Work ",
+        "text_level": 1,
+        "bbox": [
+            174,
+            228,
+            323,
+            244
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Starting from SRCNN [13], deep learning-based methods have become prevalent for ISR. A variety of methods have been proposed [30, 66, 67, 9, 5, 29, 65, 6, 7] to improve the accuracy of ISR reconstruction. However, most of these methods assume simple and known degradations such as bicubic downsampling, limiting their applications to real-world images with complex and unknown degradations. In recent years, researches have been exploring the potentials of generative models, including GAN [14] and diffusion networks [16], for solving the Real-ISR problem. ",
+        "bbox": [
+            174,
+            246,
+            825,
+            329
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "GAN-based Real-ISR. The use of GAN for photo-realistic ISR can be traced back to SRGAN [24], where the image degradation is assumed to be bicubic downsampling. Later on, researchers found that GAN has the potential to perform real-world image restoration with more complex degradations [61, 45]. Specifically, by using randomly shuffled degradation and high-order degradation to generate more realistic LQ-HQ training pairs, BSRGAN [61] and Real-ESRGAN [45] demonstrate promising Real-ISR results, which trigger many following works [4, 27, 28, 53]. DASR [28] designs a tiny network to predict the degradation parameters to handle degradations of various levels. SwinIR [29] switches the generator from CNNs to stronger transformers, further enhancing the performance of Real-ISR. However, the adversarial training process in GAN is unstable and its discriminator is limited in telling the quality of diverse natural image contents. Therefore, GAN-based Real-ISR methods often suffer from unnatural visual artifacts. Some works such as LDL [27] and DeSRA [53] can suppress much the artifacts, yet they are difficult to generate more natural details. ",
+        "bbox": [
+            174,
+            335,
+            825,
+            501
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Diffusion-based Real-ISR. Some early attempts [21, 20, 47] employ the denoising diffusion probabilistic models (DDPMs) [16, 39, 11] to address the ISR problem by assuming simple and known degradations (e.g., bicubic downsampling). These methods are training-free by modifying the reverse transition of pre-trained DDPMs using gradient descent, but they cannot be applied to complex unknown degradations. Recent researches [42, 57, 31, 40, 59] have leveraged stronger pre-trained T2I models, such as Stable Diffusion (SD) [1], to tackle the Real-ISR problem. In general, they introduce an adapter [63] to fine-tune the SD model to reconstruct the HQ image with the LQ image as the control signal. StableSR [42] finetunes a time-aware encoder and employs feature warping to balance fidelity and perceptual quality. PASD [57] extracts both low-level and high-level features from the LQ image and inputs them to the pre-trained SD model with a pixel-aware cross attention module. To further enhance the semantic-aware ability of the Real-ISR model, SeeSR [52] introduces degradation-robust tag-style text prompts and utilizes soft prompts to guide the diffusion process. To mitigate the potential risks of diffusion uncertainty, CCSR [40] leverages a truncated diffusion process to recover structures and finetunes the VAE decoder by adversarial training to enhance details. SUPIR [59] leverages the powerful generation capability of SDXL model and the strong captioning capability of LLaVA [32] to synthesize rich image details. ",
+        "bbox": [
+            174,
+            507,
+            825,
+            727
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "The above mentioned methods, however, require tens or even hundreds of steps to complete the diffusion process, resulting in unfriendly latency. SinSR shortens ResShift [60] to a single-step inference by consistency preserving distillation. Nevertheless, the non-distrbution-based distillation loss tends to obtain smooth results, and the model capacity of SinSR and ResShift are much smaller than the SD models to address Real-ISR problems. ",
+        "bbox": [
+            174,
+            734,
+            825,
+            804
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3 Methodology ",
+        "text_level": 1,
+        "bbox": [
+            174,
+            823,
+            313,
+            840
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3.1 Problem Modeling ",
+        "text_level": 1,
+        "bbox": [
+            174,
+            854,
+            343,
+            869
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Real-ISR is to estimate an HQ image $\\scriptstyle { \\hat { \\mathbf { x } } } _ { H }$ from the given LQ image $\\scriptstyle { \\mathbf { \\mathcal { x } } } _ { L }$ . This task can be conventionally modeled as an optimization problem: $\\begin{array} { r } { \\hat { \\pmb x } _ { H } = \\mathrm { a r g m i n } _ { \\pmb x _ { H } } \\big ( \\mathcal L _ { d a t a } \\left( \\Phi ( \\pmb x _ { H } ) , \\pmb x _ { L } \\right) + \\lambda \\mathcal L _ { r e g } \\left( \\pmb x _ { H } \\right) \\big ) } \\end{array}$ , where $\\Phi$ is the degradation function, $\\mathcal { L } _ { d a t a }$ is the data term to measure the fidelity of the optimization output, $\\mathcal { L } _ { \\boldsymbol { r } e g }$ is the regularization term to exploit the prior information of natural images, and scalar $\\lambda$ is the balance parameter. Many conventional ISR methods [13, 29, 65] restore the desired HQ image by assuming simple and known degradation models and employing hand-crafted natural image prior models (i.e., image sparsity based prior [54]). ",
+        "bbox": [
+            176,
+            871,
+            826,
+            911
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            493,
+            935,
+            504,
+            946
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "image",
+        "img_path": "images/c870df5ccd6c086ea0660444215e562e607bc45a476d8cd01309ccbf4a8358a6.jpg",
+        "image_caption": [
+            "Figure 2: The training framework of OSEDiff. The LQ image is passed through a trainable encoder $E _ { \\theta }$ , a LoRA finetuned diffusion network $\\epsilon _ { \\theta }$ and a frozen decoder $D _ { \\theta }$ to obtain the desired HQ image. In addition, text prompts are extracted from the LQ image and input to the diffusion network to stimulate its generation capacity. Meanwhile, the output of the diffusion network $\\epsilon _ { \\theta }$ will be sent to two regularizer networks (a frozen pre-trained one and a fine-tuned one), where variational score distillation is performed in latent space to ensure that the output of $\\epsilon _ { \\theta }$ follows HQ natural image distribution. The regularization loss will be back-propagated to update $E _ { \\theta }$ and $\\epsilon _ { \\theta }$ . Once training is finished, only $E _ { \\theta }$ , $\\epsilon _ { \\theta }$ and $D _ { \\theta }$ will be used in inference. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            181,
+            85,
+            820,
+            337
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            173,
+            467,
+            825,
+            523
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "However, the performance of such optimization-based methods is largely hindered by two factors. First, the degradation function $\\Phi$ is often unknown and hard to model in real-world scenarios. Second, the hand-crafted regularization terms $\\mathcal { L } _ { \\mathrm { r e g } }$ are hard to effectively model the complex natural image priors. With the development of deep-learning techniques, it has become prevalent to learn a neural network $G _ { \\theta }$ , which is parameterized by $\\theta$ , from a training dataset $S$ of $( { \\pmb x } _ { L } , { \\pmb x } _ { H } )$ pairs to map the LQ image to an HQ image. The network training can be described as the following learning problem: ",
+        "bbox": [
+            173,
+            530,
+            825,
+            613
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/d23a28b58c61f7531d39db0b6b2724db34700d2a60c56158f5351ea85969d06b.jpg",
+        "text": "$$\n\\theta ^ { * } = \\mathrm { a r g m i n } _ { \\theta } \\mathbb { E } _ { ( \\pmb { x } _ { L } , \\pmb { x } _ { H } ) \\sim S } \\left[ \\mathcal { L } _ { \\mathrm { d a t a } } \\left( G _ { \\theta } ( \\pmb { x } _ { L } ) , \\pmb { x } _ { H } \\right) + \\lambda \\mathcal { L } _ { \\mathrm { r e g } } \\left( G _ { \\theta } ( \\pmb { x } _ { L } ) \\right) \\right] ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            267,
+            621,
+            728,
+            640
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where ${ \\mathcal { L } } _ { \\mathrm { d a t a } }$ and $\\mathcal { L } _ { \\mathrm { r e g } }$ are the loss functions. ${ \\mathcal { L } } _ { \\mathrm { d a t a } }$ enforces that the network output $\\hat { \\pmb x } _ { H } = G _ { \\theta } ( { \\pmb x } _ { L } )$ can approach to the ground-truth $\\mathbf { \\mathcal { x } } _ { H }$ as much as possible, which can be quantified by metrics such as $L _ { 1 }$ norm, $L _ { 2 }$ norm and LPIPS [64]. Using only the ${ \\mathcal { L } } _ { \\mathrm { d a t a } }$ loss to train the network $G _ { \\theta }$ from scratch may over-fit the training dataset. In this work, we propose to finetune a pre-trained generative network, more specifically the SD [36] network, to improve the generalization capability of $G _ { \\theta }$ . In addition, the regularization loss $\\mathcal { L } _ { \\mathrm { r e g } }$ is critical to improve the generalization capability of $G _ { \\theta }$ , as well as enhance the naturalness of output HQ images $\\scriptstyle { \\hat { \\mathbf { x } } } _ { H }$ . Suppose that we have the distribution of real-world HQ images, denoted by $p ( { \\pmb x } _ { H } )$ , the KL divergence [8] is an ideal choice to serve as the loss function of $\\mathcal { L } _ { \\mathrm { r e g } }$ ; that is, the distribution of restored HQ images, denoted by $q _ { \\theta } ( \\hat { \\pmb x } _ { H } )$ , should be identical to $p ( { \\pmb x } _ { H } )$ as much as possible. The regularization loss can be defined as: ",
+        "bbox": [
+            173,
+            647,
+            825,
+            787
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/74cae713bc0bf8b3e39c6794b2a08856100babb8c6fafe062be5cd877da020a7.jpg",
+        "text": "$$\n\\mathcal { L } _ { \\mathrm { r e g } } = \\mathcal { D } _ { \\mathrm { K L } } \\left( q _ { \\theta } ( \\hat { \\pmb x } _ { H } ) \\vert \\vert p ( \\pmb x _ { H } ) \\right) .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            392,
+            795,
+            604,
+            813
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Existing works [24, 46] mostly instantiate the above objective via adversarial training [14], which involves learning a discriminator to differentiate between the generated HQ image $\\scriptstyle { \\hat { \\mathbf { x } } } _ { H }$ and the real HQ image $\\mathbf { \\mathcal { x } } _ { H }$ , and updating the generator $G _ { \\theta }$ to make $\\scriptstyle { \\hat { \\mathbf { x } } } _ { H }$ and $\\scriptstyle { \\mathbf { x } } _ { H }$ indistinguishable. However, the discriminators are often trained from scratch alongside the generator. They may not be able to acquire the full distribution of HQ images and lack enough discriminative power, resulting in sub-optimal Real-ISR performance. ",
+        "bbox": [
+            174,
+            827,
+            825,
+            911
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            493,
+            936,
+            503,
+            946
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "The recently developed T2I diffusion models such as SD [36] offer new options for us to formulate the loss $\\mathcal { L } _ { \\mathrm { r e g } }$ . These models, trained on billions of image-text pairs, can effectively depict the natural image distribution in latent space. Some score distillation methods have been reported to employ SD to optimize images by using the KL-divergence as the objective [49, 25, 43]. In particular, variational score distillation (VSD) [49, 58, 10] induces such a KL-divergence based objective from particlebased variational optimization to align the distributions represented by two diffusion models. Based on the above discussions, we propose to instantiate the learning objective in Eq. (1) by designing an efficient and effective one-step diffusion network. In specific, we finetune the pre-trained SD with LoRA [17] as our Real-ISR backbone network and employ VSD as our regularizer to align the distribution of network outputs with natural HQ images. The details are provided in the next section. ",
+        "bbox": [
+            173,
+            90,
+            825,
+            229
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "3.2 One-Step Effective Diffusion Network ",
+        "text_level": 1,
+        "bbox": [
+            176,
+            247,
+            475,
+            262
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Framework Overview. As discussed in Sec. 1, the existing SD-based Real-ISR methods [42, 57, 31, 52, 40] perform multiple timesteps to estimate the HQ image with random noise as the starting point and the LQ image as control signal. These approaches are resource-intensive and will inherently introduce randomness. Based on our formulation in Sec. 3.1, we propose a one-step effective diffusion (OSEDiff) network for Real-ISR, whose training framework is shown in Fig. 2. Our generator $G _ { \\theta }$ to be trained is composed of a trainable encoder $E _ { \\theta }$ , a finetuned diffusion network $\\epsilon _ { \\theta }$ and a frozen decoder $D _ { \\theta }$ . To ensure the generalization capability of $G _ { \\theta }$ , the output of the diffusion network $\\epsilon _ { \\theta }$ will be sent to two regularizer networks, where VSD loss is performed in latent space. The regularization loss are back-propagated to update $E _ { \\theta }$ and $\\epsilon _ { \\theta }$ . Once training is finished, only the generator $G _ { \\theta }$ will be used in inference. In the following, we will delve into the detailed architecture design of OSEDiff, as well as its associated training losses. ",
+        "bbox": [
+            173,
+            273,
+            826,
+            426
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Network Architecture Design. Let’s denote by $E _ { \\phi }$ , $\\epsilon _ { \\phi }$ and $D _ { \\phi }$ the VAE encoder, latent diffusion network and VAE decoder of a pretrained SD model, where $\\phi$ denotes the model parameters. Inspired by the recent success of LoRA [17] in finetuning SD to downstream tasks [34, 35], we adopt LoRA to fine-tune the pre-trained SD in the Real-ISR task to obtain the desired generator $G _ { \\theta }$ . ",
+        "bbox": [
+            174,
+            433,
+            825,
+            488
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "As shown in the left part of Fig. 2, to maintain SD’s original generation capacity, we introduce trainable LoRA [17] layers to the encoder $E _ { \\phi }$ and the diffusion network $\\epsilon _ { \\phi }$ , finetuning them into $E _ { \\theta }$ and $\\epsilon _ { \\theta }$ with our training data. For the decoder, we fix its parameters and directly set $D _ { \\theta } = D _ { \\phi }$ . This is to ensure that the output space of the diffusion network remains consistent with the regularizers. ",
+        "bbox": [
+            174,
+            494,
+            825,
+            551
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Recall that the diffusion model diffuses the input latent feature $_ z$ through $z _ { t } = \\alpha _ { t } z + \\beta _ { t } \\epsilon$ , where $\\alpha _ { t } , \\beta _ { t }$ are scalars that are dependent to diffusion timestep $t \\in \\{ 1 , \\cdots , T \\}$ [16]. With a neural network that can predict the noise in ${ \\boldsymbol { z } } _ { t }$ , denoted as $\\hat { \\epsilon }$ , the denoised latent can be obtained as $\\begin{array} { r } { \\hat { z } _ { 0 } = \\frac { z _ { t } - \\beta _ { t } \\hat { \\epsilon } } { \\alpha _ { t } } } \\end{array}$ , which is expected to be cleaner and more photo-realistic than ${ \\boldsymbol { z } } _ { t }$ . Moreover, SD is a text-conditioned generation model. By extracting the text embeddings [36], denoted by $c _ { y }$ , from the given text description $y$ , the noise prediction can be performed as $\\hat { \\pmb { \\epsilon } } = \\pmb { \\epsilon } _ { \\theta } ( z _ { t } ; t , c _ { y } )$ . ",
+        "bbox": [
+            173,
+            556,
+            825,
+            645
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "We adapt the above text-to-image denoising process to the Real-ISR task, and formulate the LQ-to-HQ latent transformation $F _ { \\theta }$ as a text-conditioned image-to-image denoising process as: ",
+        "bbox": [
+            176,
+            650,
+            821,
+            679
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/4624aa05fa9a035e1b151b5e25b992349ac809608a407854d0fba755e81e5991.jpg",
+        "text": "$$\n\\hat { z } _ { H } = F _ { \\theta } ( z _ { L } ; c _ { y } ) \\triangleq \\frac { z _ { L } - \\beta _ { T } \\epsilon _ { \\theta } ( z _ { L } ; T , c _ { y } ) } { \\alpha _ { T } } ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            349,
+            686,
+            647,
+            720
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "where we conduct only one-step denoising on the LQ latent $z _ { L }$ , without introducing any noise, at the $T$ -th diffusion timestep. The denoising output $\\hat { z } _ { H }$ is expected be more photo-realistic than $z _ { L }$ . As for the text embeddings, we apply some text prompt extractor, such as the DAPE [52], to LQ input $\\scriptstyle { \\pmb { x } } _ { L }$ , and obtain $c _ { y } = Y ( \\pmb { x } _ { L } )$ . Finally, the whole LQ-to-HQ image synthesis can be written as: ",
+        "bbox": [
+            174,
+            728,
+            825,
+            785
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/4ec9bc02a7218996c38a5b97c37a0dd52c8c7d547484d8c041da650f9ca5069e.jpg",
+        "text": "$$\n{ \\hat { \\pmb x } } _ { H } = G _ { \\theta } ( { \\pmb x } _ { L } ) \\triangleq D _ { \\theta } \\big ( F _ { \\theta } \\big ( E _ { \\theta } ( { \\pmb x } _ { L } ) ; Y ( { \\pmb x } _ { L } ) \\big ) \\big ) .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            354,
+            792,
+            643,
+            813
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "As mentioned in Sec. 3.1, to improve the performance for a Real-ISR model, it is required to supervise the generator training with both the data term ${ \\mathcal { L } } _ { \\mathrm { d a t a } }$ and regularization term $\\mathcal { L } _ { \\mathrm { r e g } }$ . As shown in the right part of Fig. 2, we propose to adapt VSD [49] as the regularization term. Apart from utilizing the SD model as the pre-trained regularizer $\\epsilon _ { \\phi }$ , VSD also introduces a finetuned regularizer, i.e., a latent diffusion module finetuned on the distribution $q _ { \\theta } \\left( \\hat { \\pmb x } _ { H } \\right)$ of generated images with LoRA. We denote this finetuned diffusion module as $\\epsilon _ { \\phi ^ { \\prime } }$ . ",
+        "bbox": [
+            174,
+            827,
+            825,
+            912
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            493,
+            935,
+            503,
+            946
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Training Loss. We train the generator $G _ { \\theta }$ with the data loss ${ \\mathcal { L } } _ { \\mathrm { d a t a } }$ and regularization loss $\\mathcal { L } _ { \\mathrm { r e g } }$ . We set ${ \\mathcal { L } } _ { \\mathrm { d a t a } }$ as the weighted sum of MSE loss and LPIPS loss: ",
+        "bbox": [
+            169,
+            90,
+            825,
+            119
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/acd537eed44dca3f7725d7100d0539643e1ce07223dc873f4f48d454cba41537.jpg",
+        "text": "$$\n\\begin{array} { r } { \\mathcal { L } _ { \\mathrm { d a t a } } \\left( G _ { \\theta } ( \\pmb { x } _ { L } ) , \\pmb { x } _ { H } \\right) = \\mathcal { L } _ { \\mathrm { M S E } } \\left( G _ { \\theta } ( \\pmb { x } _ { L } ) , \\pmb { x } _ { H } \\right) + \\lambda _ { 1 } \\mathcal { L } _ { \\mathrm { L P I P S } } \\left( G _ { \\theta } ( \\pmb { x } _ { L } ) , \\pmb { x } _ { H } \\right) , } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            254,
+            126,
+            743,
+            143
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "where $\\lambda _ { 1 }$ is a weighting scalar. As for $\\mathcal { L } _ { \\mathrm { r e g } }$ , we adopt the VSD loss via: ",
+        "bbox": [
+            173,
+            150,
+            643,
+            166
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/44c20cedce8a911e3c05fab7c6c52185f3d4aab30b62731ee3e4125e14af0773.jpg",
+        "text": "$$\n\\begin{array} { r } { \\mathcal { L } _ { \\mathrm { r e g } } \\left( G _ { \\theta } ( \\pmb { x } _ { L } ) \\right) = \\mathcal { L } _ { \\mathrm { V S D } } \\left( G _ { \\theta } ( \\pmb { x } _ { L } ) , c _ { y } \\right) = \\mathcal { L } _ { \\mathrm { V S D } } \\left( G _ { \\theta } ( \\pmb { x } _ { L } ) , Y ( \\pmb { x } _ { L } ) \\right) . } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            279,
+            171,
+            717,
+            190
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Given any trainable image-shape feature $_ { \\textbf { \\em x } }$ , its latent code $z = E _ { \\phi } ( { \\pmb x } )$ and encoded text prompt condition $c _ { y }$ , VSD optimizes $_ { \\textbf { \\em x } }$ to make it consistent with the text prompt $y$ via: ",
+        "bbox": [
+            169,
+            203,
+            823,
+            233
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/54b02736673efd3d527f6a25bd5050a81c085384d13fef1ec144b746435bfb6a.jpg",
+        "text": "$$\n\\nabla _ { \\pmb { x } } \\mathcal { L } _ { \\mathrm { V S D } } \\left( \\pmb { x } , c _ { y } \\right) = \\mathbb { E } _ { t , \\epsilon } \\left[ \\omega ( t ) \\left( \\epsilon _ { \\phi } ( z _ { t } ; t , c _ { y } ) - \\epsilon _ { \\phi ^ { \\prime } } ( z _ { t } , t ; c _ { y } ) \\right) \\frac { \\partial \\pmb { z } } { \\partial \\pmb { x } } \\right] ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            276,
+            238,
+            720,
+            273
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "where the expectation of the gradient is conducted over all diffusion timesteps $t \\in \\{ 1 , \\cdots , T \\}$ and $\\epsilon \\sim \\mathcal { N } ( 0 , I )$ . Therefore, the overall training objective for the generator $G _ { \\theta }$ is: ",
+        "bbox": [
+            171,
+            280,
+            823,
+            310
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/281d0f9fb937ed0f6d27df61635515afdedd540f0fdb4eaaad01ef429172ee4c.jpg",
+        "text": "$$\n\\begin{array} { r } { \\mathcal { L } \\left( G _ { \\theta } ( \\pmb { x } _ { L } ) , \\pmb { x } _ { H } \\right) = \\mathcal { L } _ { \\mathrm { d a t a } } \\left( G _ { \\theta } ( \\pmb { x } _ { L } ) , \\pmb { x } _ { H } \\right) + \\lambda _ { 2 } \\mathcal { L } _ { \\mathrm { r e g } } \\left( G _ { \\theta } ( \\pmb { x } _ { L } ) \\right) , } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            294,
+            316,
+            704,
+            334
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "where $\\lambda _ { 2 }$ is a weighting scalar. Besides, as required by VSD, the finetuned regularizer $\\epsilon _ { \\phi ^ { ' } }$ should also be trainable, and its training objective is: ",
+        "bbox": [
+            174,
+            340,
+            823,
+            369
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/c9d5b86e3fce85c331d4bf64267d58a122fa74d959e98d4f8025c9f55a2e6115.jpg",
+        "text": "$$\n\\mathcal { L } _ { \\mathrm { d i f f } } = \\mathbb { E } _ { t , \\epsilon , c _ { y } = Y \\left( \\pmb { x } _ { L } \\right) , \\hat { \\pmb { z } } _ { H } = F _ { \\theta } \\left( E _ { \\theta } \\left( \\pmb { x } _ { L } \\right) ; Y ( \\pmb { x } _ { L } ) \\right) } \\mathcal { L } _ { \\mathrm { M S E } } \\left( \\epsilon _ { \\phi ^ { \\prime } } \\left( \\alpha _ { t } \\hat { \\pmb { z } } _ { H } + \\beta _ { t } \\epsilon ; t , c _ { y } \\right) , \\epsilon \\right) .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            245,
+            376,
+            751,
+            395
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Note that the above ${ \\mathcal { L } } _ { \\mathrm { d i f f } }$ loss is only applied to update $\\epsilon _ { \\phi ^ { ' } }$ . The whole algorithm to illustrate the training pipeline can be found in the Appendix. ",
+        "bbox": [
+            176,
+            400,
+            823,
+            430
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "VSD in Latent Space. The original VSD computes the gradients in the image space. When it is used to train an SD-based generator network, there will be repetitive latent decoding/encoding in computing $\\mathcal { L } _ { \\mathrm { r e g } }$ . This is costly and makes the regularization less effective. Considering the fact that a well-trained VAE should satisfy $E _ { \\phi } ( \\pmb { x } ) = E _ { \\phi } ( \\bar { D _ { \\phi } } ( z ) ) \\approx z$ , we can approximately let $\\bar { \\cal E } _ { \\phi } ( \\hat { \\pmb x } _ { H } ) = \\hat { \\pmb z } _ { H }$ . In this case, we can eliminate the redundant latent encoding/decoding in computing the regularization loss, as we follow DMD [58] to optimize the distribution loss in the latent state space rather than in the noise space. The gradient of the regularization loss w.r.t. the network parameter $\\theta$ in the latent space is: ",
+        "bbox": [
+            173,
+            435,
+            826,
+            547
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/87588dbf5e5b461e9b38e6bea9a011d8344b6097123a319ca7539a1165ec899b.jpg",
+        "text": "$$\n\\begin{array} { r l } & { \\nabla _ { \\theta } \\mathcal { L } _ { \\mathrm { V S D } } ( G _ { \\theta } ( x _ { L } ) , c _ { y } ) = \\nabla _ { \\hat { x } _ { H } } \\mathcal { L } _ { \\mathrm { V S D } } ( \\hat { x } _ { H } , c _ { y } ) \\frac { \\partial \\hat { x } _ { H } } { \\partial \\theta } } \\\\ & { \\qquad = \\mathbb { E } _ { t , \\epsilon , \\hat { z } _ { t } = \\alpha _ { t } E _ { \\phi } ( \\hat { x } _ { H } ) + \\beta _ { t } \\epsilon } \\left[ \\omega ( t ) \\left( \\epsilon _ { \\phi } ( \\hat { z } _ { t } ; t , c _ { y } ) - \\epsilon _ { \\phi ^ { \\prime } } ( \\hat { z } _ { t } ; t , c _ { y } ) \\right) \\frac { \\partial \\hat { z } _ { H } } { \\partial \\hat { x } _ { H } } \\frac { \\partial \\hat { x } _ { H } } { \\partial \\theta } \\right] } \\\\ & { \\qquad = \\mathbb { E } _ { t , \\epsilon , \\hat { z } _ { t } = \\alpha _ { t } \\hat { z } _ { H } + \\beta _ { t } \\epsilon } \\left[ \\omega ( t ) \\left( \\epsilon _ { \\phi } ( \\hat { z } _ { t } ; t , c _ { y } ) - \\epsilon _ { \\phi ^ { \\prime } } ( \\hat { z } _ { t } ; t , c _ { y } ) \\right) \\frac { \\partial \\hat { z } _ { H } } { \\partial \\theta } \\right] . } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            178,
+            553,
+            815,
+            656
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "4 Experiments ",
+        "text_level": 1,
+        "bbox": [
+            174,
+            675,
+            312,
+            693
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "4.1 Experimental Settings ",
+        "text_level": 1,
+        "bbox": [
+            174,
+            702,
+            367,
+            718
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Training and Testing Datasets. Prior works [42, 57, 31, 52] employed different training datasets, making unified training standards for Real-ISR difficult to establish. For simplicity, we adopt SeeSR’s setup [52] and train OSEDiff using the LSDIR [26] dataset and the first 10K face images from FFHQ [19]. The degradation pipeline of Real-ESRGAN [45] is used to synthesize LQ-HQ training pairs. We evaluate OSEDiff and compare it with competing methods using the test set provided by StableSR [42], including both synthetic and real-world data. The synthetic data includes 3000 images of size $5 1 2 \\times 5 1 2$ , whose GT are randomly cropped from DIV2K-Val [2] and degraded using the Real-ESRGAN pipeline [45]. The real-world data include LQ-HQ pairs from RealSR [3] and DRealSR [51], with sizes of $1 2 8 \\times 1 2 8$ and $5 1 2 \\times 5 1 2$ , respectively. ",
+        "bbox": [
+            173,
+            723,
+            825,
+            849
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Compared Methods. We compare OSEDiff with state-of-the-art DM-based Real-ISR methods, including StableSR [42], ResShift [60], PASD [57], DiffBIR [31], SeeSR [52] and SinSR [48]. Among them, StableSR, PASD, DiffBIR, and SeeSR are all based on the pre-trained SD model. ResShift trains a DM from scratch in the pixel domain, while SinSR is a one-step model distilled from ResShift. Note that we do not compare with the recent method SUPIR [59] because it tends to generate rich yet excessive details, which are however unfaithful to the input image. ",
+        "bbox": [
+            174,
+            854,
+            825,
+            911
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            493,
+            936,
+            504,
+            946
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "table",
+        "img_path": "images/a236a580e95d4b33c1e2db66f2985b919d218318e50ffc850d0e4c768ce9bf42.jpg",
+        "table_caption": [
+            "Table 1: Quantitative comparison with state-of-the-art methods on both synthetic and real-world benchmarks. ‘s’ denotes the number of diffusion reverse steps in the method. The best and second best results of each metric are highlighted in red and blue, respectively. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Datasets</td><td>Methods</td><td>PSNR↑</td><td>SSIM↑</td><td>LPIPS↓</td><td>DISTS↓</td><td>FID↓</td><td>NIQE↓</td><td>MUSIQ↑</td><td>MANIQA↑</td><td>CLIPIQA↑</td></tr><tr><td rowspan=\"6\">DIV2K-Val</td><td>StableSR-s200</td><td>23.26</td><td>0.5726</td><td>0.3113</td><td>0.2048</td><td>24.44</td><td>4.7581</td><td>65.92</td><td>0.6192</td><td>0.6771</td></tr><tr><td>DiffBIR-s50</td><td>23.64</td><td>0.5647</td><td>0.352</td><td>0.2128</td><td>30.72</td><td>4.7042</td><td>65.81</td><td>0.6210</td><td>0.6704</td></tr><tr><td>SeeSR-s50</td><td>23.68</td><td>0.6043</td><td>0.3194</td><td>0.1968</td><td>25.90</td><td>4.8102</td><td>68.67</td><td>0.6240</td><td>0.6936</td></tr><tr><td>PASD-s20</td><td>23.14</td><td>0.5505</td><td>0.3571</td><td>0.2207</td><td>29.20</td><td>4.3617</td><td>68.95</td><td>0.6483</td><td>0.6788</td></tr><tr><td>ResShift-s15</td><td>24.65</td><td>0.6181</td><td>0.3349</td><td>0.2213</td><td>36.11</td><td>6.8212</td><td>61.09</td><td>0.5454</td><td>0.6071</td></tr><tr><td>SinSR-s1</td><td>24.41</td><td>0.6018</td><td>0.3240</td><td>0.2066</td><td>35.57</td><td>6.0159</td><td>62.82</td><td>0.5386</td><td>0.6471</td></tr><tr><td></td><td>OSEDiff-s1</td><td>23.72</td><td>0.6108</td><td>0.2941</td><td>0.1976</td><td>26.32</td><td>4.7097</td><td>67.97</td><td>0.6148</td><td>0.6683</td></tr><tr><td rowspan=\"7\">DrealSR</td><td>StableSR-s200</td><td>28.03</td><td>0.7536</td><td>0.3284</td><td>0.2269</td><td>148.98</td><td>6.5239</td><td>58.51</td><td>0.5601</td><td>0.6356</td></tr><tr><td>DiffBIR-s50</td><td>26.71</td><td>0.6571</td><td>0.4557</td><td>0.2748</td><td>166.79</td><td>6.3124</td><td>61.07</td><td>0.5930</td><td>0.6395</td></tr><tr><td>SeeSR-s50</td><td>28.17</td><td>0.7691</td><td>0.3189</td><td>0.2315</td><td>147.39</td><td>6.3967</td><td>64.93</td><td>0.6042</td><td>0.6804</td></tr><tr><td>PASD-s20</td><td>27.36</td><td>0.7073</td><td>0.3760</td><td>0.2531</td><td>156.13</td><td>5.5474</td><td>64.87</td><td>0.6169</td><td>0.6808</td></tr><tr><td>ResShift-s15</td><td>28.46</td><td>0.7673</td><td>0.4006</td><td>0.2656</td><td>172.26</td><td>8.1249</td><td>50.60</td><td>0.4586</td><td>05342</td></tr><tr><td>SinSR-s1</td><td>28.36</td><td>0.7515</td><td>0.3665</td><td>0.2485</td><td>170.57</td><td>6.9907</td><td>55.33</td><td>0.4884</td><td>0.6383</td></tr><tr><td>OSEDiff-s1</td><td>27.92</td><td>0.7835</td><td>0.2968</td><td>0.2165</td><td>135.30</td><td>6.4902</td><td>64.65</td><td>0.5899</td><td>0.6963</td></tr><tr><td rowspan=\"6\">RealSR</td><td>StableSR-s200</td><td>24.70</td><td>0.7085</td><td>0.3018</td><td>0.2288</td><td>128.51</td><td>5.9122</td><td>65.78</td><td>0.6221</td><td>0.6178</td></tr><tr><td>DiffBIR-s50</td><td>24.75</td><td>0.6567</td><td>0.3636</td><td>0.2312</td><td>128.99</td><td>5.5346</td><td>64.98</td><td>0.6246</td><td>0.6463</td></tr><tr><td>SeeSR-s50</td><td>25.18</td><td>0.7216</td><td>0.3009</td><td>0.2223</td><td>125.55</td><td>5.4081</td><td>69.77</td><td>0.6442</td><td>0.6612</td></tr><tr><td>PASD-s20</td><td>25.21</td><td>0.6798</td><td>0.3380</td><td>0.2260</td><td>124.29</td><td>5.4137</td><td>68.75</td><td>0.6487</td><td>0.6620</td></tr><tr><td>ResShift-s15</td><td>26.31</td><td>0.7421</td><td>0.3460</td><td>0.2498</td><td>141.71</td><td>7.2635</td><td>58.43</td><td>0.5285</td><td>0.5444</td></tr><tr><td>SinSR-s1 OSEDiff-s1</td><td>26.28 25.15</td><td>0.7347 0.7341</td><td>0.3188 0.2921</td><td>0.2353 0.2128</td><td>135.93 123.49</td><td>6.2872 5.6476</td><td>60.80 69.09</td><td>0.5385 0.6326</td><td>0.6122 0.6693</td></tr></table>",
+        "bbox": [
+            174,
+            138,
+            823,
+            385
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "table",
+        "img_path": "images/d194b2d67bcbeb864681ee086090e39d129a94a01ec496f7b7fa2ffaff4f4eaa.jpg",
+        "table_caption": [
+            "Table 2: Complexity comparison among different methods. All methods are tested with an input image of size $5 1 2 \\times 5 1 2$ , and the inference time is measured on an A100 GPU. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td></td><td>StableSR</td><td>DiffBIR</td><td>SeeSR</td><td>PASD</td><td>ResShift</td><td>SinSR</td><td>OSEDiff</td></tr><tr><td>Inference Step</td><td>200</td><td>50</td><td>50</td><td>20</td><td>15</td><td>1</td><td>1</td></tr><tr><td>Inference Time (s)</td><td>11.50</td><td>2.72</td><td>4.30</td><td>2.80</td><td>0.71</td><td>0.13</td><td>0.11</td></tr><tr><td>MACs (G)</td><td>79940</td><td>24234</td><td>65857</td><td>29125</td><td>5491</td><td>2649</td><td>2265</td></tr><tr><td># Total Param (M)</td><td>1410</td><td>1717</td><td>2524</td><td>1900</td><td>119</td><td>119</td><td>1775</td></tr><tr><td># Trainable Param (M)</td><td>150.0</td><td>380.0</td><td>749.9</td><td>625.0</td><td>118.6</td><td>118.6</td><td>8.5</td></tr></table>",
+        "bbox": [
+            176,
+            439,
+            821,
+            537
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            178,
+            549,
+            821,
+            577
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "For those GAN-based Real-ISR methods, including BSRGAN [61], Real-ESRGAN [45], LDL [27], and FeMaSR [4], we put their results into the Appendix. ",
+        "bbox": [
+            176,
+            583,
+            821,
+            612
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Evaluation Metrics. To provide a comprehensive and holistic assessment on the performance of different methods, we employ a range of full-reference and no-reference metrics. PSNR and SSIM [50] (calculated on the Y channel in YCbCr space) are reference-based fidelity measures, while LPIPS [64], DISTS [12] are reference-based perceptual quality measures. FID [15] evaluates the distance of distributions between GT and restored images. NIQE [62], MANIQA-pipal [55], MUSIQ [22], and CLIPIQA [41] are no-reference image quality measures. We also conduct a user study, which is presented in the Appendix. ",
+        "bbox": [
+            173,
+            617,
+            825,
+            715
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Implementation Details. We train OSEDiff with the AdamW optimizer [33] at a learning rate of 5e-5. The entire training process took approximately 1 day on 4 NVIDIA A100 GPUs with a batch size of 16. The rank of LoRA in the VAE Encoder, diffusion network, and finetuned regularizer is set to 4. For the text prompt extractor, although advanced multimodal language models [32] can provide detailed text descriptions, they come at a high inference cost. We adopt the degradation-aware prompt extraction (DAPE) module in SeeSR [52] to extract text prompts. The SD 2.1-base is used as the pre-trained T2I model. The weighting scalars $\\lambda _ { 1 }$ and $\\lambda _ { 2 }$ are set to 2 and 1, respectively. ",
+        "bbox": [
+            174,
+            720,
+            825,
+            819
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "4.2 Comparison with State-of-the-Arts ",
+        "text_level": 1,
+        "bbox": [
+            176,
+            833,
+            455,
+            848
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Quantitative Comparisons. The quantitative comparisons among the competing methods on the three datasets are presented in Table 1. We can have the following observations. (1) First, OSEDiff exhibits clear advantages over competing methods in full-reference perceptual quality metrics LPIPS and DISTS, distribution alignment metric FID, and semantic quality metric CLIPIQA, especially on the two real-world datasets DrealSR and RealSR. (2) Second, SeeSR and PASD show better no-reference metrics like NIQE, MUSIQ and MANIQA. This is because these multi-step methods can produce rich image details in the diffusion process, which are preferred by no-reference metrics. (3) Third, ResShift and its distilled version SinSR show better full-reference fidelity metrics such as PSNR. This is mainly because they train a DM from scratch specifically for the restoration purpose, instead of exploring the pre-trained T2I model such as SD. However, ResShift and SinSR show poor perceptual quality metrics than other methods. ",
+        "bbox": [
+            176,
+            856,
+            825,
+            911
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "discarded",
+        "text": "7 ",
+        "bbox": [
+            493,
+            935,
+            504,
+            946
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "image",
+        "img_path": "images/5826ad2dd8b383b675665cc1f5b07a970462d3ccda5b9bcfd0ec2e834aaec2d0.jpg",
+        "image_caption": [
+            "Figure 3: Qualitative comparisons of different Real-ISR methods. Please zoom in for a better view. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            173,
+            88,
+            828,
+            404
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            174,
+            443,
+            826,
+            540
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Qualitative Comparisons. Fig. 3 presents visual comparisons of different Real-ISR methods. As illustrated in the first example, ResShift and SinSR severely blur the facial details due to the lack of pre-trained image priors. StableSR, DiffBIR and SeeSR reconstruct more facial details by exploring the image prior in pre-trained SD model. PASD generates excessive yet unnatural details. Though OSEDiff performs only one step forward propagation, it reproduces realistic and superior facial details to other methods. Similar conclusion can be drawn from the second example. StableSR and DiffBIR are limited in generating rich textures due to the lack of text prompts. PASD suffers from incorrect semantic generation because its prompt extraction module is not robust to degradation. While SeeSR utilizes degradation-aware semantic cues to stimulate image generation priors, the generated leaf veins are unnatural, which may be influenced by its random noise sampling. In contrast, OSEDiff can generate detailed and natural leaf veins. More visualization comparisons and the results of subjective user study can be found in the Appendix. ",
+        "bbox": [
+            174,
+            545,
+            825,
+            712
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Complexity Comparisons. We further compare the complexity of competing DM-based Real-ISR models in Table 2, including the number of inference steps, inference time, and trainable parameters. All methods are tested on an A100 GPU with an input image of size $5 1 2 \\times 5 1 2$ . OSEDiff has the fewest trainable parameters, and the trained LoRA layers can be merged into the original SD to further reduce the computational cost. By using only one forward pass, OSEDiff has significant advantage in inference time over multi-step methods. Specifically, OSEDiff demonstrates a substantial speed advantage, being approximately 105 times faster than StableSR, 39 times faster than SeeSR, and 6 times faster than ResShift. When compared to the single-step method SinSR, OSEDiff not only achieves faster inference but also delivers significantly higher output quality. In terms of complexity, OSEDiff requires the lowest MACs at just 2265G, as it operates with only a single diffusion step. In contrast, methods like StableSR, which require 200 steps, incur substantially higher MACs (e.g., 79940G). Regarding trainable parameters, OSEDiff is highly parameter-efficient, requiring only 8.5M parameters (LoRA layers), compared to models such as SeeSR, which necessitates 749.9M parameters. This highlights the efficiency of OSEDiff during the training process. ",
+        "bbox": [
+            174,
+            718,
+            825,
+            911
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "discarded",
+        "text": "8 ",
+        "bbox": [
+            493,
+            936,
+            503,
+            946
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/327baa64007b5c4a08af6bccbd3bcf2ca4be1ca5b6d75dbbb99468227479c2d7.jpg",
+        "table_caption": [
+            "Table 3: Comparison of different losses on the RealSR benchmark. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td></td><td>PSNR↑</td><td>LPIPS↓</td><td>MUSIQ↑</td><td>CLIPIQA↑</td></tr><tr><td>w/o VSD loss</td><td>25.42</td><td>0.2934</td><td>65.23</td><td>0.5876</td></tr><tr><td>GAN loss</td><td>25.00</td><td>0.2760</td><td>67.29</td><td>0.6254</td></tr><tr><td>VSD loss in image domain</td><td>25.05</td><td>0.2759</td><td>67.90</td><td>0.6256</td></tr><tr><td>OSEDiff</td><td>25.15</td><td>0.2921</td><td>69.09</td><td>0.6693</td></tr></table>",
+        "bbox": [
+            310,
+            112,
+            683,
+            178
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "table",
+        "img_path": "images/9e125af3fce24144b6db9331675590410c770298e08ea197bc2daf7e859f3656.jpg",
+        "table_caption": [
+            "Table 4: Comparison of different text prompt extractors on the DrealSR benchmark. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Prompt Extraction Methods</td><td>PSNR↑</td><td>SSIM↑</td><td>LPIPS↓</td><td>DISTS↓</td><td>FID↓</td><td>NIQE↓</td><td>MUSIQ↑</td><td>MANIQA↑</td><td>CLIPIQA↑</td><td>Prompt Extraction Time (s)</td></tr><tr><td>Null</td><td>28.51</td><td>0.7910</td><td>0.2896</td><td>0.2080</td><td>126.59</td><td>6.6436</td><td>62.13</td><td>0.5782</td><td>0.6599</td><td>0</td></tr><tr><td>DAPE</td><td>27.92</td><td>0.7835</td><td>0.2968</td><td>0.2165</td><td>135.30</td><td>6.4902</td><td>64.65</td><td>0.5899</td><td>0.6963</td><td>0.02</td></tr><tr><td>LLaVA-v1.5</td><td>27.72</td><td>0.7735</td><td>0.3109</td><td>0.2249</td><td>149.45</td><td>6.4119</td><td>65.70</td><td>0.6038</td><td>0.7033</td><td>3.53</td></tr></table>",
+        "bbox": [
+            174,
+            205,
+            825,
+            263
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "table",
+        "img_path": "images/d26c6c349c36d69fcd6e498c51096ef5eafe4da969229305419c8a4db7012981.jpg",
+        "table_caption": [
+            "Table 5: Comparison of LoRA in VAE encoder with different ranks. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Rank</td><td>PSNR↑</td><td>DISTS↓</td><td>MUSIQ↑</td><td>NIQE↓</td></tr><tr><td>2</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>4</td><td>25.15</td><td>0.2128</td><td>69.09</td><td>5.6479</td></tr><tr><td>8</td><td>24.86</td><td>0.2134</td><td>68.37</td><td>5.8184</td></tr></table>",
+        "bbox": [
+            173,
+            333,
+            475,
+            401
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "table",
+        "img_path": "images/417d342a2d82f46964ea5a9882f720620dd19acf62b7f9912ef6a7ee3b3bed5b.jpg",
+        "table_caption": [
+            "Table 6: Comparison of LoRA in UNet with different ranks. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Rank</td><td>PSNR↑</td><td>DISTS↓</td><td>MUSIQ↑</td><td>NIQE↓</td></tr><tr><td>2</td><td>25.28</td><td>0.2154</td><td>68.89</td><td>5.7171</td></tr><tr><td>4</td><td>25.15</td><td>0.2128</td><td>69.09</td><td>5.6479</td></tr><tr><td>8</td><td>24.87</td><td>0.2115</td><td>68.39</td><td>5.8184</td></tr></table>",
+        "bbox": [
+            529,
+            333,
+            831,
+            401
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "table",
+        "img_path": "images/fd92547225f54515bd73d429ab16d9a859198f9da48eac552297979fcebd0261.jpg",
+        "table_caption": [
+            "Table 7: Ablation studies on finetuning the VAE encoder and decoder on the RealSR benchmark. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td></td><td>Train VAE Encoder Train VAE Decoder</td><td></td><td>PSNR↑</td><td>DISTS↓</td><td>LPIPS↓</td><td>CLIPIQA↑</td><td>MUSIQ↑</td><td>NIQE↓</td></tr><tr><td>(1)</td><td>×</td><td>×</td><td>25.27</td><td>0.1966</td><td>0.2656</td><td>0.5303</td><td>58.99</td><td>6.5496</td></tr><tr><td>(2)</td><td>×</td><td>✓</td><td>25.30</td><td>0.2049</td><td>0.2829</td><td>0.5604</td><td>65.83</td><td>6.6291</td></tr><tr><td>(3)</td><td>✓</td><td>✓</td><td>25.59</td><td>0.2141</td><td>0.3017</td><td>0.5778</td><td>65.92</td><td>6.9845</td></tr><tr><td>OSEDiff</td><td>✓</td><td>×</td><td>25.15</td><td>0.2128</td><td>0.2921</td><td>0.6693</td><td>69.09</td><td>5.6479</td></tr></table>",
+        "bbox": [
+            173,
+            443,
+            821,
+            515
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "4.3 Ablation Study ",
+        "text_level": 1,
+        "bbox": [
+            174,
+            539,
+            318,
+            554
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Effectiveness of VSD Loss. To validate the effectiveness of our VSD loss in latent space, we perform ablation studies by removing the VSD loss, replacing it with the GAN loss used in [35], and applying VSD loss in the image domain. The results on the RealSR test set are shown in Table 3. We can see that without using the VSD loss, the perceptual quality metrics are significantly degraded because it is hard to ensure good visual quality using only MSE loss and even LPIPS loss [64]. Using GAN loss and VSD loss in the image domain can improve the performance, but the results are not as good as applying VSD loss in the latent domain. Our proposed OSEDiff can effectively align the distribution of Real-ISR outputs by performing VSD regularization in the latent domain. ",
+        "bbox": [
+            173,
+            565,
+            825,
+            678
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Comparison on Text Prompt Extractors. We then conduct experiments to evaluate the effect of different text prompt extractors on the Real-ISR results. We test three options. The first option does not employ text prompts. The second option uses the DAPE module in SeeSR [52] to extract degradation-aware tag-style prompts, as we used in our main experiments. The third option uses LLaVA-v1.5 [32] to extract long text descriptions after removing the degradation of input LQ images, as used in SUPIR [59]. We retrain the models based on different prompt extraction methods. The ablation results are shown in Table 4. ",
+        "bbox": [
+            173,
+            683,
+            825,
+            780
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "One can see that without using text prompts as inputs, those full-reference metrics such PSNR, SSIM, LPIPS, DISTS and even FID can improve, while those no-reference metrics such as MUSIQ, MANIQA and CLIPIQA become worse. By using DAPE and LLaVA to extract text prompts, the generation capability of the pre-trained T2I SD model can be triggered, resulting in richer synthesized details, which however can reduce the full-reference indices. A visual example is shown in Figure 4. We see that while LLaVA extracts significantly longer text prompts than DAPE, they produce a similar amount of visual details. However, it is worth mentioning that the MLLM model LLaVA is very costly, increasing the inference time of DAPE by 170 times. Considering the cost-effectiveness, we ultimately choose DAPE as the text prompt extractor in OSEDiff. ",
+        "bbox": [
+            173,
+            786,
+            826,
+            911
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "discarded",
+        "text": "9 ",
+        "bbox": [
+            493,
+            935,
+            504,
+            946
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/c2aaef75504cc6098835517df040d25731ac78ecd293200b75dcd5aad1d235e0.jpg",
+        "image_caption": [
+            "Figure 4: The impact of different prompt extraction methods. Please zoom in for a better view. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            174,
+            88,
+            820,
+            263
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Setting of LoRA Rank. When finetuning the VAE encoder and the UNet, we need to set the rank of LoRA layers. Here we evaluate the effect of different LoRA ranks on the Real-ISR performance by using the RealSR benchmark [3]. The results are shown in Tables 5 and 6, respectively. As shown in Table 5, if a too small LoRA rank, such as 2, is set for the VAE encoder, the training will be unstable and cannot converge. On the other hand, if a higher LoRA rank, such as 8, is used for the VAE encoder, it may overfit in estimating image degradation, losing some image details in the output, as evidenced by the PSNR, DISTS, MUSIQ and NIQE indices. We find that setting the rank to 4 can achieve a balanced result for the VAE encoder. Similar conclusions can be made for the setting of LoRA rank on UNet. As can be seen from Table 6, a rank of 4 strikes a good balance. Therefore, we set the rank as 4 for both the VAE encoder and UNet LoRA layers. ",
+        "bbox": [
+            173,
+            308,
+            825,
+            446
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "The Finetuning on the VAE Encoder and Decoder. We conducted ablation studies to examine the impact of finetuning the VAE encoder and decoder, as shown Table 7. In the first row, where neither the VAE encoder nor decoder is finetuned, the results show poor perception performance. Comparing with OSEDiff, where only the VAE encoder is finetuned, we observe significant improvements in perceptual quality (e.g., MUSIQ improves from 58.99 to 69.09). This demonstrates that finetuning the VAE encoder is important for removing degradation and enhancing overall performance. When comparing the third row, where both the VAE encoder and decoder are finetuned, with OSEDiff, where only the encoder is trained and the decoder is fixed, we note that OSEDiff also achieves better perceptual quality (CLIPIQ improves from 0.5778 to 0.6693). This indicates that fixing the VAE decoder is important to ensure that the UNet output remains in the original VAE latent space, which helps minimizing the VSD loss more effectively. Thus, finetuning the VAE encoder is important to remove degradation, while fixing the VAE decoder helps maintaining stability in the latent space, leading to better perceptual quality. ",
+        "bbox": [
+            173,
+            453,
+            825,
+            632
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "5 Conclusion and Limitation ",
+        "text_level": 1,
+        "bbox": [
+            176,
+            669,
+            428,
+            686
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "We proposed OSEDiff, a one-step effective diffusion network for Real-ISR, by utilizing the pretrained text-to-image model as both the generator and the regularizer in training. Unlike traditional multi-step diffusion models, OSEDiff directly took the given LQ image as the starting point for diffusion, eliminating the uncertainty associated with random noise. By fine-tuning the pre-trained diffusion network with trainable LoRA layers, OSEDiff can well adapt to the complex real-world image degradations. Meanwhile, we performed the variational score distillation in the latent space to ensure that the model’s predicted scores align with those of multi-step pre-trained models, enabling OSEDiff to efficiently produce HQ images in one diffusion step. Our experiments showed that OSEDiff achieved comparable or superior Real-ISR outcomes to previous multi-step diffusion-based methods in both objective metrics and subjective assessments. We believe our exploration can facilitate the practical application of pre-trained T2I models to Real-ISR tasks. ",
+        "bbox": [
+            174,
+            710,
+            825,
+            863
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "There are some limitations of OSEDiff. First, the details generation capability of OSEDiff can be further improved. Second, like other SD-based methods, OSEDiff is limited in reconstructing fine-scale structures such as small scene texts. We will investigate these problems in further work. ",
+        "bbox": [
+            176,
+            869,
+            825,
+            911
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            491,
+            936,
+            508,
+            946
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "A Appendix ",
+        "text_level": 1,
+        "bbox": [
+            174,
+            89,
+            290,
+            107
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "In the appendix, we provide the following materials: ",
+        "bbox": [
+            174,
+            114,
+            517,
+            130
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "• Comparison with GAN-based methods (referring to Section 4.1 in the main paper).   \n• Results of user study (referring to Section 4.1 in the main paper).   \n• More real-world visual comparisons under scaling factor $4 \\times$ (referring to Section 4.2 in the main paper).   \n• Training algorithm of OSEDiff (referring to Section 3.2 in the main paper). ",
+        "bbox": [
+            217,
+            142,
+            825,
+            233
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "A.1 Comparison with GAN-based Methods ",
+        "text_level": 1,
+        "bbox": [
+            178,
+            251,
+            488,
+            265
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "We compare OSEDiff with four representative GAN-based Real-ISR methods, including BSRGAN [61], Real-ESRGAN [45], LDL [27] and FeMaSR [4]. The results are shown in Table 8. It is not a surprise that GAN-based methods have better fidelity measures such as PSNR and SSIM than OSEDiff. However, OSEDiff has much better perceptual qualify metrics. We also provide visual comparisons in Figure 5. Compared to GAN-based methods, OSEDiff is able to generate realistic and reasonable details, such as squirrel hair, textures of petals, buildings, and leaves. ",
+        "bbox": [
+            174,
+            276,
+            825,
+            361
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "A.2 User Study ",
+        "text_level": 1,
+        "bbox": [
+            174,
+            378,
+            294,
+            393
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "To further validate the effectiveness of our proposed OSEDiff method, we conducted a user study by using 20 real-world LQ images. An LQ image and its HQ counterparts generated by different Real-ISR methods were presented to volunteers, who were asked to select the best HQ result. The volunteers were instructed to consider two factors when making their decisions: the image perceptual quality and and its content (including structure and texture) consistency with the LQ input, with each factor contributing equally to the final selection. ",
+        "bbox": [
+            174,
+            404,
+            825,
+            488
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "We randomly selected 20 real-world LQ images from the RealLR200 dataset [52]. Figure 6(a) shows the thumbnails used in the user study, cropped into squares for a convenient layout. We generated the HQ outputs of them by using the DM-based Real-ISR methods StableSR [42], DiffBIR [31], SeeSR [52], PASD [57], ResShift [60], SinSR [48], and OSEDiff. A number of 15 volunteers were invited to participate in the evaluation. The results are shown in Figure 6(b). We see that OSEDiff ranks the second, just lagging slightly behind SeeSR. However, it should be noted that OSEDiff runs over 10 times faster than SeeSR by performing only one-step diffusion. ",
+        "bbox": [
+            174,
+            493,
+            825,
+            592
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "A.3 More Visual Comparisons ",
+        "text_level": 1,
+        "bbox": [
+            174,
+            609,
+            398,
+            625
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Figure 7 provides more visual comparisons between OSEDiff and other DM-based methods. One can see that OSEDiff achieves comparable to or even better results than the multi-step diffusion methods in scenarios such as portraits, flower patterns, buildings, animal fur, and letters. ",
+        "bbox": [
+            173,
+            635,
+            825,
+            678
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "table",
+        "img_path": "images/1770a378786e593ffcc27a0d8cc8994f2a6eb11a7ca16e8a065ebb3c57b73156.jpg",
+        "table_caption": [
+            "Table 8: Quantitative comparison with GAN-based methods on both synthetic and real-world benchmarks. The best results of each metric are highlighted in red. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Datasets</td><td>Methods</td><td>PSNR↑</td><td>SSIM↑</td><td>LPIPS↓</td><td>DISTS↓</td><td>FID↓</td><td>NIQE↓</td><td>MUSIQ↑</td><td>MANIQA↑</td><td>CLIPIQA↑</td></tr><tr><td rowspan=\"5\">DIV2K-Val</td><td>BSRGAN Real-ESRGAN</td><td>24.58</td><td>0.6269</td><td>0.3351</td><td>0.2275</td><td>44.23</td><td>4.7518</td><td>61.20</td><td>0.5071</td><td>0.5247</td></tr><tr><td></td><td>24.29</td><td>0.6371</td><td>0.3112</td><td>0.2141</td><td>37.64</td><td>4.6786</td><td>61.06</td><td>0.5501</td><td>0.5277</td></tr><tr><td>LDL</td><td>23.83</td><td>0.6344</td><td>0.3256</td><td>0.2227</td><td>42.29</td><td>4.8554</td><td>60.04</td><td>0.5350</td><td>0.5180</td></tr><tr><td>FeMASR</td><td>23.06</td><td>0.5887</td><td>0.3126</td><td>0.2057</td><td>35.87</td><td>4.7410</td><td>60.83</td><td>0.5074</td><td>0.5997</td></tr><tr><td>OSEDiff</td><td>23.72</td><td>0.6108</td><td>0.2941</td><td>0.1976</td><td>26.32</td><td>4.7097</td><td>67.97</td><td>0.6148</td><td>0.6683</td></tr><tr><td rowspan=\"5\">DrealSR</td><td>BSRGAN</td><td>28.75</td><td>0.8031</td><td>0.2883</td><td>0.2142</td><td>155.63</td><td>6.5192</td><td>57.14</td><td>0.4878</td><td>0.4915</td></tr><tr><td>Real-ESRGAN</td><td>28.64</td><td>0.8053</td><td>0.2847</td><td>0.2089</td><td>147.62</td><td>6.6928</td><td>54.18</td><td>0.4907</td><td>0.4422</td></tr><tr><td>LDL</td><td>28.21</td><td>0.8126</td><td>0.2815</td><td>0.2132</td><td>155.53</td><td>7.1298</td><td>53.85</td><td>0.4914</td><td>0.4310</td></tr><tr><td>FeMASR</td><td>26.90</td><td>0.7572</td><td>0.3169</td><td>0.2235</td><td>157.78</td><td>5.9073</td><td>53.74</td><td>0.4420</td><td>0.5464</td></tr><tr><td>OSEDiff</td><td>27.92</td><td>0.7835</td><td>0.2968</td><td>0.2165</td><td>135.30</td><td>6.4902</td><td>64.66</td><td>0.5899</td><td>0.6963</td></tr><tr><td rowspan=\"5\">RealSR</td><td>BSRGAN</td><td>26.39</td><td>0.7654</td><td>0.2670</td><td>0.2121</td><td>141.28</td><td>5.6567</td><td>63.21</td><td>0.5399</td><td>0.5001</td></tr><tr><td>Real-ESRGAN</td><td>25.69</td><td>0.7616</td><td>0.2727</td><td>0.2063</td><td>135.18</td><td>5.8295</td><td>60.18</td><td>0.5487</td><td>0.4449</td></tr><tr><td>LDL</td><td>25.28</td><td>0.7567</td><td>0.2766</td><td>0.2121</td><td>142.71</td><td>6.0024</td><td>60.82</td><td>0.5485</td><td>0.4477</td></tr><tr><td>FeMASR</td><td>25.07</td><td>0.7358</td><td>0.2942</td><td>0.2288</td><td>141.05</td><td>5.7885</td><td>58.95</td><td>0.4865</td><td>0.5270</td></tr><tr><td>OSEDiff</td><td>25.15</td><td>0.7341</td><td>0.2921</td><td>0.2128</td><td>123.49</td><td>5.6476</td><td>69.09</td><td>0.6326</td><td>0.6693</td></tr></table>",
+        "bbox": [
+            174,
+            729,
+            823,
+            909
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            490,
+            935,
+            506,
+            946
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "A.4 Algorithm of OSEDiff ",
+        "text_level": 1,
+        "bbox": [
+            174,
+            90,
+            370,
+            106
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "The pseudo-code of our OSEDiff training algorithm is summarized as Algorithm 1. We follow [49, 58] and use classifier-free guidance (cfg) when calculating $z _ { \\phi }$ .The cfg value is set to 7.5, and the negative prompts we use are: \"painting, oil painting, illustration, drawing, art, sketch, oil painting, cartoon, CG Style, 3D render, unreal engine, blurring, dirty, messy, worst quality, low quality, frames, watermark, signature, jpeg artifacts, deformed, lowres, over-smooth.\" ",
+        "bbox": [
+            173,
+            116,
+            826,
+            185
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Algorithm 1 Training Scheme of OSEDiff ",
+        "text_level": 1,
+        "bbox": [
+            176,
+            202,
+            455,
+            215
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Input: Training dataset $s$ , pretrained SD parameterized by $\\phi$ including VAE encoder $E _ { \\phi }$ , latent diffusion network $E _ { \\phi }$ and VAE decoder $\\epsilon _ { \\phi }$ , prompt extractor $Y _ { \\ l }$ , training iteration $N$   \n1 Initialize $G _ { \\theta }$ parameterized by $\\theta$ , including $E _ { \\theta }  E _ { \\phi }$ with trainable LoRA $\\epsilon _ { \\theta } \\gets \\epsilon _ { \\phi }$ with trainable LoRA $D _ { \\theta }  D _ { \\phi }$ b   \n2 Initialize $\\epsilon _ { \\phi }  \\epsilon _ { \\theta }$ with trainable LoRA   \n3 for $i \\gets 1$ to $N$ do 4 Sample $\\mathbf { \\mathcal { x } } _ { L } , \\mathbf { \\mathcal { x } } _ { H }$ from $s$ $^ { \\prime * }$ Network forward \\*/ 5 $c _ { y } \\gets Y ( { \\pmb x } _ { L } )$ 6 $\\pmb { z } _ { L } \\gets E _ { \\theta } ( \\pmb { x } _ { L } )$ 7 $\\hat { z } _ { H } \\gets F _ { \\theta } ( z _ { L } ; c _ { y } )$ 8 $\\hat { \\pmb { x } } _ { H } \\gets D _ { \\theta } ( \\hat { \\pmb { z } } _ { H } )$ $^ { \\prime * }$ Compute data term objective \\*/ 9 $\\begin{array} { r } { \\nabla _ { \\theta } \\mathcal { L } _ { \\mathrm { d a t a } } \\gets [ \\mathcal { L } _ { \\mathrm { M S E } } ( \\hat { \\pmb x } _ { H } , \\pmb x _ { H } ) + \\lambda _ { 1 } \\mathcal { L } _ { \\mathrm { L P I P S } } ( \\hat { \\pmb x } _ { H } , \\pmb x _ { H } ) ] \\frac { \\partial \\hat { \\pmb x } _ { H } } { \\partial \\theta } } \\end{array}$ $^ { \\prime * }$ Compute regularization objective, following DMD[58] \\*/   \n10 Sample $\\epsilon$ from $\\sqrt { ( 0 , I ) }$   \n11 Sample $t$ from $\\{ 2 0 , \\cdots , 9 8 0 \\}$   \n12 zˆt ← αtzˆH + σtϵ   \n13 $z _ { \\phi } \\gets \\mathrm { s t o p g r a d } ( F _ { \\phi } \\left( \\hat { z } _ { t } ; c _ { y } \\right) )$   \n14 $z _ { \\phi ^ { \\prime } } \\gets \\mathrm { s t o p g r a d } ( F _ { \\phi ^ { \\prime } } \\left( \\hat { z } _ { t } ; c _ { y } \\right) )$   \n15 $\\omega  1 / \\mathrm { m e a n } ( \\| z _ { \\phi } - \\hat { z } _ { H } \\| )$   \n16 $\\begin{array} { r } { \\nabla _ { \\theta } \\mathcal { L } _ { \\mathrm { r e g } }  [ \\omega ( { z } _ { \\phi ^ { \\prime } } - { z } _ { \\phi } ) ] \\frac { \\partial \\hat { { z } } _ { H } } { \\partial \\theta } } \\end{array}$ $^ { \\prime * }$ Compute regularizer funetuning objective \\*/   \n17 Sample $\\epsilon$ from $\\sqrt { ( 0 , I ) }$   \n18 Sample $t$ from $\\{ 1 , \\cdots , T \\}$   \n19 $\\boldsymbol { z } _ { t } \\gets \\boldsymbol { \\alpha } _ { t }$ st $\\mathrm { { o p g r a d } } ( \\widehat { \\pmb { z } } _ { H } ) + \\sigma _ { t } \\epsilon$   \n20 $\\mathcal { L } _ { \\mathrm { d i f f } }  \\mathcal { L } _ { \\mathrm { M S E } } ( \\epsilon _ { \\phi ^ { \\prime } } ( z _ { t } ; t , c _ { y } ) , \\epsilon )$ $^ { \\prime * }$ Network Parameter Update \\*/   \n21 Update $\\theta$ with $\\mathcal { L } _ { \\mathrm { d a t a } } + \\lambda _ { 2 } \\mathcal { L } _ { \\mathrm { r e g } }$   \n22 Update $\\phi ^ { \\prime }$ with ${ \\mathcal { L } } _ { \\mathrm { d i f f } }$   \n23 end Output: Generator $G _ { \\theta }$ including VAE encoder $E _ { \\theta }$ , latent diffusion network $E _ { \\theta }$ and VAE decoder $\\epsilon _ { \\theta }$   \nReferences   \n[1] Stability.ai. https://stability.ai/stable-diffusion.   \n[2] Eirikur Agustsson and Radu Timofte. Ntire 2017 challenge on single image super-resolution: Dataset and study. In Proceedings of the IEEE conference on computer vision and pattern recognition workshops, pages 126–135, 2017.   \n[3] Jianrui Cai, Hui Zeng, Hongwei Yong, Zisheng Cao, and Lei Zhang. Toward real-world single image super-resolution: A new benchmark and a new model. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 3086–3095, 2019.   \n[4] Chaofeng Chen, Xinyu Shi, Yipeng Qin, Xiaoming Li, Xiaoguang Han, Tao Yang, and Shihui Guo. Real-world blind super-resolution via feature matching with implicit high-resolution priors. In Proceedings of the 30th ACM International Conference on Multimedia, pages 1329–1338, 2022.   \n[5] Hanting Chen, Yunhe Wang, Tianyu Guo, Chang Xu, Yiping Deng, Zhenhua Liu, Siwei Ma, Chunjing Xu, Chao Xu, and Wen Gao. Pre-trained image processing transformer. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pages 12299–12310, 2021.   \n[6] Xiangyu Chen, Xintao Wang, Jiantao Zhou, Yu Qiao, and Chao Dong. Activating more pixels in image super-resolution transformer. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 22367–22377, 2023.   \n[7] Zheng Chen, Yulun Zhang, Jinjin Gu, Linghe Kong, Xiaokang Yang, and Fisher Yu. Dual aggregation transformer for image super-resolution. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 12312–12321, 2023.   \n[8] Imre Csiszár. I-divergence geometry of probability distributions and minimization problems. The annals of probability, pages 146–158, 1975.   \n[9] Tao Dai, Jianrui Cai, Yongbing Zhang, Shu-Tao Xia, and Lei Zhang. Second-order attention network for single image super-resolution. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pages 11065–11074, 2019.   \n[10] Trung Dao, Thuan Hoang Nguyen, Thanh Le, Duc Vu, Khoi Nguyen, Cuong Pham, and Anh Tran. Swiftbrush v2: Make your one-step diffusion model better than its teacher. arXiv preprint arXiv:2408.14176, 2024.   \n[11] Prafulla Dhariwal and Alexander Nichol. Diffusion models beat gans on image synthesis. Advances in neural information processing systems, 34:8780–8794, 2021.   \n[12] Keyan Ding, Kede Ma, Shiqi Wang, and Eero P Simoncelli. Image quality assessment: Unifying structure and texture similarity. IEEE transactions on pattern analysis and machine intelligence, 44(5):2567–2581, 2020.   \n[13] Chao Dong, Chen Change Loy, Kaiming He, and Xiaoou Tang. Learning a deep convolutional network for image super-resolution. In Computer Vision–ECCV 2014: 13th European Conference, Zurich, Switzerland, September 6-12, 2014, Proceedings, Part IV 13, pages 184–199. Springer, 2014.   \n[14] Ian Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, and Yoshua Bengio. Generative adversarial nets. Advances in neural information processing systems, 27, 2014.   \n[15] Martin Heusel, Hubert Ramsauer, Thomas Unterthiner, Bernhard Nessler, and Sepp Hochreiter. Gans trained by a two time-scale update rule converge to a local nash equilibrium. Advances in neural information processing systems, 30, 2017.   \n[16] Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising diffusion probabilistic models. Advances in neural information processing systems, 33:6840–6851, 2020.   \n[17] Edward J Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, and Weizhu Chen. Lora: Low-rank adaptation of large language models. arXiv preprint arXiv:2106.09685, 2021.   \n[18] Justin Johnson, Alexandre Alahi, and Li Fei-Fei. Perceptual losses for real-time style transfer and superresolution. In Computer Vision–ECCV 2016: 14th European Conference, Amsterdam, The Netherlands, October 11-14, 2016, Proceedings, Part II 14, pages 694–711. Springer, 2016.   \n[19] Tero Karras, Samuli Laine, and Timo Aila. A style-based generator architecture for generative adversarial networks. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pages 4401–4410, 2019.   \n[20] Bahjat Kawar, Michael Elad, Stefano Ermon, and Jiaming Song. Denoising diffusion restoration models. Advances in Neural Information Processing Systems, 35:23593–23606, 2022.   \n[21] Bahjat Kawar, Gregory Vaksman, and Michael Elad. Snips: Solving noisy inverse problems stochastically. Advances in Neural Information Processing Systems, 34:21757–21769, 2021.   \n[22] Junjie Ke, Qifei Wang, Yilin Wang, Peyman Milanfar, and Feng Yang. Musiq: Multi-scale image quality transformer. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 5148–5157, 2021.   \n[23] Alex Krizhevsky, Ilya Sutskever, and Geoffrey E Hinton. Imagenet classification with deep convolutional neural networks. Advances in neural information processing systems, 25, 2012.   \n[24] Christian Ledig, Lucas Theis, Ferenc Huszár, Jose Caballero, Andrew Cunningham, Alejandro Acosta, Andrew Aitken, Alykhan Tejani, Johannes Totz, Zehan Wang, et al. Photo-realistic single image superresolution using a generative adversarial network. In Proceedings of the IEEE conference on computer vision and pattern recognition, pages 4681–4690, 2017.   \n[25] Kyungmin Lee, Kihyuk Sohn, and Jinwoo Shin. Dreamflow: High-quality text-to-3d generation by approximating probability flow. arXiv preprint arXiv:2403.14966, 2024.   \n[26] Yawei Li, Kai Zhang, Jingyun Liang, Jiezhang Cao, Ce Liu, Rui Gong, Yulun Zhang, Hao Tang, Yun Liu, Denis Demandolx, et al. Lsdir: A large scale dataset for image restoration. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 1775–1787, 2023.   \n[27] Jie Liang, Hui Zeng, and Lei Zhang. Details or artifacts: A locally discriminative learning approach to realistic image super-resolution. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 5657–5666, 2022.   \n[28] Jie Liang, Hui Zeng, and Lei Zhang. Efficient and degradation-adaptive network for real-world image super-resolution. In European Conference on Computer Vision, pages 574–591. Springer, 2022.   \n[29] Jingyun Liang, Jiezhang Cao, Guolei Sun, Kai Zhang, Luc Van Gool, and Radu Timofte. Swinir: Image restoration using swin transformer. In Proceedings of the IEEE/CVF international conference on computer vision, pages 1833–1844, 2021.   \n[30] Bee Lim, Sanghyun Son, Heewon Kim, Seungjun Nah, and Kyoung Mu Lee. Enhanced deep residual networks for single image super-resolution. In Proceedings of the IEEE conference on computer vision and pattern recognition workshops, pages 136–144, 2017.   \n[31] Xinqi Lin, Jingwen He, Ziyan Chen, Zhaoyang Lyu, Ben Fei, Bo Dai, Wanli Ouyang, Yu Qiao, and Chao Dong. Diffbir: Towards blind image restoration with generative diffusion prior. arXiv preprint arXiv:2308.15070, 2023.   \n[32] Haotian Liu, Chunyuan Li, Qingyang Wu, and Yong Jae Lee. Visual instruction tuning. Advances in neural information processing systems, 36, 2024.   \n[33] Ilya Loshchilov and Frank Hutter. Decoupled weight decay regularization. arXiv preprint arXiv:1711.05101, 2017.   \n[34] Simian Luo, Yiqin Tan, Suraj Patil, Daniel Gu, Patrick von Platen, Apolinário Passos, Longbo Huang, Jian Li, and Hang Zhao. Lcm-lora: A universal stable-diffusion acceleration module. arXiv preprint arXiv:2311.05556, 2023.   \n[35] Gaurav Parmar, Taesung Park, Srinivasa Narasimhan, and Jun-Yan Zhu. One-step image translation with text-to-image models. arXiv preprint arXiv:2403.12036, 2024.   \n[36] Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, and Björn Ommer. High-resolution image synthesis with latent diffusion models. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pages 10684–10695, 2022.   \n[37] Chitwan Saharia, William Chan, Saurabh Saxena, Lala Li, Jay Whang, Emily L Denton, Kamyar Ghasemipour, Raphael Gontijo Lopes, Burcu Karagol Ayan, Tim Salimans, et al. Photorealistic text-toimage diffusion models with deep language understanding. Advances in Neural Information Processing Systems, 35:36479–36494, 2022.   \n[38] Karen Simonyan and Andrew Zisserman. Very deep convolutional networks for large-scale image recognition. arXiv preprint arXiv:1409.1556, 2014.   \n[39] Yang Song, Jascha Sohl-Dickstein, Diederik P Kingma, Abhishek Kumar, Stefano Ermon, and Ben Poole. Score-based generative modeling through stochastic differential equations. arXiv preprint arXiv:2011.13456, 2020.   \n[40] Lingchen Sun, Rongyuan Wu, Zhengqiang Zhang, Hongwei Yong, and Lei Zhang. Improving the stability of diffusion models for content consistent super-resolution. arXiv preprint arXiv:2401.00877, 2023.   \n[41] Jianyi Wang, Kelvin CK Chan, and Chen Change Loy. Exploring clip for assessing the look and feel of images. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 37, pages 2555–2563, 2023.   \n[42] Jianyi Wang, Zongsheng Yue, Shangchen Zhou, Kelvin CK Chan, and Chen Change Loy. Exploiting diffusion prior for real-world image super-resolution. International Journal of Computer Vision, pages 1–21, 2024.   \n[43] Peihao Wang, Dejia Xu, Zhiwen Fan, Dilin Wang, Sreyas Mohan, Forrest Iandola, Rakesh Ranjan, Yilei Li, Qiang Liu, Zhangyang Wang, et al. Taming mode collapse in score distillation for text-to-3d generation. arXiv preprint arXiv:2401.00909, 2023.   \n[44] Xintao Wang, Yu Li, Honglun Zhang, and Ying Shan. Towards real-world blind face restoration with generative facial prior. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pages 9168–9178, 2021.   \n[45] Xintao Wang, Liangbin Xie, Chao Dong, and Ying Shan. Real-esrgan: Training real-world blind superresolution with pure synthetic data. In Proceedings of the IEEE/CVF international conference on computer vision, pages 1905–1914, 2021.   \n[46] Xintao Wang, Ke Yu, Shixiang Wu, Jinjin Gu, Yihao Liu, Chao Dong, Yu Qiao, and Chen Change Loy. Esrgan: Enhanced super-resolution generative adversarial networks. In Proceedings of the European conference on computer vision (ECCV) workshops, pages 0–0, 2018.   \n[47] Yinhuai Wang, Jiwen Yu, and Jian Zhang. Zero-shot image restoration using denoising diffusion null-space model. arXiv preprint arXiv:2212.00490, 2022.   \n[48] Yufei Wang, Wenhan Yang, Xinyuan Chen, Yaohui Wang, Lanqing Guo, Lap-Pui Chau, Ziwei Liu, Yu Qiao, Alex C Kot, and Bihan Wen. Sinsr: Diffusion-based image super-resolution in a single step. arXiv preprint arXiv:2311.14760, 2023.   \n[49] Zhengyi Wang, Cheng Lu, Yikai Wang, Fan Bao, Chongxuan Li, Hang Su, and Jun Zhu. Prolificdreamer: High-fidelity and diverse text-to-3d generation with variational score distillation. Advances in Neural Information Processing Systems, 36, 2024.   \n[50] Zhou Wang, Alan C Bovik, Hamid R Sheikh, and Eero P Simoncelli. Image quality assessment: from error visibility to structural similarity. IEEE transactions on image processing, 13(4):600–612, 2004.   \n[51] Pengxu Wei, Ziwei Xie, Hannan Lu, Zongyuan Zhan, Qixiang Ye, Wangmeng Zuo, and Liang Lin. Component divide-and-conquer for real-world image super-resolution. In Computer Vision–ECCV 2020: 16th European Conference, Glasgow, UK, August 23–28, 2020, Proceedings, Part VIII 16, pages 101–117. Springer, 2020.   \n[52] Rongyuan Wu, Tao Yang, Lingchen Sun, Zhengqiang Zhang, Shuai Li, and Lei Zhang. Seesr: Towards semantics-aware real-world image super-resolution. arXiv preprint arXiv:2311.16518, 2023.   \n[53] Liangbin Xie, Xintao Wang, Xiangyu Chen, Gen Li, Ying Shan, Jiantao Zhou, and Chao Dong. Desra: Detect and delete the artifacts of gan-based real-world super-resolution models. 2023.   \n[54] Jianchao Yang, John Wright, Thomas S Huang, and Yi Ma. Image super-resolution via sparse representation. IEEE transactions on image processing, 19(11):2861–2873, 2010.   \n[55] Sidi Yang, Tianhe Wu, Shuwei Shi, Shanshan Lao, Yuan Gong, Mingdeng Cao, Jiahao Wang, and Yujiu Yang. Maniqa: Multi-dimension attention network for no-reference image quality assessment. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 1191–1200, 2022.   \n[56] Tao Yang, Peiran Ren, Xuansong Xie, and Lei Zhang. Gan prior embedded network for blind face restoration in the wild. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pages 672–681, 2021.   \n[57] Tao Yang, Peiran Ren, Xuansong Xie, and Lei Zhang. Pixel-aware stable diffusion for realistic image super-resolution and personalized stylization. arXiv preprint arXiv:2308.14469, 2023.   \n[58] Tianwei Yin, Michaël Gharbi, Richard Zhang, Eli Shechtman, Fredo Durand, William T Freeman, and Taesung Park. One-step diffusion with distribution matching distillation. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 6613–6623, 2024.   \n[59] Fanghua Yu, Jinjin Gu, Zheyuan Li, Jinfan Hu, Xiangtao Kong, Xintao Wang, Jingwen He, Yu Qiao, and Chao Dong. Scaling up to excellence: Practicing model scaling for photo-realistic image restoration in the wild. arXiv preprint arXiv:2401.13627, 2024.   \n[60] Zongsheng Yue, Jianyi Wang, and Chen Change Loy. Resshift: Efficient diffusion model for image super-resolution by residual shifting. arXiv preprint arXiv:2307.12348, 2023.   \n[61] Kai Zhang, Jingyun Liang, Luc Van Gool, and Radu Timofte. Designing a practical degradation model for deep blind image super-resolution. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 4791–4800, 2021.   \n[62] Lin Zhang, Lei Zhang, and Alan C Bovik. A feature-enriched completely blind image quality evaluator. IEEE Transactions on Image Processing, 24(8):2579–2591, 2015.   \n[63] Lvmin Zhang, Anyi Rao, and Maneesh Agrawala. Adding conditional control to text-to-image diffusion models. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 3836–3847, 2023.   \n[64] Richard Zhang, Phillip Isola, Alexei A Efros, Eli Shechtman, and Oliver Wang. The unreasonable effectiveness of deep features as a perceptual metric. In Proceedings of the IEEE conference on computer vision and pattern recognition, pages 586–595, 2018.   \n[65] Xindong Zhang, Hui Zeng, Shi Guo, and Lei Zhang. Efficient long-range attention network for image super-resolution. In European Conference on Computer Vision, pages 649–667. Springer, 2022.   \n[66] Yulun Zhang, Kunpeng Li, Kai Li, Lichen Wang, Bineng Zhong, and Yun Fu. Image super-resolution using very deep residual channel attention networks. In Proceedings of the European conference on computer vision (ECCV), pages 286–301, 2018.   \n[67] Yulun Zhang, Yapeng Tian, Yu Kong, Bineng Zhong, and Yun Fu. Residual dense network for image super-resolution. In Proceedings of the IEEE conference on computer vision and pattern recognition, pages 2472–2481, 2018. ",
+        "bbox": [
+            156,
+            218,
+            830,
+            656
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "discarded",
+        "text": "12 ",
+        "bbox": [
+            490,
+            935,
+            508,
+            946
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "image",
+        "img_path": "images/00475426de6c9eed14b18b2b72c08a769b3b2a2584d66e0ab357e4f188c8ec55.jpg",
+        "image_caption": [
+            "Figure 5: Qualitative comparisons between OSEDiff and GAN-based Real-ISR methods. Please zoom in for a better view. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            238,
+            90,
+            759,
+            617
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "image",
+        "img_path": "images/12950d670f4f8f65324e63bd1637848ad9eaecdbb7323627cb36c72b7ceb84ec.jpg",
+        "image_caption": [
+            "Figure 6: The LQ images used in user study and the voting results. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            199,
+            666,
+            508,
+            876
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "image",
+        "img_path": "images/8ac01ab7b29f8374b9659ec9254bfe1938c7da8653871484069bd534fbf2389c.jpg",
+        "image_caption": [
+            "(b) The voting results are from 15 volunteers. The corresponding percentages and numerical counts are displayed with the pie chart. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            555,
+            696,
+            799,
+            828
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "discarded",
+        "text": "13 ",
+        "bbox": [
+            490,
+            935,
+            508,
+            946
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "image",
+        "img_path": "images/1b16e1c3a9a0ce5bc5149cc3eefeb7fa5c6f9b6ce87e75f73d585ef2d502d287.jpg",
+        "image_caption": [
+            "Figure 7: More visulization comparisons of different DM-based Real-ISR methods. Please zoom in for a better view. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            174,
+            97,
+            826,
+            876
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "discarded",
+        "text": "14 ",
+        "bbox": [
+            490,
+            935,
+            508,
+            946
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            171,
+            74,
+            828,
+            916
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "discarded",
+        "text": "15 ",
+        "bbox": [
+            490,
+            935,
+            508,
+            946
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            171,
+            82,
+            828,
+            914
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            490,
+            935,
+            508,
+            946
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            69,
+            828,
+            911
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "discarded",
+        "text": "17 ",
+        "bbox": [
+            490,
+            935,
+            508,
+            946
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            171,
+            82,
+            828,
+            564
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "discarded",
+        "text": "18 ",
+        "bbox": [
+            490,
+            935,
+            508,
+            946
+        ],
+        "page_idx": 17
+    }
+]
