@@ -27,21 +27,11 @@ CODSR 从 LQ 信息损失、区域差异化先验激活和文本-区域错配三
 
 | Section | 内容 |
 |---------|------|
-| [00-title-and-authors](sections/00-title-and-authors.md) | 核心方法、模块和训练目标 |
-| [01-abstract](sections/01-abstract.md) | 问题定义、方法一句话和主要 claim |
-| [02-1-introduction](sections/02-1-introduction.md) | 动机、gap、贡献与方法直觉 |
-| [03-2-related-work](sections/03-2-related-work.md) | 相关方法谱系和本文定位 |
-| [04-3-proposed-method](sections/04-3-proposed-method.md) | 核心方法、模块和训练目标 |
-| [05-3-1-region-adaptive-generative-prior-activation](sections/05-3-1-region-adaptive-generative-prior-activation.md) | 核心方法、模块和训练目标 |
-| [06-3-2-lq-guided-feature-modulation](sections/06-3-2-lq-guided-feature-modulation.md) | 核心方法、模块和训练目标 |
-| [07-3-3-text-matching-guidance](sections/07-3-3-text-matching-guidance.md) | 核心方法、模块和训练目标 |
-| [08-3-4-loss-function](sections/08-3-4-loss-function.md) | 核心方法、模块和训练目标 |
-| [09-4-experimental-results](sections/09-4-experimental-results.md) | 实验设置、SOTA 对比和消融 |
-| [10-4-1-experimental-settings](sections/10-4-1-experimental-settings.md) | 实验设置、SOTA 对比和消融 |
-| [11-4-2-comparison-with-the-state-of-the-art](sections/11-4-2-comparison-with-the-state-of-the-art.md) | 实验设置、SOTA 对比和消融 |
-| [12-5-analysis-and-discussion](sections/12-5-analysis-and-discussion.md) | 分析、讨论、限制或补充实验 |
-| [13-6-conclusion](sections/13-6-conclusion.md) | 总结贡献与局限 |
-| [14-references](sections/14-references.md) | 参考文献 |
+| [Abstract](sections/00-abstract.md) | 题名、作者、摘要、目录或论文总体定位。 |
+| [Introduction](sections/01-introduction.md) | 动机、问题定义、贡献与相关工作定位。 |
+| [Method](sections/02-method.md) | 核心方法、背景、训练目标和算法细节。 |
+| [Experiments](sections/03-experiments.md) | 实验设置、主结果、消融、效率和案例分析。 |
+| [Discussion](sections/04-discussion.md) | 结论、局限、附录、补充材料和参考文献。 |
 
 ## 关键数字
 
@@ -52,23 +42,12 @@ CODSR 从 LQ 信息损失、区域差异化先验激活和文本-区域错配三
 | Project | https://github.com/Chanson94/CODSR |
 | Benchmarks | RealSR/DrealSR and other real-world SR test sets in paper tables |
 
-## Key Figures / Tables
-
-| ID | What It Shows | Takeaway |
-|----|---------------|----------|
-| Figure 1. | Figure 1. Performance and runtime comparison among SD-based SISR methods on the DrealSR [4 | 看方法框架、可控性或 SOTA 对比证据 |
-| Figure 2. | Figure 2. An overview of our CODSR. (a) The region-adaptive generative prior activation me | 看方法框架、可控性或 SOTA 对比证据 |
-| Table 1. | Table 1. Quantitative comparison with state-of-the-art diffusion-based SR methods on four  | 看方法框架、可控性或 SOTA 对比证据 |
-| Figure 3. | Figure 3. Qualitative comparisons of different methods on the RealSR [4] dataset, RealLQ25 | 看方法框架、可控性或 SOTA 对比证据 |
-| Figure 4. | Figure 4. Comparisons between $B a s e _ { w / \ z _ { L } + \epsilon }$ and $B a s e _ {  | 看方法框架、可控性或 SOTA 对比证据 |
-| Table 2. | Table 2. Effectiveness of each module in our proposed network. All methods are trained usi | 看方法框架、可控性或 SOTA 对比证据 |
-
 ## Reusable Ideas
 
 - **Problem framing**: one-step SR 的保真问题部分来自 LQ 压缩编码信息损失。
 - **Method design**: 用 LQ feature modulation 保结构，用区域自适应先验补纹理。
-- **Experiment design**: 应同时给出区域/局部视觉案例，证明不是全图统一增强纹理。
-- **Writing pattern**: 把三个 limitation 对应到三个模块，结构清晰。
+- **Experiment design**: 应同时给出区域/局部视觉案例。
+- **Writing pattern**: 把三个 limitation 对应到三个模块。
 
 ## Open Questions
 

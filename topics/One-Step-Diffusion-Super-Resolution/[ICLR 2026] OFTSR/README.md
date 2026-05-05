@@ -27,44 +27,11 @@ OFTSR 用 conditional flow teacher 和 ODE-trajectory alignment distillation 构
 
 | Section | 内容 |
 |---------|------|
-| [00-one-step-flow-for-image-super-resolution-with-tunable-fidelity-realism-trade-offs](sections/00-one-step-flow-for-image-super-resolution-with-tunable-fidelity-realism-trade-offs.md) | 核心方法、模块和训练目标 |
-| [01-abstract](sections/01-abstract.md) | 问题定义、方法一句话和主要 claim |
-| [02-1-introduction](sections/02-1-introduction.md) | 动机、gap、贡献与方法直觉 |
-| [03-2-background](sections/03-2-background.md) | 扩散/flow/数学背景 |
-| [04-2-1-diffusion-and-flow-based-generative-models](sections/04-2-1-diffusion-and-flow-based-generative-models.md) | 核心方法、模块和训练目标 |
-| [05-2-2-perception-distortion-trade-off](sections/05-2-2-perception-distortion-trade-off.md) | 核心方法、模块和训练目标 |
-| [06-3-method](sections/06-3-method.md) | 核心方法、模块和训练目标 |
-| [07-3-1-noise-augmented-conditional-flow](sections/07-3-1-noise-augmented-conditional-flow.md) | 核心方法、模块和训练目标 |
-| [08-3-2-distillation-loss](sections/08-3-2-distillation-loss.md) | 核心方法、模块和训练目标 |
-| [09-3-3-alignment-and-boundary-loss](sections/09-3-3-alignment-and-boundary-loss.md) | 核心方法、模块和训练目标 |
-| [10-3-4-comparison-to-related-works](sections/10-3-4-comparison-to-related-works.md) | 相关方法谱系和本文定位 |
-| [11-4-experiments](sections/11-4-experiments.md) | 实验设置、SOTA 对比和消融 |
-| [12-4-1-experimental-setup](sections/12-4-1-experimental-setup.md) | 实验设置、SOTA 对比和消融 |
-| [13-4-2-results](sections/13-4-2-results.md) | 实验设置、SOTA 对比和消融 |
-| [14-4-3-ablations](sections/14-4-3-ablations.md) | 分析、讨论、限制或补充实验 |
-| [15-4-4-computational-overhead](sections/15-4-4-computational-overhead.md) | 核心方法、模块和训练目标 |
-| [16-5-conclusion](sections/16-5-conclusion.md) | 总结贡献与局限 |
-| [17-acknowledgements](sections/17-acknowledgements.md) | 核心方法、模块和训练目标 |
-| [18-references](sections/18-references.md) | 参考文献 |
-| [19-appendix-for-oftsr](sections/19-appendix-for-oftsr.md) | 附录实现细节、推导和更多结果 |
-| [20-a-use-of-large-language-models](sections/20-a-use-of-large-language-models.md) | 核心方法、模块和训练目标 |
-| [21-b-relevant-derivations-to-our-distillation-loss](sections/21-b-relevant-derivations-to-our-distillation-loss.md) | 附录实现细节、推导和更多结果 |
-| [22-b-1-continuous-version-of-the-final-loss](sections/22-b-1-continuous-version-of-the-final-loss.md) | 核心方法、模块和训练目标 |
-| [23-b-2-oftsr-as-forward-distillation](sections/23-b-2-oftsr-as-forward-distillation.md) | 核心方法、模块和训练目标 |
-| [24-c-limitations](sections/24-c-limitations.md) | 总结贡献与局限 |
-| [25-d-diffusion-and-perception-distortion-trade-off](sections/25-d-diffusion-and-perception-distortion-trade-off.md) | 附录实现细节、推导和更多结果 |
-| [26-e-more-experimental-details](sections/26-e-more-experimental-details.md) | 实验设置、SOTA 对比和消融 |
-| [27-algorithm-1-oftsr-distillation](sections/27-algorithm-1-oftsr-distillation.md) | 核心方法、模块和训练目标 |
-| [28-f-additional-experiments](sections/28-f-additional-experiments.md) | 实验设置、SOTA 对比和消融 |
-| [29-g-additional-results](sections/29-g-additional-results.md) | 实验设置、SOTA 对比和消融 |
-| [30-g-1-straightness-vs-perturbation-strength](sections/30-g-1-straightness-vs-perturbation-strength.md) | 核心方法、模块和训练目标 |
-| [31-g-2-training-datasets](sections/31-g-2-training-datasets.md) | 核心方法、模块和训练目标 |
-| [32-g-3-different-resolution-and-scale-factor-sf](sections/32-g-3-different-resolution-and-scale-factor-sf.md) | 核心方法、模块和训练目标 |
-| [33-h-failure-case](sections/33-h-failure-case.md) | 附录实现细节、推导和更多结果 |
-| [34-i-reconstruction-diversity](sections/34-i-reconstruction-diversity.md) | 附录实现细节、推导和更多结果 |
-| [35-j-the-choice-of-t](sections/35-j-the-choice-of-t.md) | 附录实现细节、推导和更多结果 |
-| [36-k-additional-visual-samples-and-comparisons](sections/36-k-additional-visual-samples-and-comparisons.md) | 实验设置、SOTA 对比和消融 |
-| [37-l-discussion-of-accelerated-i2sb-methods](sections/37-l-discussion-of-accelerated-i2sb-methods.md) | 核心方法、模块和训练目标 |
+| [Abstract](sections/00-abstract.md) | 题名、作者、摘要、目录或论文总体定位。 |
+| [Introduction](sections/01-introduction.md) | 动机、问题定义、贡献与相关工作定位。 |
+| [Method](sections/02-method.md) | 核心方法、背景、训练目标和算法细节。 |
+| [Experiments](sections/03-experiments.md) | 实验设置、主结果、消融、效率和案例分析。 |
+| [Discussion](sections/04-discussion.md) | 结论、局限、附录、补充材料和参考文献。 |
 
 ## 关键数字
 
@@ -75,23 +42,12 @@ OFTSR 用 conditional flow teacher 和 ODE-trajectory alignment distillation 构
 | Distillation target | same sampling ODE trajectory alignment |
 | Datasets | FFHQ 256×256, DIV2K, ImageNet 256×256 |
 
-## Key Figures / Tables
-
-| ID | What It Shows | Takeaway |
-|----|---------------|----------|
-| Figure 1 | Figure 1: (a) Our final model takes the concatenation of a low-resolution image with its n | 看方法框架、可控性或 SOTA 对比证据 |
-| Figure 2 | Figure 2: Illustration of the proposed distillation loss. Rather than directly distilling  | 看方法框架、可控性或 SOTA 对比证据 |
-| Figure/Table |  | 看方法框架、可控性或 SOTA 对比证据 |
-| Figure 4 | GT LR DPS DDRM DDNM DiffPir SITCOM OursFigure 4: Qualitative comparison with training-free | 看方法框架、可控性或 SOTA 对比证据 |
-| Table extracted | Table extracted by MinerU. DIV2K Method NFEs (↓) PSNR (↑) LPIPS (↓) FID (↓) Training- free | 看方法框架、可控性或 SOTA 对比证据 |
-| Table 1 | Table 1: Noiseless quantitative results on DIV2K. We compute the average PSNR (dB), LPIPS  | 看方法框架、可控性或 SOTA 对比证据 |
-
 ## Reusable Ideas
 
 - **Problem framing**: 常规蒸馏给固定折中，flow trajectory 蒸馏尝试保留可调 trade-off。
 - **Method design**: 用 teacher 的连续轨迹约束 student，而不是只匹配最终样本。
-- **Experiment design**: 用 perception-distortion 曲线展示不同控制点，而不只报单点指标。
-- **Writing pattern**: 先讲 generative SR 的高质量和慢，再讲 fixed trade-off 的 distillation 缺陷。
+- **Experiment design**: 用 perception-distortion 曲线展示不同控制点。
+- **Writing pattern**: 先讲 generative SR 高质量和慢，再讲 fixed trade-off 的 distillation 缺陷。
 
 ## Open Questions
 

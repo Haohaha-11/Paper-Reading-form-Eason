@@ -27,24 +27,11 @@ OSEDiff 将低质量图像直接作为扩散起点，用少量 LoRA/可训练层
 
 | Section | 内容 |
 |---------|------|
-| [00-title-and-authors](sections/00-title-and-authors.md) | 核心方法、模块和训练目标 |
-| [01-abstract](sections/01-abstract.md) | 问题定义、方法一句话和主要 claim |
-| [02-1-introduction](sections/02-1-introduction.md) | 动机、gap、贡献与方法直觉 |
-| [03-2-related-work](sections/03-2-related-work.md) | 相关方法谱系和本文定位 |
-| [04-3-methodology](sections/04-3-methodology.md) | 核心方法、模块和训练目标 |
-| [05-3-1-problem-modeling](sections/05-3-1-problem-modeling.md) | 核心方法、模块和训练目标 |
-| [06-3-2-one-step-effective-diffusion-network](sections/06-3-2-one-step-effective-diffusion-network.md) | 核心方法、模块和训练目标 |
-| [07-4-experiments](sections/07-4-experiments.md) | 实验设置、SOTA 对比和消融 |
-| [08-4-1-experimental-settings](sections/08-4-1-experimental-settings.md) | 实验设置、SOTA 对比和消融 |
-| [09-4-2-comparison-with-state-of-the-arts](sections/09-4-2-comparison-with-state-of-the-arts.md) | 实验设置、SOTA 对比和消融 |
-| [10-4-3-ablation-study](sections/10-4-3-ablation-study.md) | 分析、讨论、限制或补充实验 |
-| [11-5-conclusion-and-limitation](sections/11-5-conclusion-and-limitation.md) | 总结贡献与局限 |
-| [12-a-appendix](sections/12-a-appendix.md) | 附录实现细节、推导和更多结果 |
-| [13-a-1-comparison-with-gan-based-methods](sections/13-a-1-comparison-with-gan-based-methods.md) | 核心方法、模块和训练目标 |
-| [14-a-2-user-study](sections/14-a-2-user-study.md) | 核心方法、模块和训练目标 |
-| [15-a-3-more-visual-comparisons](sections/15-a-3-more-visual-comparisons.md) | 实验设置、SOTA 对比和消融 |
-| [16-a-4-algorithm-of-osediff](sections/16-a-4-algorithm-of-osediff.md) | 核心方法、模块和训练目标 |
-| [17-algorithm-1-training-scheme-of-osediff](sections/17-algorithm-1-training-scheme-of-osediff.md) | 核心方法、模块和训练目标 |
+| [Abstract](sections/00-abstract.md) | 题名、作者、摘要、目录或论文总体定位。 |
+| [Introduction](sections/01-introduction.md) | 动机、问题定义、贡献与相关工作定位。 |
+| [Method](sections/02-method.md) | 核心方法、背景、训练目标和算法细节。 |
+| [Experiments](sections/03-experiments.md) | 实验设置、主结果、消融、效率和案例分析。 |
+| [Discussion](sections/04-discussion.md) | 结论、局限、附录、补充材料和参考文献。 |
 
 ## 关键数字
 
@@ -54,17 +41,6 @@ OSEDiff 将低质量图像直接作为扩散起点，用少量 LoRA/可训练层
 | Inference time | 0.11s on A100 for 512×512 input |
 | Trainable parameters | 8.5M |
 | Speedup claim | over 100× faster than StableSR in paper comparison |
-
-## Key Figures / Tables
-
-| ID | What It Shows | Takeaway |
-|----|---------------|----------|
-| Figure 1 | Figure 1: Performance and efficiency comparison among SD-based Real-ISR methods. (a). Perf | 看方法框架、可控性或 SOTA 对比证据 |
-| Figure 2 | Figure 2: The training framework of OSEDiff. The LQ image is passed through a trainable en | 看方法框架、可控性或 SOTA 对比证据 |
-| Table 1 | Table 1: Quantitative comparison with state-of-the-art methods on both synthetic and real- | 看方法框架、可控性或 SOTA 对比证据 |
-| Table 2 | Table 2: Complexity comparison among different methods. All methods are tested with an inp | 看方法框架、可控性或 SOTA 对比证据 |
-| Figure 3 | Figure 3: Qualitative comparisons of different Real-ISR methods. Please zoom in for a bett | 看方法框架、可控性或 SOTA 对比证据 |
-| Table 3 | Table 3: Comparison of different losses on the RealSR benchmark. | 看方法框架、可控性或 SOTA 对比证据 |
 
 ## Reusable Ideas
 

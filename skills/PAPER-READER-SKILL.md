@@ -186,7 +186,7 @@ export MINERU_TOKEN="your_api_key_here"
 
 # Part 2: 📖 Paper Reader - 论文批读工作流
 
-将 MinerU 解析的 `full.md` 自动拆分成按 Section 组织的笔记文件，使用**批读格式**：原文中内嵌批注。
+将 MinerU 解析的 `full.md` 自动归并到模板规定的 5 个 Section 笔记文件中，使用**批读格式**：原文中内嵌批注。
 
 ---
 
@@ -199,10 +199,11 @@ export MINERU_TOKEN="your_api_key_here"
 输出: 完整的批读笔记
       ├── README.md                (论文概览 + Section 导航)
       └── sections/
-          ├── 00-abstract.md       (原文 + 图片 + 内嵌批注)
-          ├── 01-introduction.md
-          ├── 02-related-work.md
-          └── ...
+          ├── 00-abstract.md       (题名、作者、摘要、目录/总览)
+          ├── 01-introduction.md   (Introduction + Related Work + 动机/贡献)
+          ├── 02-method.md         (Method + Background + 核心技术)
+          ├── 03-experiments.md    (Experiments + Results + Analysis/Ablation)
+          └── 04-discussion.md     (Conclusion + Appendix + References + 讨论)
 ```
 
 ---
@@ -288,7 +289,31 @@ pix.save('images/figureN_full.jpg')
 
 ---
 
-### 规则 6：每篇论文必须有 README.md
+### 规则 6：Section 文件必须固定使用模板 5 分法
+
+每篇论文的 `sections/` 目录**必须且只能**使用 `templates/paper-note/sections/` 中的 5 个文件名：
+
+```text
+sections/
+├── 00-abstract.md
+├── 01-introduction.md
+├── 02-method.md
+├── 03-experiments.md
+└── 04-discussion.md
+```
+
+归并规则：
+1. `00-abstract.md`：题名、作者、Abstract、Contents、总览图等开场信息。
+2. `01-introduction.md`：Introduction、Motivation、Contributions、Related Work。
+3. `02-method.md`：Method、Approach、Background、Preliminary、Model、Algorithm、Training Objective。
+4. `03-experiments.md`：Experiments、Results、Evaluation、Analysis、Ablation、Case Study、Efficiency。
+5. `04-discussion.md`：Conclusion、Limitation、Discussion、Future Work、Appendix、References、Supplementary。
+
+⚠️ 即使论文原始 section 很多，也不要生成 `05-*`、`06-*` 等细粒度文件；应将原始小节完整保留并归并进上述 5 个模板文件。
+
+---
+
+### 规则 7：每篇论文必须有 README.md
 
 每个论文目录下必须有 `README.md` 作为入口页面。
 
@@ -336,7 +361,7 @@ pix.save('images/figureN_full.jpg')
 
 ---
 
-### 规则 7：添加 Citation Landscape（Semantic Scholar 数据）
+### 规则 8：添加 Citation Landscape（Semantic Scholar 数据）
 
 每篇论文的 README.md 必须包含 `📊 Citation Landscape` section，数据来源于 Semantic Scholar API（免费，无需 API key）。
 
@@ -372,7 +397,7 @@ curl -X POST "https://api.semanticscholar.org/recommendations/v1/papers/?fields=
 
 ---
 
-### 规则 8：完成后必须推送到 GitHub 并更新大仓库 README
+### 规则 9：完成后必须推送到 GitHub 并更新大仓库 README
 
 批读完成后：
 1. `git add -A` **整个论文目录**（不要只 add sections/，必须包含 images/、full.md、content_list.json、PDF 等所有文件）
@@ -465,7 +490,7 @@ Step 3: Agent 补充详细解释，更新到对应 section 文件
 |--------|-----|
 | 论文库位置 | `/mnt/eason/paper-reading/` |
 | 目录命名 | `[会议 年份] 论文名` |
-| Section 文件命名 | `XX-section-name.md` |
+| Section 文件命名 | 固定五个模板文件：`00-abstract.md`、`01-introduction.md`、`02-method.md`、`03-experiments.md`、`04-discussion.md` |
 | 批注标记 | `> 💡 **标题**: 内容` |
 | GitHub 仓库 | `EasonAI-5589/paper-reading` |
 
