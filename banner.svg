@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="260" viewBox="0 0 1200 260">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#111827"/>
+      <stop offset="0.55" stop-color="#1e3a8a"/>
+      <stop offset="1" stop-color="#0f766e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="260" rx="28" fill="url(#g)"/>
+  <circle cx="1020" cy="40" r="140" fill="#60a5fa" opacity="0.16"/>
+  <circle cx="108" cy="224" r="120" fill="#2dd4bf" opacity="0.16"/>
+  <text x="80" y="112" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="56" font-weight="800" fill="#fff">Paper Reading</text>
+  <text x="82" y="162" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" fill="#dbeafe">Original text preserved · Inline annotations · Topic-oriented literature maps</text>
+  <text x="82" y="205" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" fill="#ccfbf1">One-Step Diffusion SR · VisMem for Med Image</text>
+</svg>

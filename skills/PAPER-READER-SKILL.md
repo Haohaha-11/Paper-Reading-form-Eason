@@ -186,7 +186,7 @@ export MINERU_TOKEN="your_api_key_here"
 
 # Part 2: 📖 Paper Reader - 论文批读工作流
 
-将 MinerU 解析的 `full.md` 自动归并到模板规定的 5 个 Section 笔记文件中，使用**批读格式**：原文中内嵌批注。
+将 MinerU 解析的 `full.md` 按论文原始**大分节**拆分成 Section 笔记文件，使用**批读格式**：原文中内嵌批注。
 
 ---
 
@@ -199,11 +199,12 @@ export MINERU_TOKEN="your_api_key_here"
 输出: 完整的批读笔记
       ├── README.md                (论文概览 + Section 导航)
       └── sections/
-          ├── 00-abstract.md       (题名、作者、摘要、目录/总览)
-          ├── 01-introduction.md   (Introduction + Related Work + 动机/贡献)
-          ├── 02-method.md         (Method + Background + 核心技术)
-          ├── 03-experiments.md    (Experiments + Results + Analysis/Ablation)
-          └── 04-discussion.md     (Conclusion + Appendix + References + 讨论)
+          ├── 00-abstract.md       (Abstract)
+          ├── 01-introduction.md   (Introduction)
+          ├── 02-related-work.md   (Related Work, 若论文有)
+          ├── 03-methodology.md    (Method/Methodology, 若论文有)
+          ├── 04-experiments.md    (Experiments, 若论文有)
+          └── ...                  (按论文原始大分节继续编号)
 ```
 
 ---
@@ -289,27 +290,29 @@ pix.save('images/figureN_full.jpg')
 
 ---
 
-### 规则 6：Section 文件必须固定使用模板 5 分法
+### 规则 6：Section 文件按论文原始大分节生成
 
-每篇论文的 `sections/` 目录**必须且只能**使用 `templates/paper-note/sections/` 中的 5 个文件名：
+每篇论文的 `sections/` 目录应按论文原始**大分节**生成，而不是固定数量模板。
+
+核心原则：
+1. 以论文的顶层 section 为准，例如 `Abstract`、`Introduction`、`Related Work`、`Methodology`、`Experiments`、`Conclusion`、`Appendix`。
+2. `3.1`、`3.2` 这类 subsection 不单独生成文件，必须归入所属大分节，例如都放进 `03-methodology.md`。
+3. `Appendix`、`Supplementary Material` 及其后续小节归并为一个 appendix section，例如 `06-appendix.md`。
+4. `References` 通常不单独作为阅读 section；如需要保留，应归入最后的 `Appendix` / `Discussion` section。
+5. 文件名格式使用 `XX-section-name.md`，例如：
 
 ```text
 sections/
 ├── 00-abstract.md
 ├── 01-introduction.md
-├── 02-method.md
-├── 03-experiments.md
-└── 04-discussion.md
+├── 02-related-work.md
+├── 03-methodology.md
+├── 04-experiments.md
+├── 05-conclusion.md
+└── 06-appendix.md
 ```
 
-归并规则：
-1. `00-abstract.md`：题名、作者、Abstract、Contents、总览图等开场信息。
-2. `01-introduction.md`：Introduction、Motivation、Contributions、Related Work。
-3. `02-method.md`：Method、Approach、Background、Preliminary、Model、Algorithm、Training Objective。
-4. `03-experiments.md`：Experiments、Results、Evaluation、Analysis、Ablation、Case Study、Efficiency。
-5. `04-discussion.md`：Conclusion、Limitation、Discussion、Future Work、Appendix、References、Supplementary。
-
-⚠️ 即使论文原始 section 很多，也不要生成 `05-*`、`06-*` 等细粒度文件；应将原始小节完整保留并归并进上述 5 个模板文件。
+⚠️ Section 数量由论文大分节决定，不要强行固定为 5 个，也不要把每个 subsection 都拆成独立文件。
 
 ---
 
@@ -490,7 +493,7 @@ Step 3: Agent 补充详细解释，更新到对应 section 文件
 |--------|-----|
 | 论文库位置 | `/mnt/eason/paper-reading/` |
 | 目录命名 | `[会议 年份] 论文名` |
-| Section 文件命名 | 固定五个模板文件：`00-abstract.md`、`01-introduction.md`、`02-method.md`、`03-experiments.md`、`04-discussion.md` |
+| Section 文件命名 | 按论文大分节：`00-abstract.md`、`01-introduction.md`、`02-related-work.md`、`03-methodology.md`、... |
 | 批注标记 | `> 💡 **标题**: 内容` |
 | GitHub 仓库 | `EasonAI-5589/paper-reading` |
 
