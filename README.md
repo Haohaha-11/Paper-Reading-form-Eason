@@ -45,6 +45,8 @@ LLM latent reasoning / cache augmentation / CoT compression：把额外推理、
 |------|------|----------|
 | [Differentiable-Cache-Augmentation](./topics/Latent-Space-Processing/%5BArxiv%202024%5D%20Differentiable-Cache-Augmentation/) | Arxiv 2024 | DCA 用离线 coprocessor 读取 frozen LLM 的 kv-cache，生成动态 latent embeddings 追加回 cache，实现 cache-level latent deliberation。 |
 | [Compressed-Chain-of-Thought](./topics/Latent-Space-Processing/%5BArxiv%202024%5D%20Compressed-Chain-of-Thought/) | Arxiv 2024 | CCoT 把显式 CoT hidden states 压缩成 contentful continuous contemplation tokens，用 compression ratio 控制准确率/延迟折中。 |
+| [Latent-Implicit-Visual-Reasoning](./topics/Latent-Space-Processing/%5BArxiv%202025%5D%20Latent-Implicit-Visual-Reasoning/) | Arxiv 2025 | LIVR 用 latent visual reasoning tokens 和 visual bottleneck masking，让 LMM 在无显式视觉 CoT 监督下学习视觉中心推理。 |
+| [DMLR](./topics/Latent-Space-Processing/%5BArxiv%202026%5D%20DMLR/) | Arxiv 2026 | DMLR 在测试时优化 latent think tokens，并动态注入相关视觉 patches，提升多模态数学、视觉和组合推理。 |
 
 📖 [Latent-Space Processing 详细总结](./topics/Latent-Space-Processing/README.md)
 

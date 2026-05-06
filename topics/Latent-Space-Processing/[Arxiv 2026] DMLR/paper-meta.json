@@ -1,0 +1,18 @@
+{
+  "arxiv_id": "2512.12623",
+  "pdf_url": "https://arxiv.org/pdf/2512.12623",
+  "abs_url": "https://arxiv.org/abs/2512.12623",
+  "title": "Reasoning Within the Mind: Dynamic Multimodal Interleaving in Latent Space",
+  "short": "Dynamic-Multimodal-Latent-Reasoning",
+  "venue": "Arxiv",
+  "year": "2026",
+  "authors": "Chengzhi Liu; Yuzhe Yang; Yue Fan; Qingyue Wei; Sheng Liu; Xin Eric Wang",
+  "submitted": "2025-12-14",
+  "updated": "2026-04-09",
+  "version": "v3",
+  "dir": "topics/Latent-Space-Processing/[Arxiv 2026] DMLR",
+  "task_id": "df2907eb-6e29-48d4-821e-dbec489ddf72",
+  "state": "done",
+  "err_msg": "",
+  "full_zip_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-05-06/df2907eb-6e29-48d4-821e-dbec489ddf72.zip"
+}

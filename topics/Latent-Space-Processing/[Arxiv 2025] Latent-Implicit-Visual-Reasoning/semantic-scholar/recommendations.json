@@ -1,0 +1,1108 @@
+{
+  "recommendedPapers": [
+    {
+      "paperId": "37b6b3ac4dcff66b52b10b5e49087ac495fca506",
+      "externalIds": {
+        "ArXiv": "2603.25629",
+        "CorpusId": 286791667
+      },
+      "title": "LanteRn: Latent Visual Structured Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "0753dab854f0b4bd0a5df0e138521c4f9765b1b7",
+      "externalIds": {
+        "ArXiv": "2604.07518",
+        "CorpusId": 287255792
+      },
+      "title": "Decompose, Look, and Reason: Reinforced Latent Reasoning for VLMs",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "54773fee706c69a76915e4d4ef7cb35702e90e25",
+      "externalIds": {
+        "ArXiv": "2604.12966",
+        "CorpusId": 287475537
+      },
+      "title": "Boosting Visual Instruction Tuning with Self-Supervised Guidance",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "b3fcd730718970d40c492c4872227dbbcddefad5",
+      "externalIds": {
+        "ArXiv": "2604.08065",
+        "CorpusId": 287255978
+      },
+      "title": "Multimodal Latent Reasoning via Predictive Embeddings",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "cdeb58c3c5430252c2c5bd810ef03d60504ad84d",
+      "externalIds": {
+        "ArXiv": "2603.22057",
+        "CorpusId": 286766664
+      },
+      "title": "SpatialBoost: Enhancing Visual Representation through Language-Guided Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "af25ff9cb60c8f7be5bf848df9a9abddd3b65e53",
+      "externalIds": {
+        "ArXiv": "2603.22641",
+        "CorpusId": 286774126
+      },
+      "title": "Q-Tacit: Image Quality Assessment via Latent Visual Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "6760b7ebbb1d13aaf8ae7c7beb616b74856af645",
+      "externalIds": {
+        "ArXiv": "2604.09757",
+        "CorpusId": 287425067
+      },
+      "title": "MedLVR: Latent Visual Reasoning for Reliable Medical Visual Question Answering",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "a26954fe201c0c7feae0fea0fe51f91fa3f1b377",
+      "externalIds": {
+        "ArXiv": "2604.02486",
+        "CorpusId": 287121361
+      },
+      "title": "VLMs Need Words: Vision Language Models Ignore Visual Detail In Favor of Semantic Anchors",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 2
+    },
+    {
+      "paperId": "a3a9d4be4ece5439fb8b12d3d235a9f6aa7bb852",
+      "externalIds": {
+        "ArXiv": "2604.03231",
+        "CorpusId": 287122042
+      },
+      "title": "CoME-VL: Scaling Complementary Multi-Encoder Vision-Language Learning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "a1064beb1f9dce7516f9f75773b2e3e1874934d2",
+      "externalIds": {
+        "ArXiv": "2604.04500",
+        "CorpusId": 287201692
+      },
+      "title": "Saliency-R1: Enforcing Interpretable and Faithful Vision-language Reasoning via Saliency-map Alignment Reward",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "0c0a4b2f6dff4f51fc8ef44ed56fea3f143f43af",
+      "externalIds": {
+        "ArXiv": "2604.10500",
+        "CorpusId": 287431861
+      },
+      "title": "Visual Enhanced Depth Scaling for Multimodal Latent Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "dc3a922a4b21d3c60385c5d6bde8e0c8d1227769",
+      "externalIds": {
+        "ArXiv": "2603.09771",
+        "CorpusId": 286428998
+      },
+      "title": "Ego: Embedding-Guided Personalization of Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "81ae995be7a858e3103f2d163a935ddaff95543a",
+      "externalIds": {
+        "ArXiv": "2604.12896",
+        "CorpusId": 287475906
+      },
+      "title": "Don't Show Pixels, Show Cues: Unlocking Visual Tool Reasoning in Language Models via Perception Programs",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "c9b938daf298dcccfe1ad13033699ecdcce1158d",
+      "externalIds": {
+        "ArXiv": "2603.18795",
+        "CorpusId": 286673702
+      },
+      "title": "Perceptio: Perception Enhanced Vision Language Models via Spatial Token Generation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "65abecac3d12f5638cd4cc1b966a47bf29f679a4",
+      "externalIds": {
+        "ArXiv": "2603.26737",
+        "CorpusId": 286961494
+      },
+      "title": "Beyond Static Visual Tokens: Structured Sequential Visual Chain-of-Thought Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "e3abb609917df34ce7945250e96683d8026505b7",
+      "externalIds": {
+        "ArXiv": "2603.21077",
+        "CorpusId": 286766237
+      },
+      "title": "CoVFT: Context-aware Visual Fine-tuning for Multimodal Large Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "962d18d3978e1619764e556d6836bd4c9153e5cf",
+      "externalIds": {
+        "ArXiv": "2603.12166",
+        "CorpusId": 286493339
+      },
+      "title": "LatentGeo: Learnable Auxiliary Constructions in Latent Space for Multimodal Geometric Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "720a0c3a5baabcf00b5d14ff481aa37c22f3ae48",
+      "externalIds": {
+        "ArXiv": "2604.11496",
+        "CorpusId": 287432648
+      },
+      "title": "Revisiting Compositionality in Dual-Encoder Vision-Language Models: The Role of Inference",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "03e5c56ebd5f2e37b6b78eca6df056b9ec309625",
+      "externalIds": {
+        "ArXiv": "2604.01280",
+        "CorpusId": 287071923
+      },
+      "title": "Look Twice: Training-Free Evidence Highlighting in Multimodal Large Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "a9397939730b7bcec4043027d348fca2badf1dd8",
+      "externalIds": {
+        "ArXiv": "2604.20705",
+        "CorpusId": 287669237
+      },
+      "title": "SSL-R1: Self-Supervised Visual Reinforcement Post-Training for Multimodal Large Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "1da5a4b0413969deb6b4e8fd165baacfb4c196db",
+      "externalIds": {
+        "ArXiv": "2603.15008",
+        "CorpusId": 286572399
+      },
+      "title": "Clue Matters: Leveraging Latent Visual Clues to Empower Video Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "90c87586c871b08184d608b3eb1181b8fc175470",
+      "externalIds": {
+        "ArXiv": "2605.02735",
+        "CorpusId": 287949951
+      },
+      "title": "Visual Latents Know More Than They Say: Unsilencing Latent Reasoning in MLLMs",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "16a023080a180b8e640208513e0112402c4baf1a",
+      "externalIds": {
+        "ArXiv": "2603.12533",
+        "CorpusId": 286517747
+      },
+      "title": "Do You See What I Am Pointing At? Gesture-Based Egocentric Video Question Answering",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "60e6bc5572272f114064892716674f91fc8d9a37",
+      "externalIds": {
+        "ArXiv": "2604.13710",
+        "CorpusId": 287479397
+      },
+      "title": "SLQ: Bridging Modalities via Shared Latent Queries for Retrieval with Frozen MLLMs",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "e90e0729c15cfdcf3bf8dccdb3634617ceb0bfda",
+      "externalIds": {
+        "ArXiv": "2605.01657",
+        "CorpusId": 287949987
+      },
+      "title": "Act2See: Emergent Active Visual Perception for Video Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "9d088f34ea7da16a50ff6c25362d1108095d5fc0",
+      "externalIds": {
+        "ArXiv": "2603.25733",
+        "CorpusId": 286791338
+      },
+      "title": "SlotVTG: Object-Centric Adapter for Generalizable Video Temporal Grounding",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "3235496e51062fc516a37f2792f7c35fea3c3d78",
+      "externalIds": {
+        "ArXiv": "2604.21079",
+        "CorpusId": 287701847
+      },
+      "title": "Foveated Reasoning: Stateful, Action-based Visual Focusing for Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "954c485110a0156ba26cf58456ce7407fd61f69c",
+      "externalIds": {
+        "ArXiv": "2603.25411",
+        "CorpusId": 286791637
+      },
+      "title": "HiSpatial: Taming Hierarchical 3D Spatial Understanding in Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "fa1b8c4a9dee69f23293372878ed013f5e0855f9",
+      "externalIds": {
+        "ArXiv": "2604.16256",
+        "CorpusId": 287608063
+      },
+      "title": "Do Vision-Language Models Truly Perform Vision Reasoning? A Rigorous Study of the Modality Gap",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "fa85016ed15ec724137a65c59c1ca333b6ec219c",
+      "externalIds": {
+        "ArXiv": "2603.16256",
+        "CorpusId": 286583947
+      },
+      "title": "When Thinking Hurts: Mitigating Visual Forgetting in Video Reasoning via Frame Repetition",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "8c4df3b60421e53f344b4cc82d3848171c7cb891",
+      "externalIds": {
+        "ArXiv": "2603.22815",
+        "CorpusId": 286774723
+      },
+      "title": "Focus, Don't Prune: Identifying Instruction-Relevant Regions for Information-Rich Image Understanding",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "509fa734b70c8fbc063b0484ad85604608ed48b5",
+      "externalIds": {
+        "ArXiv": "2605.00891",
+        "CorpusId": 287947811
+      },
+      "title": "X2SAM: Any Segmentation in Images and Videos",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "86d6df6de433c91055dd11b7c904fbbfd8101fc0",
+      "externalIds": {
+        "ArXiv": "2604.16517",
+        "DOI": "10.1109/icassp55912.2026.11463076",
+        "CorpusId": 287618362
+      },
+      "title": "SmoGVLM: A Small, Graph-Enhanced Vision-Language Model",
+      "venue": "IEEE International Conference on Acoustics, Speech, and Signal Processing",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "0914cd3c9c27a9bdff46e23ec5fe79162945390b",
+      "externalIds": {
+        "ArXiv": "2604.12508",
+        "CorpusId": 287435965
+      },
+      "title": "From Attenuation to Attention: Variational Information Flow Manipulation for Fine-Grained Visual Perception",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "3a700a675e7fe2b156ad09e6c27a7ffbe0cc7e52",
+      "externalIds": {
+        "ArXiv": "2603.12772",
+        "CorpusId": 286517358
+      },
+      "title": "PVI: Plug-in Visual Injection for Vision-Language-Action Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "aa6d219ad3365a6608ad4634d2fd1ec9784eacbb",
+      "externalIds": {
+        "ArXiv": "2603.11631",
+        "DBLP": "conf/eacl/LeeLHCK26",
+        "DOI": "10.18653/v1/2026.findings-eacl.30",
+        "CorpusId": 286489491
+      },
+      "title": "VisDoT : Enhancing Visual Reasoning through Human-Like Interpretation Grounding and Decomposition of Thought",
+      "venue": "Conference of the European Chapter of the Association for Computational Linguistics",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "6bec10300cd66a14d07d64a7a422b556a14994d6",
+      "externalIds": {
+        "ArXiv": "2604.09531",
+        "CorpusId": 287352363
+      },
+      "title": "VisionFoundry: Teaching VLMs Visual Perception with Synthetic Images",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "1e13e9300360582421d5aa200437d8a6cc0324ac",
+      "externalIds": {
+        "ArXiv": "2603.15618",
+        "CorpusId": 286571570
+      },
+      "title": "Look Before Acting: Enhancing Vision Foundation Representations for Vision-Language-Action Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1
+    },
+    {
+      "paperId": "6de06d19ee4b297a872c47afefc65a6fa08ff24b",
+      "externalIds": {
+        "ArXiv": "2603.19203",
+        "CorpusId": 286673488
+      },
+      "title": "Tinted Frames: Question Framing Blinds Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "8598925c0eec576ba201396ad548f8ea1c9251ac",
+      "externalIds": {
+        "ArXiv": "2604.25273",
+        "CorpusId": 287831681
+      },
+      "title": "Combating Visual Neglect and Semantic Drift in Large Multimodal Models for Enhanced Cross-Modal Retrieval",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "d8d005083f6546bd952d6e8de3c6d1cbeacefe92",
+      "externalIds": {
+        "ArXiv": "2603.24804",
+        "CorpusId": 286789617
+      },
+      "title": "GoldiCLIP: The Goldilocks Approach for Balancing Explicit Supervision for Language-Image Pretraining",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "13773516b871e15a096b2bc91aac724aad200620",
+      "externalIds": {
+        "ArXiv": "2604.04917",
+        "CorpusId": 287201366
+      },
+      "title": "Vero: An Open RL Recipe for General Visual Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "fb5ff30bc7ec70fb6b01bb4f83d89e1bac3df329",
+      "externalIds": {
+        "ArXiv": "2603.23023",
+        "CorpusId": 286774599
+      },
+      "title": "Cog3DMap: Multi-View Vision-Language Reasoning with 3D Cognitive Maps",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "089abd0d01f79de5c0d56b27a32a6e243755df4c",
+      "externalIds": {
+        "ArXiv": "2604.12812",
+        "CorpusId": 287474722
+      },
+      "title": "DocSeeker: Structured Visual Reasoning with Evidence Grounding for Long Document Understanding",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1
+    },
+    {
+      "paperId": "fd440ff8f6f66a143cf08f4b8b2b7a8a094b4210",
+      "externalIds": {
+        "ArXiv": "2603.14659",
+        "CorpusId": 286572886
+      },
+      "title": "VisionCoach: Reinforcing Grounded Video Reasoning via Visual-Perception Prompting",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "2ded4d77b1c06747b0aef77dd17aa1846ccf69b0",
+      "externalIds": {
+        "ArXiv": "2604.03660",
+        "CorpusId": 287200199
+      },
+      "title": "TableVision: A Large-Scale Benchmark for Spatially Grounded Reasoning over Complex Hierarchical Tables",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "4114b92f67b7fb8911d47ff3cc0d8617873059a2",
+      "externalIds": {
+        "ArXiv": "2604.09425",
+        "CorpusId": 287352245
+      },
+      "title": "Do Vision Language Models Need to Process Image Tokens?",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "0e4d79be696cd29e60b405090e15e6b4735ede72",
+      "externalIds": {
+        "ArXiv": "2603.22281",
+        "CorpusId": 286766044
+      },
+      "title": "ThinkJEPA: Empowering Latent World Models with Large Vision-Language Reasoning Model",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "91e58f20ca29f01fbc1ec90e3dd97f47bc1e0a74",
+      "externalIds": {
+        "ArXiv": "2604.00086",
+        "CorpusId": 287021849
+      },
+      "title": "Hierarchical Pre-Training of Vision Encoders with Large Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "80bc6845bb26f15cdb2e2d56af157a5b98b968e2",
+      "externalIds": {
+        "ArXiv": "2603.14382",
+        "CorpusId": 286573005
+      },
+      "title": "StAR: Segment Anything Reasoner",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "f33623ecf9521876dd5674ae18cd32b685901019",
+      "externalIds": {
+        "ArXiv": "2604.06912",
+        "CorpusId": 287248006
+      },
+      "title": "Q-Zoom: Query-Aware Adaptive Perception for Efficient Multimodal Large Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "f764b5f4949718a00c5b9d2b176df10ae65fca8f",
+      "externalIds": {
+        "ArXiv": "2603.18002",
+        "CorpusId": 286643268
+      },
+      "title": "Loc3R-VLM: Language-based Localization and 3D Reasoning with Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "6f9580ce1413cee10bafbd176da25f8a3d65f190",
+      "externalIds": {
+        "ArXiv": "2604.20834",
+        "CorpusId": 287669331
+      },
+      "title": "PokeVLA: Empowering Pocket-Sized Vision-Language-Action Model with Comprehensive World Knowledge Guidance",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "705cebfae84367cce97d73ae3fc621e34dcc1141",
+      "externalIds": {
+        "ArXiv": "2604.17385",
+        "CorpusId": 287634427
+      },
+      "title": "SpatialImaginer: Towards Adaptive Visual Imagination for Spatial Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "385e2984353a1e6a609ae3638fef10166b50275a",
+      "externalIds": {
+        "ArXiv": "2604.08456",
+        "CorpusId": 287256479
+      },
+      "title": "Entropy-Gradient Grounding: Training-Free Evidence Retrieval in Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "b7a76407c50ac51fe240ffbb8f4e764434e544fd",
+      "externalIds": {
+        "ArXiv": "2603.24680",
+        "CorpusId": 286789625
+      },
+      "title": "ReDiPrune: Relevance-Diversity Pre-Projection Token Pruning for Efficient Multimodal LLMs",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "752b9b7e9df4bb64f55edc0a5377d20c8eefc9ea",
+      "externalIds": {
+        "ArXiv": "2605.02378",
+        "CorpusId": 287950905
+      },
+      "title": "Enhancing Multimodal In-Context Learning via Inductive-Deductive Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "eb31722d1bdd2b6e8fc6f013980233faaad983b3",
+      "externalIds": {
+        "ArXiv": "2604.18512",
+        "CorpusId": 287635445
+      },
+      "title": "S2H-DPO: Hardness-Aware Preference Optimization for Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "891bcc6b30c919eb4d5468201496ad38d2910e0a",
+      "externalIds": {
+        "ArXiv": "2603.14184",
+        "CorpusId": 286572466
+      },
+      "title": "Deeper Thought, Weaker Aim: Understanding and Mitigating Perceptual Impairment during Reasoning in Multimodal Large Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "4b7cd6345be0ce2bfa3c60169ac66eb07eb6a293",
+      "externalIds": {
+        "ArXiv": "2603.16932",
+        "CorpusId": 286638439
+      },
+      "title": "Look Where It Matters: High-Resolution Crops Retrieval for Efficient VLMs",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "198c520a94761f87184be8152b97dcf1c2f4339b",
+      "externalIds": {
+        "ArXiv": "2603.17079",
+        "CorpusId": 286638812
+      },
+      "title": "ACE-LoRA: Graph-Attentive Context Enhancement for Parameter-Efficient Adaptation of Medical Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "92031798ac5ee03eda7f37158a31c422fa9e2000",
+      "externalIds": {
+        "ArXiv": "2604.24583",
+        "CorpusId": 287782513
+      },
+      "title": "Improving Vision-language Models with Perception-centric Process Reward Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "514a39f5b84a0207be23788cb23d3758c3b33f98",
+      "externalIds": {
+        "ArXiv": "2603.26639",
+        "CorpusId": 286944337
+      },
+      "title": "Make Geometry Matter for Spatial Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "59dbff1abb523e6959b16c5b7f1f89c54f75f136",
+      "externalIds": {
+        "ArXiv": "2603.20808",
+        "CorpusId": 286762470
+      },
+      "title": "Predictive Regularization Against Visual Representation Degradation in Multimodal Large Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "f70d303acea05aa6963251f7535df729e8911f34",
+      "externalIds": {
+        "ArXiv": "2604.14967",
+        "CorpusId": 287510096
+      },
+      "title": "UniDoc-RL: Coarse-to-Fine Visual RAG with Hierarchical Actions and Dense Rewards",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "d2e142812095e451be2aa6add94d9beffbd6723b",
+      "externalIds": {
+        "ArXiv": "2603.29437",
+        "CorpusId": 286977344
+      },
+      "title": "SeGPruner: Semantic-Geometric Visual Token Pruner for 3D Question Answering",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "c80436246a068e25520d6f167bb1764cb5c99d07",
+      "externalIds": {
+        "ArXiv": "2603.18282",
+        "CorpusId": 286669920
+      },
+      "title": "CycleCap: Improving VLMs Captioning Performance via Self-Supervised Cycle Consistency Fine-Tuning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "807de6091a0f60bf900b95299642fe2fb77ae3e3",
+      "externalIds": {
+        "ArXiv": "2604.09712",
+        "CorpusId": 287425028
+      },
+      "title": "LAST: Leveraging Tools as Hints to Enhance Spatial Reasoning for Multimodal Large Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "42b8049bc408eca6ded8cadf5f6511be065451e3",
+      "externalIds": {
+        "ArXiv": "2603.16653",
+        "CorpusId": 286583952
+      },
+      "title": "HeBA: Heterogeneous Bottleneck Adapters for Robust Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "04b46470fd2ef8548ba225622ec785afbf1bdf32",
+      "externalIds": {
+        "ArXiv": "2603.18118",
+        "CorpusId": 286670111
+      },
+      "title": "Insight-V++: Towards Advanced Long-Chain Visual Reasoning with Multimodal Large Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1
+    },
+    {
+      "paperId": "32bf9ae23c3ac7914edbbb7a0360514a34c6fb8a",
+      "externalIds": {
+        "ArXiv": "2604.09114",
+        "CorpusId": 287351805
+      },
+      "title": "FIRE-CIR: Fine-grained Reasoning for Composed Fashion Image Retrieval",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "556e79f2f93d4a04ba00707d4a514334ec524c97",
+      "externalIds": {
+        "ArXiv": "2603.25441",
+        "CorpusId": 286791448
+      },
+      "title": "Language-Free Generative Editing from One Visual Example",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "882d43a970e7e0a73ac5d43c180a71e604653d4b",
+      "externalIds": {
+        "ArXiv": "2604.15809",
+        "CorpusId": 287607582
+      },
+      "title": "Aligning What Vision-Language Models See and Perceive with Adaptive Information Flow",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "6a0db04d6b3b33af895f7df7b7920ff071bc2e3d",
+      "externalIds": {
+        "ArXiv": "2603.21746",
+        "CorpusId": 286766136
+      },
+      "title": "Getting to the Point: Why Pointing Improves LVLMs",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "293fa3aacce0b4b826bebf5f918142acd2aa0b0a",
+      "externalIds": {
+        "ArXiv": "2603.10703",
+        "CorpusId": 286462545
+      },
+      "title": "WalkGPT: Grounded Vision-Language Conversation with Depth-Aware Segmentation for Pedestrian Navigation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1
+    },
+    {
+      "paperId": "fde47fa8db8af5baacbb487f5b9727a56105b81a",
+      "externalIds": {
+        "ArXiv": "2603.10300",
+        "CorpusId": 286457199
+      },
+      "title": "From Imitation to Intuition: Intrinsic Reasoning for Open-Instance Video Classification",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "5cf20abfceff4a2d3b90b6ddb00a996fdada7200",
+      "externalIds": {
+        "DOI": "10.1145/3774904.3792879",
+        "CorpusId": 287448148
+      },
+      "title": "We May Not Need Much Visual Encoding of Web Data for Question Answering",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "1c3d772bcdd09f019b578e7272deb092ce5906b9",
+      "externalIds": {
+        "ArXiv": "2604.17800",
+        "CorpusId": 287634968
+      },
+      "title": "ReFineVLA: Multimodal Reasoning-Aware Generalist Robotic Policies via Teacher-Guided Fine-Tuning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "95e12c190c85611cf88bfb606c5e30a192a42970",
+      "externalIds": {
+        "ArXiv": "2604.16264",
+        "CorpusId": 287607934
+      },
+      "title": "Information Router for Mitigating Modality Dominance in Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "adb295af27e96a7b6c9fd545c441d646da9e970c",
+      "externalIds": {
+        "ArXiv": "2603.27494",
+        "CorpusId": 286974335
+      },
+      "title": "Learning to Focus and Precise Cropping: A Reinforcement Learning Framework with Information Gaps and Grounding Loss for MLLMs",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "a4cb35e85f2b8c33e478a6621769ec0801cfa8aa",
+      "externalIds": {
+        "ArXiv": "2603.24484",
+        "CorpusId": 286776037
+      },
+      "title": "Video-Only ToM: Enhancing Theory of Mind in Multimodal Large Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "93951c6249e3b3aeee9dcd90eb8a7875fa3494f1",
+      "externalIds": {
+        "ArXiv": "2603.13779",
+        "CorpusId": 286568299
+      },
+      "title": "AD-Copilot: A Vision-Language Assistant for Industrial Anomaly Detection via Visual In-context Comparison",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1
+    },
+    {
+      "paperId": "b4312bd78d85a70a5638ad6d184de755d6190a37",
+      "externalIds": {
+        "ArXiv": "2603.12265",
+        "CorpusId": 286493356
+      },
+      "title": "OmniStream: Mastering Perception, Reconstruction and Action in Continuous Streams",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 2
+    },
+    {
+      "paperId": "ff88638a86fc49e9184e959deafae47cfa8d7cbe",
+      "externalIds": {
+        "ArXiv": "2604.02323",
+        "CorpusId": 287074114
+      },
+      "title": "Beyond Referring Expressions: Scenario Comprehension Visual Grounding",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "f848d4535379a8f6e23350c6f01316c445d6234c",
+      "externalIds": {
+        "ArXiv": "2604.01833",
+        "CorpusId": 287071750
+      },
+      "title": "Language-Pretraining-Induced Bias: A Strong Foundation for General Vision Tasks",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "4decb4f6a9b3922ef5751d05beadeb98bf921803",
+      "externalIds": {
+        "ArXiv": "2603.29165",
+        "CorpusId": 286976822
+      },
+      "title": "LatentPilot: Scene-Aware Vision-and-Language Navigation by Dreaming Ahead with Latent Visual Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "825466a1d2509462c11998c66550fd6adbe12773",
+      "externalIds": {
+        "ArXiv": "2604.14692",
+        "CorpusId": 287508451
+      },
+      "title": "Chain-of-Glimpse: Search-Guided Progressive Object-Grounded Reasoning for Video Understanding",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "0da02d635ce1106194b1cdea31b09085ede91686",
+      "externalIds": {
+        "ArXiv": "2603.13394",
+        "CorpusId": 286568412
+      },
+      "title": "Language-Guided Token Compression with Reinforcement Learning in Large Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 8
+    },
+    {
+      "paperId": "d0a9448abd2347ef3aa81312128a90911a7c0a60",
+      "externalIds": {
+        "ArXiv": "2605.02730",
+        "CorpusId": 287950668
+      },
+      "title": "Perceptual Flow Network for Visually Grounded Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "3eb32d3de86cd18010b396b03b3edbbbfdfc1b59",
+      "externalIds": {
+        "ArXiv": "2603.21701",
+        "CorpusId": 286765870
+      },
+      "title": "Rethinking Token Reduction for Large Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "d51f4b23ed8682b349fb6fa2525ac99415ec9235",
+      "externalIds": {
+        "ArXiv": "2603.26348",
+        "CorpusId": 286944147
+      },
+      "title": "Reflect to Inform: Boosting Multimodal Reasoning via Information-Gain-Driven Verification",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "3bc80668e06d744fcdeac11ca282c9165d3b445a",
+      "externalIds": {
+        "ArXiv": "2603.25942",
+        "CorpusId": 286942104
+      },
+      "title": "Reinforcing Structured Chain-of-Thought for Video Understanding",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "26aac770169aa196de5452189c816bee59ede7d7",
+      "externalIds": {
+        "ArXiv": "2603.16737",
+        "CorpusId": 286584033
+      },
+      "title": "Retrieving Counterfactuals Improves Visual In-Context Learning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "29586a55f58f16c5d968bfd7b224cbc6c0f1e9dc",
+      "externalIds": {
+        "ArXiv": "2604.09349",
+        "CorpusId": 287352132
+      },
+      "title": "Visually-Guided Policy Optimization for Multimodal Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "dc7212ca843251b68ba77b1da7ecdfa9ae792893",
+      "externalIds": {
+        "DBLP": "journals/access/ZahraCK26",
+        "DOI": "10.1109/ACCESS.2026.3673165",
+        "CorpusId": 286564460
+      },
+      "title": "Adaptive Text Prompting: A Training-Free Framework for Zero-Shot Action Recognition",
+      "venue": "IEEE Access",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "5492f180c799462adb027833a796a72f1b230024",
+      "externalIds": {
+        "ArXiv": "2603.20190",
+        "CorpusId": 286753070
+      },
+      "title": "CoVR-R:Reason-Aware Composed Video Retrieval",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "562b1f2b6c14326f14a0193cb0c1a29eeaf3d9a2",
+      "externalIds": {
+        "ArXiv": "2603.13951",
+        "CorpusId": 286573161
+      },
+      "title": "DCP-CLIP:A Coarse-to-Fine Framework for Open-Vocabulary Semantic Segmentation with Dual Interaction",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "ef37ce34950c80ceaf7022dbf4761cea9466f249",
+      "externalIds": {
+        "ArXiv": "2604.18187",
+        "CorpusId": 287635332
+      },
+      "title": "Audio-DeepThinker: Progressive Reasoning-Aware Reinforcement Learning for High-Quality Chain-of-Thought Emergence in Audio Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "b590e971a4625766a9153723bade642b6ce28470",
+      "externalIds": {
+        "ArXiv": "2604.14629",
+        "CorpusId": 287508609
+      },
+      "title": "Switch-KD: Visual-Switch Knowledge Distillation for Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "paperId": "588488ce79516531cf0acaf699692567a09d52ab",
+      "externalIds": {
+        "DOI": "10.1109/ICCV51701.2025.02053",
+        "CorpusId": 286521031
+      },
+      "title": "Benefit from Seen: Enhancing Open-Vocabulary Object Detection by Bridging Visual and Textual Co-Occurrence Knowledge",
+      "venue": "IEEE International Conference on Computer Vision",
+      "year": 2025,
+      "citationCount": 1
+    }
+  ]
+}

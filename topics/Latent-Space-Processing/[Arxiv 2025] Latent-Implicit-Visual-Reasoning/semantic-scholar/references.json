@@ -1,0 +1,521 @@
+{
+  "offset": 0,
+  "citingPaperInfo": {
+    "openAccessPdf": {
+      "url": "",
+      "status": null,
+      "license": null,
+      "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2512.21218, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+    },
+    "title": "Latent Implicit Visual Reasoning",
+    "authors": [
+      {
+        "authorId": "2355509063",
+        "name": "K. Li"
+      },
+      {
+        "authorId": "2294574559",
+        "name": "Chuyi Shang"
+      },
+      {
+        "authorId": "2142741421",
+        "name": "Leonid Karlinsky"
+      },
+      {
+        "authorId": "2239199018",
+        "name": "Rogério Feris"
+      },
+      {
+        "authorId": "2257973285",
+        "name": "Trevor Darrell"
+      },
+      {
+        "authorId": "46796686",
+        "name": "Roei Herzig"
+      }
+    ]
+  },
+  "data": [
+    {
+      "citedPaper": {
+        "paperId": "b36c3b79d678805b74025497bf3abc6cbe0ee1eb",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2506-17218",
+          "ArXiv": "2506.17218",
+          "DOI": "10.48550/arXiv.2506.17218",
+          "CorpusId": 279464966
+        },
+        "title": "Machine Mental Imagery: Empower Multimodal Reasoning with Latent Visual Tokens",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 60
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "454284913b81f23cd86739b5e0896b0c325e2696",
+        "externalIds": {
+          "ArXiv": "2505.23766",
+          "DBLP": "conf/cvpr/ManHLSLGKWY25",
+          "DOI": "10.1109/CVPR52734.2025.01331",
+          "CorpusId": 278996564
+        },
+        "title": "Argus: Vision-Centric Reasoning with Grounded Chain-of-Thought",
+        "venue": "Computer Vision and Pattern Recognition",
+        "year": 2025,
+        "citationCount": 31
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "766b8ff9ccc77eb062dde58253da39d0907ebfb0",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2504-18397",
+          "ArXiv": "2504.18397",
+          "DOI": "10.48550/arXiv.2504.18397",
+          "CorpusId": 278129311
+        },
+        "title": "Unsupervised Visual Chain-of-Thought Reasoning via Preference Optimization",
+        "venue": "IEEE International Conference on Computer Vision",
+        "year": 2025,
+        "citationCount": 23
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "2d7f3a99e916fc80ff890d109699f9682253e66d",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2503-22020",
+          "ArXiv": "2503.22020",
+          "DOI": "10.1109/CVPR52734.2025.00166",
+          "CorpusId": 277435005
+        },
+        "title": "CoT-VLA: Visual Chain-of-Thought Reasoning for Vision-Language-Action Models",
+        "venue": "Computer Vision and Pattern Recognition",
+        "year": 2025,
+        "citationCount": 359
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "0af4359948693c7aa60caf5e13aaab9d32fced92",
+        "externalIds": {
+          "ArXiv": "2503.12937",
+          "DBLP": "journals/corr/abs-2503-12937",
+          "DOI": "10.48550/arXiv.2503.12937",
+          "CorpusId": 277066741
+        },
+        "title": "R1-VL: Learning to Reason with Multimodal Large Language Models via Step-Wise Group Relative Policy Optimization",
+        "venue": "IEEE International Conference on Computer Vision",
+        "year": 2025,
+        "citationCount": 265
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "942328473407147f609761dc22128a503713df58",
+        "externalIds": {
+          "ArXiv": "2503.06749",
+          "DBLP": "journals/corr/abs-2503-06749",
+          "DOI": "10.48550/arXiv.2503.06749",
+          "CorpusId": 276902576
+        },
+        "title": "Vision-R1: Incentivizing Reasoning Capability in Multimodal Large Language Models",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 501
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "673fbdd957cada770d10dffca5e45b53da43a3c6",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2412-06769",
+          "ArXiv": "2412.06769",
+          "DOI": "10.48550/arXiv.2412.06769",
+          "CorpusId": 274610816
+        },
+        "title": "Training Large Language Models to Reason in a Continuous Latent Space",
+        "venue": "arXiv.org",
+        "year": 2024,
+        "citationCount": 472
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "b940d65aabe04876349c75498487d83db66a4081",
+        "externalIds": {
+          "ArXiv": "2412.03548",
+          "DBLP": "journals/corr/abs-2412-03548",
+          "DOI": "10.1109/CVPR52734.2025.00363",
+          "CorpusId": 274464813
+        },
+        "title": "Perception Tokens Enhance Visual Reasoning in Multimodal Language Models",
+        "venue": "Computer Vision and Pattern Recognition",
+        "year": 2024,
+        "citationCount": 58
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "b368528a18d8f7b377e6fc74c1050df8c0348a1f",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2411-10440",
+          "ArXiv": "2411.10440",
+          "DOI": "10.48550/arXiv.2411.10440",
+          "CorpusId": 274116688
+        },
+        "title": "LlaVA-CoT: Let Vision Language Models Reason Step-By-Step",
+        "venue": "IEEE International Conference on Computer Vision",
+        "year": 2024,
+        "citationCount": 452
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "3ea3e3153e1a4576676e85ac69bac8090c00a912",
+        "externalIds": {
+          "ArXiv": "2409.17146",
+          "DBLP": "conf/cvpr/DeitkeC0T0PSMLS25",
+          "DOI": "10.1109/CVPR52734.2025.00018",
+          "CorpusId": 274514412
+        },
+        "title": "Molmo and PixMo: Open Weights and Open Data for State-of-the-Art Vision-Language Models",
+        "venue": "Computer Vision and Pattern Recognition",
+        "year": 2024,
+        "citationCount": 186
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "8292083dd8f6ae898ea0ee54a6b97997d1a51c9d",
+        "externalIds": {
+          "ArXiv": "2408.03314",
+          "DBLP": "journals/corr/abs-2408-03314",
+          "DOI": "10.48550/arXiv.2408.03314",
+          "CorpusId": 271719990
+        },
+        "title": "Scaling LLM Test-Time Compute Optimally can be More Effective than Scaling Model Parameters",
+        "venue": "arXiv.org",
+        "year": 2024,
+        "citationCount": 1661
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "ee8c1a46c90f1261c23479e15c6bed7f67ad8943",
+        "externalIds": {
+          "ArXiv": "2403.16999",
+          "DBLP": "conf/nips/ShaoQ0SZW0024",
+          "DOI": "10.52202/079017-0275",
+          "CorpusId": 271051212
+        },
+        "title": "Visual CoT: Advancing Multi-Modal Language Models with a Comprehensive Dataset and Benchmark for Chain-of-Thought Reasoning",
+        "venue": "Neural Information Processing Systems",
+        "year": 2024,
+        "citationCount": 284
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "abe90a291e7cf567ce5c9012a692beeae153068d",
+        "externalIds": {
+          "DBLP": "conf/iclr/GoyalJRMKN24",
+          "ArXiv": "2310.02226",
+          "DOI": "10.48550/arXiv.2310.02226",
+          "CorpusId": 263608983
+        },
+        "title": "Think before you speak: Training Language Models With Pause Tokens",
+        "venue": "International Conference on Learning Representations",
+        "year": 2023,
+        "citationCount": 237
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "2f3822eb380b5e753a6d579f31dfc3ec4c4a0820",
+        "externalIds": {
+          "ArXiv": "2305.10601",
+          "DBLP": "journals/corr/abs-2305-10601",
+          "DOI": "10.48550/arXiv.2305.10601",
+          "CorpusId": 258762525
+        },
+        "title": "Tree of Thoughts: Deliberate Problem Solving with Large Language Models",
+        "venue": "Neural Information Processing Systems",
+        "year": 2023,
+        "citationCount": 3854
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "a5036f31f0e629dc661f120b8c3b1f374d479ab8",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2304-08485",
+          "ArXiv": "2304.08485",
+          "DOI": "10.48550/arXiv.2304.08485",
+          "CorpusId": 258179774
+        },
+        "title": "Visual Instruction Tuning",
+        "venue": "Neural Information Processing Systems",
+        "year": 2023,
+        "citationCount": 9148
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "02fff38be9c6caa03a0bfb0de61090971fe2c072",
+        "externalIds": {
+          "ACL": "2022.acl-long.81",
+          "DBLP": "journals/corr/abs-2203-00758",
+          "ArXiv": "2203.00758",
+          "DOI": "10.48550/arXiv.2203.00758",
+          "CorpusId": 247218503
+        },
+        "title": "There’s a Time and Place for Reasoning Beyond the Image",
+        "venue": "Annual Meeting of the Association for Computational Linguistics",
+        "year": 2022,
+        "citationCount": 26
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "1b6e810ce0afd0dd093f789d2b2742d047e316d5",
+        "externalIds": {
+          "DBLP": "conf/nips/Wei0SBIXCLZ22",
+          "ArXiv": "2201.11903",
+          "DOI": "10.52202/068431-1800",
+          "CorpusId": 246411621
+        },
+        "title": "Chain of Thought Prompting Elicits Reasoning in Large Language Models",
+        "venue": "Neural Information Processing Systems",
+        "year": 2022,
+        "citationCount": 17739
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "4f06c392c4dc15f3fc58f8bff98764be50d335db",
+        "externalIds": {
+          "PubMedCentral": "8475963",
+          "ArXiv": "2109.01097",
+          "DBLP": "journals/corr/abs-2109-01097",
+          "DOI": "10.1109/ICCV48922.2021.01548",
+          "CorpusId": 237386078,
+          "PubMed": "34580645"
+        },
+        "title": "The Functional Correspondence Problem",
+        "venue": "IEEE International Conference on Computer Vision",
+        "year": 2021,
+        "citationCount": 23
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "a8ca46b171467ceb2d7652fbfb67fe701ad86092",
+        "externalIds": {
+          "DBLP": "conf/iclr/HuSWALWWC22",
+          "ArXiv": "2106.09685",
+          "CorpusId": 235458009
+        },
+        "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+        "venue": "International Conference on Learning Representations",
+        "year": 2021,
+        "citationCount": 18683
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "ffdbd7f0b03b85747b001b4734d5ee31b5229aa4",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2104-08691",
+          "ArXiv": "2104.08691",
+          "ACL": "2021.emnlp-main.243",
+          "DOI": "10.18653/v1/2021.emnlp-main.243",
+          "CorpusId": 233296808
+        },
+        "title": "The Power of Scale for Parameter-Efficient Prompt Tuning",
+        "venue": "Conference on Empirical Methods in Natural Language Processing",
+        "year": 2021,
+        "citationCount": 5430
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "6f870f7f02a8c59c3e23f407f3ef00dd1dcf8fc4",
+        "externalIds": {
+          "DBLP": "conf/icml/RadfordKHRGASAM21",
+          "ArXiv": "2103.00020",
+          "CorpusId": 231591445
+        },
+        "title": "Learning Transferable Visual Models From Natural Language Supervision",
+        "venue": "International Conference on Machine Learning",
+        "year": 2021,
+        "citationCount": 47757
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "f4a3d6d26347df2c5c89ce0848ef72f1d4f80e3e",
+        "externalIds": {
+          "MAG": "2982788674",
+          "DBLP": "conf/iccv/MurmannGAD19",
+          "ArXiv": "1910.08131",
+          "DOI": "10.1109/ICCV.2019.00418",
+          "CorpusId": 204788957
+        },
+        "title": "A Dataset of Multi-Illumination Images in the Wild",
+        "venue": "IEEE International Conference on Computer Vision",
+        "year": 2019,
+        "citationCount": 84
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "cb70ff3a4e51cdf8f83680b3e9105856eaf8dd3f",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-1908-10543",
+          "MAG": "2970350341",
+          "ArXiv": "1908.10543",
+          "CorpusId": 201653520
+        },
+        "title": "SPair-71k: A Large-scale Benchmark for Semantic Correspondence",
+        "venue": "arXiv.org",
+        "year": 2019,
+        "citationCount": 167
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "96112084b619243c4b49d990ab60021ab25286b2",
+        "externalIds": {
+          "ArXiv": "1704.05939",
+          "DBLP": "conf/cvpr/BalntasLVM17",
+          "MAG": "2963748588",
+          "DOI": "10.1109/CVPR.2017.410",
+          "CorpusId": 2474496
+        },
+        "title": "HPatches: A Benchmark and Evaluation of Handcrafted and Learned Local Descriptors",
+        "venue": "Computer Vision and Pattern Recognition",
+        "year": 2017,
+        "citationCount": 856
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "368a14c6c83fa232f59db57d5064ab582162c124",
+        "externalIds": {
+          "DBLP": "journals/tog/BalaS14",
+          "MAG": "2076491823",
+          "DOI": "10.1145/2601097.2601206",
+          "CorpusId": 495068
+        },
+        "title": "Intrinsic images in the wild",
+        "venue": "ACM Transactions on Graphics",
+        "year": 2014,
+        "citationCount": 481
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "71b7178df5d2b112d07e45038cb5637208659ff7",
+        "externalIds": {
+          "ArXiv": "1405.0312",
+          "DBLP": "conf/eccv/LinMBHPRDZ14",
+          "MAG": "2952122856",
+          "DOI": "10.1007/978-3-319-10602-1_48",
+          "CorpusId": 14113767
+        },
+        "title": "Microsoft COCO: Common Objects in Context",
+        "venue": "European Conference on Computer Vision",
+        "year": 2014,
+        "citationCount": 52161
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "eae2e0fa72e898c289365c0af16daf57a7a6cf40",
+        "externalIds": {
+          "DBLP": "journals/tip/WangBSS04",
+          "MAG": "2133665775",
+          "DOI": "10.1109/TIP.2003.819861",
+          "CorpusId": 207761262,
+          "PubMed": "15376593"
+        },
+        "title": "Image quality assessment: from error visibility to structural similarity",
+        "venue": "IEEE Transactions on Image Processing",
+        "year": 2004,
+        "citationCount": 56261
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "Rethinking step-by-step",
+        "venue": "Llamav-o1:",
+        "year": null,
+        "citationCount": null
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "John Schulman and Thinking Machines Lab",
+        "venue": "Thinking Machines Lab: Connectionism",
+        "year": null,
+        "citationCount": null
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "Dream-sim: Learning new dimensions of human visual similarity using synthetic data",
+        "venue": "Advances in Neural Information Processing Systems",
+        "year": null,
+        "citationCount": null
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "Mulberry: Em-powering mllm with o1-like reasoning and reflection via collective monte carlo tree",
+        "venue": "search",
+        "year": null,
+        "citationCount": null
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "Qwen Team",
+        "venue": "Qwen3 technical report",
+        "year": null,
+        "citationCount": null
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "to attention maps of the reference images.",
+        "venue": "For these tasks, it may be hard for humans to define explicit representations, but our approach allows latent tokens to learn these useful representations implicitly",
+        "year": null,
+        "citationCount": null
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "can see but not perceive",
+        "venue": "Computer Vision – ECCV 2024",
+        "year": null,
+        "citationCount": null
+      }
+    }
+  ]
+}

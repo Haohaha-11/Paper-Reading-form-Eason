@@ -1,0 +1,785 @@
+{
+  "offset": 0,
+  "citingPaperInfo": {
+    "openAccessPdf": {
+      "url": "",
+      "status": null,
+      "license": null,
+      "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2512.12623, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+    },
+    "title": "Reasoning Within the Mind: Dynamic Multimodal Interleaving in Latent Space",
+    "authors": [
+      {
+        "authorId": "2325085747",
+        "name": "Chengzhi Liu"
+      },
+      {
+        "authorId": "2316673843",
+        "name": "Yuzhe Yang"
+      },
+      {
+        "authorId": "2355284966",
+        "name": "Yuzhe Yang"
+      },
+      {
+        "authorId": "2257161100",
+        "name": "Yue Fan"
+      },
+      {
+        "authorId": "2384397450",
+        "name": "Qingyue Wei"
+      },
+      {
+        "authorId": "2376265163",
+        "name": "Sheng Liu"
+      },
+      {
+        "authorId": "2308826320",
+        "name": "X. Wang"
+      }
+    ]
+  },
+  "data": [
+    {
+      "citedPaper": {
+        "paperId": "60ede7464454260a047fae294c928a73405180f7",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2510-24514",
+          "ArXiv": "2510.24514",
+          "DOI": "10.48550/arXiv.2510.24514",
+          "CorpusId": 282400662
+        },
+        "title": "Latent Sketchpad: Sketching Visual Thoughts to Elicit Multimodal Reasoning in MLLMs",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 24
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "fad657fe5f6b31b8a198346cf7ed772f912bf814",
+        "externalIds": {
+          "ArXiv": "2510.23925",
+          "DBLP": "journals/corr/abs-2510-23925",
+          "DOI": "10.48550/arXiv.2510.23925",
+          "CorpusId": 282400907
+        },
+        "title": "Latent Chain-of-Thought for Visual Reasoning",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 18
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "9704192c40ae218d43aca7c955e00c78ea7d20bf",
+        "externalIds": {
+          "ArXiv": "2510.15522",
+          "CorpusId": 282203021
+        },
+        "title": "LLM Latent Reasoning as Chain of Superposition",
+        "venue": "",
+        "year": 2025,
+        "citationCount": 8
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "a4904dfe4348cfac742c8724a25c2c403d4db0e7",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2510-12603",
+          "ArXiv": "2510.12603",
+          "DOI": "10.48550/arXiv.2510.12603",
+          "CorpusId": 282064325
+        },
+        "title": "Reasoning in the Dark: Interleaved Vision-Text Reasoning in Latent Space",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 7
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "134fde5291ceb00da3869db8040fe8ce136bf5b0",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2510-09285",
+          "ArXiv": "2510.09285",
+          "DOI": "10.48550/arXiv.2510.09285",
+          "CorpusId": 282056120
+        },
+        "title": "Spotlight on Token Perception for Multimodal Reinforcement Learning",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 12
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "495bf8126d33e11d67762718f3b12b9f2dc5eb62",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2510-04182",
+          "ArXiv": "2510.04182",
+          "DOI": "10.48550/arXiv.2510.04182",
+          "CorpusId": 281842985
+        },
+        "title": "Thinking on the Fly: Test-Time Reasoning Enhancement via Latent Thought Policy Optimization",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 5
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "50daa134ce31d75c34d6ffd2b93300954b48984d",
+        "externalIds": {
+          "ArXiv": "2509.24704",
+          "DBLP": "journals/corr/abs-2509-24704",
+          "DOI": "10.48550/arXiv.2509.24704",
+          "CorpusId": 281676243
+        },
+        "title": "MemGen: Weaving Generative Latent Memory for Self-Evolving Agents",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 39
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "edf31ba3b76379997f19e1be24fe9ad7e8828559",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2509-24771",
+          "ArXiv": "2509.24771",
+          "DOI": "10.48550/arXiv.2509.24771",
+          "CorpusId": 281675514
+        },
+        "title": "LatentEvolve: Self-Evolving Test-Time Scaling in Latent Space",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 3
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "c8cc7343aa4398fddc988f6399061ae46d3b7972",
+        "externalIds": {
+          "ArXiv": "2509.22761",
+          "DBLP": "journals/corr/abs-2509-22761",
+          "DOI": "10.48550/arXiv.2509.22761",
+          "CorpusId": 281675014
+        },
+        "title": "MILR: Improving Multimodal Image Generation via Test-Time Latent Reasoning",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 4
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "18d83103fb98905ccbce420987470eb2ea021187",
+        "externalIds": {
+          "ArXiv": "2508.18265",
+          "DBLP": "journals/corr/abs-2508-18265",
+          "DOI": "10.48550/arXiv.2508.18265",
+          "CorpusId": 280710824
+        },
+        "title": "InternVL3.5: Advancing Open-Source Multimodal Models in Versatility, Reasoning, and Efficiency",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 701
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "6f5242d7fa881678f0eea65cfdf235b8ba1fa1a1",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2508-12587",
+          "ArXiv": "2508.12587",
+          "DOI": "10.48550/arXiv.2508.12587",
+          "CorpusId": 280677289
+        },
+        "title": "Multimodal Chain of Continuous Thought for Latent-Space Reasoning in Vision-Language Models",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 11
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "996f5d92e6c6a6b88a98657e7a664bcc29cb5c14",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2507-16815",
+          "ArXiv": "2507.16815",
+          "DOI": "10.48550/arXiv.2507.16815",
+          "CorpusId": 280676242
+        },
+        "title": "ThinkAct: Vision-Language-Action Reasoning via Reinforced Visual Latent Planning",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 97
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "c79ebb4c82ddd2aec1a6ee3d7d912959e2e8fea1",
+        "externalIds": {
+          "ArXiv": "2507.01006",
+          "CorpusId": 280049141
+        },
+        "title": "GLM-4.5V and GLM-4.1V-Thinking: Towards Versatile Multimodal Reasoning with Scalable Reinforcement Learning",
+        "venue": "",
+        "year": 2025,
+        "citationCount": 192
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "de219fb435c9454e4b6acc14c97f310c75885a49",
+        "externalIds": {
+          "ArXiv": "2506.23918",
+          "DBLP": "journals/corr/abs-2506-23918",
+          "DOI": "10.48550/arXiv.2506.23918",
+          "CorpusId": 280011862
+        },
+        "title": "Thinking with Images for Multimodal Reasoning: Foundations, Methods, and Future Frontiers",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 132
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "b36c3b79d678805b74025497bf3abc6cbe0ee1eb",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2506-17218",
+          "ArXiv": "2506.17218",
+          "DOI": "10.48550/arXiv.2506.17218",
+          "CorpusId": 279464966
+        },
+        "title": "Machine Mental Imagery: Empower Multimodal Reasoning with Latent Visual Tokens",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 60
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "ff277b0c298c5cf890af067f03b9e9243c9087a5",
+        "externalIds": {
+          "ArXiv": "2506.15882",
+          "DBLP": "journals/corr/abs-2506-15882",
+          "DOI": "10.48550/arXiv.2506.15882",
+          "CorpusId": 279465274
+        },
+        "title": "Fractional Reasoning via Latent Steering Vectors Improves Inference Time Compute",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 8
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "427a80a2c3cbfcf1f3d8e312b3337cbb7bb1988f",
+        "externalIds": {
+          "ArXiv": "2505.21523",
+          "DBLP": "journals/corr/abs-2505-21523",
+          "DOI": "10.48550/arXiv.2505.21523",
+          "CorpusId": 278960128
+        },
+        "title": "More Thinking, Less Seeing? Assessing Amplified Hallucination in Multimodal Reasoning Models",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 58
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "3586469d86a5ac204091d63d8bc709a0e3a4fd1b",
+        "externalIds": {
+          "DBLP": "conf/cvpr/TangLXHHX0PYZLL25",
+          "ArXiv": "2505.16652",
+          "DOI": "10.1109/CVPR52734.2025.02435",
+          "CorpusId": 278789314,
+          "PubMed": "40951258"
+        },
+        "title": "Seeing Far and Clearly: Mitigating Hallucinations in MLLMs with Attention Causal Decoding",
+        "venue": "Computer Vision and Pattern Recognition",
+        "year": 2025,
+        "citationCount": 35
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "2a832b34583332cbaae8cf02ee5f823c43f5689e",
+        "externalIds": {
+          "ArXiv": "2505.15634",
+          "DBLP": "journals/corr/abs-2505-15634",
+          "DOI": "10.48550/arXiv.2505.15634",
+          "CorpusId": 278782548
+        },
+        "title": "Feature Extraction and Steering for Enhanced Chain-of-Thought Reasoning in Language Models",
+        "venue": "Conference on Empirical Methods in Natural Language Processing",
+        "year": 2025,
+        "citationCount": 13
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "5a96bfbae6ea33b0f108604436bc33b144f36ad0",
+        "externalIds": {
+          "ArXiv": "2505.15778",
+          "DBLP": "journals/corr/abs-2505-15778",
+          "DOI": "10.48550/arXiv.2505.15778",
+          "CorpusId": 278782290
+        },
+        "title": "Soft Thinking: Unlocking the Reasoning Potential of LLMs in Continuous Concept Space",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 66
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "da608eaf47596938dd80f6bd977610ca07b467e9",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2505-15966",
+          "ArXiv": "2505.15966",
+          "DOI": "10.48550/arXiv.2505.15966",
+          "CorpusId": 278789415
+        },
+        "title": "Pixel Reasoner: Incentivizing Pixel-Space Reasoning with Curiosity-Driven Reinforcement Learning",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 174
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "f9489f72e97ec0026f887f0a0f1e60bc2da96acb",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2505-14362",
+          "ArXiv": "2505.14362",
+          "DOI": "10.48550/arXiv.2505.14362",
+          "CorpusId": 278769859
+        },
+        "title": "DeepEyes: Incentivizing \"Thinking with Images\" via Reinforcement Learning",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 179
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "0576c5be53db2c04d644637308763a4fc2db3a36",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2505-13308",
+          "ArXiv": "2505.13308",
+          "DOI": "10.48550/arXiv.2505.13308",
+          "CorpusId": 278768446
+        },
+        "title": "Seek in the Dark: Reasoning via Test-Time Instance-Level Policy Gradient in Latent Space",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 25
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "2adbf228f96164e4780cbc19da9a0005cf8cde32",
+        "externalIds": {
+          "DBLP": "journals/tmlr/ChenTWLTDZX25",
+          "ArXiv": "2504.11468",
+          "DOI": "10.48550/arXiv.2504.11468",
+          "CorpusId": 277824294
+        },
+        "title": "SFT or RL? An Early Investigation into Training R1-Like Reasoning Large Vision-Language Models",
+        "venue": "Trans. Mach. Learn. Res.",
+        "year": 2025,
+        "citationCount": 185
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "6f0f0d9f29586344ae6403fe906c24e4f16eaed8",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2504-08837",
+          "ArXiv": "2504.08837",
+          "DOI": "10.48550/arXiv.2504.08837",
+          "CorpusId": 277781277
+        },
+        "title": "VL-Rethinker: Incentivizing Self-Reflection of Vision-Language Models with Reinforcement Learning",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 247
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "e1774446423a18d0731642aa49a5875f6aa425a3",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2503-10615",
+          "ArXiv": "2503.10615",
+          "DOI": "10.48550/arXiv.2503.10615",
+          "CorpusId": 276961560
+        },
+        "title": "R1-Onevision: Advancing Generalized Multimodal Reasoning Through Cross-Modal Formalization",
+        "venue": "IEEE International Conference on Computer Vision",
+        "year": 2025,
+        "citationCount": 324
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "78659eea1d10e30007eabd9e5b720ffb4c54aa64",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2503-08308",
+          "ArXiv": "2503.08308",
+          "DOI": "10.48550/arXiv.2503.08308",
+          "CorpusId": 276928791
+        },
+        "title": "Seeing and Reasoning with Confidence: Supercharging Multimodal LLMs with an Uncertainty-Aware Agentic Framework",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 11
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "942328473407147f609761dc22128a503713df58",
+        "externalIds": {
+          "ArXiv": "2503.06749",
+          "DBLP": "journals/corr/abs-2503-06749",
+          "DOI": "10.48550/arXiv.2503.06749",
+          "CorpusId": 276902576
+        },
+        "title": "Vision-R1: Incentivizing Reasoning Capability in Multimodal Large Language Models",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 501
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "f61cc9b5583c6295d5cd756ec0f34e4c003aab29",
+        "externalIds": {
+          "ArXiv": "2502.13923",
+          "DBLP": "journals/corr/abs-2502-13923",
+          "DOI": "10.48550/arXiv.2502.13923",
+          "CorpusId": 276449796
+        },
+        "title": "Qwen2.5-VL Technical Report",
+        "venue": "arXiv.org",
+        "year": 2025,
+        "citationCount": 4411
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "2d0b030d314a5aa8feaa03695e8471270130bdf9",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2501-07542",
+          "ArXiv": "2501.07542",
+          "DOI": "10.48550/arXiv.2501.07542",
+          "CorpusId": 275471612
+        },
+        "title": "Imagine while Reasoning in Space: Multimodal Visualization-of-Thought",
+        "venue": "International Conference on Machine Learning",
+        "year": 2025,
+        "citationCount": 164
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "89409d752884b3e50ec5640466ab5857e6b3e1e2",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2501-05452",
+          "ArXiv": "2501.05452",
+          "DOI": "10.48550/arXiv.2501.05452",
+          "CorpusId": 275405594
+        },
+        "title": "ReFocus: Visual Editing as a Chain of Thought for Structured Image Understanding",
+        "venue": "International Conference on Machine Learning",
+        "year": 2025,
+        "citationCount": 64
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "673fbdd957cada770d10dffca5e45b53da43a3c6",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2412-06769",
+          "ArXiv": "2412.06769",
+          "DOI": "10.48550/arXiv.2412.06769",
+          "CorpusId": 274610816
+        },
+        "title": "Training Large Language Models to Reason in a Continuous Latent Space",
+        "venue": "arXiv.org",
+        "year": 2024,
+        "citationCount": 472
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "c4d3c2516d24bd1c0eff93ea047147f3afd586ca",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2410-03577",
+          "ArXiv": "2410.03577",
+          "DOI": "10.48550/arXiv.2410.03577",
+          "CorpusId": 273163032
+        },
+        "title": "Look Twice Before You Answer: Memory-Space Visual Retracing for Hallucination Mitigation in Multimodal Large Language Models",
+        "venue": "International Conference on Machine Learning",
+        "year": 2024,
+        "citationCount": 59
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "2b89380b5259bdaa14f620d4791a81cc463779b8",
+        "externalIds": {
+          "ArXiv": "2406.09403",
+          "DBLP": "conf/nips/HuSFROZSK24",
+          "DOI": "10.48550/arXiv.2406.09403",
+          "CorpusId": 270440440
+        },
+        "title": "Visual Sketchpad: Sketching as a Visual Chain of Thought for Multimodal Language Models",
+        "venue": "Neural Information Processing Systems",
+        "year": 2024,
+        "citationCount": 251
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "8a9e11addba791860a9dbf15de75cc28d2cf844c",
+        "externalIds": {
+          "DBLP": "conf/nips/ChenLDZZCDWQLZ24",
+          "ArXiv": "2403.20330",
+          "DOI": "10.48550/arXiv.2403.20330",
+          "CorpusId": 268793433
+        },
+        "title": "Are We on the Right Way for Evaluating Large Vision-Language Models?",
+        "venue": "Neural Information Processing Systems",
+        "year": 2024,
+        "citationCount": 747
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "a3ae8705daa21f4be6970d8c7685112e1e95b843",
+        "externalIds": {
+          "ArXiv": "2401.12863",
+          "DBLP": "conf/aaai/MondalMPSR24",
+          "DOI": "10.48550/arXiv.2401.12863",
+          "CorpusId": 267095090
+        },
+        "title": "KAM-CoT: Knowledge Augmented Multimodal Chain-of-Thoughts Reasoning",
+        "venue": "AAAI Conference on Artificial Intelligence",
+        "year": 2024,
+        "citationCount": 96
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "ca00f4056f9039d3c1a4c3a113f5ee0527149b66",
+        "externalIds": {
+          "ArXiv": "2401.06209",
+          "DBLP": "journals/corr/abs-2401-06209",
+          "DOI": "10.1109/CVPR52733.2024.00914",
+          "CorpusId": 266976992
+        },
+        "title": "Eyes Wide Shut? Exploring the Visual Shortcomings of Multimodal LLMs",
+        "venue": "Computer Vision and Pattern Recognition",
+        "year": 2024,
+        "citationCount": 699
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "5eea245cc12c55905d4df827d0c9776c5ddfa743",
+        "externalIds": {
+          "DBLP": "conf/cvpr/MitraHDH24",
+          "ArXiv": "2311.17076",
+          "DOI": "10.1109/CVPR52733.2024.01367",
+          "CorpusId": 265498786
+        },
+        "title": "Compositional Chain-of-Thought Prompting for Large Multimodal Models",
+        "venue": "Computer Vision and Pattern Recognition",
+        "year": 2023,
+        "citationCount": 205
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "0b395ed1c8b284e551172b728e83cf257e33729a",
+        "externalIds": {
+          "ArXiv": "2310.14566",
+          "DBLP": "conf/cvpr/GuanLWXLL0CHYM024",
+          "DOI": "10.1109/CVPR52733.2024.01363",
+          "CorpusId": 265499116
+        },
+        "title": "Hallusionbench: An Advanced Diagnostic Suite for Entangled Language Hallucination and Visual Illusion in Large Vision-Language Models",
+        "venue": "Computer Vision and Pattern Recognition",
+        "year": 2023,
+        "citationCount": 499
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "780a7f5e8ba9b4b451e3dfee1bcfb0f68aba5050",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2302-00923",
+          "ArXiv": "2302.00923",
+          "DOI": "10.48550/arXiv.2302.00923",
+          "CorpusId": 256504063
+        },
+        "title": "Multimodal Chain-of-Thought Reasoning in Language Models",
+        "venue": "Trans. Mach. Learn. Res.",
+        "year": 2023,
+        "citationCount": 831
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "d3135733aa39dec20ce72aa138589dda27c8406d",
+        "externalIds": {
+          "DBLP": "conf/nips/LuMX0CZTCK22",
+          "ArXiv": "2209.09513",
+          "DOI": "10.48550/arXiv.2209.09513",
+          "CorpusId": 252383606
+        },
+        "title": "Learn to Explain: Multimodal Reasoning via Thought Chains for Science Question Answering",
+        "venue": "Neural Information Processing Systems",
+        "year": 2022,
+        "citationCount": 2225
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "Qwen3-vl: Sharper vision, deeper thought, broader action",
+        "venue": "Blog post",
+        "year": 2025,
+        "citationCount": null
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "a92de3c944ced3b43c7c19b586e294bd8649a77f",
+        "externalIds": {
+          "DBLP": "conf/iclr/LiuYZ25",
+          "CorpusId": 278499463
+        },
+        "title": "Reducing Hallucinations in Large Vision-Language Models via Latent Space Steering",
+        "venue": "International Conference on Learning Representations",
+        "year": 2025,
+        "citationCount": 54
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "1c46943103bd7b7a2c7be86859995a4144d1938b",
+        "externalIds": {
+          "MAG": "2187089797",
+          "CorpusId": 5855042
+        },
+        "title": "Visualizing Data using t-SNE",
+        "venue": "",
+        "year": 2008,
+        "citationCount": 48754
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "4c915c1eecb217c123a36dc6d3ce52d12c742614",
+        "externalIds": {
+          "DOI": "10.1023/A:1022672621406",
+          "CorpusId": 2332513
+        },
+        "title": "Simple Statistical Gradient-Following Algorithms for Connectionist Reinforcement Learning",
+        "venue": "Machine-mediated learning",
+        "year": 2004,
+        "citationCount": 10088
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "Chain-of-focus: Adaptive visual search and zooming for multimodal reasoning via rl",
+        "venue": "arXiv preprint",
+        "year": null,
+        "citationCount": null
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": ": Toward agentic multimodal",
+        "venue": "Deepeyesv2",
+        "year": null,
+        "citationCount": null
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "We set the number of latent think tokens to 4. During generation, after each latent token the model dynamically injects a visual patch into the latent stream to refresh its internal perception state",
+        "venue": "",
+        "year": null,
+        "citationCount": null
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "Advancing multimodal math evaluation with process evaluation and fine-grained",
+        "venue": "Mm-math:",
+        "year": null,
+        "citationCount": null
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "Evaluating mathematical reasoning of foundation models in visual",
+        "venue": "Mathvista:",
+        "year": null,
+        "citationCount": null
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "multi-discipline multimodal",
+        "venue": "Mmmu: A massive multi-discipline",
+        "year": null,
+        "citationCount": null
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "Measuring multimodal mathematical reasoning with",
+        "venue": "math-vision dataset",
+        "year": null,
+        "citationCount": null
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "Learning to think with images via visual tool",
+        "venue": "Openthinkimg:",
+        "year": null,
+        "citationCount": null
+      }
+    }
+  ]
+}
