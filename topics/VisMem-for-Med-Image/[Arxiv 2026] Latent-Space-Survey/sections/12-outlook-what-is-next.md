@@ -9,29 +9,19 @@
 
 The preceding sections survey latent space in large models from multiple angles: its foundational definition and comparison with explicit space, its evolutionary trajectory from early exploration to a full-fledged research paradigm, the technical mechanisms spanning architecture, representation, computation, and optimization that govern latent processing, and the diverse abilities it unlocks across reasoning, planning, modeling, perception, memory, collaboration, and embodiment. Together, these advances demonstrate both the breadth and the momentum of the latent-space paradigm, while also revealing structural limitations and open questions. This section synthesizes these observations into a set of perspectives, challenges, and future directions.
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
+> 💡 **批注**: Outlook 的作用不是礼貌性收尾，而是把 latent 研究从“越来越强”拉回“哪里还不可信”。对于医学和长期记忆场景，这部分比主表涨点更重要。
 
 # 6.1 Perspective
 
 The rise of latent space signals a fundamental reorientation in the study of language-based intelligence. Rather than treating latent space as a incidental byproduct of computation, recent research increasingly positions them as a primary substrate. In this perspective, we formulate this survey in four sequential lenses: Foundation (Section 2) intrinsically clarifies what latent space is; Evolution (Section 3) reveals how it has grown from an emerging idea into a broad research paradigm; Mechanism (Section 4) explains through what technical designs is realized; and Ability (Section 5) shows what it enables within the latent space. Viewed as a whole, these dimensions suggest that latent space is a promising candidate basis for the next generation of general-purpose intelligent systems.
 
-> 💡 **批注**: 这段信息较密，建议拆成“问题/设定 → 方法/机制 → 结果/影响”三层读。
-
 Foundation. From a foundational standpoint, latent space should be understood not merely as an auxiliary hidden representation, but as a machine-native space that redefines where language-based autoregressive models compute with the semantic information [66, 239, 301]. Relative to explicit space (or verbal space) [67, 141, 231, 232], its central value lies in four representational properties: machine-native, continuous, flexible & efficient, and high-fidelity, and four functional capabilities: operable, expressive, scalability, and generalized, which reduces the redundancy, discretization bottleneck, inefficiency, and semantic loss inherent in verbalized computation. In this sense, the latent paradigm marks a shift from human-aligned generation to machineoptimal computation. At the same time, this shift introduces a constitutive tension: the gains in efficiency, expressiveness. Thus, the foundational significance of latent space is not only technical but epistemic: it changes both what models compute and how that computation can be understood, laying the groundwork for next-generation models to transcend token-centric operation.
-
-> 💡 **批注**: 这段是 one-step SR 主线：关注效率、保真-真实感权衡、扩散/flow 先验或单步生成路径。
 
 Evolution. The evolutionary trajectory of latent-space research suggests that the field is moving from sprout toward all-round outbreak, in terms of not only the number of the works but also the diversity of paradigms. The early stage established feasibility by showing that reasoning-relevant structure already resides in internal activations and can, in part, bypass explicit verbalization. The subsequent foundation stage supplied theoretical justification, and initial multimodal extensions, thereby converting isolated demonstrations into a coherent research agenda. The later expansion and outbreak stages reveal a further transition: latent space is no longer treated as a compression trick for textual reasoning alone [27, 99, 297], but as a general framework spanning visual cognition, memory, collaboration, and embodied action. This progression indicates that latent space is best viewed not as a transient optimization of autoregressive models, but as an emerging systems principle for next-generation general intelligence.
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
-
 Mechanism. From a mechanistic perspective, the survey implies that progress in latent space is driven by the co-design of four interdependent dimensions: architecture, representation, computation, and optimization. The key issue is not simply whether a model contains latent variables, but what architectures are utilized, what representations are instantiated, how computation is operated through them, and at how they are optimized. This taxonomy reveals an important trend: the field is gradually moving from heuristic usage toward systematic principle, from externally integrated to internally enabled, from static and fixed to dynamic and adaptive, and from conventional designs to multiple paradigms. Accordingly, future research is less about adding latent space to existing models than about designing models whose primary core is intrinsically latent.
 
-> 💡 **批注**: 这段是 one-step SR 主线：关注效率、保真-真实感权衡、扩散/flow 先验或单步生成路径。
-
 Ability. In terms of ability, the most consequential contribution of latent space is that it broadens the functional scope of intelligence beyond explicit-space models. The survey shows that latent space of language-based models supports not only enhanced reasoning, but also planning, modeling, perception, memory, communication, and embodiment. What unifies these capacities is that they all require structures that are difficult, costly, or fundamentally lossy to externalize in natural language. Latent space therefore acts as a common substrate for general integration across modalities, timescales, and agents. Under this view, its ultimate promise lies not in replacing explicit textual tokens, but in enabling models to coordinate heterogeneous forms of information within a shared continuous latent space. The strongest long-term implication is that latent space may become the principal medium of general-purpose models.
-
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
 
 Overall, the perspective presented in this survey about latent space suggests that from its foundational properties to its historical expansion, from its underlying mechanisms to its emerging abilities, latent space consistently points toward a common conclusion: future intelligent systems may rely increasingly on latent rather than purely verbal computation as their primary operating principle.
 
@@ -41,75 +31,49 @@ Despite its growing promise as a machine-native substrate for computation, laten
 
 Evaluability. A central challenge for latent-space reasoning methods lies in their limited evaluability. Unlike explicit reasoning traces [93, 199], latent trajectories are not directly accessible to human inspection, which makes it inherently difficult to determine whether an intermediate computation is correct, complete, or even relevant to the task at hand [41, 104, 301]. This opacity substantially constrains process-level verification: researchers are often unable to distinguish between genuinely structured intermediate reasoning and representations that merely correlate with the correct output. Consequently, the evaluation of latent reasoning systems still relies predominantly on final-answer accuracy or on post hoc verbalization, both of which offer only indirect and potentially incomplete evidence about the actual reasoning process [99, 285].
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
+> 💡 **批注**: 这一段几乎是所有 latent memory/latent reasoning 论文的共同软肋。只看 final answer 对高风险任务远远不够，因为你根本不知道 memory 里存的是正确证据还是碰巧相关的捷径。
 
 Although some recent studies have begun to propose benchmarking strategies for latent-space reasoning [56], the field still lacks mature and widely accepted protocols for supervision and evaluation [166, 301]. Existing approaches remain fragmented across tasks, datasets, and measurement criteria, and there is as yet no standardized framework for assessing the faithfulness, robustness, or internal consistency of latent reasoning trajectories. Such benchmark fragmentation and metric inconsistency make fair comparison across methods difficult, hinder cumulative progress, and complicate the identification of genuine methodological advances. As a result, improving evaluability remains one of the most pressing open problems for the development of latent reasoning models.
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
-
 Controllability. Although latent space is, in principle, a highly operable substrate for computation and control, achieving reliable and generalizable manipulation of latent representations remains a substantial challenge in practice [130, 275, 297]. Fine-grained interventions on hidden states can indeed reshape model behavior in useful and sometimes remarkably precise ways; however, such interventions often suffer from relatively low controllability. The central difficulty lies not merely in identifying where and how to intervene, but in determining how high-level semantic intentions should be specified so that they are simultaneously machineactionable, sufficiently precise, and intelligible to human operators [147, 165, 299]. This tension exposes a deeper gap between continuous internal dynamics and discrete, interpretable objectives. Consequently, the development of truly controllable latent systems requires more than local steering techniques alone: it calls for principled mechanisms that can map explicit goals, safety requirements, and resource constraints onto internal computational processes in a robust and adaptive manner.
 
-> 💡 **批注**: 这段是 one-step SR 主线：关注效率、保真-真实感权衡、扩散/flow 先验或单步生成路径。
+> 💡 **批注**: controllability 的难点不是“能不能调 hidden state”，而是“目标能否稳定落到对的 latent 方向”。`Visual-Enhanced-Depth-Scaling`、`AlignVLM` 这种强调 routing/alignment 的工作，本质上都在试着缩小这个 gap。
 
 Interpretability. The difficulty lies in the very nature of latent representations: they are high-dimensional, distributed, and often deeply entangled, so that neither individual dimensions nor their induced trajectories map neatly onto stable semantic concepts [201, 252, 299]. What emerges is a representational space of immense expressive power, but one whose internal organization is resistant to human understanding. This opacity makes it challenging to explain why a model reaches a particular conclusion, to trace how information is transformed across successive stages of computation, or to determine where error and misalignment first arise [9, 103, 166, 301]. More importantly, the problem is not simply epistemic but institutional: systems that reason through inscrutable latent operations may become more powerful while simultaneously becoming less auditable, less diagnosable, and less accountable. Thus, there is still rooms for the interpretability study.
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
+> 💡 **批注**: 这里把 interpretability 提升到了制度层面。对医学 VLM 尤其成立：latent 记忆越强，越需要知道它在什么病例模式上形成了偏见，否则部署风险会被隐藏得更深。
 
 # 6.3 Future
 
 Looking ahead, the next decisive step for latent space research is not merely to produce better latent reasoning methods, but to establish latent space as the native substrate of machine intelligence. What is emerging from current progress is a broader architectural shift: explicit language may remain the interface for instruction, generation, and verification, while latent space increasingly becomes the internal workspace where models think, understand, simulate, remember, and act. In this sense, the future of latent space is not simply about improving efficiency, but about redefining where general-purpose operations happens.
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
-
 Theory. A central priority for future research is to move beyond empirical success toward a principled theoretical understanding of latent-space intelligence [58]. Rather than merely showing that latent works in practice, the field must explain how and why latent spaces support computation, under what conditions they outperform explicit token-level space, and what forms of reasoning are genuinely native to latent space. In this sense, the key question is not simply whether latent reasoning is more efficient than verbalized reasoning, but when it is more operable, more expressive, more scalable, and more generalizable as a computational substrate. More broadly, the field must progress from scattered theoretical validation to a unified framework for latent representation, latent computation, and the capability gains they enable.
-
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
 
 There is therefore an indispensable need for a foundational theory of latent space. Existing work has begun to provide formal accounts of its expressiveness and computational advantages [56, 252, 294], but a systematic theory remains underdeveloped [107, 166, 239, 285, 301]. Future research should clarify not only how latent reasoning operates, but also why, when, and under what constraints it surpasses explicit or verbal reasoning. This requires a deeper account of the geometry, semantics, optimization dynamics, and computational organization of latent trajectories, so that latent reasoning can be understood as more than an effective engineering technique.
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
-
 Equally important is a principled formulation of explicit and latent spaces as two complementary representational regimes within language-based intelligence [143, 239, 297, 301]. The central issue is not whether latent computation will replace language, but how symbolic and continuous representations differ in expressive capacity, computational function, and communicative role. Within such a framework, explicit language may remain the externally accessible interface for instruction, generation, and verification, while latent space serves as the internal workspace for reasoning, abstraction, memory, simulation, and planning. The theoretical goal is to explain how these two spaces interact, what kinds of information and operations are most naturally allocated to each, and what trade-offs emerge in their coordination.
-
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
 
 Future work must also develop a principled theory of trustworthy latent space. Because latent trajectories are inherently opaque to direct human inspection, progress cannot rely on outcome-level performance alone [58, 99, 297]. Instead, the field needs rigorous frameworks for evaluability, controllability, and interpretability, together with standardized benchmarks and supervision protocols, to assess the faithfulness, robustness, and internal consistency of latent computation. Without such foundations, benchmark fragmentation and metric inconsistency will continue to obstruct fair comparison and cumulative progress.
 
-> 💡 **批注**: 这是实验证据段：同时看主指标、消融、效率和案例，判断 claim 是否被支撑。
-
 Ultimately, the future of latent-space research lies in transforming latent space from an empirical method into a principled theory: one that formally explains its computational advantages, formalizes its relation to explicit space, and renders its hidden processes evaluable, controllable, and interpretable.
-
-> 💡 **批注**: 这是实验证据段：同时看主指标、消融、效率和案例，判断 claim 是否被支撑。
 
 Multimodal. The survey suggests that the future of multimodal intelligence, e.g., visual models and embodied models, should not be understood as the mere addition of more sensory channels to language models. Rather, the more consequential shift is the emergence of latent space as a shared computational workspace, in which language, vision, action, memory, and inter-agent communication can be jointly processed within continuous representations. In this view, latent space is no longer a secondary device for compressing reasoning traces, but a machine-native substrate that supports the internal organization of general-purpose intelligence across modalities and timescales.
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
-
 This perspective implies a first major direction for future research: the transition from text-mediated multimodality to modality-native multimodality latent computation. Existing multimodal systems often rely on translating non-linguistic inputs into textual or tokenized forms before higher-level operation takes place [7, 114, 261]. By contrast, the survey highlights that latent representations can preserve high-fidelity information, reduce modality gaps, and support smoother fusion, alignment, and interaction than explicit symbolic channels. The long-term goal, therefore, is not simply to describe perception in language, but to enable models to operate within visual, spatial, and action-oriented latent spaces directly.
-
-> 💡 **批注**: 这段是 one-step SR 主线：关注效率、保真-真实感权衡、扩散/flow 先验或单步生成路径。
 
 A second direction concerns the evolution from isolated multimodal models to integrated multimodal systems [95, 100, 135, 264].Across its ability-oriented taxonomy, the survey emphasizes that latent space enables not only reasoning, but also planning, modeling, perception, memory, collaboration, and embodiment. What unifies these capabilities is that they all involve structures that are difficult, costly, or lossy to externalize in natural language. For this reason, the future of multimodal AI is likely to depend on architectures in which perception, world modeling, memory formation, communication, and action planning are coordinated through a common latent substrate rather than through loosely coupled modules or additional calculations.
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
-
 Overall, the survey points toward a broader conclusion: the future of multimodal model lies not in expanding token-centric generation to more modalities, but in establishing a unified latent computational substrate for cross-modal reasoning, memory, communication, and embodied interaction. Under this framework, explicit language is likely to remain the interface for instruction, reporting, and verification, whereas latent space increasingly becomes the internal medium in which models think, simulate, coordinate, and act.
-
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
 
 Downstream Task. Future downstream progress should be understood as a broader shift in which explicit language remains the interface for instruction, supervision, and verification, while latent space increasingly serves as the internal workspace for computation. Under this view, the most promising downstream tasks are those whose intermediate states are poorly captured by discrete verbal traces, including search-intensive reasoning [58, 99, 297], sequential planning [56, 252], visual perception [261, 261], long-horizon memory [68], multi-agent coordination [60], and embodied control [114]. Across these settings, latent representations offer a unified substrate for compact search, continuous refinement, richer visual grounding, persistent memory, higher-bandwidth coordination, and transferable action abstractions; accordingly, future systems are likely to perform most internal inference, planning, and state evolution in latent space, and externalize only final outputs or strategically selected checkpoints. More broadly, the survey suggests that the central opportunity of latent space lies in moving from text-centric problem solving toward persistent internal state management across heterogeneous tasks and modalities, although realizing this promise will require principled progress in evaluation, control, interpretability, and interface standardization.
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
-
 Governable. A promising future direction is to develop latent space into an observable and governable substrate. Although latent representations are continuous, compact, and expressive, these same properties also make them difficult to evaluate, control, and interpret. Future work should therefore go beyond improving latent reasoning accuracy, and instead establish a full methodology for trustworthy latent computation: benchmark suites that assess the faithfulness and robustness of latent trajectories; supervision strategies that provide process-level signals rather than only final-answer feedback; controllable latent interfaces that align internal dynamics with explicit goals, resource budgets, and safety requirements; and explainable frameworks that identify semantic structure, causal pathways, and failure sources in latent representations. Such efforts would help bridge the gap between the efficiency of machine-native computation and the need for human oversight, potentially enabling latent space to serve as a dependable substrate.
-
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
 
 ---
 
 ## 🔖 Section 总结
 
 ### 核心洞察
-1. 本节对应论文原始大分节，原文已完整保留。
-2. 阅读重点是把本节的机制/证据映射到论文主 claim。
-3. 后续如有疑问，可在本 section 继续补充更细批注。
+1. Outlook 的结论很明确：latent 的下一步难题不是再涨一点精度，而是 evaluability、controllability、interpretability。
+2. 这些难题在视觉记忆、医学诊断、长期交互场景里会被放大，因为错误 latent 轨迹更难追责。
+3. 对后续选题来说，这一节几乎就是研究问题清单。

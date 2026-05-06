@@ -29,3 +29,20 @@
 | TinySR | TinySR 面向实时 Real-ISR，把 one-step diffusion teacher 通过深度剪枝、VAE | Speedup: up to 5.68×; Parameter reduction: 83% |
 | OFTSR | OFTSR 用 conditional flow teacher 和 ODE trajectory alignment  | Inference steps: 1; Teacher: conditional flow-based SR model |
 | OSEDiff | OSEDiff 将低质量图像直接作为扩散起点，用 latent-space VSD 把 Stable Diffusion | Inference steps: 1; Inference time: 0.11s on A100 for 512×512 |
+
+## 横向数据流与研究机会
+
+| 论文 | 数据流抓手 | 主要优势 | 主要待做 |
+|------|------------|----------|----------|
+| RCOD-SR | LDG / DAS / VPIM | 控制变量直接落在 diffusion timestep/latent domain 上，和多步方法的可调采样逻辑一致。 | 学习一个可校准的 degradation/realism estimator，把用户 slider 映射到稳定的感知效果。 |
+| CODSR | RGPA / LQFM / TMG / VSD | 把“哪里该生成更多细节”做成空间自适应，而不是全图统一释放生成先验。 | 把 RGPA 的区域权重与退化估计或不确定性估计相连，自动决定局部生成强度。 |
+| TinySR | DIA / Expansion-Corrosion / VAE compression / prompt-time removal | 问题定义非常工程化：不是提出更复杂先验，而是让 one-step diffusion SR 真正可部署。 | 做硬件感知剪枝/量化联合搜索，直接优化端侧 latency 和显存峰值。 |
+| OFTSR | conditional flow teacher / ODE trajectory alignment / one-step student | 从 flow/ODE 角度重新定义 one-step SR，比固定 timestep diffusion 更自然地表达连续轨迹。 | 把 real-world degradation estimator 引入 flow condition，让 trajectory 同时感知退化类型。 |
+| OSEDiff | LQ latent initialization / LoRA tuning / latent VSD / data loss | 把 LQ latent 作为起点，天然保留输入结构，避免随机噪声起点带来的不确定性。 | 加入 RCOD 式 timestep/latent group 控制，把 OSEDiff 从固定映射变成可调映射。 |
+
+## 统一阅读问题
+
+- 单步 SR 的生成自由度来自哪里：fixed timestep、latent noise、flow trajectory，还是 teacher score?
+- fidelity-realism trade-off 是全图控制、局部控制，还是隐含在训练数据/teacher 中?
+- 方法是否真的 one-step 端到端部署，还是把成本转移到 VAE、prompt extractor、teacher 或额外控制分支?
+- 视觉质量提升是否伴随结构 hallucination，尤其在文字、人脸身份、规则纹理和平坦区域上?

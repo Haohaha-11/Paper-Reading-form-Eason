@@ -15,9 +15,9 @@
 
 ## Why Read This Paper
 
-- 
-- 
-- 
+- [填写：它解决的关键问题]
+- [填写：它和本 topic 的关系]
+- [填写：它值得复用的方法或实验设计]
 
 ## Section Navigation
 
@@ -29,15 +29,43 @@
 
 ## Core Contributions
 
-1. 
-2. 
-3. 
+1. [填写：贡献 1]
+2. [填写：贡献 2]
+3. [填写：贡献 3]
 
 ## Key Figures / Tables
 
 | ID | What It Shows | Takeaway |
 |----|---------------|----------|
-| Figure 1 |  |  |
+| Figure 1 | [填写] | [填写] |
+
+## Data Flow
+
+| Stage | Input | Transformation | Output |
+|-------|-------|----------------|--------|
+| 1. [阶段名] | [输入] | [变化] | [输出] |
+| 2. [阶段名] | [输入] | [变化] | [输出] |
+| 3. [阶段名] | [输入] | [变化] | [输出] |
+
+**Overall input**: [填写]
+**Overall output**: [填写]
+
+## Strengths, Weaknesses, and Future Work
+
+### Strengths
+
+- [填写]
+- [填写]
+
+### Weaknesses / Risks
+
+- [填写]
+- [填写]
+
+### What Can Be Done Next
+
+- [填写]
+- [填写]
 
 ## Reusable Ideas
 
@@ -46,7 +74,9 @@
 - **Experiment design**:
 - **Writing pattern**:
 
-## Open Questions
+## Reading Q&A Notes
 
-- 
-- 
+- **Q:**
+  A:
+- **Q:**
+  A:

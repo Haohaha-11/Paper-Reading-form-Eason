@@ -3,71 +3,48 @@
 # Abstract
 
 ## 📌 预览
-摘要快速给出本文问题、方法和结果。读完先记住一句话：RCOD-SR 用 latent domain grouping、退化感知蒸馏和视觉 prompt 注入，让 one-step diffusion SR 具备推理时 realism 控制能力。
-
+摘要给出全文的压缩版问题链：OSD 已经把 diffusion SR 做到单步高效，但固定 timestep/固定蒸馏强度会把输出锁在一个静态 fidelity-realism 折中点。RCOD-SR 的核心是把退化程度映射到 latent domain group 与 timestep，再用 DAS 和 VPIM 让这个控制在训练、蒸馏和条件输入中都成立。
 ---
+
+> 💡 **Q&A 批注记录**:
+> - Q: 为什么单步 SR 难以控制 realism？
+> - A: 因为多数 one-step 模型在固定 timestep/固定蒸馏强度下学习一个确定映射，推理时没有多步采样那样的 noise schedule 可调自由度。
+> - Q: 摘要里的 minimal training paradigm modifications 指什么？
+> - A: 主要指 LDG 利用 diffusion 本来就有的 timestep condition 做分组控制，不需要为 realism slider 另起一个大模块；额外模块集中在 DAS 的采样策略和 VPIM 的条件替换上。
+
 
 # Realism Control One-step Diffusion for Real-World Image Super-Resolution
 
 Zongliang Wu1, 2, 3, \*, Siming Zheng 3, \*, Peng-Tao Jiang3, #, Xin Yuan2, #
+> 💡 **基本信息**: 作者来自高校与 vivo，说明这篇的应用目标不是纯 benchmark，而是偏真实移动端/部署场景：单步效率和可控输出同等重要。
+
 
 1 Zhejiang University, Hangzhou, China 2 School of Engineering, Westlake University, Hangzhou, China 3 vivo Mobile Communication Co., Ltd \* Equal Contribution # Corresponding Author {wuzongliang, xyuan}@westlake.edu.cn, {zhengsiming, pt.jiang}@vivo.com
+> 💡 **读法提示**: 工业作者参与时，后面实验里的 A100 延迟、参数量、去掉 VLM/text extractor 的开销收益都要认真看，不能只看感知指标。
+
 
 # Abstract
 
 Pre-trained diffusion models have shown great potential in real-world image super-resolution (Real-ISR) tasks by enabling high-resolution reconstructions. While one-step diffusion (OSD) methods significantly improve efficiency compared to traditional multi-step approaches, they still have limitations in balancing fidelity and realism across diverse scenarios. Since the OSDs for SR are usually trained or distilled by a single timestep, they lack flexible control mechanisms to adaptively prioritize these competing objectives, which are inherently manageable in multi-step methods through adjusting sampling steps. To address this challenge, we propose a Realism Controlled One-step Diffusion (RCOD) framework for Real-ISR. RCOD provides a latent domain grouping strategy that enables explicit control over fidelity-realism trade-offs during the noise prediction phase with minimal training paradigm modifications and original training data. A degradation-aware sampling strategy is also introduced to align distillation regularization with the grouping strategy and enhance the controlling of trade-offs. Moreover, a visual prompt injection module is used to replace conventional text prompts with degradation-aware visual tokens, enhancing both restoration accuracy and semantic consistency. Our method achieves superior fidelity and perceptual quality while maintaining computational efficiency. Extensive experiments demonstrate that RCOD outperforms state-of-the-art OSD methods quantitatively and visually, with flexible realism control capabilities in the inference stage. Code is available at https://zongliang-wu.github.io/RCOD-SR.
-
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
-
-# Introduction
-
-Image super-resolution (SR) (Dong et al. 2015; Zhang et al. 2018b, 2021; Ledig et al. 2017; Liang et al. 2021) aims to recover a high-resolution (HR) image from its low-resolution (LR) counterpart.
-
-> 💡 **批注**: 这段是 one-step SR 主线：关注效率、保真-真实感权衡、扩散/flow 先验或单步生成路径。
-
-Traditional image super-resolution simplifies the degradation process as known noise, blur, or downsampling. In recent years, real-world image super-resolution (Real-ISR) (Zhang et al. 2021; Wang et al. 2021) has attracted more attention due to the increasing demand for reconstructing high-resolution images under real-world unknown degradations, which is more challenging and practical in real applications.
-
-> 💡 **批注**: 这段是 one-step SR 主线：关注效率、保真-真实感权衡、扩散/flow 先验或单步生成路径。
-
-![Figure S1](../images/ea2f00cbaba7216e4a434ae6892634632374945477c9878170184b02c04cb510.jpg)
-*Figure S1: Figure S1: While previous one-step diffusion methods, such as S3Diff (Zhang et al. 2024) only yield one optimal result (b), our approach offers the flexibility to control images (cd) with different fidelity-realism trade-offs during inference, enhancing practical applicability across different scenarios.*
-
-> 💡 **Figure S1 批读**: 这张图通常承担方法框架、动机或视觉对比作用；重点看它支撑的是机制、效果还是局限。
-
-While recent advances in Stable Diffusion (SD) models (Ho, Jain, and Abbeel 2020; Song et al. 2020), especially the large-scale pretrained text-to-image (T2I) models have demonstrated unprecedented capabilities in various downstream vision tasks (Zhang, Rao, and Agrawala 2023; Rombach et al. 2022). Some works leveraging pre-trained SD models for multi-step SR, such as DiffBIR (Lin et al. 2023), StableSR (Wang et al. 2024a), and SeeSR (Wu et al. 2024b), have achieved remarkable SR quality through iterative latent space optimization. Though these methods achieve impressive perceptual quality, they suffer from computational inefficiency. The caused latency by multi-step sampling makes real-time applications impractical.
-
-> 💡 **批注**: 这段是 one-step SR 主线：关注效率、保真-真实感权衡、扩散/flow 先验或单步生成路径。
-
-![Figure S2](../images/55b2ffa6afc8ebb2ac100c19aeac3f789f98af0191b2c52ddae6f6426998552a.jpg)
-*Figure S2: Figure S2: Realism control one-step diffusion (RCOD) training process. The left part illustrates several synthesized real-world LR images by applying diverse degradations with varying types and intensities on an HR image. (a) Existing vanilla one-step diffusion (OSD) methods for super-resolution (SR): These LR images are directly sent into the diffusion forward and reverse process; the denoising U-Net tends to learn to recover the ‘average’ degradation, leading to a monotonous generation ability within the latent domain. (b) Our proposed Realism Control One-Step Diffusion employs a latent domain grouping strategy. This allows for adaptive control of timesteps (denoising degrees) during the forward process according to the degradation degree in the latent domain. As a result, the denoising U-Net can acquire a more diverse generation capability based on the timestep.*
-
-> 💡 **Figure S2 批读**: 这张图通常承担方法框架、动机或视觉对比作用；重点看它支撑的是机制、效果还是局限。
-
-To address the efficiency concerns, recent attempts focus on one-step diffusion frameworks (Wu et al. $2 0 2 4 \mathrm { a }$ ; Zhang et al. 2024), which distill multi-step diffusion priors into single-step inference through knowledge distillation and achieve 10×to $1 0 0 \times$ speedup over previous multi-step diffusion-based SR methods. However, existing one-step diffusion approaches face a fundamental dilemma: the deterministic single-step generation inherently lacks the controllable fidelity-realism balance that multi-step methods achieve via step-wise noise scheduling. As illustrated in Fig. S1, previous one-step diffusion super-resolution (SR) methods, such as S3Diff (Zhang et al. 2024), can only generate a single optimal result but can not meet the need for dynamic adjustment between fidelity and realism. The root cause lies in current OSD training paradigms. Most methods align all the LR inputs under different unknown degradations with a single convergence space through single timestep conditioned training, which results in a balanced static preference for fidelity or realism and prevents adaptive adjustments for scenario-specific requirements.
-
-> 💡 **批注**: 这段是 one-step SR 主线：关注效率、保真-真实感权衡、扩散/flow 先验或单步生成路径。
-
-Bearing the above concerns in mind, we propose a novel framework that provides one-step diffusion Real-ISR methods with the capability to monotonically control the level of realism. This framework, which we denote as Realism Controlled One-step Diffusion (RCOD), can be easily integrated into existing one-step diffusion methods for Real-
-
-> 💡 **批注**: 这段是 one-step SR 主线：关注效率、保真-真实感权衡、扩散/flow 先验或单步生成路径。
-
-ISR. Specifically, during the training phase, we incorporate a Latent Domain Grouping (LDG) strategy into the latent diffusion process, grouping training data according to a latent domain metric. Through this strategy, the diffusion denoising network learns to perceive variations in degradation across training samples, thereby gaining adaptive restoration capabilities. Furthermore, to address the inherent limitations caused by text prompts, we introduce a Visual Prompt Injection Module (VPIM) to enhance prompt quality. Our contributions are summarized as follows:
-
-> 💡 **批注**: 这段是 one-step SR 主线：关注效率、保真-真实感权衡、扩散/flow 先验或单步生成路径。
-
-• We propose a simple but effective latent domain grouping (LDG) strategy that reformulates the noise prediction process by partitioning the latent space into fidelity and realism oriented domains. This allows explicit control over detail preservation versus generative enhancement through simple training paradigm modifications, without requiring additional trainable parameters. During distillation, we introduce a degradation-aware sampling (DAS) strategy that reformulates timestep sampling in the pretrained model by adaptively aligning it with our LDG framework, enhancing controlling with regularization strength. • To reduce the computational burden of VLM and dependencies on manual text prompts, we propose a visual prompt injection module (VPIM) to replace text prompts with degradation-aware visual tokens, enhancing both restoration accuracy and semantic consistency.
-
-> 💡 **列表批读**: 这组条目通常是在列贡献、设置、发现或模块；建议逐条对应到论文 claim。
-
-• We empirically evaluate our approach on widely used stable diffusion-based and their distillation version Real-ISR methods, demonstrating quality improvement and the effectiveness of proposed approach.
-
-> 💡 **列表批读**: 这组条目通常是在列贡献、设置、发现或模块；建议逐条对应到论文 claim。
+> 💡 **摘要主线**: 这段有三个关键判断。第一，固定 timestep 是 OSD 可控性不足的根因：模型只能学到一个平均退化偏好。第二，LDG 不直接“生成更多纹理”，而是把退化程度转成 denoising degree，让推理时的 timestep 变成 realism 控制旋钮。第三，DAS 和 VPIM 分别补两处容易失效的环节：蒸馏正则不能抹平分组差异，prompt 条件不能和当前 LR 图像脱节。
 
 ---
 
 ## 🔖 Section 总结
 
+### 关键数字速查
+| 指标 | 数值 |
+|------|------|
+| 一句话 | 把退化严重度映射到 latent domain group / timestep，使单步 Real-ISR 也能在推理时调 fidelity-realism trade-off。 |
+| 输入 | 真实退化 LR image + 可选 realism 控制强度 |
+| 输出 | 可按 realism level 调节的 SR image |
+
 ### 核心洞察
-1. 本节对应论文原始大分节，原文已完整保留。
-2. 阅读重点是把本节的机制/证据映射到论文主 claim。
-3. 后续如有疑问，可在本 section 继续补充更细批注。
+1. RCOD-SR 的 novelty 不在“又一个 one-step SR”，而在让 one-step 模型恢复一部分多步采样里的可调 denoising 自由度。
+2. LDG 是控制入口，DAS 是蒸馏对齐，VPIM 是条件质量；三者分别对应 timestep、teacher regularization、cross-attention condition。
+3. 摘要的强 claim 是“更好指标 + 单步效率 + 推理可控”同时成立，后文实验需要逐项核验。
+
+### 可追问点
+- 为什么单步 SR 难以控制 realism？
+- LDG 真正控制的是什么？
+- VPIM 替换文本 prompt 后，语义能力来自哪里？

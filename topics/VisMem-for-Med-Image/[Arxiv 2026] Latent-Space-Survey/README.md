@@ -1,7 +1,7 @@
 # The Latent Space: Foundation, Evolution, Mechanism, Ability, and Outlook
 
-**作者**: Xinlei Yu; Zhangquan Chen; Yongbo He; Tianyu Fu; Cheng Yang; Chengming Xu; Yue Ma; Xiaobin Hu; Zhe Cao; Jie Xu; Guibin Zhang; Jiale Tao; Jiayi Zhang; Siyuan Ma; Kaituo Feng; Haojie Huang; Youxing Li; Ronghao Chen; Huacan Wang; Chenglin Wu; Zikun Su; Xiaogang Xu; Kelu Yao; Kun Wang; Chen Gao; Yue Liao; Ruqi Huang; Tao Jin; Cheng Tan; Jiangning Zhang; Wenqi Ren; Yanwei Fu; Yong Liu; Yu Wang; Xiangyu Yue; Yu-Gang Jiang; Shuicheng Yan  
-**会议**: Arxiv 2026  
+**作者**: Xinlei Yu; Zhangquan Chen; Yongbo He; Tianyu Fu; Cheng Yang; Chengming Xu; Yue Ma; Xiaobin Hu; Zhe Cao; Jie Xu; Guibin Zhang; Jiale Tao; Jiayi Zhang; Siyuan Ma; Kaituo Feng; Haojie Huang; Youxing Li; Ronghao Chen; Huacan Wang; Chenglin Wu; Zikun Su; Xiaogang Xu; Kelu Yao; Kun Wang; Chen Gao; Yue Liao; Ruqi Huang; Tao Jin; Cheng Tan; Jiangning Zhang; Wenqi Ren; Yanwei Fu; Yong Liu; Yu Wang; Xiangyu Yue; Yu-Gang Jiang; Shuicheng Yan
+**会议**: Arxiv 2026
 **链接**: [arXiv 2604.02029](https://arxiv.org/abs/2604.02029) | [PDF](https://arxiv.org/pdf/2604.02029v1)
 
 ## 一句话总结
@@ -41,6 +41,45 @@
 | 主线 | foundation/evolution/mechanism/ability/outlook |
 | 相关能力 | memory, perception, reasoning |
 | 课题作用 | latent memory 概念底座 |
+
+## 数据流：输入 → 中间表示 → 输出
+
+| 阶段 | 输入 | 中间变化 | 输出 |
+|------|------|----------|------|
+| 1. 问题界定 | explicit token generation、verbal CoT、传统视觉生成 latent space 等相邻概念 | 区分 language-based models 中的 continuous latent computation 与显式文本轨迹，避免把“不可见中间态”泛化成同一个概念 | latent space 的研究边界 |
+| 2. 历史演进 | early latent reasoning、representation learning、test-time compute、hidden-state intervention 等工作 | 按时间和技术范式梳理从探索性方法到大规模 latent computation 的发展 | evolution map |
+| 3. 机制分类 | 架构、表示、计算、优化相关论文 | 从 mechanism 角度把方法拆成 Architecture / Representation / Computation / Optimization | 可比较的方法坐标系 |
+| 4. 能力映射 | reasoning、planning、modeling、perception、memory、collaboration、embodiment 等能力线 | 解释 latent space 如何承载或替代显式 token 级过程 | ability taxonomy |
+| 5. 展望输出 | 机制分类 + 能力谱系 + 当前限制 | 汇总可解释性、稳定性、评测、系统集成等开放问题 | 可迁移到 VisMem/医学 VLM 的研究问题清单 |
+
+**整体输入**: 分散的 latent reasoning、latent memory、latent perception 和 continuous computation 文献。
+**整体输出**: 一个可复用的 latent space 综述框架，用于定位具体论文的机制、能力、风险和未来方向。
+
+## 优缺点与还能做什么
+
+### 优点
+- 结构清楚：foundation/evolution/mechanism/ability/outlook 五段式能把“latent space”从概念、历史、方法、能力和未来问题逐层拆开。
+- 对本 topic 很有用：VisMem、Visual Enhanced Depth Scaling、MedSynapse-V 都可以放进 memory/perception/reasoning 的能力谱系里比较。
+- 强调 latent space 与 explicit/verbal space 的差异，避免把所有 CoT 压缩、hidden-state 推理、视觉 latent 都混成一个概念。
+
+### 局限
+- 综述覆盖面很广，具体到医学 VLM、文档理解或临床诊断时，还需要额外的领域安全性和可解释性评估。
+- taxonomy 更偏概念组织，很多方法之间的可比性仍依赖读者自己补实验口径、模型规模、数据设置和评测指标。
+- latent computation 的不可见性风险没有完全解决：越强调 continuous hidden process，越需要设计能审计、能定位错误来源的工具。
+
+### 还能做什么
+- 为本 topic 建一个二级 taxonomy：alignment 入口、memory 调用、latent reasoning 深度、医学诊断先验、因果验证。
+- 把综述中的 ability 维度转成评测矩阵，例如 memory retention、visual grounding、clinical evidence faithfulness、latency 和 calibration。
+- 继续追踪 2026 年后 latent memory / latent visual reasoning 新论文，检查它们究竟是减少显式 token，还是引入了新的不可解释中间状态。
+
+## 阅读 Q&A 记录
+
+- **Q: 为什么这篇 survey 要先读，而不是直接读 VisMem 或 MedSynapse-V？**
+  A: 因为后两篇都在使用 latent memory / latent diagnostic memory 这类概念；先有 survey 的边界和分类，才能判断它们是在做 representation、computation、optimization，还是只是换了术语。
+- **Q: 它和医学影像 topic 的关系是不是太远？**
+  A: 不是直接医学方法，但它提供“隐式连续计算如何承载 memory/perception/reasoning”的上位框架；医学影像只是更高风险、更需要可解释性的落地场景。
+- **Q: 读这篇最应该带走什么？**
+  A: 不要只问 latent space 能不能提升 accuracy，还要问它把信息存在何处、如何更新、如何被调用、如何评测，以及错误时能不能被定位。
 
 ## 📊 Citation Landscape
 

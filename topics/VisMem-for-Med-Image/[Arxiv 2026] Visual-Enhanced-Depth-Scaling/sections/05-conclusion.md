@@ -9,7 +9,9 @@
 
 In this paper, we empirically reveal two critical observations: the vision-text optimization disparity and the fixed-depth optimization dilemma. In light of these findings, we propose a visual replay module and routing depth scaling to collaboratively enhance visual perception and exploit critical tokens for deeper contextual reasoning. Instead of relying on extensive latent-supervised annotations or predefined visual priors, we adopt curriculum training to progressively capture rich contextual information, yielding highly informative latent representations. Extensive experiments demonstrate that: (1) our approach not only reduces decoding latency but also achieves superior performance across diverse benchmarks; (2) the proposed components exhibit strong generalization across various backbones and tasks; and (3) visualization analysis reveals significantly enhanced visual grounding of the learned latent tokens. In future work, we plan to extend this framework to more complex reasoning scenarios, such as long-term video understanding, and scale it to larger model architectures.
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
+> 💡 **结论批读**: 结论回到两个诊断：vision-text optimization disparity 和 fixed-depth optimization dilemma。本文的最终 claim 是：SCF-VR 强化视觉证据，RDS 给关键 token 更深上下文推理，curriculum training 把显式 CoT 内化成 latent 表示。局限没有展开太多，但未来方向提到长视频和更大模型，说明当前证据主要集中在静态图像 benchmark 和 2B-7B backbone。
+
+> 💡 **批注**: 结论页也暴露了边界条件：方法依赖 attention saliency、router 选择和 curriculum 内化都稳定成立。迁移到医学影像、多图报告或长视频时，首先要重新验证这几个前提。
 
 # References
 
@@ -88,13 +90,14 @@ In this paper, we empirically reveal two critical observations: the vision-text 
 [79] Ge Zheng, Bin Yang, Jiajin Tang, Hong-Yu Zhou, and Sibei Yang. Ddcot: duty-distinct chain-of-thought prompting for multimodal reasoning in language models. In Proceedings of the 37th International Conference on Neural Information Processing Systems, pages 5168–5191, 2023. 3   
 [80] Ziwei Zheng, Michael Yang, Jack Hong, Chenxiao Zhao, Guohai Xu, Le Yang, Chao Shen, and Xing Yu. Deepeyes: Incentivizing” thinking with images” via reinforcement learning. arXiv preprint arXiv:2505.14362, 2025. 7
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
+> 💡 **参考文献批读**: References 显示本文站在多条线交叉处：latent reasoning、Visual CoT/工具增强、attention/visual grounding、VisMem/latent space survey。对当前 topic，最相关的是 [72] VisMem 和 [73] latent space outlook，它们把本文的 SCF-VR/RDS 放进“视觉记忆与隐空间推理”谱系中。
 
 ---
 
 ## 🔖 Section 总结
 
 ### 核心洞察
-1. 本节对应论文原始大分节，原文已完整保留。
-2. 阅读重点是把本节的机制/证据映射到论文主 claim。
-3. 后续如有疑问，可在本 section 继续补充更细批注。
+1. 论文完整闭环是：梯度诊断 → 视觉 replay → token depth scaling → curriculum latent training → 多基准验证。
+2. 最可复用思想是把 attention-selected visual evidence 变成可训练的 replay latent，并把额外计算给复杂 token。
+3. 主要不足是没有医学专用验证，也缺少对 replay 区域因果性的严格测试。
+4. 后续可沿长视频、多图医学检查、视觉证据可审计 trace 和风险感知 routing 继续扩展。

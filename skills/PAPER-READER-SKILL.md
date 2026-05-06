@@ -326,6 +326,9 @@ sections/
 3. **核心贡献**：3-5 点
 4. **Section 导航表**：链接到每个 section 文件，带简短描述
 5. **关键数字速查**（可选）
+6. **数据流：输入 → 中间表示 → 输出**（必须）
+7. **优缺点与还能做什么**（必须）
+8. **阅读 Q&A 记录**（必须）
 
 格式：
 ```markdown
@@ -355,6 +358,28 @@ sections/
 | 指标 | 数值 |
 |------|------|
 | ... | ... |
+
+## 数据流：输入 → 中间表示 → 输出
+
+| 阶段 | 输入 | 变换 | 输出 |
+|------|------|------|------|
+| 1. ... | ... | ... | ... |
+
+## 优缺点与还能做什么
+
+### 优点
+- ...
+
+### 局限 / 风险
+- ...
+
+### 还能做什么
+- ...
+
+## 阅读 Q&A 记录
+
+- **Q: ...?**
+  A: ...
 ```
 
 同时，每个 section 文件**顶部**加返回链接：
@@ -364,7 +389,69 @@ sections/
 
 ---
 
-### 规则 8：添加 Citation Landscape（Semantic Scholar 数据）
+### 规则 8：批注质量必须达到 Eason 风格
+
+批注不是占位解释，必须像 EasonAI-5589/paper-reading 中的成品笔记一样，围绕论文自身机制做具体拆解。
+
+必须做到：
+1. **批注标题具体**：使用 `问题动机`、`机制拆解`、`公式批读`、`Figure 2 批读`、`消融解读`、`Q&A 批注记录` 等有信息量的标题；不要大量使用只有 `批注` 的泛标题。
+2. **每条批注回答一个问题**：这段解决什么问题、输入输出是什么、为什么这样设计、和 baseline 差异在哪里、实验是否支撑 claim。
+3. **方法 section 按数据流批注**：明确输入、核心中间变量/latent、模块变换、loss/teacher 信号、最终输出。
+4. **实验 section 按证据链批注**：主结果、消融、效率、视觉案例要分别说明支撑哪个 claim；区分 fidelity 指标和 perceptual 指标。
+5. **图表/公式必须专门批读**：Figure/Table/Equation 后的批注不能是“这张图通常承担...”这类模板句，必须解释该图表/公式在本文中的具体作用。
+6. **避免跨论文污染**：不得把另一篇论文的模块、任务或领域写入当前论文。例如 SR 论文中不得出现无关的 medical VLM 批注。
+7. **Section 总结要有可复用洞察**：总结至少包含关键数字/变量、核心洞察、可追问点，而不是“原文已完整保留”这类形式化 QA。
+
+禁止出现的模板化批注：
+- “这段是 one-step SR 主线...”
+- “这张图通常承担方法框架...”
+- “公式通常定义过程、loss 或更新规则...”
+- “本节对应论文原始大分节，原文已完整保留。”
+
+---
+
+### 规则 9：阅读时生成 Q&A，并沉淀到旁批注
+
+深读时要边读边提出问题，再查正文、附录、图表、相关资料或 Semantic Scholar 信息回答，并把高价值 Q&A 写入对应 section 或 README。
+
+Q&A 记录原则：
+1. **问题来自阅读障碍或研究判断**：例如“为什么固定 timestep 会导致不可控？”、“这个 loss 的 teacher 信号是什么？”、“这个指标提升是否牺牲保真？”。
+2. **回答要有定位**：说明答案来自正文哪一节、哪张图/表、哪个公式、附录或外部资料。
+3. **转化为旁批注**：在相应段落旁添加 `> 💡 **Q&A 批注记录**:`，或在 README 的 `阅读 Q&A 记录` 中汇总。
+4. **优先记录可复用问题**：方法复现、数据流、局限、实验证据、未来工作相关问题优先。
+
+推荐格式：
+```markdown
+> 💡 **Q&A 批注记录**:
+> - Q: 这个模块真正改变了哪一个中间表示？
+> - A: 它把 LQ latent / visual token / teacher score 改成 ...，对应 Fig. X 和 Eq. Y。
+```
+
+---
+
+### 规则 10：多篇论文优先用 subagent 并行
+
+当用户一次给多篇论文时，应优先采用并行批读，而不是串行完成所有论文。
+
+执行方式：
+1. **一篇论文一个 worker/subagent**：每个 subagent 只负责一个论文目录，写集限定为该论文的 `README.md` 和 `sections/*.md`，避免互相覆盖。
+2. **主线程负责公共文件**：主线程只处理 topic README、根 README、skill/template、最终 QA、git commit/push 等公共集成工作。
+3. **明确所有权**：启动 subagent 时必须说明它不是唯一修改者，不能回退其他论文或公共文件。
+4. **并行读写边界**：不同 subagent 的写集必须互不重叠；如果两篇论文共享同一 topic README，由主线程统一更新。
+5. **最终统一 QA**：所有 subagent 完成后，主线程必须统一检查模板批注残留、跨论文串稿、README 必备 section、section 链接、原文完整性和 git diff 范围。
+
+如果当前运行环境要求用户显式允许 subagent，则先向用户确认；一旦用户同意，多篇论文应按上述方式并行拆分。
+
+推荐分工示例：
+```text
+Worker A: 只改 Paper-1/README.md 和 Paper-1/sections/*.md
+Worker B: 只改 Paper-2/README.md 和 Paper-2/sections/*.md
+Main: 更新 topic README、skill/template，做最终 QA 和提交
+```
+
+---
+
+### 规则 11：添加 Citation Landscape（Semantic Scholar 数据）
 
 每篇论文的 README.md 必须包含 `📊 Citation Landscape` section，数据来源于 Semantic Scholar API（免费，无需 API key）。
 
@@ -400,7 +487,7 @@ curl -X POST "https://api.semanticscholar.org/recommendations/v1/papers/?fields=
 
 ---
 
-### 规则 9：完成后必须推送到 GitHub 并更新大仓库 README
+### 规则 12：完成后必须推送到 GitHub 并更新大仓库 README
 
 批读完成后：
 1. `git add -A` **整个论文目录**（不要只 add sections/，必须包含 images/、full.md、content_list.json、PDF 等所有文件）

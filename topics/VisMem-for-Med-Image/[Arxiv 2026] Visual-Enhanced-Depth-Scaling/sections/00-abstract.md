@@ -15,13 +15,15 @@ Yudong Han1,2\*, Yong Wang2\*, Zaiquan Yang3, Zhen $\mathrm { Q u ^ { 4 } }$ , L
 
 Multimodal latent reasoning has emerged as a promising paradigm that replaces explicit Chain-of-Thought (CoT) decoding with implicit feature propagation, simultaneously enhancing representation informativeness and reducing inference latency. By analyzing token-level gradient dynamics during latent training, we reveal two critical observations: (1) visual tokens exhibit significantly higher and more volatile gradient norms than their textual counterparts due to inherent language bias, resulting in systematic visual underoptimization; and (2) semantically simple tokens converge rapidly, whereas complex tokens exhibit persistent gradient instability constrained by fixed architectural depths. To address these limitations, we propose a visual replay module and routing depth scaling to collaboratively enhance visual perception and refine complicated latents for deeper contextual reasoning. The former module leverages causal selfattention to estimate token saliency, reinforcing fine-grained grounding through spatially-coherent constraints. Complementarily, the latter mechanism adaptively allocates additional reasoning steps to complex tokens, enabling deeper contextual refinement. Guided by a curriculum strategy that progressively internalizes explicit CoT into compact latent representations, our framework achieves state-of-the-art performance across diverse benchmarks while delivering substantial inference speedups over explicit CoT baselines.
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
+> 💡 **摘要批读**: 摘要的逻辑是“latent reasoning 更快，但视觉 token 在训练中不稳、复杂 token 受固定深度限制”。本文的两个模块正好一一对应：SCF-VR 负责把关键视觉区域重新带入 latent 推理，RDS 负责给复杂 token 额外 refinement。对 VisMem/医学图像阅读有用的点是：它把视觉证据保持问题转成 token 级优化和选择性计算预算问题，而不是只靠更长 CoT 或更多视觉 token。
+
+> 💡 **批注**: 摘要还隐含一个重要判断：作者不是要否定 latent reasoning，而是指出它在视觉 token 上存在训练动力学失衡。因此 VEDS 更像“修 latent 优化”而不是“另造一套推理范式”。
 
 ---
 
 ## 🔖 Section 总结
 
 ### 核心洞察
-1. 本节对应论文原始大分节，原文已完整保留。
-2. 阅读重点是把本节的机制/证据映射到论文主 claim。
-3. 后续如有疑问，可在本 section 继续补充更细批注。
+1. Latent reasoning 的优势是少生成文本、推理更快；风险是中间推理不可见，视觉证据更容易在 hidden space 中被语言先验淹没。
+2. 作者先做梯度诊断，再提出模块，叙事比单纯堆模块更可信。
+3. 摘要中“visual replay”和“routing depth scaling”分别对应视觉证据保持与复杂 token 深推理，是后文读方法的两条主线。

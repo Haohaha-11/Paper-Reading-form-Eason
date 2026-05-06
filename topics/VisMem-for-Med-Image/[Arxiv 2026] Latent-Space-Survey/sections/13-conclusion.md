@@ -9,15 +9,13 @@
 
 In this survey, we have presented a systematic review of latent space in language-based models from five complementary perspectives: foundation, evolution, mechanism, ability, and outlook. Taken together, these perspectives suggest that latent space should be a substrate that may fundamentally reshape how intelligent language models deal with diverse information. We further show that the development of this field has rapidly progressed from early explorations of latent reasoning to a broader and increasingly unified research paradigm spanning language, vision, memory, collaboration, and embodied action.
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
+> 💡 **批注**: 结论部分把全文压成一句话：latent 不再只是 reasoning trick，而是在重塑模型处理信息的主工作面。对当前项目，这正是把视觉记忆、医学诊断和 latent reasoning 放在同一个 topic 的理论依据。
 
 To systematically organize this promising landscape, we propose a taxonomy along two orthogonal axes: mechanism orientation and ability orientation. On the axis of Mechanism, we classify four key types: architecture, representation, computation, and optimization, which defines how latent space is operationalized. On the axis of Ability, we expand the single type in previous surveys to seven main functional categories: reasoning, planning, modeling, perception, memory, collaboration, and embodiment. Across these dimensions, a consistent trend becomes visible: Latent space brings a fundamental transformation to model mechanisms while pushing the boundaries of model capabilities.
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
-
 At the same time, the promise of latent space must be considered together with its unresolved challenges. As increasingly more cognition is internalized into continuous hidden computation, the resulting processes become harder to evaluate, control, and interpret. Future progress will therefore depend not only on improving empirical performance, but also on establishing stronger theoretical foundations, more reliable benchmarks and supervision protocols, and more transparent as well as controllable latent mechanisms. Overall, the central conclusion of this survey is that latent space holds the potential to become a foundational principle for language-based models. We hope that this survey offers a coherent foundation for future research and serves as a valuable reference for future researchers.
 
-> 💡 **批注**: 这段是 one-step SR 主线：关注效率、保真-真实感权衡、扩散/flow 先验或单步生成路径。
+> 💡 **批注**: 结尾没有回避 latent 的核心矛盾：更强的 machine-native computation 往往伴随更差的可审计性。后续如果只追性能而不补 benchmark、supervision protocol 和 interpretability，整条路线会越走越黑箱。
 
 # References
 
@@ -321,13 +319,11 @@ At the same time, the promise of latent space must be considered together with i
 [300] Jiaru Zou, Xiyuan Yang, Ruizhong Qiu, Gaotang Li, Katherine Tieu, Pan Lu, Ke Shen, Hanghang Tong, Yejin Choi, Jingrui He, James Zou, Mengdi Wang, and Ling Yang. Latent collaboration in multi-agent systems. CoRR, abs/2511.20639, 2025. doi: 10.48550/ARXIV.2511.20639. https://doi.org/10.48550/arXiv.2511.20639.   
 [301] Jiaxuan Zou, Yaozhong Xiong, and Yong Liu. Capabilities and fundamental limits of latent chain-of-thought. CoRR, abs/2602.01148, 2026. doi: 10.48550/ARXIV.2602.01148. https://doi.org/10.48550/arXiv.2602.01148.
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
-
 ---
 
 ## 🔖 Section 总结
 
 ### 核心洞察
-1. 本节对应论文原始大分节，原文已完整保留。
-2. 阅读重点是把本节的机制/证据映射到论文主 claim。
-3. 后续如有疑问，可在本 section 继续补充更细批注。
+1. 结论重申了全篇主张：latent space 正在从 reasoning 分支成长为 general computational paradigm。
+2. 对这个项目最有价值的不是它列了多少论文，而是它提供了一个能统一解释 `AlignVLM`、`VisMem`、`MedSynapse-V` 的框架。
+3. 同时它也把后续研究门槛抬高了：不能只做更强 latent，还要做更可评测、更可控、更可解释的 latent。

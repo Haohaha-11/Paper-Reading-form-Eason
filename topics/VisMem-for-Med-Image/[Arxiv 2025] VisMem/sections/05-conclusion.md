@@ -9,7 +9,9 @@
 
 To address “visual processing bottleneck” of VLMs that impairs advanced visual capacities, we propose VisMem in this work, a cognitively inspired framework embedding dynamic latent vision memory, which integrates dual specialized memory formers guided by human patterns, with a non-intrusive memory invocation mechanism. Extensive experiments validate VisMem achieves an obvious performance improvement across various benchmarks, and exhibits strong cross-domain generalization, catastrophic forgetting mitigation, compatibility, and efficient inference, unlocking comprehensive and advanced visual potentials.
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
+> 💡 **批注**: 这段按 VisMem 的动态视觉记忆主线读：模型需要在生成过程中保留细粒度视觉证据，同时把可复用语义经验压缩成长期 latent memory；关键是何时调用、如何更新、是否真的缓解 visual grounding 丢失。
+
+> 💡 **结论批读**: 结论真正需要回看的不是“提升了多少”，而是论文闭环是否成立：问题定义清楚、short/long memory 分工明确、dynamic invocation 可训练、并且跨域/抗遗忘/效率证据没有互相冲突。
 
 # References
 
@@ -87,7 +89,7 @@ To address “visual processing bottleneck” of VLMs that impairs advanced visu
 3 [89] Da-Wei Zhou, Yuanhan Zhang, Yan Wang, Jingyi Ning, Han-Jia Ye, De-Chuan Zhan, and Ziwei Liu. Learning without forgetting for vision-language models. IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI),   
 47(6):4489–4504, 2025. 2 [90] Yucheng Zhou, Zhi Rao, Jun Wan, and Jianbing Shen. Rethinking visual dependency in long-context reasoning for large vision-language models. arXiv preprint arXiv:2410.19732, 2024. 1
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
+> 💡 **批注**: 这段按 VisMem 的动态视觉记忆主线读：模型需要在生成过程中保留细粒度视觉证据，同时把可复用语义经验压缩成长期 latent memory；关键是何时调用、如何更新、是否真的缓解 visual grounding 丢失。
 
 # VisMem: Latent Vision Memory Unlocks Potential of Vision-Language Models
 
@@ -98,6 +100,6 @@ Supplementary Material
 ## 🔖 Section 总结
 
 ### 核心洞察
-1. 本节对应论文原始大分节，原文已完整保留。
+1. 本节精读重点：把 VisMem 的短期视觉保留、长期语义巩固、推理时调用和实验消融联系起来看，判断它是否真正缓解 visual grounding 丢失。
 2. 阅读重点是把本节的机制/证据映射到论文主 claim。
 3. 后续如有疑问，可在本 section 继续补充更细批注。

@@ -15,13 +15,15 @@
 5.6 Collaboration 42   
 5.7 Embodiment 43
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
+> 💡 **导读**: 如果 Mechanism 是“怎么做”，Ability 就是“这样做之后得到什么能力”。这能防止把 latent 研究误读成单纯的隐式推理优化。
+
+> 💡 **阅读重点**: 对本 topic 最相关的是 Perception、Memory、Reasoning 三段，但 Collaboration 和 Embodiment 也重要，因为它们说明 latent 不只是内部压缩表示，还能成为跨模块或跨代理共享的接口。
 
 ---
 
 ## 🔖 Section 总结
 
 ### 核心洞察
-1. 本节对应论文原始大分节，原文已完整保留。
-2. 阅读重点是把本节的机制/证据映射到论文主 claim。
-3. 后续如有疑问，可在本 section 继续补充更细批注。
+1. latent space 的能力外延已经明显超出 reasoning，本质上是在重新组织模型如何感知、记忆、规划和协作。
+2. `VisMem-for-Med-Image` 的几篇论文可以视作 Ability taxonomy 在视觉与医学场景下的具体化。
+3. 读单篇论文时，最好把“它引入了什么机制”和“它最终增强了哪类能力”分开判断，否则很容易高估方法贡献。

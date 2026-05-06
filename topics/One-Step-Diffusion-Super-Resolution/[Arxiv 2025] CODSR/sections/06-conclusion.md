@@ -3,13 +3,17 @@
 # 6. Conclusion
 
 ## 📌 预览
-本节总结贡献和局限，适合回看方法真正解决了什么问题。
-
+本节收束三条贡献：spatially adaptive noise 激活区域先验，LQFM 补 VAE 压缩造成的信息损失，TMG 提供文本区域 grounding。结论本身不写局限，需要从前文消融和 trade-off 曲线反推后续问题。
 ---
 
-We present CODSR, a diffusion-based one-step SR framework in order to achieve a favorable balance between structural fidelity and perceptual quality. We introduce spatially adaptive noise to the LQ latent, enabling regiondiscriminative activation of generative priors. We further develop a lightweight LQ-guided feature modulation module to preserve information from the LQ image and mitigate the LQ information loss caused by compression encoding, thus enhancing fidelity without compromising generative capability. In addition, we propose a text-matching guidance strategy to provide explicit spatial guidance for text-interactive regions, achieving precise semantic grounding. Extensive experiments on benchmarks demonstrate that CODSR outperforms state-of-the-art methods in terms of structural fidelity and visual quality.
+> 💡 **Q&A 批注记录**:
+> - Q: RGPA 和普通加噪有什么区别？
+> - A: 普通 latent 加噪只调全局生成强度；RGPA 用 LQ 梯度构造 spatially adaptive noise，把生成先验更多分配给纹理区域，并尽量保护平坦/结构区域。
 
-> 💡 **批注**: 这段是 latent memory / medical VLM 主线：关注视觉证据如何进入 latent space、如何被记忆/更新/调用，以及是否能支撑可靠诊断。
+
+We present CODSR, a diffusion-based one-step SR framework in order to achieve a favorable balance between structural fidelity and perceptual quality. We introduce spatially adaptive noise to the LQ latent, enabling regiondiscriminative activation of generative priors. We further develop a lightweight LQ-guided feature modulation module to preserve information from the LQ image and mitigate the LQ information loss caused by compression encoding, thus enhancing fidelity without compromising generative capability. In addition, we propose a text-matching guidance strategy to provide explicit spatial guidance for text-interactive regions, achieving precise semantic grounding. Extensive experiments on benchmarks demonstrate that CODSR outperforms state-of-the-art methods in terms of structural fidelity and visual quality.
+> 💡 **结论批读**: 结论里的“balance”不是抽象口号，而是由三个约束共同实现：RGPA 控制生成先验释放位置，LQFM 把结构保真拉回 denoising，TMG 把文本语义落到正确区域。真正未解决的是这些控制仍依赖 Sobel、prompt/mask 和经验 t_s。
+
 
 # References
 
@@ -66,18 +70,29 @@ We present CODSR, a diffusion-based one-step SR framework in order to achieve a 
 [65] Xindong Zhang, Hui Zeng, Shi Guo, and Lei Zhang. Efficient long-range attention network for image superresolution. In ECCV, 2022. 1, 2   
 [66] Yulun Zhang, Kunpeng Li, Kai Li, Lichen Wang, Bineng Zhong, and Yun Fu. Image super-resolution using very deep residual channel attention networks. In ECCV, 2018. 1, 2   
 [67] Yulun Zhang, Yapeng Tian, Yu Kong, Bineng Zhong, and Yun Fu. Residual dense network for image super-resolution. In CVPR, 2018. 1, 2
+> 💡 **参考文献批读**: References 里能看到 CODSR 的知识来源：OSEDiff/VSD 提供 one-step 蒸馏范式，PiSA-SR 提供 dual-LoRA 思路，UPSR 启发 adaptive perturbation，Grounded-SAM2/CoMat 支撑 TMG 的区域语义约束。
 
-> 💡 **批注**: 这段是 one-step SR 主线：关注效率、保真-真实感权衡、扩散/flow 先验或单步生成路径。
 
 [68] Youcai Zhang, Xinyu Huang, Jinyu Ma, Zhaoyang Li, Zhaochuan Luo, Yanchun Xie, Yuzhuo Qin, Tong Luo, Yaqian Li, Shilong Liu, et al. Recognize anything: A strong image tagging model. In CVPR, 2024. 4, 6
-
-> 💡 **批注**: 这段是 one-step SR 主线：关注效率、保真-真实感权衡、扩散/flow 先验或单步生成路径。
+> 💡 **工具链风险**: RAM/DAPE/Grounded-SAM2/NLTK 都出现在方法链路里，说明 CODSR 的语义对齐不是端到端自足能力。部署时 prompt 抽取或分割失败，可能直接影响最终纹理生成。
 
 ---
 
 ## 🔖 Section 总结
 
+### 关键数字速查
+| 指标 | 数值 |
+|------|------|
+| 本节作用 | 收束贡献，并从未明说处反推限制 |
+| 主线 | one-step SR 中用区域噪声、LQ 调制、文本区域约束来桥接 fidelity 与 realism |
+| 后续关注 | t_s 自适应、RGPA 权重学习、TMG 语义链路鲁棒性、结构敏感评估 |
+
 ### 核心洞察
-1. 本节对应论文原始大分节，原文已完整保留。
-2. 阅读重点是把本节的机制/证据映射到论文主 claim。
-3. 后续如有疑问，可在本 section 继续补充更细批注。
+1. CODSR 的贡献可以概括为“局部释放 prior，同时局部约束 prior”，这是它区别于全图 one-step SR 的地方。
+2. 结论没有展开失败模式，但 Figure 6 已经说明 fidelity-realism 不可能消失，只是变得可调。
+3. 后续工作最自然的是让 t_s 和 RGPA 权重从图像内容自适应学习，而不是依赖默认经验值。
+
+### 可追问点
+- RGPA 和普通加噪有什么区别？
+- 为什么还要 LQFM？
+- TMG 的外部分割和 prompt 链路失败时，模型是否有 fallback？
