@@ -38,6 +38,18 @@ latent vision memory / latent reasoning / medical image VLM：让医学影像模
 
 ---
 
+### 🧩 Latent-Space Processing
+LLM latent reasoning / cache augmentation / CoT compression：把额外推理、记忆整理或思维链压缩放到连续表示、hidden state 或 kv-cache 中完成。
+
+| 论文 | 会议 | 方法特点 |
+|------|------|----------|
+| [Differentiable-Cache-Augmentation](./topics/Latent-Space-Processing/%5BArxiv%202024%5D%20Differentiable-Cache-Augmentation/) | Arxiv 2024 | DCA 用离线 coprocessor 读取 frozen LLM 的 kv-cache，生成动态 latent embeddings 追加回 cache，实现 cache-level latent deliberation。 |
+| [Compressed-Chain-of-Thought](./topics/Latent-Space-Processing/%5BArxiv%202024%5D%20Compressed-Chain-of-Thought/) | Arxiv 2024 | CCoT 把显式 CoT hidden states 压缩成 contentful continuous contemplation tokens，用 compression ratio 控制准确率/延迟折中。 |
+
+📖 [Latent-Space Processing 详细总结](./topics/Latent-Space-Processing/README.md)
+
+---
+
 ## 论文文件夹结构
 
 ```text

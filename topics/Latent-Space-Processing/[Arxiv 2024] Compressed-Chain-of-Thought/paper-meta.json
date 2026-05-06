@@ -1,0 +1,18 @@
+{
+  "arxiv_id": "2412.13171",
+  "title": "Compressed Chain of Thought: Efficient Reasoning through Dense Representations",
+  "authors": [
+    "Jeffrey Cheng",
+    "Benjamin Van Durme"
+  ],
+  "venue": "Arxiv",
+  "year": 2024,
+  "topic": "Latent-Space-Processing",
+  "reading_order": 2,
+  "abs_url": "https://arxiv.org/abs/2412.13171",
+  "html_url": "https://arxiv.org/html/2412.13171",
+  "pdf_url": "https://arxiv.org/pdf/2412.13171",
+  "doi": "10.48550/arXiv.2412.13171",
+  "mineru_task_id": "25d7520c-06bd-4c71-a62f-10d149ea2a18",
+  "reading_date": "2026-05-06"
+}

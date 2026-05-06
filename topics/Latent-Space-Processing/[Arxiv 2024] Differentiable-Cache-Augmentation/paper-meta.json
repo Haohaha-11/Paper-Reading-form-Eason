@@ -1,0 +1,21 @@
+{
+  "arxiv_id": "2412.17747",
+  "title": "Deliberation in Latent Space via Differentiable Cache Augmentation",
+  "authors": [
+    "Luyang Liu",
+    "Jonas Pfeiffer",
+    "Jiaxing Wu",
+    "Jun Xie",
+    "Arthur Szlam"
+  ],
+  "venue": "Arxiv",
+  "year": 2024,
+  "topic": "Latent-Space-Processing",
+  "reading_order": 1,
+  "abs_url": "https://arxiv.org/abs/2412.17747",
+  "html_url": "https://arxiv.org/html/2412.17747",
+  "pdf_url": "https://arxiv.org/pdf/2412.17747",
+  "doi": "10.48550/arXiv.2412.17747",
+  "mineru_task_id": "ed82592a-6f10-43bf-814d-7f749545b779",
+  "reading_date": "2026-05-06"
+}

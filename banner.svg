@@ -11,5 +11,5 @@
   <circle cx="108" cy="224" r="120" fill="#2dd4bf" opacity="0.16"/>
   <text x="80" y="112" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="56" font-weight="800" fill="#fff">Paper Reading</text>
   <text x="82" y="162" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" fill="#dbeafe">Original text preserved · Inline annotations · Topic-oriented literature maps</text>
-  <text x="82" y="205" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" fill="#ccfbf1">One-Step Diffusion SR · VisMem for Med Image</text>
+  <text x="82" y="205" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" fill="#ccfbf1">One-Step Diffusion SR · VisMem for Med Image · Latent-Space Processing</text>
 </svg>
