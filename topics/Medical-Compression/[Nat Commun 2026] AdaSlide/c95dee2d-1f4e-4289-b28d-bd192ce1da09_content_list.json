@@ -1,0 +1,3070 @@
+[
+    {
+        "type": "text",
+        "text": "Article in Press ",
+        "text_level": 1,
+        "bbox": [
+            75,
+            86,
+            257,
+            113
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Adaptive compression framework for giga-pixel whole slide images ",
+        "text_level": 1,
+        "bbox": [
+            72,
+            149,
+            855,
+            225
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Jonghyun Lee, Lina Takemaru, D. M. Bappy, Ye Sul Jeong, Won-Ki Jeong, Derek Oldridge, Dokyoon Kim, Sangjeong Ahn & Sung Hak Lee ",
+        "text_level": 1,
+        "bbox": [
+            356,
+            288,
+            924,
+            322
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "We are providing an unedited version of this manuscript to give early access to its findings. Before final publication, the manuscript will undergo further editing. Please note there may be errors present which affect the content, and all legal disclaimers apply. ",
+        "bbox": [
+            359,
+            346,
+            922,
+            407
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "If this paper is publishing under a Transparent Peer Review model then Peer Review reports will publish with the final article. ",
+        "bbox": [
+            361,
+            416,
+            885,
+            445
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "$\\circledcirc$ The Author(s) 2025. Open Access This article is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License, which permits any non-commercial use, sharing, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons licence, and indicate if you modified the licensed material. You do not have permission under this licence to share adapted material derived from this article or parts of it. The images or other third party material in this article are included in the article’s Creative Commons licence, unless indicated otherwise in a credit line to the material. If material is not included in the article’s Creative Commons licence and your intended use is not permitted by statutory regulation or exceeds the permitted use, you will need to obtain permission directly from the copyright holder. To view a copy of this licence, visit http://creativecommons.org/licenses/by-nc-nd/4.0/. ",
+        "bbox": [
+            73,
+            844,
+            926,
+            932
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "https://doi.org/10.1038/s41467-025-66889-0 ",
+        "bbox": [
+            630,
+            62,
+            924,
+            74
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "Nature Communications ",
+        "bbox": [
+            73,
+            45,
+            428,
+            73
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "Cite this article as: Lee, J., Takemaru, L., Bappy, D.M. et al. Adaptive compression framework for gigapixel whole slide images. Nat Commun (2025). https://doi.org/ 10.1038/s41467-025-66889-0 ",
+        "bbox": [
+            73,
+            351,
+            324,
+            437
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "Received: 18 July 2024 Accepted: 18 November 2025 ",
+        "bbox": [
+            72,
+            288,
+            334,
+            346
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Adaptive compression framework for giga-pixel whole slide images ",
+        "text_level": 1,
+        "bbox": [
+            208,
+            158,
+            749,
+            206
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Jonghyun Lee $^ { 1 , 2 }$ , Lina Takemaru $^ { 1 , 3 , 4 }$ , Dewan M. Bappy $^ { 5 }$ , Ye Sul Jeong $_ 6$ , Won-Ki Jeong $^ 7$ , Derek Oldridge $^ { 3 , 4 }$ , Dokyoon Kim $^ { 1 }$ , Sangjeong Ahn $^ { 2 , 8 ^ { * } }$ , Sung Hak Lee $6$ \\* ",
+        "bbox": [
+            191,
+            228,
+            766,
+            281
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "$^ { 1 }$ Department of Biostatistics, Epidemiology and Informatics, Perelman   \nSchool of Medicine, University of Pennsylvania, Philadelphia, 19104,   \nPennsylvania, USA.   \n$^ 2$ Department of Pathology, Korea University Anam Hospital, Korea   \nUniversity College of Medicine, Seoul, 02841, Republic of Korea.   \n$^ 3$ Department of Pathology and Laboratory Medicine, University of   \nPennsylvania, Philadelphia, 19104, Pennsylvania, USA.   \n$^ 4$ Center for Computational and Genomic Medicine, Children’s Hospital   \nof Philadelphia, Philadelphia, 19104, Pennsylvania, USA.   \n$^ { 5 }$ Department of Computer Science and Engineering, Incheon National   \nUniversity, Incheon, 22012, Republic of Korea.   \n$_ 6$ Department of Hospital Pathology, Seoul St. Mary’s Hospital, College   \nof Medicine, The Catholic University of Korea, Seoul, 06591, Republic   \nof Korea.   \n$^ 7$ Department of Computer Science and Engineering, College of   \nInformatics, Korea University, Seoul, 02841, Republic of Korea.   \n$^ 8$ Department of Medical Informatics, Korea University College of   \nMedicine, Seoul, 02841, Republic of Korea. ",
+        "bbox": [
+            189,
+            290,
+            769,
+            577
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "\\*Corresponding author(s). E-mail(s): vanitas80@korea.ac.kr; hakjjang@catholic.ac.kr; ",
+        "bbox": [
+            233,
+            607,
+            724,
+            639
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Abstract ",
+        "text_level": 1,
+        "bbox": [
+            443,
+            667,
+            512,
+            680
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Digital pathology generates gigapixel whole-slide images that require extensive storage, limiting scalability and increasing costs. Traditional compression methods apply uniform ratios, disregarding variations in diagnostic importance across regions. Here we show Adaptive compression for gigapixel whole-slide images (AdaSlide), a framework that balances compression efficiency and diagnostic integrity. AdaSlide integrates a reinforcement learning–based Compression Decision Agent (CDA) that determines the optimal compression ratio per region, and a Foundational Image Enhancer (FIE) that restores visual fidelity after compression. In evaluations, pathologists achieved near-chance accuracy (55 $\\%$ ) in distinguishing original from restored images, confirming high perceptual fidelity. Across 13 downstream tasks, AdaSlide maintained diagnostic performance in most tasks while reducing storage to $1 0 { - } 3 5 \\%$ of the original size. By aligning compression strategies with clinical relevance, AdaSlide enables efficient, scalable, and reliable storage for digital pathology and future AI development. ",
+        "bbox": [
+            205,
+            684,
+            751,
+            736
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            122,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            247,
+            87,
+            791,
+            219
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Introduction ",
+        "text_level": 1,
+        "bbox": [
+            208,
+            263,
+            354,
+            281
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Recently, the transformation from glass slide pathology to the digital pathology system (DPS) has led to the emergence of machine learning-integrated DPS, known as computational pathology (CPath) [? ? ? ? ]. CPath has demonstrated strong performance in various pathological tasks, including cancer diagnosis [? ? ? ? ? ? ? ], survival prediction [? ], lymph node invasion detection [? ? ], and cell segmentation [? ? ]. CPath performance has significantly improved through the use of large-scale digitized slides, with robust foundation models recently proposed [? ? ? ? ? ? ? ]. However, unlike natural images, whole slide images (WSIs) are considerably large (3 or 4 GB), resulting in significant storage burdens for data archiving. For example, Link¨oping Hospital collects digital slides totaling 130 TB every six months [? ]. Due to storage limitations, slides older than six months are deleted, which is a temporary, impractical, and invasive solution. Simply expanding storage is also impractical, as it requires physical space and increases maintenance costs. Additionally, cloud servers may not be an optimal solution, as storage costs escalate cumulatively (see Supplementary Note 1 and Supplementary Figure 1). However, most CPath studies remain focused on prediction accuracy, thus leaving the issue of efficient data storage unresolved. ",
+        "bbox": [
+            208,
+            292,
+            831,
+            519
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "To tackle this large-scale storage issue, several methods have been proposed, including neural image compression (NIC) that effectively compresses the original high-dimensional image into a compressed low-dimensional vector using neural networks [? ? ? ? ? ]. These encoder-focused NIC methods utilize a supervised learning approach to maximize the task-specific prediction performance. However, the encoderfocused NICs are unsuitable for image data storage because, without a decoder, the compressed vectors cannot be reconstructed into the original images. Encoder-decoderbased NICs are more suitable for efficient storage, but limited methods are available for digital pathology applications [? ? ? ? ]. A notable effort by Tellez et al. [? ] involved training Variational Autoencoders (VAE) [? ] and Bidirectional Generative Adversarial Networks (BiGAN) [? ] to encode and decode digital pathology images. They demonstrated the effectiveness of the NIC for digital pathology image compression and restoration, with minimal performance degradation compared to the original image-based methods. Nasr et al. [? ] focused on the compression ratio (CR) using the VAE model, and they reported a state-of-the-art (SOTA) CR (1/512) on cancer imaging data. Previous studies tessellated WSIs into 32x32 or 64x64 pixels. However, Keighley et al. [? ] employed patches of size 512x512 pixels and demonstrated successful compression and restoration using a Vector Quantized VAE (VQVAE)-2 [? ] model. With the matched CR (1/19.2), the outputs of VQVAE-2 (namely, VQVAE) showed high structural similarity (SSIM) to the JPEG-compressed images (0.8); however, the peak signal-to-noise ratio (PSNR) degraded (20 and 29, for VQVAE, and JPEG, respectively). In contrast to NICs, Afshari et al. [? ] applied super-resolution (SR) methods for digital pathology images. The difference between NICs and SR is that the NICs use compressed vectors, whereas SR relies on human-interpretable lowresolution images. In their empirical study, the SR models successfully reconstructed low-resolution images into their original high-resolution forms. ",
+        "bbox": [
+            208,
+            521,
+            831,
+            734
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            121,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            166,
+            86,
+            791,
+            243
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Previous studies [? ? ? ? ] have focused on compressing digital pathology images using specific models to achieve a higher CR with minimal information loss. However, even promising models suffer information loss during encoding and decoding steps due to structural limitations, which worsen at higher compression levels. Consequently, there is a risk of losing clinically significant information while aiming to maximize the CR. To address this concern, we focused on the inter-slide information variance in gigapixel WSIs, which we refer to as information disequilibrium (See Section Information Disequilibrium for more details). Each WSI comprises numerous regions of interest (ROIs), some containing diagnostic information while others do not. By enabling the model to distinguish between informative and non-informative ROIs, we can optimize compression by heavily compressing only clinically uninformative ROIs, thereby minimizing critical information loss. ",
+        "bbox": [
+            166,
+            246,
+            791,
+            414
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "One recent work [? ] introduced a multiple instance learning (MIL)-based method for identifying informative regions. MIL learns the relationship between the labels provided during training and the instances within a bag, enabling the model to distinguish between more and less important instances. Based on this capability, the authors proposed applying different compression rates to important and less important regions, as determined by a trained MIL classifier. However, this approach has several limitations. Since the MIL classifier is trained in a supervised manner tailored to a specific task, (1) it learns to distinguish instances only in the context of that task, (2) making it difficult to generalize to other tasks with different objectives. Moreover, (3) the method is highly dependent on the performance of the MIL classifier itself and requires an appropriate dataset for MIL training, which may not always be available. Consquently, while this approach can be effective in certain controlled settings, its general applicability is limited, and its scalability is constrained. ",
+        "bbox": [
+            166,
+            417,
+            791,
+            600
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "To address this issues, we propose an Adaptive compression framework for giga-pixel whole Slide images, namely AdaSlide, to account for information disequilibrium. AdaSlide is designed to meet the following constraints: (1) the lost information should be minimized, (2) each patch image must be maximally compressed, (3) the compression decision should be object-dependent, and (4) the compression decision and image enhancement should be agnostic to backbone-model architecture, organ, magnification, and downstream tasks. ",
+        "bbox": [
+            166,
+            602,
+            789,
+            701
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "AdaSlide consists of two core modules: a Compression Decision Agent (CDA) and a Foundational Image Enhancer (FIE). The CDA autonomously decides whether to compress an image based on its informational content. The images chosen for compression are downscaled from the D-dimension to the d-dimension ( $D > d$ ), and later restored to the D-dimension using the FIE. The CDA is trained using reinforcement learning, eliminating the need for human annotation and allowing it to consider key factors in compression decisions based on the design of the reward function. The FIE is trained to handle multi-organ, multi-magnification scenarios and can be easily substituted with multiple backbones. In summary, our main contributions are as follows: ",
+        "bbox": [
+            164,
+            701,
+            791,
+            730
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            117,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            206,
+            86,
+            831,
+            202
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "• AdaSlide is an organ- and task-agnostic compression method.   \n• AdaSlide provides flexible control over compression tendency and quantifies clinically relevant information.   \n• AdaSlide apply information disequilibrium in a scalable, task-agnostic compression framework.   \n• AdaSlide offers an optimal solution for mid- and long-term archiving, achieving over 65–90% storage reduction with minimal impact on clinical diagnosis. ",
+        "bbox": [
+            225,
+            216,
+            833,
+            317
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Results ",
+        "text_level": 1,
+        "bbox": [
+            206,
+            331,
+            295,
+            349
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Overview of AdaSlide ",
+        "text_level": 1,
+        "bbox": [
+            208,
+            360,
+            425,
+            376
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "AdaSlide trains in two stages: First, the FIE, designed to handle diverse magnification and cancer types, is trained. Subsequently, the CDA is trained using reinforcement learning to determine the optimal compression level for each patch image based on its information content. AdaSlide’s inference process consists of two stages: encoding and decoding. During encoding, the CDA decides action (keep or compress), and the original patch is compressed accordingly. Compressed patches are restored during decoding with the FIE. The entire AdaSlide pipeline is shown in Figure 1B and Box 1. ",
+        "bbox": [
+            206,
+            384,
+            833,
+            483
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Information Disequilibrium ",
+        "text_level": 1,
+        "bbox": [
+            208,
+            497,
+            480,
+            514
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Information disequilibrium arises from the giga-pixel scale of WSIs, where not all pixels contribute equally to clinical diagnosis. For instance, in identifying tumor regions within a WSI, areas densely packed with cells are more relevant than background, adipose tissue, or bone. Similarly, detecting lymphovascular invasion or perineural invasion requires focusing on specific tube-like structures, such as lymph nodes, vascular tubes, or perineural regions. This suggests that clinically important regions vary dynamically with diagnostic tasks and goals, rendering equal attention across all regions unnecessary. ",
+        "bbox": [
+            206,
+            520,
+            833,
+            634
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "For instance, MIL divides a WSI into multiple patch instances and applies attention mapping to selectively identify regions that significantly contribute to label prediction [? ? ? ]. Advanced MIL models incorporate locality and global patterns [? ? ], prioritize key instances [? ], or leverage clustering loss to effectively differentiate labelrelevant instances [? ]. This study defines this dynamic allocation of importance across regions as information disequilibrium. Specifically, Li et al. [? ] proposed an adaptive decompression method that leverages MIL-based attention maps to assign different decompression depths to image patches. While the paper does not explicitly define the concept of information disequilibrium, its strategy effectively leverages the inherent information imbalance across regions to prioritize the decompression of diagnostically relevant areas. ",
+        "bbox": [
+            206,
+            636,
+            833,
+            736
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            121,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            166,
+            87,
+            793,
+            143
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Hypothesis of AdaSlide ",
+        "text_level": 1,
+        "bbox": [
+            168,
+            159,
+            401,
+            177
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Information disequilibrium is the cornerstone of this study because traditional uniform compression models fail to address it, leading to unavoidable information loss by compressing all regions equally. To design an information content aware compression framework that accounts for information disequilibrium, we propose the following hypotheses: ",
+        "bbox": [
+            166,
+            183,
+            789,
+            254
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "1. Tumor-related diagnosis is one of the primary tasks.   \n2. Cellular information is clinically critical for tumor diagnosis.   \n3. Certain patch instances are more challenging to reconstruct than others. ",
+        "bbox": [
+            178,
+            268,
+            737,
+            311
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "While tumor-related diagnosis is not the sole clinical priority, we focused on it due to our training data’s characteristics and the prominence of tumor-related research in CPath. Accordingly, we designed a CDA reward function tailored to tumor-related diagnosis. In this study, clinically informative regions are defined as tumor-related areas. However, AdaSlide is flexible and can redefine clinically informative regions by modifying the reward function. ",
+        "bbox": [
+            166,
+            325,
+            791,
+            410
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "To quantify regions contributing to tumor-related diagnosis, we utilized cellular information, recognizing that the morphological features and distribution of cells are crutial to tumor diagnosis. Furthermore, we incorporated the compression difficulty of cellular information to balance the information loss and compression performance. Guided by hypotheses (2) and (3), we constructed a 2x2 conditional matrix (Figure 2). ",
+        "bbox": [
+            166,
+            412,
+            791,
+            482
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "• Clinically informative and easy to restore (Zone A).   \n• Clinically informative and hard to restore (Zone B).   \n• Clinically uninformative and easy to restore (Zone C).   \n$\\bullet$ Clinically uninformative and hard to restore (Zone D). ",
+        "bbox": [
+            183,
+            497,
+            606,
+            554
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "In this hypothesis field, the CDA is designed to prioritize Zone $\\mathbf { B }$ by maintaining its original information as much as possible, while employing compression strategies for the remaining zones. This is achieved through a combination of compression rewards and information penalties. ",
+        "bbox": [
+            166,
+            568,
+            791,
+            625
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Datasets ",
+        "text_level": 1,
+        "bbox": [
+            166,
+            640,
+            253,
+            656
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "The PanCancer dataset, derived from 31 projects from The Cancer Genome Atlas (TCGA) dataset, has 930 WSIs, with 30 WSIs extracted from each project. It also includes 1.8 million patch images extracted at 20x and 40x magnifications (Figure 1A). The PanCancer dataset was divided into training (94.5%), validation ( $5 \\%$ ), and test (0.5%) sets, corresponding to 1,766,502, 93,307, and 9,393 patch images, respectively. ",
+        "bbox": [
+            166,
+            663,
+            791,
+            734
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            115,
+            33,
+            875,
+            54
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "To further evaluate the FIEs’ reconstruction performance, we utilized datasets from the Clinical Proteomic Tumor Analysis Consortium (CPTAC). A total of 110 WSIs were selected, with 10 WSIs per project across 11 projects. Additionally, 29,861 patch images were extracted using the same patch generation pipeline and were used for performance evaluation. Details of the TCGA and CPTAC projects are summarized in Supplementary Note 2. ",
+        "bbox": [
+            208,
+            87,
+            831,
+            172
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "We evaluated the performance of AdaSlide on patch-level tasks (classification and segmentation) and slide-level tasks (classification) using 13 benchmark datasets, as summarized in Table 1. Detailed information, including preprocessing steps, is provided in the Methods section. ",
+        "bbox": [
+            208,
+            173,
+            833,
+            230
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "For the patch-level calssification tasks, we used five datasets: NCT-CRC (9 class; colon) [? ], MHIST (binary class; colon) [? ], LI (binary class; stomach) [? ], SICAPv2 (4 class; prostate) [? ], and WSSS4LUAD (binary class; lung) [? ] datasets. ",
+        "bbox": [
+            208,
+            230,
+            831,
+            273
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "For patch-level segmentation tasks, we used the SNOW (binary class; breast) [? ], NuInsSeg (binary class; various organs) [? ], and PanNuke (binary class; various organs) [? ] datasets. The NuInsSeg and PanNuke datasets include multiple classes; however, for simplicity, we converted the multi-class masks into binary masks. Moreover, the NuInsSeg dataset contains mouse-derived H&E images and mask pairs, which we excluded from the analysis. ",
+        "bbox": [
+            206,
+            274,
+            833,
+            359
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "For the slide-level classification, we used the TCGA-RCC, TCGA-NSCLC, TCGA-BRCA, Camelyon16, and Children’s Brain Tumor Network (CBTN) [? ] datasets for slide-level classification analysis. The TCGA-RCC dataset combines multiple renal cell carcinoma (RCC) projects: TCGA-KICH, TCGA-KIRC, and TCGA-KIRP. Similarly, the TCGA-NSCLC dataset integrates non-small cell lung cancer (NSCLC) subtypes, including TCGA-LUAD and TCGA-LUSC. The TCGA-BRCA dataset was used for binary subtype classification, while the Camelyon16 dataset was used for tumor vs. non-tumor slide classification tasks. Lastly, the CBTN dataset was used for pediatric brain tumor subtype classification, including two pediatric-specific brain tumor cancer types: medulloblastoma and ependymoma. ",
+        "bbox": [
+            206,
+            359,
+            833,
+            501
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Foundational Image Enhancer (FIE) ",
+        "text_level": 1,
+        "bbox": [
+            206,
+            516,
+            569,
+            532
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "The image restoration performances of the FIEs are shown in Figure 3A, and sample output images are illustrated in Figure 3B and Supplementary Figure 2-3. We used the VAE [? ], VQVAE [? ], ESRGAN [? ], Swin Image Restoration (SwinIR) [? ], and Latent Diffusion Model (LDM) [? ] as FIE backbones, as these models have been widely adopted for digital pathology image compression tasks in previous studies[? ? ? ]. In addition, we included Transformer-based and diffusion-based models that have demonstrated strong performance in image restoration tasks, to provide a comprehensive comparison across different model families. Three evaluation metrics were used: Structural Similarity Index Measure (SSIM), Peak Signal-to-Noise Ratio (PSNR), and Learned Perceptual Image Patch Similarity (LPIPS) [? ]. ",
+        "bbox": [
+            206,
+            539,
+            833,
+            682
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "The overall performance ranking was as follows: VQVAE, SwinIR, LDM, ESRGAN, and VAE. VQVAE demonstrated consistently strong reconstruction performance across both internal and external datasets. However, it occasionally produced artificial noise artifacts during reconstruction, as shown in Figure 3B. SwinIR and LDM exhibited excellent performance on the internal dataset; however, their performance substantially degraded on the external dataset, indicating potential limitations in generalizability. In contrast, ESRGAN exhibited lower internal performance compared to SwinIR and LDM, but its performance degradation on the external dataset was less pronounced. ",
+        "bbox": [
+            208,
+            683,
+            831,
+            739
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            122,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            166,
+            87,
+            791,
+            158
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Although AdaSlide is designed to be agnostic to the choice of FIE model, it is necessary to fix the FIE during CDA training. This is because the reward function explicitly incorporates the quality of the enhanced images reconstructed from lowresolution inputs. Based on these considerations, we selected the FIE backbone by evaluating two key factors: (1) compatibility with compression, and (2) efficiency in training and inference. ",
+        "bbox": [
+            168,
+            160,
+            789,
+            243
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "VAE achieved the highest compression ratio, but the resulting image degradation was so severe that the reconstructed images were difficult to interpret visually. Therefore, this model was excluded from the candidate list. VQVAE demonstrated excellent compression and reconstruction performance. However, although the feature dimension of VQVAE $( \\mathbb { R } ^ { 1 2 8 \\times 1 2 8 \\times 2 } + \\mathbb { R } ^ { 6 4 \\times 6 4 \\times 2 } )$ is theoretically smaller than that of the original image $\\left( \\mathbb { R } ^ { 5 1 2 \\times 5 1 2 \\times 3 } \\right)$ , this only applies to the raw, uncompressed feature space. In practical applications, where image formats such as JPEG or PNG are used, the compressed features of VQVAE require larger storage space than imagebased formats. Therefore, to support real-world applications such as demo systems, we focused on models that enable compression to low-resolution image files and subsequent reconstruction. As a result, the candidate models were SwinIR, LDM, and ESRGAN. ",
+        "bbox": [
+            166,
+            246,
+            789,
+            414
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "While LDM and SwinIR demonstrated strong performance, both required substantial computational resources and long processing times for training and inference. In particular, LDM, due to the inherent characteristics of diffusion models, was especially time-consuming. This makes LDM and SwinIR less practical for processing WSIs, which typically contain thousands to tens of thousands of image patches, as they would demand excessive computing resources and time. In contrast, ESRGAN offers the advantages of lower computational demands and the ability to leverage larger batch sizes during training, making it a more practical choice. ",
+        "bbox": [
+            166,
+            417,
+            789,
+            530
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Based on these considerations, ESRGAN was selected as the FIE backbone for CDA training and for demonstration experiments, as it provided a good balance between performance and efficiency. However, it is important to note that this does not imply that AdaSlide is dependent on a specific FIE. To further assess the feasibility of FIE, we conducted a reader study involving a Visual Turing Test (VTT) with five pathology experts. The VTT evaluated whether the FIE-generated images could be distinguished from real images, using the internal dataset. The VTT results are summarized in Supplementary Table 1. VQVAE was excluded from this analysis due to its characteristic artificial noise (Figure 3B), which made it visually easy to differentiate. The VTT results indicated that FIE-generated images were challenging to distinguish from real ones, demonstrating the practicality of FIE-based reconstruction $5 6 \\% ; Z = 6$ , $\\scriptstyle { p = n . s }$ .). ",
+        "bbox": [
+            166,
+            531,
+            791,
+            701
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            117,
+            33,
+            875,
+            54
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Compression Decision Agent (CDA) ",
+        "text_level": 1,
+        "bbox": [
+            206,
+            85,
+            569,
+            103
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "To determine the compression level of an image, we employ a reinforcement learningbased agent that assesses the information content, reconstruction difficulty, and importance of each image. A conceptual diagram of the CDA is shown in Figure 4A. We designed a reward function to compensate for the gain from compression and the loss of information (Equation 3). This simplifies training by removing the need for human-annotated data and enhances model stability by eliminating inter-observer variation. To discourage the shortcut where the agent tries to compress every ROI, the agent receives a penalty for the amount of significant information lost during restoration. We defined the penalty as a difference between the cell segmentation output of the original image and the restored image, using HoverNet [? ]. The concept of penalty based on HoverNet outputs is illustrated in Figure 4B. ",
+        "bbox": [
+            206,
+            109,
+            831,
+            265
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "To control the tendency of CDA, we include a $\\lambda$ parameter. A higher $\\lambda$ value strengthens the penalty term, making the agent more conservative and less likely to compress images. We used grid search to find the optimal combination of $\\lambda$ and learning rate, observing that as $\\lambda$ increases, the learning rate and CR decrease (Figure 4C). This indicates that a more conservative agent (higher $\\lambda$ ) achieves a lower CR while likely preserving more image information. ",
+        "bbox": [
+            206,
+            267,
+            831,
+            350
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "To determine the backbone architecture for the CDA, we experimented with ResNet-18, ResNet-50, and Vision Transformer (ViT) models. Considering the alignment between the $\\lambda$ parameter and CR, as well as the efficiency of each model, ResNet-18 was selected as the final backbone for the CDA. The results are summarized in Supplementary Table 2. ",
+        "bbox": [
+            206,
+            353,
+            831,
+            423
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Evaluation of Information Disequilibrium ",
+        "text_level": 1,
+        "bbox": [
+            208,
+            437,
+            620,
+            454
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "We quantitatively evaluate the core assumption of information disequilibrium in CDA, based on its actual inference results. Specifically, we assess whether CDA effectively recognizes information imbalance across image regions through two complementary analyses: (1) whether cell-dense regions are appropriately prioritized, and (2) whether reconstruction difficulty is properly accounted for during compression decisions. Those results are summarized in Table 2. ",
+        "bbox": [
+            208,
+            461,
+            831,
+            545
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "To examine the first aspect, we leveraged cell segmentation results to implicitly guide CDA toward recognizing the importance of cell-rich regions. To validate this behavior, we utilized the zero-shot inference capability of the PLIP pathology visionlanguage model [? ]. PLIP is a CLIP-based model trained on pathology image-caption pairs sourced from Twitter, and is designed to capture the semantic relationships between images and textual descriptions within the pathology domain. For this analysis, we employed the following two query prompts to evaluate the relative similarity of each image: ",
+        "bbox": [
+            206,
+            546,
+            831,
+            661
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "• A photo of densely packed with cells.   \n• A photo of showing adipose tissue, stroma, or acellular background. ",
+        "bbox": [
+            225,
+            675,
+            742,
+            703
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            119,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "For each $\\lambda$ condition and compression decision, we measured the similarity of images to the first prompt (“A photo of densely packed with cells.”) to assess whether CDA preferentially retained cell-rich regions. The findings indicate that in regions where compression was applied, the similarity to the cell-rich prompt was relatively lower, suggesting that CDA effectively depriorizes semantically less informative regions during compression. ",
+        "bbox": [
+            166,
+            87,
+            791,
+            172
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "The second analysis aimed to verify whether the penalty design in CDA appropriately discourages indiscriminate compression, by considering the difficulty of reconstructing compressed images. Specifically, we compared the pre- and postreconstruction SSIM scores between images where CDA selected compression versus those where it selected retention (keep). The results show that as $\\lambda$ increases, images selected for compression exhibit higher SSIM scores compared to retained images. This trend suggests that CDA adapts its compression decisions to avoid high-penalty scenarios, demonstrating sensitivity to reconstruction difficulty and supporting the intended information-aware behavior. ",
+        "bbox": [
+            166,
+            173,
+            791,
+            302
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Downstream Tasks ",
+        "text_level": 1,
+        "bbox": [
+            168,
+            316,
+            354,
+            332
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "We assessed AdaSlide across 13 downstream tasks, encompassing patch-level classification, patch-level segmentation, and slide-level classification. Information loss was quantified as the reduction in performance compared to results achieved with highresolution image-based analysis. CR is a ratio of compression compare to original high-resolution images. Hence, a lower CR value indicates a smaller file size (i.e. higher compression). Except for the training dataset, where images were compressed and enhanced using FIEs, all other conditions remained consistent. This ensured that any performance gap between original image-based analysis and processed image-based analysis was solely due to image information degradation during the image processing stages. ",
+        "bbox": [
+            166,
+            340,
+            789,
+            482
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "AdaSlide includes several variants depending on the backbone models (ESRGAN, VQVAE, SwinIR, LDM) and the compression tendency parameter $\\lambda$ (0.1, 0.25, 0.5, 0.75, 1.0). The average performance, best performance, and best CR of AdaSlide were reported in Figure 5, while the detailed performances are summarized in Supplementary Table 3-15. Since VAE’s performance was substantially lower, its results are omitted from Figure 5 for clarity. ",
+        "bbox": [
+            168,
+            483,
+            791,
+            568
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Supplementary Table 3-7 summarize the patch-level classification results. Overall, the uniform compression models (VAE, ESRGAN, VQVAE, SwinIR, LDM) achieved the highest CR (smallest file sizes) but tended to degrade performance more than AdaSlide. Specifically, VAE exhibited a severe performance drop in every dataset (e.g., MHIST AUROC: 0.5552 vs. baseline 0.8437; LI AUROC: 0.5696 vs. baseline 0.8321), presumably due to the blurred reconstructions (Figures 3B and Supplementary Figure 2). ",
+        "bbox": [
+            168,
+            569,
+            791,
+            668
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "In contrast, AdaSlide outperformed the baseline on NCT-CRC, MHIST, LI, and SICAPv2, although it slightly underperformed in WSSS4LUAD. For instance, on NCT-CRC, VQVAE-based AdaSlide with a $\\lambda$ parameter of 0.5 (AdaSlide0.5VQVAE) achieved the highest AUROC of 0.9943 (vs. baseline 0.9895). On MHIST, AdaSlide0.5ESRGAN reached an AUROC of 0.8509, outperforming the baseline 0.8437. ",
+        "bbox": [
+            166,
+            669,
+            791,
+            739
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            117,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "The optimal $\\lambda$ and backbone model varied across datasets, indicating that compression preferences are dataset-specific. ",
+        "bbox": [
+            206,
+            87,
+            833,
+            115
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Supplementary Table 8-10 presents the segmentation results (Examples images are in Supplementary Figure 3). In contrast to classification tasks, segmentation requires high pixel-level fidelity for accurate mask delineation. As anticipated, VAE reconstructions often appeared too blurry, causing significant performance deterioration. Notably, in the NuInsSeg dataset, uniform compression models (VAE, ESRGAN, VQVAE without adaptive compressions) showed near-zero Dice scores, underscoring their difficulty in preserving crucial details. ",
+        "bbox": [
+            206,
+            117,
+            831,
+            216
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Meanwhile, AdaSlide substantially mitigated information loss. For exampNuInsSeg dataset, AdaSlide1.00SwinIR achieved a Dice score of 0.7068, with only a $2 . 1 2 \\%$ drop from the baseline (0.7221). Conversely, in the same dataset, uniform compression models showed severly decreased performances (Dice: 0.0000). Interestingly, AdaSlide outperformed the baseline on certain datasets, including SNOW and PanNuke. For instance, on SNOW, AdaSlide0.25LDM achieved a Dice of 0.9434, higher than the baseline (0.9334). Similarly, on PanNuke, AdaSlide0.50VQVAE attained a Dice of 0.7304 (vs. baseline 0.7158). ",
+        "bbox": [
+            206,
+            216,
+            831,
+            330
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "For slide-level analysis, we employed the CLAM framework [? ], a widely used MIL method. As summarized in Supplementary Tables 11-15, AdaSlide slightly underperformed compared to the baseline in TCGA-RCC, Camelyon16, and CBTN but outperformed it in TCGA-NSCLC and TCGA-BRCA. For instance, in Camelyon16, AdaSlide ranked third (AUROC = 0.8676), slightly below the uniform compression VQVAE model (AUROC = 0.8679), and both were lower than the baseline (0.8852). Conversely, in TCGA-NSCLC, AdaSlide1.00SwinIR achieved an AUROC of 0.8970, outperforming the baseline 0.8774. ",
+        "bbox": [
+            206,
+            331,
+            833,
+            444
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "AdaSlide’s performance, information loss, optimal $\\lambda$ parameter, and FIE type vary based on the characteristics of the downstream datasets. This section reviews AdaSlide’s performance from the following perspectives: (1) regularization effects, (2) global and local patterns, (3) in-domain and out-of-domain datasets, and (4) dataset difficulty. ",
+        "bbox": [
+            208,
+            445,
+            831,
+            516
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "(1) Regularization Effects. A noteworthy observation across most datasets was that applying AdaSlide frequently improved performance compared to the baseline. As performance degradation relative to the baseline was defined as information loss, this improvement can be considered an information benefit. We hypothesize that this improvement stems from a regularization effect. Unlike uniform compression models, AdaSlide determines whether to pass an image through the FIE or use the original based on CDA’s decision. The FIE processes images only when the CDA predicts that it will not significantly degrade quality or affect performance. This selective approach likely enhances performance by reducing noise and normalizing colors in images, resulting in better outcomes for downstream tasks. ",
+        "bbox": [
+            206,
+            527,
+            831,
+            670
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Key regions of high importance, where the FIE could potentially harm image quality, are left uncompressed by the CDA. This rationale explains why AdaSlide outperformed uniform compression models in most datasets, with the exception of Camelyon16. However, not all datasets exhibited positive effects, with some experiencing information loss, highlighting the limitations of the regularization hypothesis. ",
+        "bbox": [
+            208,
+            671,
+            833,
+            741
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            121,
+            33,
+            878,
+            54
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "(2) Global and Local Patterns. The VAE model’s performance is constrained by its severe output blurriness. Nevertheless, this limitation offers insights into whether specific tasks rely more on global patterns or local details. Tasks that achieve acceptable performance despite blurry outputs suggest that while detailed information adds value, the primary directionality remains discernible. ",
+        "bbox": [
+            166,
+            86,
+            791,
+            158
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "For example, datasets such as NCT-CRC (patch-level classification) and slidelevel classification datasets predominantly rely on global patterns, whereas datasets like NuInsSeg and other segmentation tasks depend heavily on local patterns. Tasks involving cell boundary segmentation or tumor infiltration detection rely heavily on fine-grained details (local patterns), while tasks focused on overall distribution and coloration (e.g., NCT-CRC) can be adequately performed using global patterns. ",
+        "bbox": [
+            168,
+            159,
+            791,
+            244
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "In tasks primarily driven by global patterns, even uniform compression models delivered satisfactory results. Conversely, for tasks dependent on local patterns, AdaSlide outperformed uniform compression models, effectively addressing information disequilibrium. ",
+        "bbox": [
+            166,
+            246,
+            789,
+            302
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "(3) In-domain and Out-of-domain Problem. Out-of-domain (OOD) challenges in AdaSlide arise from two primary sources of risk: (1) the image reconstruction performance of the FIE, and (2) the compression decision accuracy of the CDA. Since image reconstruction directly affects the amount of retained information, an FIE trained on in-domain data may fail to accurately reconstruct images from out-of-domain distributions, potentially introducing artifacts or blur. In parallel, the CDA, trained on cell information and image reconstruction difficulty, may misclassify important regions or overestimate reconstruction difficulty on unfamiliar data, resulting in information loss. ",
+        "bbox": [
+            166,
+            313,
+            791,
+            429
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Among the 13 downstream tasks evaluated, AdaSlide exhibited notable performance degradation on three datasets: NuInsSeg, CBTN, and Camelyon16. These issues can be interpreted as follows: NuInsSeg represents a dataset shift in image brightness; CBTN introduces a domain shift to pediatric pathology; and Camelyon16 introduces a domain shift via lymph node sections, which differ from the tissue sections used in TCGA. ",
+        "bbox": [
+            166,
+            429,
+            791,
+            513
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "For NuInsSeg, performance degradation is primarily attributable to the FIE, as all FIE-based segmentation models failed (Dice score near zero), and the LDM-based model failed to generate adequate cell structures (Supplementary Figure 3). This indicates that segmentation performance is highly dependent on the fidelity of the original high-resolution information—that is, on the compression ratio. ",
+        "bbox": [
+            166,
+            514,
+            791,
+            585
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "For CBTN, although performance degradation was less severe than for NuInsSeg, applying FIE alone resulted in noticeable performance drops. This is likely due to the pediatric-specific disease distribution, which diverges from the training domain of the FIE. However, when AdaSlide was applied, performance improved relative to using FIE alone, suggesting that the CDA mitigated some of the domain-induced reconstruction errors, and that the primary issue lay with the FIE. ",
+        "bbox": [
+            168,
+            586,
+            791,
+            670
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Camelyon16 exhibited a distinct pattern: it was the only case where FIE alone outperformed the full AdaSlide pipeline. Specifically, VQVAE—previously shown to generalize robustly—performed well, but adding CDA reduced performance. The CDA likely failed to operate effectively in this setting, as evidenced by the elevated CR and performance drop. Camelyon16 lymph node sections contain substantially higher cell densities than typical TCGA tissue sections. The CDA, trained to prioritize regions with high cell content, likely responded too aggressively in this context. ",
+        "bbox": [
+            166,
+            671,
+            789,
+            743
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            117,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            206,
+            87,
+            833,
+            115
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Despite these challenges, AdaSlide, composed of both FIE and CDA, outperformed FIE alone in most cases, suggesting that the CDA can compensate for FIE-induced information loss. Nevertheless, since both modules carry inherent OOD risks, careful experimental design and additional robustness strategies will be important considerations for future applications. ",
+        "bbox": [
+            208,
+            117,
+            833,
+            187
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "(4) Dataset Difficulty. The difficulty of each task played a significant role in determining the optimal $\\lambda$ parameter. For most datasets, $\\lambda ~ = ~ 0 . 5 0$ produced the best results. For example, in patch-level segmentation tasks, dataset difficulty ranked as SNOW $>$ PanNuke $>$ NuInsSeg. This ranking considered both VAE performance and dataset characteristics, such as noise levels, with SNOW being a synthetic dataset with minimal noise. The optimal $\\lambda$ values were 0.25 for SNOW, 0.50 for PanNuke, and 1.00 for NuInsSeg. Higher $\\lambda$ values were more appropriate for out-of-domain datasets where the FIE struggled to reconstruct images accurately. ",
+        "bbox": [
+            206,
+            200,
+            833,
+            316
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Slide-level classification showed relatively smaller performance differences compared to patch-level classification when selecting FIE and $\\lambda$ values. This was likely due to the reduced influence of individual patch instances in slide-level tasks, where classification relies more on shared global patterns. Although restoring fine-grained patterns remains important, the preservation of macroscopic patterns had a greater impact on slide-level classification. As a result, mid-range λ values typically achieved the best performance across most datasets, except for the CBTN dataset. ",
+        "bbox": [
+            206,
+            317,
+            831,
+            416
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Best Practice for Selecting the Optimal $\\pmb { \\lambda }$ Parameter ",
+        "text_level": 1,
+        "bbox": [
+            210,
+            430,
+            734,
+            447
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "AdaSlide is not explicitly trained for any particular downstream task. Instead, its compression behavior is implicitly controlled through the choice of the $\\lambda$ parameter. Selecting an appropriate $\\lambda$ value is therefore important to balance compression efficiency and downstream task performance. Our experiments show that no single $\\lambda$ value performs optimally across all datasets and tasks. The optimal choice depends on several factors, including the target task’s sensitivity to fine-grained details, the relative importance of preserving subtle information, and the potential benefits of noise reduction introduced by the FIE. Because of this variability, the most reliable strategy is to conduct small-scale validation experiments that reflect the characteristics of the target task, as demonstrated in our downstream evaluations. Such experiments provide empirical guidance on selecting the $\\lambda$ value that best suits the intended application. ",
+        "bbox": [
+            206,
+            454,
+            831,
+            609
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "When performing dedicated validation is not feasible, either due to a lack of labeled data or limited computational resources, a practical heuristic can be used. In our experiments, we observed that $\\lambda = 0 . 5 0$ generally provided a good balance between information preservation and compression across a wide range of datasets. Therefore, $\\lambda = 0 . 5 0$ can be recommended as a reasonable default choice for general applications. For use cases where preserving fine-grained information is particularly important, such as tasks that are highly sensitive to local image patterns or applications where domain shift is expected between training and deployment data (for example, between TCGA and external cohorts), a more conservative setting such as $\\lambda = 1 . 0 0$ is advisable. This choice reduces the risk of losing important information due to excessive compression. On the other hand, if storage efficiency is the primary concern and some level of information loss is acceptable, smaller $\\lambda$ values can be explored to maximize compression. More details can be found in Supplementary Note 4, and Supplementary Figure 4. ",
+        "bbox": [
+            206,
+            611,
+            833,
+            739
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            121,
+            33,
+            878,
+            54
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            166,
+            87,
+            791,
+            145
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Application Example of AdaSlide ",
+        "text_level": 1,
+        "bbox": [
+            168,
+            159,
+            499,
+            177
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "To evaluate compression performance at the WSI level, we implemented a real-world application of AdaSlide pipelines and validated both compression and enhancement. We selected one samples from TCGA-BRCA, TCGA-KIRC, and Camelyon16 dataset, respectively. The compression results are depicted in Figure 6, and Supplementary Figure 5-6. ",
+        "bbox": [
+            166,
+            183,
+            791,
+            254
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Tumor regions exhibited a higher tendency for the Keep action, and the AUROC for distinguishing tumor versus non-tumor regions based on CDA action probabilities was 0.6288, indicating performance above chance level (Figure 6B). The table in Figure 6D summarizes the effective compression performance when storing the compressed images. While JPEG format achieved the smallest storage footprint due to its inherent lossy compression, we observed notable image quality degradation during ESRGAN-based reconstruction, rendering it suboptimal for practical use (Supplementary Figure 7). Conversely, PNG format provided the best reconstruction quality owing to its lossless nature, but resulted in substantially larger storage requirements. To balance these trade-offs, we adopted a hybrid strategy wherein high-resolution (keep) images were stored as JPEG to minimize storage demands, while compressed (compress) images were stored as PNG to preserve reconstruction quality. This approach provided an effective balance between storage efficiency and image fidelity. ",
+        "bbox": [
+            168,
+            254,
+            791,
+            438
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Discussion ",
+        "text_level": 1,
+        "bbox": [
+            166,
+            454,
+            289,
+            473
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "In this study, we developed AdaSlide, an adaptive compression framework that addresses the trade-offs between CR and information loss when compressing giga-pixel WSIs. We assembled a PanCancer dataset from 31 TCGA projects, comprised of 1.8 million patches. Using this dataset, we trained two key modules: the FIE and the CDA. The FIE enhances the compressed images through encoding and decoding steps. The CDA, trained to handle information disequilibrium, autonomously determines the compression level based on the information content of the image. We evaluated the performance of AdaSlide across various downstream tasks, including patch-level classification, segmentation, and slide-level classification. The results indicated minimal information loss between the baseline and AdaSlide method, demonstrating its effectiveness in maintaining prediction accuracy while reducing the image storage capacity. AdaSlide defines information disequilibrium in a data-driven manner, which offers a key advantage over prior MIL-based approaches [? ] that rely on attention maps. In contrast to these methods, AdaSlide is task-agnostic and not reliant on task-specific datasets, enabling broader applicability across diverse clinical and research settings. ",
+        "bbox": [
+            166,
+            483,
+            791,
+            696
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Notably, AdaSlide outperformed uniform compression models (i.e., ESRGAN, VQVAE, SwinIR, and LDM) in all downstream tasks except for Camelyon16. Furthermore, AdaSlide demonstrated performance comparable to that of baseline models. ",
+        "bbox": [
+            166,
+            699,
+            791,
+            740
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            119,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Specifically, on the NuInsSeg dataset, uniform compression models failed to properly segment cell masks (Dice: 0.0000), whereas AdaSlide preserved information more effectively than the baseline methods. Additionally, AdaSlide showed adaptability to out-of-domain datasets such as Camelyon16 and CBTN. Camelyon16 comprises lymph node section slides, which differ slightly from the TCGA PanCancer dataset. Meanwhile, CBTN focuses on pediatric tumor types, which are distinct from the adult cancer data in TCGA. While AdaSlide’s performance was lower than the baseline on these datasets, it still exceeded that of the uniform compression models. These findings suggest that AdaSlide effectively mitigates information loss caused by FIE limitations and addresses out-of-domain challenges to some extent. These findings highlight that improving the performance of the FIE is crucial for enhancing AdaSlide’s overall effectiveness. In the future, we plan to incorporate recent diffusion-based SOTA models [? ] to further improve performance. ",
+        "bbox": [
+            208,
+            87,
+            831,
+            273
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "The AdaSlide framework offers flexible options to accommodate various research objectives. For instance, researchers can regulate the compression tendency using the CDA’s $\\lambda$ parameter. Additionally, the reward function is easily modifiable. We used a reinforcement learning method to train the CDA, eliminating the need for human annotations. This process is scalable to larger training datasets and adaptable to different information criteria. By defining the penalty term, the CDA can learn the information contained in patch images. For example, we used cell segmentation masks as pseudo-ground truths to quantify information loss. However, diagnosing lipogenic neoplasms originating from adipocytic cells does not align with the current version of AdaSlide. Fat tissue, which generally exhibits low cellularity and scarce nuclei, is prone to being recognized as less informative by the CDA. Adjustments to the CDA’s reward function would be necessary to handle lipogenic neoplasms more effectively. ",
+        "bbox": [
+            206,
+            274,
+            831,
+            444
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Faghani et al. [? ] introduced a lossless compression technique that identifies the tissue-containing foreground using an object detection–style binarization process and removes the background. Since this method does not alter the foreground (tissue) regions, it preserves the diagnostic information and does not degrade downstream performance. This represents an effective compression approach for certain scenarios. However, their method reconstructs the image by cropping the foreground regions into bounding boxes and reassembling them using a rectangle-packing strategy. As a result, it performs optimally when (1) the image contains repetitive patterns of similar size, (2) a large proportion of background is present, and (3) the tissue is predominantly organized along horizontal or vertical axes. In contrast, the method is less effective when the tissue exhibits diagonal structures or when the background is minimal, as occurs in many tumor-rich slides. Thus, the ideal application scenario for this method would be tissue microarrays (TMAs). Moreover, because the final reconstructed image disrupts the original spatial layout, direct spatial correspondence with the original WSI is lost, posing challenges for certain applications such as spatial omics alignment or visual inspection. In contrast, AdaSlide preserves the original spatial grid of the WSI and is not subject to the aforementioned constraints, enabling more flexible and generalizable compression. ",
+        "bbox": [
+            208,
+            444,
+            831,
+            701
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "This study had several limitations. First, we only considered a binary compression decision, determining whether to compress each image region. This approach could be extended to multi-class compression, where the CDA determines different compression levels for improved efficiency. Additionally, the CDA occasionally failed to converge stably during training. Future research will address this by exploring advanced policy-based reinforcement learning algorithms, such as proximal policy optimization (PPO) [? ], and conducting more sophisticated hyperparameter tuning. The $\\lambda$ parameter and the achieved CR were not always perfectly aligned with downstream task requirements, suggesting that the optimal $\\lambda$ value may vary depending on the dataset. Furthermore, the final compressed outputs could not be explicitly controlled, necessitating empirical experiments to identify the optimal $\\lambda$ value. To address this, we plan to modify the reward functions by incorporating explicit CR constraints to better control slide- or group-level CR. In addition, SSIM scores for tumor and non-tumor areas were relatively similar under the current CDA interpretation (Table 2). To address this, we plan to further refine the penalty design to more explicitly account for reconstruction difficulty. Incorporating semantic information from VLMs [? ] represents a promising extension to enhance this capability. ",
+        "bbox": [
+            205,
+            701,
+            831,
+            730
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            121,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            168,
+            87,
+            789,
+            300
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "AdaSlide is currently limited to an ROI-level single-patch image-based model, although the final output is expected to operate at the slide level. As such, AdaSlide does not collectively consider related ROI information. To address this, we plan to enhance both the CDA and FIE to handle multiple ROIs in future studies. The CR of AdaSlide is based on the size of raw pixel images, which differs from the file sizes of compressed formats such as JPG or PNG. For example, in our demo using ESRGAN, tessellated patch instances saved in formats like JPG enabled compression to a smaller size than the original SVS image. However, using VQVAE, which operates with 32- bit floating-point values, resulted in file sizes exceeding those of typical image files. Future research should consider practical image formats and introduce techniques like quantization to address this issue. Currently, ESRGAN achieves optimal enhancement performance when applied to PNG-based images. As a result, in the current demonstration, a hybrid strategy was used, with Keep images stored in JPEG format and Compress images stored in PNG format. In future work, enabling ESRGAN to operate effectively on JPEG-compressed images would allow for maximal storage efficiency. This capability could potentially be combined with the foreground cropping method proposed by Faghani et al. [? ], further enhancing the overall compression effectiveness. ",
+        "bbox": [
+            166,
+            303,
+            791,
+            543
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "In summary, AdaSlide is a framework that adjusts the compression levels based on the image’s information content to effectively compress digital pathology images. AdaSlide demonstrated balanced performance between CR and information preservation in various downstream tasks. Additionally, AdaSlide offers flexibility in terms of backbone architecture, allows for adjustable CR, and includes a reward function design to define information penalties. AdaSlide stores digital pathology images more effectively, thereby reducing costs and contributing to large-scale digital pathology archiving for long-term storage. ",
+        "bbox": [
+            168,
+            545,
+            789,
+            658
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            121,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Methods ",
+        "text_level": 1,
+        "bbox": [
+            206,
+            83,
+            310,
+            102
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "PanCancer Datasets ",
+        "text_level": 1,
+        "bbox": [
+            206,
+            112,
+            410,
+            129
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "The main objective of the FIE is to achieve robustness across multiple domains, including different organs, scanner variations, and scanned image quality. To address these challenges, we collected data from TCGA, which encompasses 31 projects. Thirty diagnostic slides were randomly sampled from each project, which yielded a training set of 930 WSIs. Although the entire TCGA collection contained over 20,000 WSIs, we sampled 5% to reduce computational costs and facilitate efficient training. Each WSI was tessellated into multiple patch images. We considered two key objectives to generate diverse patches: ",
+        "bbox": [
+            206,
+            136,
+            833,
+            250
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "1. Multi-magnification representation: Patches were extracted from both 40x (0.25 $\\mu \\mathrm { m } / \\mathrm { p i x e l }$ ) and 20x (0.5 $\\mu$ m/pixel) magnifications.   \n2. Spatial diversity: To promote adequate coverage of different WSI regions, we sampled $1 0 \\%$ of the patches at 40x and $4 0 \\%$ at 20x. The WSIs exhibited strong spatial correlations, implying that nearby patches often shared similar patterns. We employed a sampling-based patch selection instead of a sliding-window-based selection to encourage diverse patch selection. ",
+        "bbox": [
+            220,
+            265,
+            833,
+            365
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "To exclude non-tissue areas, we generated binary tissue masks using the Otsu thresholding with a validity threshold of 70%. Each patch was 512x512 pixels in size. We generated 1.8 million patches, ensuring equal representation at 40x and 20x magnifications. The PanCancer dataset encompasses diverse organs and cancer types. We divided PanCancer into training (94.5%), validation ( $5 \\%$ ), and test (0.5%) sets. ",
+        "bbox": [
+            206,
+            379,
+            833,
+            450
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "Datasets: Foundation Image Enhancer (FIE) ",
+        "text_level": 1,
+        "bbox": [
+            206,
+            463,
+            650,
+            481
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "To train and validating the FIE, we started with high-resolution images (512x512 pixels) from the PanCancer dataset and artificially down-scaled them to 128x128 pixels using bilinear interpolation. This simplified setting focused solely on the challenge of upscaling without the additional noise complexities encountered in real-world lowresolution images. Patch images were generated at both 40x and 20x magnifications to train and validate robustness across varying scales. The same preprocessing pipeline was applied to generate an external validation dataset sourced from CPTAC. ",
+        "bbox": [
+            206,
+            488,
+            833,
+            588
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "Datasets: Compress Decision Agent (CDA) ",
+        "text_level": 1,
+        "bbox": [
+            206,
+            602,
+            638,
+            620
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "A validation split of the PanCancer dataset was used to train the CDA. For the pseudo ground truth, the HoverNet [? ] outputs were acquired from both the original image and the compressed-and-restored image. ",
+        "bbox": [
+            208,
+            626,
+            831,
+            669
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "Downstream Datasets ",
+        "text_level": 1,
+        "bbox": [
+            208,
+            683,
+            426,
+            700
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "To validate the performance of the trained AdaSlide model, we leveraged several publicly available downstream datasets commonly used for slide-level and patch-level tasks. These datasets were specifically selected to evaluate the performance of AdaSlide in multi-magnification, multi-organ environments. A summary of each dataset is provided in Table 1. ",
+        "bbox": [
+            205,
+            707,
+            831,
+            736
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            119,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            166,
+            87,
+            793,
+            129
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "The NCT-CRC dataset (National Center for Tumor Diseases Colorectal Cancer Type Classification) dataset consists of 100,000 training and 7,180 test images extracted from H&E-stained WSIs of human CRC and normal tissue [? ]. The dataset contains nine classes: adipose tissue, background, debris, lymphocytes, mucus, smooth muscle, normal colon mucosa, cancer-associated stroma, and NCT-CRC epithelium. All images were color-normalized using the Macenko method [? ]. We split the original training set into a training and validation sets at a 7:3 ratio. The test dataset was then used according to a publicly available split set. ",
+        "bbox": [
+            166,
+            130,
+            791,
+            244
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "The MHIST (Minimalist Histopathology Image Analysis Dataset) dataset contains 2,175 training and 977 test patch images of H&E-stained colorectal polyps (extracted from 328 FFPE WSIs) from Dartmouth-Hitchcock [? ]. This dataset focused on the binary classification of benign hyperplastic polyps (HPs) vs. precancerous sessile serrated adenomas (SSAs). We split the original training set into a training and validation set at a 7:3 ratio. The test dataset was then used according to the publicly available split set. ",
+        "bbox": [
+            166,
+            246,
+            791,
+            343
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "The LI (Lymphatic Invasion Classification) dataset has 974 images extracted from H&E-stained WSIs of human stomach cancers [? ]. It specifically targets the binary classification of LI regions versus normal regions. Unlike other datasets, the LI dataset concentrates on small regions containing lymphocytes and the presence of tumor invasions within those lymphocyte areas. Although the original LI dataset includes weakly-labeled negative cases, we excluded them from this study. The LI dataset was divided into training, validation, and test datasets $\\mathrm { a t  a }$ ratio of 5:3:2. ",
+        "bbox": [
+            166,
+            344,
+            791,
+            444
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "The SICAPv2 (Sistema de Interpretaci´on de Im´agenes Histopatol´ogicas para la Detecci´on de C´ancer de Pr´ostata) dataset comprises 155 biopsies from 95 patients, with labels based on primary Gleason grades ranging from non-cancerous (NC) to Grade 5 (GG5). The primary grade was used as the target label for classification. The public test split was utilized for validation, while the remaining data were divided into training and validation sets with a ratio of 0.8:0.2 based on the public training split set configuration. ",
+        "bbox": [
+            166,
+            445,
+            791,
+            543
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "The WSSS4LUAD (Weakly-supervised Semantic Segmentation Techniques for Histopathology Images of Lung Adenocarcinoma) dataset comprises LUAD image tiles ranging from 200 to 500 pixels in size, each annotated with labels such as tumor, tumorassociated stroma, or normal. For our analysis, we adopted the approach outlined in the UNI [? ], selecting only samples with a single ground-truth label. This resulted in a subset of 4,693 images from the official training split. In this study, the dataset was further divided into training, validation, and test sets in a ratio of 0.6:0.2:0.2. ",
+        "bbox": [
+            166,
+            544,
+            791,
+            644
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "The SNOW (Synthetic Dataset for Human Breast Cancer Nuclei Segmentation) dataset contains 20,000 images of breast cancer patch images [? ]. The patch images and nuclei annotation masks were generated from deep neural networks. We selected the first 5,000 images and their corresponding mask pairs to simplify the experiments. These 5,000 image-mask pairs were then divided into training, validation, and test datasets at a ratio of 9:0.5:0.5. ",
+        "bbox": [
+            168,
+            644,
+            791,
+            730
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            115,
+            33,
+            875,
+            54
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "The NuInsSeg (Nuclei Instance Segmentation) dataset is a fully manually annotated dataset for nuclei segmentation in H&E images. It includes 665 image patches with over 30,000 manually segmented nuclei from 31 human and mouse organs. For this study, only the human H&E images (472 images) were used. The dataset was split into training, validation, and testing sets with a ratio of 0.6:0.2:0.2, respectively. Detailed instructions for generating the related segmentation masks are available in the public repository associated with the dataset. ",
+        "bbox": [
+            206,
+            87,
+            833,
+            187
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "The PanNuke (Pan-cancer Histology Dataset for Nuclei Instance Segmentation and Classification) dataset contains nuclei-level annotations derived from histopathology images spanning 19 tissue types. The dataset includes approximately 200,000 nuclei categorized into five clinically significant classes: neoplastic, inflammatory, connective tissue, necrotic/dead, and epithelial. In this study, we converted the dataset to binary segmentation masks for simplicity. The PanNuke dataset fold 1 was split into training, validation, and test datasets at a ratio of 0.6:0.2:0.2. ",
+        "bbox": [
+            206,
+            187,
+            831,
+            286
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "The TCGA-RCC dataset comprises 884 WSIs from TCGA’s kidney chromophobe (TCGA-KICH), kidney renal clear cell carcinoma (TCGA-KIRC), and kidney renal papillary cell carcinoma (TCGA-KIRP) projects. TCGA-KICH contains 111 images from 99 patients, TCGA-KIRC contains 489 images from 483 patients, and TCGA-KIRP contains 284 images from 264 patients. Patches were generated at 20x magnification with a size of 512x512 pixels. The average number of patches per slide was approximately 802.66, with a standard deviation of 435.81. The maximum and minimum number of patch images per slide were 4001 and 12, respectively. ",
+        "bbox": [
+            206,
+            287,
+            831,
+            401
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "The TCGA-NSCLC dataset contains 993 WSIs from TCGA, comprising 507 lung squamous cell carcinoma (TCGA-LUAD) and 486 lung adenocarcinoma (TCGA-LUSC) cases across 896 patients. Patches were generated at 20x magnification and are 512x512 pixels in size. The average number of patches per slide was approximately 694.63, with a standard deviation of 490.80. The maximum and minimum patch images per slide were 2933 and 10, respectively. ",
+        "bbox": [
+            206,
+            403,
+            833,
+            487
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "The TCGA-BRCA dataset includes various cancer types; however, for this analysis, we focused on invasive ductal carcinoma (IDC) and invasive lobular carcinoma (ILC) subtypes. Total 1,007 cases across 948 patients were employed. Patches were generated at 20x magnification and are 512x512 pixels in size. The average number of patches per slide was approximately 712.82, with a standard deviation of 452.17. The maximum and minimum patch images per slide were 4,252 and 12, respectively. ",
+        "bbox": [
+            206,
+            488,
+            831,
+            573
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "The Camelyon16 dataset (Cancer Metastases in Lymph Nodes Challenge 2016) contains 268 WSIs, including 111 slides from patients with lymph node metastases and 160 slides from normal lymph nodes. The dataset focuses on the binary classification of metastatic versus non-metastatic lymph nodes. Patches were extracted at 40x magnification with a size of 512x512 pixels. On average, each slide generated approximately 6021.86 patches, with a standard deviation of 4130.37. The maximum and minimum patch images per slide were 26,926 and 127, respectively. ",
+        "bbox": [
+            208,
+            574,
+            831,
+            673
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "The Children’s Brain Tumor Network (CBTN) [? ] contains 3,607 WSIs across 41 diagnostic categories derived from pediatric samples. For this study, we narrowed the classification task to only include Medulloblastoma and Ependymoma diagnoses. 150 WSIs were selected from each class and included 212 patients. Patches were generated at 20x magnification and are 512x512 pixels in size without overlaps. The average number of patches per slide was about 173, with a standard deviation of 127.12. The minimum and maximum number of patch images per slide were 4 and 721, respectively. ",
+        "bbox": [
+            208,
+            673,
+            831,
+            730
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            121,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            166,
+            87,
+            793,
+            130
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "Model Developments: Foundation Image Enhancer (FIE) ",
+        "text_level": 1,
+        "bbox": [
+            168,
+            145,
+            734,
+            161
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "The FIE was trained using three backbone architectures: VAE [? ], VQVAE [? ], ESRGAN [? ], SwinIR [? ], and LDM [? ]. The FIE required two modules: an encoder $f ( \\cdot )$ and a decoder $g ( \\cdot )$ . The encoder maps the original images $x$ to the latent vectors, and the decoder maps the latent vectors to original images. Therefore, the FIE works as follows: ",
+        "bbox": [
+            166,
+            168,
+            791,
+            239
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "equation",
+        "img_path": "images/fb38f19183ade090071177a353990ce14aa21b2834285feeeac88132d4171efd.jpg",
+        "text": "$$\n{ \\hat { x } } = g ( f ( x ) ) ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            431,
+            254,
+            524,
+            269
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "where the FIE was trained to minimize the difference between $x$ and $\\hat { x }$ ",
+        "bbox": [
+            166,
+            271,
+            690,
+            285
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "For the VAE [? ], the original study used 64x64 pixel images. We trained it with images of size 224x224 and 512x512 pixels. The architecture consisted of hidden dimensions with various sizes depending on the inputs: 224x224 (32, 64, 128, 256, 256, 512, 512) and 512x512 (32, 64, 128, 256, 512, 512, 512, 1024, 1024, 1024). The batch size was set to 128, and training used the Adam optimizer with a learning rate of $1 \\times 1 0 ^ { - 4 }$ . The training split of the PanCancer dataset were used and trained for five epochs. The checkpoints were selected based on the validation loss. ",
+        "bbox": [
+            166,
+            286,
+            791,
+            385
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "The VQVAE [? ] was proposed to replace the latent dimensions represented by a Gaussian distribution in VAEs. Instead, VQVAE employs quantized vector embeddings to represent the latent dimensions. In addition, VQVAE, particularly VQVAE-2, attempts to enhance the images in a two-stage manner. Similar to VAE, VQVAE exhibits low flexibility with respect to the input image shape. Therefore, we trained the VQVAE model twice, once for 224x224 pixels and again for 512x512 pixels. The architecture and hyperparameters are shared. The model hyperparameters and training parameters followed those of a previously proposed VQVAE model for histopathological image compression [? ]. The batch size was set to 128 and the learning rate to $1 \\times 1 0 ^ { - 4 }$ , using the Adam optimizer with five epochs. Minimum validation loss was set as the checkpoint selection criterion. ",
+        "bbox": [
+            166,
+            386,
+            791,
+            542
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "Unlike the VQVAE models, the ESRGAN [? ] does not require trained encoders. The ESRGAN’s encoder $f ( \\cdot )$ is a simple linearly downscaling method. Unlike other methods, ESRGAN attempts to minimize perceputal differences. As numerical metrics such as SSIM and PSNR diverged from human expert selection, the optimal checkpoint was determined through visual inspection in collaboration with a pathologist. To train the ESRGAN model, a batch size of 256 was used, and the model was initialized with a pretrained ESRGAN model. The Adam optimizer with a learning rate of $1 \\times 1 0 ^ { - 4 }$ was used, and training lasted for a total of 50,000 steps, with the first 2,500 as a warm-up phase. All other hyperparameters were maintained at their default settings, as defined in the original ESRGAN model [? ]. ",
+        "bbox": [
+            166,
+            543,
+            791,
+            686
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "The SwinIR [? ] is a Transformer-based image restoration model that utilizes the Swin Transformer architecture [? ]. Compared to CNN-based models such as ESR-GAN, SwinIR provides enhanced capability for modeling long-range dependencies and contextual information, which is particularly useful in reconstructing complex textures in histopathology images. In our implementation, we trained the SwinIR model to handle input sizes of 512x512 pixels. The architecture was initialized with a pretrained SwinIR model and fine-tuned using the PanCancer training split. A batch size of 12 and the Adam optimizer with a learning rate of $2 \\times 1 0 ^ { - 4 }$ were used. The training was performed for 50,000 steps, with the multiple step scheduler with 5 milestones; 25000, 40000, 45000, 47500, 50000. The checkpoint was selected based on the lowest validation loss. All other hyperparameters followed the original SwinIR implementation [? ]. For training SwinIR, we employed KAIR library (v1.1, https://github.com/cszn/KAIR). ",
+        "bbox": [
+            166,
+            686,
+            791,
+            743
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            119,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            206,
+            86,
+            833,
+            202
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "The LDM [? ] is a generative diffusion model that performs denoising in a lowerdimensional latent space, enabling both efficient training and high-quality image reconstruction. Unlike other models in this study, LDM consists of three main components: a first-stage VQVAE to map images to latent space, a UNet-based denoising network that operates in latent space, and a conditioning mechanism to guide reconstruction. In our implementation, we adopted a LDM architecture customized for histopathology image reconstruction. The pretrained first-stage VQVAE was employed. The denoising network was trained with a noise schedule following the cosine beta schedule, with 1,000 diffusion steps. We used a batch size of 8 and the Adam optimizer with a learning rate of $2 \\times 1 0 ^ { - 6 }$ . The training was conducted for 7 epochs. The best checkpoint was selected based on the lowest validation loss computed on reconstructed images. Training the LDM required approximately 10 GPU days. ",
+        "bbox": [
+            208,
+            203,
+            833,
+            372
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "The VAE and VQVAE depended on a fixed input size; therefore, these models were trained twice to handle the input sizes of 224x224 and 512x512 pixels, respectively. The ESRGAN, SwinIR, LDM models were trained once to handle an input size of 128x128. Python (v3.8), PyTorch (v2.0.1), and a single RTX A6000 GPU were used to implement AdaSlide. ",
+        "bbox": [
+            208,
+            374,
+            833,
+            444
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Model Developments: Compression Decision Agent (CDA) ",
+        "text_level": 1,
+        "bbox": [
+            206,
+            460,
+            791,
+            476
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "The CDA takes a single image patch as input and makes a binary compression decision $a \\in \\{ 0 , 1 \\}$ , where $a = 1$ denotes Compress and $a = 0$ denotes Keep. The agent employs pretrained image encoders (ResNet-18, ResNet-50, ViT) and is optimized by policybased learning using the REINFORCE algorithm [? ] (see Supplementary Note 3). Unlike conventional multi-step REINFORCE, we adopt a single-step setting with one patch per decision, eliminating the computational overhead of episode sampling. ",
+        "bbox": [
+            208,
+            482,
+            833,
+            568
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "We balance compression efficiency and information preservation. Let $S _ { \\mathrm { D i c e } } \\in [ 0 , 1 ]$ be the Dice similarity between the segmentation mask derived from the ESRGANreconstructed (compressed) image and the reference mask obtained from the original image. The information penalty is ",
+        "bbox": [
+            208,
+            569,
+            831,
+            625
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "equation",
+        "img_path": "images/a30e7754bfcf21f47e5a0365259b589a6fa17d8cc610a2270ed3dfc7fc461e76.jpg",
+        "text": "$$\nS _ { \\mathrm { i n f o } } = 1 - S _ { \\mathrm { D i c e } } .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            455,
+            639,
+            584,
+            653
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            121,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "To avoid slow convergence, we introduce a quality threshold $\\tau \\in ( 0 , 1 )$ on $S _ { \\mathrm { D i c e } }$ . The final reward is ",
+        "bbox": [
+            164,
+            86,
+            793,
+            116
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "equation",
+        "img_path": "images/2838ded2dc5121587c0e5f21bbbece11962253f7ccc87f0f77e2e99de7401c53.jpg",
+        "text": "$$\nS _ { \\mathrm { R e w a r d } } = \\left\\{ \\begin{array} { l l } { - 1 , } & { \\mathrm { i f ~ } a = 1 \\mathrm { ~ a n d ~ } S _ { \\mathrm { D i c e } } < \\tau , } \\\\ { 0 , } & { \\mathrm { i f ~ } a = 0 , } \\\\ { 1 - \\lambda S _ { \\mathrm { i n f o } } , } & { \\mathrm { i f ~ } a = 1 \\mathrm { ~ a n d ~ } S _ { \\mathrm { D i c e } } \\geq \\tau , } \\end{array} \\right.\n$$",
+        "text_format": "latex",
+        "bbox": [
+            299,
+            126,
+            653,
+            186
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "where $\\lambda > 0$ controls the strength of the information-preservation term. ",
+        "bbox": [
+            166,
+            197,
+            692,
+            211
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "We tune $\\lambda \\in \\{ 0 . 1 , 0 . 2 5 , 0 . 5 , 0 . 7 5 , 1 . 0 \\}$ and the learning rate $\\in \\{ 1 \\times 1 0 ^ { - 4 } , 5$ × $1 0 ^ { - 5 }$ , $1 \\times 1 0 ^ { - 5 }$ , $5 \\times 1 0 ^ { - 6 }$ , $1 \\times 1 0 ^ { - 6 } \\}$ via grid search. To avoid over/under-compression, models with CR outside $2 0 { - } 9 0 \\%$ are discarded. ",
+        "bbox": [
+            166,
+            212,
+            788,
+            254
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "Downstream Tasks ",
+        "text_level": 1,
+        "bbox": [
+            168,
+            268,
+            356,
+            285
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "To compare performance, we evaluated 13 downstream tasks for each condition: supervised training using the original image, using only the enhanced image processed by the foundation image enhancer (when $\\lambda = 0$ ), and applying adaptive compression with the AdaSlide method. ",
+        "bbox": [
+            166,
+            291,
+            791,
+            348
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "Patch-level downstream tasks are divided into classification and segmentation. The classification tasks include five datasets (NCT-CRC, MHIST, LI, SICAPv2, WSSS4LUAD), while the segmentation tasks include three datasets (SNOW, NuInsSeg, PanNuke). All experiments were repeated using five random seeds ({42, 43, 44, 45, 46}). For consistency, the same split sets were used across experiments, and public split sets were utilized whenever available. The checkpoints were selected based on the lowest validation loss. The Adam optimizer, paired with a cosine annealing learning rate scheduler, was applied throughout. ",
+        "bbox": [
+            168,
+            349,
+            791,
+            462
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "For patch-level classification tasks, a class-balanced sampler was employed to address class imbalance. Only resize and normalization augmentations were applied. In contrast, patch-level segmentation tasks, which generally involve smaller datasets, utilized various image augmentations, including flipping, random cropping, and color jittering. Detailed configurations for each downstream task are summarized in Table 3. ",
+        "bbox": [
+            166,
+            463,
+            791,
+            533
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "The slide-level classification datasets included TCGA-RCC, TCGA-NSCLC, TCGA-BRCA, Camelyon16, and CBTN. We utilized the CLAM pipeline [? ] for preprocessing and training the MIL models, with the CLAM-SB backbone model. Feature extraction for each patch image was performed using the ResNet-50 model. The batch size was set to 1, with training conducted over 50 epochs at a learning rate of $1 \\times 1 0 ^ { - 4 }$ . Early stopping was applied to prevent overfitting. The Adam optimizer was used without a learning rate scheduler. ",
+        "bbox": [
+            166,
+            535,
+            791,
+            633
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "Visual Turing Test (VTT) ",
+        "text_level": 1,
+        "bbox": [
+            168,
+            648,
+            426,
+            664
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "Five expert pathologists participated in VTT. In each trial, participants were presented with two images: one original and the other restored using ESRGAN. They were instructed to identify which image appeared to be enhanced. A total of 30 questions were presented, and the chance level was set at $5 0 \\%$ . The resulting accuracy scores were compared against the chance level using the Wilcoxon signed-rank test. ",
+        "bbox": [
+            166,
+            671,
+            791,
+            743
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            115,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "Application Example of AdaSlide ",
+        "text_level": 1,
+        "bbox": [
+            210,
+            85,
+            541,
+            102
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "Box 1 presents the AdaSlide pipeline. In this application, patch images were saved as JPEG for kept images and PNG for compressed images. The threshold $\\tau$ was set to the optimal $\\lambda$ determined by downstream performance. ",
+        "bbox": [
+            208,
+            109,
+            833,
+            152
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "Box 1 — AdaSlide adaptive compression algorithm ",
+        "text_level": 1,
+        "bbox": [
+            231,
+            158,
+            670,
+            173
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "Input: Patch images $P$ Output: Reconstructed whole-slide image $R$ ",
+        "bbox": [
+            231,
+            184,
+            766,
+            198
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "1. Initialize empty sets for compressed $. S _ { P }$ ), non-compressed $\\{ S _ { N } \\}$ ), and enhanced ( $S _ { E }$ ) patches. ",
+        "bbox": [
+            231,
+            200,
+            808,
+            229
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "2. Encoding: ",
+        "text_level": 1,
+        "bbox": [
+            231,
+            231,
+            339,
+            244
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "2.1. For each patch $p \\in { \\cal P }$ :   \n2.1.a) Obtain compression decision $\\hat { h } = \\mathrm { C D A } ( p )$ .   \n2.1.b) If $\\hat { h } \\ge \\tau$ , set $p _ { c } = \\mathrm { F I E } _ { \\mathrm { e n c o d e r } } ( p )$ and add to $S _ { P }$ ; otherwise add $p$ to $S _ { N }$ . ",
+        "bbox": [
+            243,
+            246,
+            808,
+            305
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "3. Decoding: ",
+        "text_level": 1,
+        "bbox": [
+            231,
+            307,
+            341,
+            321
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "3.1. For each $p _ { c } \\in S _ { P }$ , compute $p _ { e } = \\mathrm { F I E _ { d e c o d e r } } \\left( p _ { c } \\right)$ and add to $S _ { E }$ . ",
+        "bbox": [
+            243,
+            322,
+            742,
+            337
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "4. Reconstruct $R$ from $S _ { N } \\cup S _ { E }$ : $R  \\mathrm { R e c o n s t r u c t } ( S _ { N } \\cup S _ { E } )$ ",
+        "bbox": [
+            231,
+            338,
+            687,
+            353
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "Using CLAM toolbox [? ], we preprocessed the WSIs by selecting foreground tissue areas using binarized images and applying median blurring to smooth the edges. For the Camelyon16 sample, patches were generated at level 0 (0.25 µm/pixel), with a size of 512x512 pixels. For TCGA-BRCA, and TCGA-KIRC samples, the patch size was initially 1024x1024 at level 0, which was then resized to 512x512 pixels. The numbers of patches for Camelyon16, TCGA-BRCA, and TCGA-KIRC were 24,063, 9,278, and 3,720, respectively. Using the CDA, we made a patch-wise compression decision. Based on the decision made by the CDA, the patch images were either compressed to 128x128 pixels (compress) or left uncompressed (keep). In the decoding step, the compressed images are restored to their original pixel size and enhanced to the FIE. After the encoding-decoding step, the patch images were restored to their original WSI file format. The pyvips framework [? ] was used to generate a TIFF-format WSI file and JPEG compression with 75% quality. During reconstruction, the background images were not considered; therefore, the final size of the WSIs was reduced. ",
+        "bbox": [
+            206,
+            370,
+            833,
+            570
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "Evaluation Metrics: Foundation Image Enhancer (FIE) ",
+        "text_level": 1,
+        "bbox": [
+            211,
+            585,
+            754,
+            602
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "The PSNR measures the extrinsic image quality based on the pixel values between the original and enhanced images. The PSNR is computed as follows: ",
+        "bbox": [
+            208,
+            608,
+            830,
+            637
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "equation",
+        "img_path": "images/da997b0a9ba099f6a3d85edad49e5a34866158142d96f443a767fcf739a1dfa2.jpg",
+        "text": "$$\nP S N R = 1 0 \\log _ { 1 0 } \\left( \\frac { \\mathrm { M A X } _ { I } ^ { 2 } } { \\mathrm { M S E } } \\right) ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            410,
+            650,
+            628,
+            682
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "where MAX $\\boldsymbol { \\mathit { 1 } }$ is the maximum pixel value of the image, and MSE is the mean squared error between the original and the enhanced images. Similarly, the SSIM measures the differences in structures and pixel values between the original and enhanced images. ",
+        "bbox": [
+            206,
+            694,
+            833,
+            737
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            121,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            510,
+            765,
+            529,
+            776
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "The SSIM is computed as follows: ",
+        "bbox": [
+            168,
+            87,
+            416,
+            102
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "equation",
+        "img_path": "images/62242b39e864b7b62086bfe998a6457e159e640f0ae294d296122feedba6f7ce.jpg",
+        "text": "$$\nS S I M = \\frac { ( 2 \\mu _ { x } \\mu _ { y } + \\epsilon ) ( 2 \\sigma _ { x y } + \\epsilon ) } { ( \\mu _ { x } ^ { 2 } + \\mu _ { y } ^ { 2 } + \\epsilon ) ( \\sigma _ { x } ^ { 2 } + \\sigma _ { y } ^ { 2 } + \\epsilon ) } ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            339,
+            114,
+            616,
+            146
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "text",
+        "text": "where $\\mu _ { x }$ and $\\mu _ { y }$ are the average pixel values of the original and enhanced images, respectively. $\\sigma _ { x }$ and $o _ { y }$ are the standard deviations of the original and enhanced images, respectively. $\\sigma _ { x y }$ is the covariance between the original and enhanced images. $\\epsilon$ is a small constant that avoids a zero denominator. ",
+        "bbox": [
+            166,
+            156,
+            791,
+            214
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "text",
+        "text": "The LPIPS measures the dissimilarity between the original and enhanced images in feature space using pretrained image encoders, such as VGG, ResNet-50 models. The LPIPS is computed as follows: ",
+        "bbox": [
+            166,
+            215,
+            791,
+            256
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "equation",
+        "img_path": "images/dd58771da457a69b0c3209477ebefd5d7686d9a993d134d70a0636b07668b480.jpg",
+        "text": "$$\nL P I P S = L _ { 1 } ( \\phi ( x ) , \\phi ( y ) ) ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            383,
+            271,
+            573,
+            285
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "text",
+        "text": "where $L _ { 1 }$ represents the mean absolute difference, and $\\phi ( x )$ and $\\phi ( y )$ are the feature vectors extracted from the original image (x) and the enhanced image (y) by a pretrained deep learning model designed to capture perceptual similarity. In this study, we used the ImageNet pretrained VGG 16 model. ",
+        "bbox": [
+            166,
+            298,
+            791,
+            355
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "text",
+        "text": "Evaluation Metrics: Compression Decision Agent (CDA) ",
+        "text_level": 1,
+        "bbox": [
+            168,
+            368,
+            729,
+            386
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "text",
+        "text": "CR refers to the theoretical amount of compression achieved through image compression. When the original image has an input size of 512x512, it is represented by a dimension of $\\mathbb { R } ^ { 5 1 2 \\times 5 1 2 \\times 3 }$ . However, for $\\mathrm { V A E _ { 5 1 2 } }$ , the representation is $\\mathbb { R } ^ { 1 , 0 0 0 }$ , while VQVAE512 is represented by R128x128x2 + R64x64x2 , and ESRGAN by $\\mathbb { R } ^ { 1 2 8 \\mathbf { x } 1 2 8 \\mathbf { x } 3 }$ . The size of the dimension required by each method is expressed as the ratio of the CR. When adaptive compression was determined, the adaptive compression ratio was calculated by assuming the condition of no compression as the baseline, set to a value of one. Therefore, if only the original image was used, it was $1 0 0 \\%$ , and if both were compressed using ESRGAN, it was $6 . 2 5 \\%$ , equivalent to the compression ratio achieved by SwinIR and LDM. ",
+        "bbox": [
+            166,
+            392,
+            791,
+            535
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "text",
+        "text": "Evaluation Metrics: Classification Performance ",
+        "text_level": 1,
+        "bbox": [
+            166,
+            548,
+            635,
+            564
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "text",
+        "text": "The performance of the classification models was evaluated using various widely accepted metrics, including AUROC, AUPRC, accuracy, and F1 score. ",
+        "bbox": [
+            168,
+            571,
+            788,
+            600
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "text",
+        "text": "1. AUROC: The AUROC evaluates a classifier’s ability to differentiate between positive and negative classes across varying decision thresholds. This provides a comprehensive measure of the discriminatory ability of the model.   \n2. AUPRC: The AUPRC summarizes the trade-off between precision and recall across different threshold values. This is particularly useful for imbalanced datasets where positive samples are scarce.   \n3. Accuracy: The proportion of correctly classified instances out of the total number of instances. Although it offers a straightforward assessment of the overall model performance, it may not be suitable for imbalanced datasets. ",
+        "bbox": [
+            179,
+            613,
+            793,
+            743
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            117,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "text",
+        "text": "4. F1 score: The F1 score considers precision and recall, providing a balanced evaluation of the classifier’s performance. It is calculated as the harmonic mean of these two metrics and is particularly valuable when precision and recall are equally important. ",
+        "bbox": [
+            220,
+            86,
+            833,
+            145
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "text",
+        "text": "Evaluation Metrics: Segmentation Performance ",
+        "text_level": 1,
+        "bbox": [
+            206,
+            159,
+            680,
+            177
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "text",
+        "text": "The performance of the segmentation models was assessed using commonly employed metrics, namely the Dice coefficient and the Jaccard index. ",
+        "bbox": [
+            208,
+            183,
+            830,
+            211
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "text",
+        "text": "1. Dice score: The Dice score measures the spatial overlap between the predicted segmentation mask and the ground truth mask, expressed as the harmonic mean of precision and recall (Equation 7).   \n2. Jaccard index: The Jaccard index evaluates the similarity between two sets by computing the ratio of intersections to unions, and is also known as the Intersection over Union (IoU) (Equation 8). ",
+        "bbox": [
+            221,
+            225,
+            833,
+            312
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "text",
+        "text": "The Dice coefficient was computed as: ",
+        "bbox": [
+            233,
+            325,
+            512,
+            340
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "equation",
+        "img_path": "images/cce031e4481329c285535682151e0bdf7cbf1c1c7b1468ce8484e6aacc5a5524.jpg",
+        "text": "$$\n{ \\mathrm { D i c e } } = { \\frac { 2 \\cdot { \\mathrm { T P } } } { 2 \\cdot { \\mathrm { T P } } + { \\mathrm { F P } } + { \\mathrm { F N } } } } .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            420,
+            349,
+            618,
+            381
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "text",
+        "text": "The Jaccard index was computed as: ",
+        "bbox": [
+            233,
+            392,
+            504,
+            406
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "equation",
+        "img_path": "images/dca9b2f3b9c9660d7387cc4fb965378d4b5465feaca0436513a8a18be67a9da8.jpg",
+        "text": "$$\n\\mathrm { J a c c a r d } = { \\frac { \\mathrm { T P } } { \\mathrm { T P } + \\mathrm { F P } + \\mathrm { F N } } } .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            418,
+            417,
+            620,
+            456
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "text",
+        "text": "where TP, FP, and FN denote true positives, false positives, and false negatives, respectively. ",
+        "bbox": [
+            208,
+            458,
+            831,
+            487
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "text",
+        "text": "Statistics and reproducibility ",
+        "text_level": 1,
+        "bbox": [
+            208,
+            502,
+            497,
+            518
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "text",
+        "text": "For pretraining the FIEs, 30 WSIs were randomly sampled from each TCGA project. During patch extraction, patches were also randomly selected within tissue regions to ensure representative sampling. ",
+        "bbox": [
+            206,
+            525,
+            831,
+            567
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "text",
+        "text": "For the reconstruction performance of the FIE, SSIM, PSNR, and LPIPS were computed for each patch and then averaged across the evaluation set to obtain global scores. In the VTT, model performance was statistically compared against chance-level accuracy (0.5) using a two-sided Wilcoxon signed-rank test, with $P < 0 . 0 5$ considered statistically significant. No other formal statistical tests were applied. ",
+        "bbox": [
+            206,
+            568,
+            833,
+            638
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "text",
+        "text": "For downstream classification and segmentation tasks, model performance was evaluated using AUROC, AUPRC, Dice score, and Jaccard index as the primary evaluation metrics. For patch-level analyses, these metrics were calculated per patch and averaged within slides, whereas for slide-level analyses, patch-level features were aggregated using attention weights to generate slide-level representations for classification. All downstream experiments were repeated five times with different random seeds (42, 43, 44, 45, and 46), and mean performance values were reported. All experiments were conducted under identical hyperparameter settings, except for the specific comparison variable being tested. ",
+        "bbox": [
+            206,
+            639,
+            833,
+            740
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            121,
+            33,
+            878,
+            54
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            166,
+            87,
+            791,
+            115
+        ],
+        "page_idx": 25
+    },
+    {
+        "type": "text",
+        "text": "No statistical method was used to predetermine sample size, and no data were excluded from the analyses. The experiments were not randomized, and the investigators were not blinded to allocation during experiments or outcome assessment. All datasets used in this study are publicly available, and all codes, model configurations, and trained weights will be released to ensure reproducibility. ",
+        "bbox": [
+            166,
+            117,
+            791,
+            187
+        ],
+        "page_idx": 25
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            115,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 25
+    },
+    {
+        "type": "text",
+        "text": "Data availability ",
+        "text_level": 1,
+        "bbox": [
+            208,
+            83,
+            398,
+            103
+        ],
+        "page_idx": 26
+    },
+    {
+        "type": "text",
+        "text": "This study used publicly accessible WSI datasets. TCGA data (including TCGA-RCC, TCGA-NSCLC, TCGA-BRCA) can be accessed via the NIH Genomic Data Commons (https://portal.gdc.cancer.gov). CPTAC datasets are available through The Cancer Imaging Archive (https://www.cancerimagingarchive.net/). Additional publicly available datasets used in this work include Camelyon16 (https://camelyon16.grand-challenge.org/), NCT-CRC (https://zenodo.org/record/ 1214456), MHIST (https://bmirds.github.io/MHIST/), LI (https://zenodo.org/ records/10020633), SICAPv2 (https://data.mendeley.com/datasets/9xxm58dvs3/1), WSSS4LUAD (https://wsss4luad.grand-challenge.org/), SNOW (https://zenodo.org/ records/6633721), NuInsSeg (https://www.kaggle.com/datasets/ipateam/nuinsseg), and PanNuke (https://warwick.ac.uk/fac/cross fac/tia/data/pannuke). The CBTN dataset is available under controlled access and can be requested from the Children’s Brain Tumor Network (https://cbtn.org/). Source data are provided in this paper. ",
+        "bbox": [
+            208,
+            112,
+            831,
+            298
+        ],
+        "page_idx": 26
+    },
+    {
+        "type": "text",
+        "text": "Code availability ",
+        "text_level": 1,
+        "bbox": [
+            208,
+            312,
+            401,
+            331
+        ],
+        "page_idx": 26
+    },
+    {
+        "type": "text",
+        "text": "A demo version of the AdaSlide code, including example usage, is available for academic research through GitHub (https://github.com/PathfinderLab/AdaSlide demo) and Zenodo (https://doi.org/10.5281/zenodo.17445388), and the corresponding demo outputs can be accessed at https://zenodo.org/records/15665900. The full AdaSlide training and evaluation code is provided at https://github. com/PathfinderLab/AdaSlide and also archived in Zenodo (https://doi.org/10. 5281/zenodo.17445388). The trained FIE and CDA model weights are available via Zenodo (https://zenodo.org/record/11069591). Additional publicly available resources used in this study include HoverNet (https://github.com/vqdang/ hover net), ESRGAN (https://github.com/XPixelGroup/BasicSR), VQVAE (https: //github.com/rosinality/vq-vae-2-pytorch), KAIR (https://github.com/cszn/KAIR), LDM (https://github.com/CompVis/latent-diffusion), and CLAM (https://github. com/mahmoodlab/CLAM). ",
+        "bbox": [
+            206,
+            342,
+            831,
+            527
+        ],
+        "page_idx": 26
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            121,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 26
+    },
+    {
+        "type": "text",
+        "text": "References ",
+        "text_level": 1,
+        "bbox": [
+            166,
+            84,
+            292,
+            102
+        ],
+        "page_idx": 27
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            119,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 27
+    },
+    {
+        "type": "text",
+        "text": "Acknowledgements ",
+        "text_level": 1,
+        "bbox": [
+            210,
+            83,
+            428,
+            102
+        ],
+        "page_idx": 28
+    },
+    {
+        "type": "text",
+        "text": "This research was supported by the Korea Health Technology R&D Project through the Korea Health Industry Development Institute (KHIDI), funded by the Ministry of Health and Welfare, Republic of Korea (grant number RS-2021-KH113146; S.J., S.H.L.). It was also supported by the National Research Foundation of Korea (NRF) grant funded by the Korean government (MSIT) (grant number RS-2025-02215813; S.J.), as well as the Digital-Bio AI $^ +$ X Global Innovative Talent Nurturing Project with Hands-on Experience of the NRF, funded by the Korean government (MSIT) (grant number RS-2024-00441029; S.J.). Additional support was provided by the High-Performance Computing Support Project, funded by the Government of the Republic of Korea (Ministry of Science and ICT) (grant number RQT-25-090105; S.J.). ",
+        "bbox": [
+            206,
+            112,
+            833,
+            255
+        ],
+        "page_idx": 28
+    },
+    {
+        "type": "text",
+        "text": "Author Contributions ",
+        "text_level": 1,
+        "bbox": [
+            210,
+            269,
+            462,
+            288
+        ],
+        "page_idx": 28
+    },
+    {
+        "type": "text",
+        "text": "J.L. and L.T. carried out the experiments. J.L. wrote the manuscript with support from L.T., D.M.B., D.O., D.K., W.J.. S.A., and S.H.L. conceived the original idea. D.O., D.K., S.A., and S.H.L. supervised the project. ",
+        "bbox": [
+            206,
+            299,
+            831,
+            342
+        ],
+        "page_idx": 28
+    },
+    {
+        "type": "text",
+        "text": "Competing Interests ",
+        "text_level": 1,
+        "bbox": [
+            208,
+            356,
+            447,
+            376
+        ],
+        "page_idx": 28
+    },
+    {
+        "type": "text",
+        "text": "The authors declare a related patent application covering the methodological aspects of this work (Applicants: Korea University and The Catholic University of Korea Industry–Academic Cooperation Foundations; Inventors: Sangjeong Ahn, Seong Hak Lee, and Jonghyun Lee; PCT/KR2025/007948; filed and pending). The remaining authors declare no competing interests. ",
+        "bbox": [
+            206,
+            386,
+            833,
+            457
+        ],
+        "page_idx": 28
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            121,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 28
+    },
+    {
+        "type": "text",
+        "text": "Tables ",
+        "text_level": 1,
+        "bbox": [
+            166,
+            84,
+            242,
+            102
+        ],
+        "page_idx": 29
+    },
+    {
+        "type": "table",
+        "img_path": "images/4995c420fbeb66cbd157e7ae99316d0e8b4fac69e8af1465cb3f9e8a74b129df.jpg",
+        "table_caption": [
+            "Table 1 Summarization of downstream task datasets. "
+        ],
+        "table_footnote": [
+            "Cls: classification; Seg: segmentation; The number in the bracket indicates the number of classes. 1The width and height range from 150 to 300, with an average size of 220×222. 2The original SNOW dataset has 20k images. We sampled 5k images. 3Pediatric tissue samples. "
+        ],
+        "table_body": "<table><tr><td>Data Level</td><td>Dataset</td><td>Organ</td><td>Sample Count</td><td>Patch Size</td><td>Magnification</td><td>Task</td></tr><tr><td rowspan=\"8\">Patch-level</td><td>NCT-CRC</td><td>Colon</td><td>107,180</td><td>224x224</td><td>20x</td><td>Cls (9)</td></tr><tr><td>MHIST</td><td>Colon</td><td>3,152</td><td>224x224</td><td>40x</td><td>Cls (2)</td></tr><tr><td>LI</td><td>Stomach</td><td>973</td><td>512x512</td><td>5x</td><td>Cls (2)</td></tr><tr><td>SICAPv2</td><td>Prostate</td><td>18,786</td><td>512x512</td><td>10x</td><td>Cls (4)</td></tr><tr><td>WSSS4LUAD</td><td>Lung</td><td>4,695</td><td>Dynamic1</td><td>40x</td><td>Cls (2)</td></tr><tr><td>SNOW</td><td>Breast</td><td>5,0002</td><td>512x512</td><td>40x</td><td>Seg (2)</td></tr><tr><td>NuInsSeg</td><td>Various</td><td>474</td><td>512x512</td><td>40x</td><td>Seg (2)</td></tr><tr><td>PanNuke</td><td>Various</td><td>2,658</td><td>256x256</td><td>40x</td><td>Seg (2)</td></tr><tr><td rowspan=\"5\">Side-level</td><td>TCGA-RCC</td><td>Kidney</td><td>884</td><td>512x512</td><td>20x</td><td>Cls (3)</td></tr><tr><td>TCGA-NSCLC</td><td>Lung</td><td>993</td><td>512x512</td><td>20x</td><td>Cls (2)</td></tr><tr><td>TCGA-BRCA</td><td>Breast</td><td>1,008</td><td>512x512</td><td>20x</td><td>Cls (2)</td></tr><tr><td>Camelyon16</td><td>Breast</td><td>268</td><td>512x512</td><td>40x</td><td>Cls (2)</td></tr><tr><td>CBTN</td><td>Brain3</td><td>300</td><td>512x512</td><td>20x</td><td>Cls (2)</td></tr></table>",
+        "bbox": [
+            164,
+            151,
+            791,
+            335
+        ],
+        "page_idx": 29
+    },
+    {
+        "type": "table",
+        "img_path": "images/445afa7508bbe38859130294e2666461460d0a12a568267dcba7f4b296122a67.jpg",
+        "table_caption": [
+            "Table 2 Joint evaluation of semantic relevance and enhancement complexity across compression levels. "
+        ],
+        "table_footnote": [
+            "Semantic preference ratio indicate relative similarity to the first prompt (“A photo of densely packed with cells.”). Complexity scores represent SSIM computed between HR-based cell segmentation masks and segmentation masks obtained from enhanced images (mean (SD)). "
+        ],
+        "table_body": "<table><tr><td rowspan=\"3\">λ</td><td colspan=\"2\">Semantic Evaluation(%)</td><td colspan=\"2\">Complexity Evaluation</td></tr><tr><td>Keep</td><td>Compress</td><td>Keep</td><td>Compress</td></tr><tr><td>0.10</td><td>53.85</td><td>47.21</td><td>0.7116 (0.13)</td><td>0.7002 (0.10)</td></tr><tr><td>0.25</td><td>55.20</td><td>46.98</td><td>0.7387 (0.12)</td><td>0.6967 (0.10)</td></tr><tr><td>0.50</td><td>63.74</td><td>43.00</td><td>0.6907 (0.12)</td><td>0.7047 (0.10)</td></tr><tr><td>0.75</td><td>55.80</td><td>45.31</td><td>0.6996 (0.12)</td><td>0.7019 (0.10)</td></tr><tr><td>1.00</td><td>52.87</td><td>44.61</td><td>0.6918 (0.11)</td><td>0.7077 (0.10)</td></tr></table>",
+        "bbox": [
+            164,
+            495,
+            791,
+            596
+        ],
+        "page_idx": 29
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            117,
+            33,
+            875,
+            54
+        ],
+        "page_idx": 29
+    },
+    {
+        "type": "table",
+        "img_path": "images/8b7fe9b261125c0fb03e01478bce2a3e06afbc3a217d8d0c4052bdfa72db899e.jpg",
+        "table_caption": [
+            "Table 3 Training configurations for patch-level tasks. Each dataset was paired with a specific image encoder, loss function, and trained with specified epochs and batch sizes. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Task</td><td>Dataset</td><td>Image Encoder</td><td>Loss</td><td>Epochs</td><td>Batch</td><td>Classes</td></tr><tr><td>Classification</td><td>NCT-CRC</td><td>ResNet-18</td><td>Cross Entropy</td><td>10</td><td>256</td><td>9</td></tr><tr><td></td><td>MHIST</td><td>ResNet-18</td><td>Cross Entropy</td><td>100</td><td>256</td><td>2</td></tr><tr><td></td><td>LI</td><td>ResNet-18</td><td>Cross Entropy</td><td>30</td><td>64</td><td>2</td></tr><tr><td></td><td>SICAPv2</td><td>ResNet-50</td><td>Cross Entropy</td><td>3</td><td>128</td><td>4</td></tr><tr><td></td><td>WSSS4LUAD</td><td>ResNet-50</td><td>Cross Entropy</td><td>30</td><td>64</td><td>3</td></tr><tr><td>Segmentation</td><td>SNOW</td><td>ResNet-34 Unet</td><td>Dice</td><td>10</td><td>64</td><td>2</td></tr><tr><td></td><td>NuInsSeg</td><td>ResNet-34 Unet</td><td>Dice</td><td>30</td><td>32</td><td>2</td></tr><tr><td></td><td>PanNuke</td><td>ResNet-34 Unet</td><td>Dice</td><td>30</td><td>32</td><td>2</td></tr></table>",
+        "bbox": [
+            206,
+            367,
+            838,
+            492
+        ],
+        "page_idx": 30
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            121,
+            33,
+            875,
+            54
+        ],
+        "page_idx": 30
+    },
+    {
+        "type": "text",
+        "text": "Figure Legends/Captions ",
+        "text_level": 1,
+        "bbox": [
+            168,
+            84,
+            460,
+            104
+        ],
+        "page_idx": 31
+    },
+    {
+        "type": "text",
+        "text": "Fig. 1 Overview of AdaSlide. A, Patch distributions of the PanCancer dataset used to train AdaSlide. Using 930 WSIs from 31 TCGA projects, we extracted $4 0 \\mathrm { x }$ and $2 0 \\mathrm { x }$ magnification patch images (each magnification has equal proportions). B, AdaSlide pipeline. A WSI is tessellated into multiple patch images, and the compression ratios are decided using the CDA. Patch images selected for compression undergo encoding and decoding steps using the FIE. Finally, the patch images excluded from compression, along with the enhanced images, were collected and reconstructed for further analysis. C, Overall performance of AdaSlide on 13 datasets. The baseline indicates the conventional supervised learning using original images. The degraded performance implies information loss during compression and enhancement. AdaSlide showed comparable performance to the baseline, whereas the other compression models (ESRGAN, VQVAE, SwinIR, LDM) did not. WSI, whole-slide image; TCGA, The Cancer Genome Atlas; CDA, Compression Decision Agent; FIE, Foundational Image Enhancer. ",
+        "bbox": [
+            168,
+            135,
+            791,
+            271
+        ],
+        "page_idx": 31
+    },
+    {
+        "type": "text",
+        "text": "Fig. 2 Example of Hypothesis Field of AdaSlide. AdaSlide is trained to preserve Zone B (clinically informative and hard to restore) while compressing other zones, including Zones A, C, and D. ",
+        "bbox": [
+            164,
+            312,
+            793,
+            347
+        ],
+        "page_idx": 31
+    },
+    {
+        "type": "text",
+        "text": "Fig. 3 Overview of FIEs. A, Quantitative results of enhanced images. The VAEs show lower performance in every metric; conversely, VQVAEs outperform all methods. ESRGAN shows comparable performance to VQVAE. B, Example enhanced image outputs. The outputs of VAEs are notably blurry; conversely, the outputs of ESRGAN, VQVAE, SwinIR, and LDMs are clear. However, the VQVAEs exhibit unexpected noise patterns during reconstruction of white background areas. Exact numerical values and statistics are provided in the Source Data file. FIE, Foundational Image Enhancer. ",
+        "bbox": [
+            166,
+            387,
+            791,
+            467
+        ],
+        "page_idx": 31
+    },
+    {
+        "type": "text",
+        "text": "Fig. 4 Overview of the CDA. A, Two possible outcomes depending on the CDA’s binary decision. When the action is Keep $[ a = 0 ^ { \\cdot }$ ), the original image patch is stored directly, yielding zero reward. When the action is Compress $\\mathbf { \\Phi } _ { a } = \\mathbf { \\Phi } _ { 1 } \\mathbf { \\Phi } _ { , }$ ), the patch is encoded $( f )$ and decoded $( g )$ , and the CDA receives a positive compression reward while incurring an information penalty proportional to the dissimilarity between the original and reconstructed segmentation masks $\\langle S _ { \\mathrm { i n f o } } = 1 - S _ { \\mathrm { D i c e } } \\rangle$ ). B, Representative examples of successful and failed compression decisions, illustrating mask similarity and reconstruction fidelity. $\\mathbf { C }$ , Relationship between the hyperparameter $\\lambda$ and the CR. Increasing $\\lambda$ strengthens the information-preservation term, resulting in a lower CR and a negative association between $\\lambda$ and compression tendency. Exact numerical values and statistics are provided in the Source Data file. CDA, Compression Decision Agent; CR, compression ratio; $S _ { \\mathrm { D i c e } }$ , Dice score. ",
+        "bbox": [
+            166,
+            506,
+            791,
+            620
+        ],
+        "page_idx": 31
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            115,
+            33,
+            875,
+            54
+        ],
+        "page_idx": 31
+    },
+    {
+        "type": "text",
+        "text": "Fig. 5 Overview of various downstream tasks. AdaSlide is presented in three parts; average, best performance, and best CR, respectively. A, Performance difference from baseline across downstream tasks. The baseline represents performance using uncompressed images. AUROC scores were used for classification tasks (green and yellow border), and Dice scores for segmentation tasks (purple border). Positive values indicate improved performance compared to the baseline, while negative values indicate degradation. Detailed information is presented in Supplementary Table 3-15. B, Summary of CR. The baseline has a $1 0 0 \\%$ CR; whereas, the other models have lower CRs than the baselines. AdaSlide achieves a balance between high CR and maintaining task performance, compared to ESRGAN and VQVAE. Exact numerical values and statistics are provided in the Source Data file. CR, compression ratio; AUROC, area under the receiver operating characteristic curve. ",
+        "bbox": [
+            206,
+            186,
+            833,
+            300
+        ],
+        "page_idx": 32
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            121,
+            33,
+            877,
+            54
+        ],
+        "page_idx": 32
+    },
+    {
+        "type": "image",
+        "img_path": "images/87e57c6dd5d45fd91de55ce3589bfe5003cdeaf8061112df88772e67e773175c.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            80,
+            114,
+            916,
+            877
+        ],
+        "page_idx": 33
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            124,
+            35,
+            880,
+            58
+        ],
+        "page_idx": 33
+    },
+    {
+        "type": "image",
+        "img_path": "images/7485acce651d1ef1feea697fb2d5d570b25b22c3f019c9419901554c7ec71378.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            135,
+            256,
+            792,
+            762
+        ],
+        "page_idx": 34
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            129,
+            35,
+            877,
+            58
+        ],
+        "page_idx": 34
+    },
+    {
+        "type": "discarded",
+        "text": "Clinically Informative ",
+        "bbox": [
+            98,
+            224,
+            343,
+            244
+        ],
+        "page_idx": 34
+    },
+    {
+        "type": "image",
+        "img_path": "images/e7dbad7e58b8b0b9b704fef28c0b3922b7504bc570eef7e692f293051590d3d6.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            88,
+            236,
+            900,
+            501
+        ],
+        "page_idx": 35
+    },
+    {
+        "type": "image",
+        "img_path": "images/a059d1446fc33aad9b891f51d737c50e64ba0b976ff0c70b70dbb77778063dd6.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            96,
+            522,
+            919,
+            758
+        ],
+        "page_idx": 35
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            127,
+            35,
+            877,
+            58
+        ],
+        "page_idx": 35
+    },
+    {
+        "type": "image",
+        "img_path": "images/01f622a9b8b1ed7cb09d0648f9960c156b8f23296539a930966469da3d3b4a3c.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            99,
+            113,
+            901,
+            895
+        ],
+        "page_idx": 36
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            125,
+            35,
+            879,
+            58
+        ],
+        "page_idx": 36
+    },
+    {
+        "type": "image",
+        "img_path": "images/ca4acb502425ea4d4f7ca5adf95fa7da12d697f4caf2d88cf71037196d4caf10.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            93,
+            252,
+            913,
+            522
+        ],
+        "page_idx": 37
+    },
+    {
+        "type": "image",
+        "img_path": "images/c9c1a71743faed49f0f8d7d9b417b2ce7fa9fc95b4347564e20b988f25ccb38f.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            99,
+            550,
+            915,
+            746
+        ],
+        "page_idx": 37
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            125,
+            35,
+            877,
+            58
+        ],
+        "page_idx": 37
+    },
+    {
+        "type": "image",
+        "img_path": "images/8b35786f28d53c6b2052a20eab365d5783c709f39dd094790b067a53db9559ea.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            88,
+            291,
+            901,
+            502
+        ],
+        "page_idx": 38
+    },
+    {
+        "type": "table",
+        "img_path": "images/73d498f7a709ed07f4271cf68e68103cd8c01cb3486d00ffeb7727cfe4c84d39.jpg",
+        "table_caption": [],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>A parameter</td><td>JPEG</td><td>PNG</td><td></td><td>Hybrid</td></tr><tr><td>0.10</td><td>78.4 MB ART</td><td>824 MB</td><td>25.37%</td><td>356.0 MB</td><td>10.96%</td></tr><tr><td>0.25</td><td>156.6 MB</td><td>2.3 GB</td><td>70.85%</td><td>369.4 MB</td><td>11.38%</td></tr><tr><td>0.50</td><td>121.9 MB</td><td>1.1 GB</td><td>33.89%</td><td>364.4 MB</td><td>11.23%</td></tr><tr><td>0.75</td><td>156.8 MB</td><td>2.0 GB</td><td>61.61%</td><td>364.8 MB</td><td>11.24%</td></tr><tr><td>1.00</td><td>90.8 MB</td><td>764.0 MB</td><td>23.54%</td><td>360.9 MB</td><td>11.12%</td></tr><tr><td>Average</td><td>120.9 MB</td><td>1.36 GB</td><td>43.45%</td><td>363.1 MB</td><td>11.19%</td></tr></table>",
+        "bbox": [
+            102,
+            530,
+            892,
+            712
+        ],
+        "page_idx": 38
+    },
+    {
+        "type": "discarded",
+        "text": "ARTICLE IN PRESS ",
+        "bbox": [
+            127,
+            35,
+            877,
+            58
+        ],
+        "page_idx": 38
+    }
+]

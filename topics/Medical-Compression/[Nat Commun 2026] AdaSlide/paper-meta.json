@@ -1,0 +1,14 @@
+{
+  "title": "Adaptive compression framework for giga-pixel whole slide images",
+  "short": "AdaSlide",
+  "authors": "Jonghyun Lee; Lina Takemaru; D. M. Bappy; Ye Sul Jeong; Won-Ki Jeong; Derek Oldridge; Dokyoon Kim; Sangjeong Ahn; Sung Hak Lee",
+  "venue": "Nature Communications",
+  "year": "2026",
+  "links": [
+    "https://www.nature.com/articles/s41467-025-66889-0",
+    "https://www.nature.com/articles/s41467-025-66889-0_reference.pdf"
+  ],
+  "mineru_task": "cddb8cc0-59f7-4a0c-af38-ee7e645cc5f8",
+  "reading_order": "Medical-Compression topic paper 1",
+  "one_liner_hint": "AdaSlide 用 RL 决策代理按 patch 临床信息量选择保留或压缩，再用 FIE 复原，在 WSI 存储压缩和诊断性能之间做自适应权衡。"
+}

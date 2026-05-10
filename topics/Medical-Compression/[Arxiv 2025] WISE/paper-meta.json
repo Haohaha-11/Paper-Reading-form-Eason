@@ -1,0 +1,15 @@
+{
+  "title": "WISE: A Framework for Gigapixel Whole-Slide-Image Lossless Compression",
+  "short": "WISE",
+  "authors": "Yu Mao; Jun Wang; Nan Guan; Chun Jason Xue",
+  "venue": "arXiv",
+  "year": "2025",
+  "arxiv": "2503.18074",
+  "links": [
+    "https://arxiv.org/abs/2503.18074",
+    "https://arxiv.org/pdf/2503.18074"
+  ],
+  "mineru_task": "503bbe94-88f7-451b-850b-f7068c8e1eae",
+  "reading_order": "Medical-Compression topic paper 2",
+  "one_liner_hint": "WISE 是面向 WSI 的 lossless compressor，通过空白区编码、层次投影、bitmap 重排和字典编码解决 WSI 高频/不规则信息导致通用无损压缩低效的问题。"
+}

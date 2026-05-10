@@ -1,0 +1,15 @@
+{
+  "title": "Neural Image Compression for Gigapixel Histopathology Image Analysis",
+  "short": "NIC",
+  "authors": "David Tellez; Geert Litjens; Jeroen van der Laak; Francesco Ciompi",
+  "venue": "IEEE TPAMI",
+  "year": "2020",
+  "arxiv": "1811.02840",
+  "links": [
+    "https://arxiv.org/abs/1811.02840",
+    "https://arxiv.org/pdf/1811.02840"
+  ],
+  "mineru_task": "63973fd0-4933-4083-8c39-b6dec81f29b2",
+  "reading_order": "Medical-Compression topic paper 3",
+  "one_liner_hint": "NIC 把 WSI patch 编码为低维 embedding 网格，再在压缩表示上训练 CNN，目标是用弱图像级标签做 gigapixel histopathology 分析。"
+}

@@ -1,0 +1,1759 @@
+[
+    {
+        "type": "text",
+        "text": "Learned Image Downscaling for Upscaling using Content Adaptive Resampler ",
+        "text_level": 1,
+        "bbox": [
+            111,
+            65,
+            887,
+            112
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Wanjie Sun and Zhenzhong Chen∗ ",
+        "bbox": [
+            382,
+            137,
+            619,
+            152
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "School of Remote Sensing and Information Engineering, Wuhan University ",
+        "bbox": [
+            253,
+            164,
+            745,
+            179
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Abstract ",
+        "text_level": 1,
+        "bbox": [
+            460,
+            204,
+            535,
+            219
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Deep convolutional neural network based image super-resolution (SR) models have shown superior performance in recovering the underlying high resolution (HR) images from low resolution (LR) images obtained from the predefined downscaling methods. In this paper we propose a learned image downscaling method based on content adaptive resampler (CAR) with consideration on the upscaling process. The proposed resampler network generates content adaptive image resampling kernels that are applied to the original HR input to generate pixels on the downscaled image. Moreover, a differentiable upscaling (SR) module is employed to upscale the LR result into its underlying HR counterpart. By back-propagating the reconstruction error down to the original HR input across the entire framework to adjust model parameters, the proposed framework achieves a new state-of-the-art SR performance through upscaling guided image resamplers which adaptively preserve detailed information that is essential to the upscaling. Experimental results indicate that the quality of the generated LR image is comparable to that of the traditional interpolation based method and the significant SR performance gain is achieved by deep SR models trained jointly with the CAR model. The code is publicly available on: https://github.com/sunwj/CAR. ",
+        "bbox": [
+            138,
+            226,
+            861,
+            405
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "1 Introduction ",
+        "text_level": 1,
+        "bbox": [
+            81,
+            424,
+            215,
+            439
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "As the smartphone cameras are starting to rival or beat DSLR cameras, a large number of ultra high resolution images are produced everyday. However, it is always reduced from its original resolution to smaller sizes that are fit to the screen of different mobile devices and web applications. Thus, it is desirable to develop efficient image downscaling and upscaling method to make such application more practical and resources saving by only generating, storing and transmitting a single downscaled version for preview and upscaling it to high resolution when details are going to be viewed. Besides, the pre-downscaling and post-upscaling operation also helps to save storage and bandwidth for image or video compression and communication [1, 2, 3, 4]. ",
+        "bbox": [
+            81,
+            449,
+            491,
+            628
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Image downscaling is one of the most common image processing operations, aiming to reduce the resolution of the high-resolution (HR) image while keeping its visual appearance. According to the Nyquist-Shannon sampling theorem [5], it is inevitable that high-frequency content will get lost during the samplerate conversion. Contrary to the image downscaling task is the image upscaling, also known as resolution enhancement or super-resolution (SR), trying to recover the underlying HR image of the LR input. Image SR is essentially an ill-posed problem because an undersampled image could refer to numerous HR images. The quality of the SR result is very limited due to the ill-posed nature of the problem and the lost frequency components cannot be well-recovered [6, 7]. Previous work regards image downscaling and SR as independent tasks. Image downscaling techniques pay much attention to enhance details, such as edges, which helps to improve human visual perception [3]. On the other hand, recent state-of-the-art deep SR models have witnessed their capability to restore HR image from the ",
+        "bbox": [
+            81,
+            636,
+            491,
+            882
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "LR version downscaled using traditional filtering-decimation based methods with great performance gain [8, 9]. However, the predetermined downscaling operations may be sub-optimal to the SR task and state-of-the-art deep SR models still cannot well recover fine details from distorted textures caused by the fixed downscaling operations. ",
+        "bbox": [
+            506,
+            425,
+            916,
+            507
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "In this paper, we proposed a learned content adaptive image downscaling model in which a SR model tries to best recover HR images while adaptively adjusting the downscaling model to produce LR images with potential detailed information that are key to the optimal SR performance. The downscaling model is trained without any LR image supervision. To make sure that the LR image produced by our downscaling model is a valid image, we propose to employ the resampling method where content adaptive non-uniform resampling kernels predicted by a convolutional neural network (CNN) are applied to the original HR image to generate pixels of the LR output. Quantitative and qualitative experimental results illustrate that LR images produced by the proposed model can maintain comparable visual quality as the widely used bicubic interpolation based image downscaling method while advanced SR image quality is obtained using state-of-the-art deep SR models trained with LR images generated from the proposed CAR model. ",
+        "bbox": [
+            506,
+            515,
+            916,
+            750
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Our contributions are concluded as follows: ",
+        "bbox": [
+            506,
+            756,
+            790,
+            770
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "• A learned image downscaling model is proposed which is trained under the guidance of the SR model. The proposed image downscaling model produces images that can be well super-resolved while comparable visual quality can be maintained. Experimental results indicate a new state-of-the-art SR performance with the proposed end-to-end image downscaling and upscaling framework. • The resampling method is employed to downscale image by applying content adaptive non-uniform resampling kernels on the original HR input, which can effectively maintain the structure of the HR input in an unsupervised manner. Because directly predicting the LR image by combining low and high-level abstract image features can not guarantee that the generated result is a genuine image without any LR image supervision. ",
+        "bbox": [
+            547,
+            780,
+            919,
+            934
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "This work was supported in part by National Natural Science Foundation of China under contract No. 61771348. (Corresponding author: Zhenzhong Chen, E-mail: zzchen@ieee.org) ",
+        "bbox": [
+            80,
+            897,
+            491,
+            935
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "arXiv:1907.12904v2 [cs.CV] 5 Nov 2019 ",
+        "bbox": [
+            24,
+            262,
+            58,
+            702
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            137,
+            88,
+            491,
+            157
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "• The learned content adaptive non-uniform resampling kernels perform non-uniform sampling and also make the size of resampling kernels to be more effective. The generated kernels produced by the proposed CAR model are composed of weights and sampling position offsets in both horizontal and vertical directions, making the learned resampling kernels adaptively change their weights and shape according to its corresponding resampling contents. ",
+        "bbox": [
+            122,
+            162,
+            491,
+            286
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "The rest of the paper is organized as follows. Section 2 reviews task independent and task driven image downscaling algorithms. Section 3 introduces the proposed SR guided content adaptive image downscaling framework, and computing process of each component in the framework is explained. Section 4 evaluates and analyzes experimental results for the SR images and downscaled images quantitatively and qualitatively. Finally, Section 5 summarizes our work. ",
+        "bbox": [
+            81,
+            299,
+            493,
+            409
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2 Related Work ",
+        "text_level": 1,
+        "bbox": [
+            81,
+            433,
+            227,
+            449
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "This section presents a review about image downscaling techniques aiming to maintain the visual quality of the LR image. Image downscaling algorithms can be categorized into two groups as follows. ",
+        "bbox": [
+            80,
+            458,
+            491,
+            513
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2.1 Task independent image downscaling ",
+        "text_level": 1,
+        "bbox": [
+            83,
+            534,
+            361,
+            547
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Earlier work of image downscaling primarily tends to prevent aliasing [5] which arises during sampling rate reduction. Those methods are based on linear filters [10], where the HR image is firstly convolved with a low-pass kernel to push frequency componenets of the image below the Nyquist frequency [11], then being sub-sampled into target size. Many frequency-based filters are developed, e.g., the box, bilinear and bicubic filter [12]. However, the downscaled images tend to be blurred because the high-frequency details are suppressed. Filters that are designed to model the ideal sinc filter, e.g., the Lanczos filter [13], tend to produce ringing artifacts near strong image edges. All of these filters are predetermined with some of them having tuning parameters. The same filter is applied globally to the input HR image, ignoring characteristics of image content with varying details. ",
+        "bbox": [
+            81,
+            556,
+            491,
+            762
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Recently, many researchers begin to focus on the aspects of detail preserving and human perception when developing image downscaling algorithm. Kopf et al.firstly proposed a novel content adaptive image downscaling method based on a joint bilateral filter [14]. The key idea is to optimize the shape and locations of the downsampling kernels to better align with local image features by considering both spatial and color variances of the local region. Öztireli and Gross [15] proposed a method to downscale HR images without filtering. They consider image downscaling as an optimization problem and use the structural similarity index (SSIM) [16] as objective to directly optimize the downscaled image against its original image. This approach helps to capture most of the perceptually important details. Weber et al.[17] proposed an image downscaling algorithm aiming to preserve small details of the input image, which are often crucial for a faithful visual impression. The intuition is that small details transport more information than bigger areas with similar colors. To that end, an inverse bilateral filter is used to emphasize differences rather than punishing them. Gastal and Oliveira [18] introduced the spectral remapping algorithm to control aliasing during image downscaling. Instead of discarding high-frequency information, it remaps such information into the representable range of the downsampled spectrum. Recently, Liu et al.[19] proposed a L0-regularized optimization framework for image downscaling, which is composed of a gradient-ratio prior and reconstruction prior. The downscaling problem is solved by iteratively optimize the two priors in an alternative way. ",
+        "bbox": [
+            81,
+            770,
+            491,
+            934
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            506,
+            88,
+            916,
+            295
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2.2 Task specific image downscaling ",
+        "text_level": 1,
+        "bbox": [
+            508,
+            313,
+            754,
+            327
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Most image downscaling algorithms only care about the visual quality of the downscaled image, so that the downscaled image may not be optimal to other computer vision tasks. To tackle this problem, task guided image downscaling has emerged. Zhang et al.[3] took the quality of the interpolated image from the downscaled counterpart into consideration. They proposed an interpolation-dependent image downscaling algorithm by modeling the downscaling operation as the inverse operator of upsampling. Benefiting from the well established deep learning frameworks, Hou et al.[20] proposed a deep feature consistency network that is applicable to image mapping problems. One of the applications illustrated in the paper is image downscaling. The image downscaling network is trained by keeping the deep features of the input HR image and resulting LR image consistent through another pre-trained deep CNN. Kim et al.[21] presented a task aware image downscaling model based on the auto-encoder and the bottleneck layer outputs the downscaled image. In their framework, the encoder acts as the image downscaling network and the decoder is the SR network. The task aware downscaled image is obtained by jointly training the encoder and decoder to maximize the SR performance. Similar to the framework presented by [21], Li et al.[4] proposed a convolutional neural network for image compact resolution named CNN-CR, which is composed of a CNN to estimate the LR image and a learned or specified upscaling model to reconstruct the HR image. The generative nature of the encoder like networks implicitly require additional information to constrain the output to be a valid image whose content resembles the HR image. In [20], in order to compute feature consistency loss against the HR image, they upsample the downscaled image back to the same size as the HR input using nearest neighbor interpolation. In [21, 4], guidance images, obtained using bicubic downsampling, are employed to constrain the output space of the LR image generating networks. ",
+        "bbox": [
+            506,
+            335,
+            918,
+            804
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "3 Model Architecture ",
+        "text_level": 1,
+        "bbox": [
+            508,
+            827,
+            702,
+            843
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "This section introduces the architecture and formulation of the content adaptive resampler (CAR) model for image downscaling. As shown in Fig. 1, the framework is composed of two major components, i.e., the resampler generation network (Resampler-Net) and the SR network (SRNet). The ResamplerNet is responsible for estimating the content adaptive resampling kernels according to its input HR image, later the resampling kernels are applied to the input HR image to produce the downscaled image. The SRNet takes the resulting downscaled image as input and tries to restore the underlying HR image. The entire framework is trained end-to-end in an unsupervised manner where the primary objective we need to optimize is the SR reconstruction error with respect to the input HR image. By back-propagating the gradient of the reconstruction error through the SRNet and ResamplerNet, the gradient descent algorithm adjusts the parameters of the resampler generation network to produce better resampling kernels which make the downscaled image can be super-resolved more easily. ",
+        "bbox": [
+            504,
+            852,
+            918,
+            935
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            495,
+            933,
+            503,
+            940
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "image",
+        "img_path": "images/8ed0595cd09f9fde7b315d7c2060843f080a39b0944e8cbdcd5b0fc65cc5c92e.jpg",
+        "image_caption": [
+            "Figure 1: Network architecture. It consists of three parts, the ResamplerNet, the Downscaling module, and the SRNet. The ResamplerNet is designed to estimate content adaptive resampling kernels and its corresponding offsets for each pixel in the downscaled image. The SRNet, can be any form of differentiable upsampling operations, is employed to guide the training of the ResamplerNet by simply minimizing the SR error. The entire framework is trained end-to-end by back-propagating error signals through a the differentiable downscaling module. The composition of each building block is detailed on the blue dashed frame. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            78,
+            84,
+            921,
+            319
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            81,
+            438,
+            491,
+            603
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3.1 Content adaptive image downscaling resampler ",
+        "text_level": 1,
+        "bbox": [
+            84,
+            628,
+            428,
+            642
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "We design the proposed content adaptive image downscaling model that is trained using the unsupervised strategy. Methods presented in [20, 21, 4] synthesize the downscaled image by combining latent representations of the HR image extracted by the CNN and proper constraints are required to make sure that the result is a meaningful image. In this paper, we propose to obtain the downscaled image using the idea of resampling the HR image, which effectively makes the downscaled result look like the original HR image without any constraints. ",
+        "bbox": [
+            81,
+            652,
+            490,
+            776
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "The filters for traditional bilinear or bicubic downscaling are basically fixed, with the only variation being the shift of the kernel according to the location of the newly created pixel in the downscaled image. Contrary to this, we propose to use dynamic downscaling filters inspired by the dynamic filter networks [22]. The downscaling kernels are generated for each pixel in the downscaled image depending on the effective resampling region on the HR image. It can be considered as one type of metalearning [23] that learns how to resample. However, filter-based image resampling methods generally require a certain minimum kernel size to be effective [19]. We alleviate this issue by taking the idea from the deformable convolutional networks [24]. In addition to estimating the content adaptive resampling kernel weights, we also associate spatial offset with each element in the resampling kernel. The content adaptive resampling kernels with position offsets can be considered as learnable dilated (atrous) convolutions [25] with the learned dilation rate. Besides, the offset for each kernel element can be different in both magnitude and direction, it can perform non-uniform sampling according to the content structure of the input HR image. ",
+        "bbox": [
+            81,
+            784,
+            491,
+            934
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            506,
+            438,
+            916,
+            561
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "We use a convolutional neural network with residual connections [26] to estimate the weights and offsets for each resampling kernel. The ResamplerNet consists of downscaling blocks, residual blocks and upscaling blocks. The downscaling and residual blocks are trained to model the context of the input HR image as a set of feature maps. Then, two upscaling blocks are used to learn the content adaptive resampling kernel weights $\\mathbf { K } \\ \\in \\ \\mathbb { R } ^ { ( h / s ) \\times ( w / s ) \\times m \\times n }$ , offsets in the horizontal direction $\\Delta \\mathbf { Y } \\in \\mathbb { R } ^ { ( h / s ) \\times ( w / s ) \\times m \\times n }$ and offsets in the vertical direction $\\Delta \\mathbf { X } \\in \\mathbb { R } ^ { ( h / s ) \\times ( w / s ) \\times m \\times n }$ , respectively. $h$ and $w$ are the height and width of the input HR image, $s$ is the downscaling factor, and m, $n$ represent the size of the content adaptive resampling kernel. Each kernel is normalized so that elements of a kernel are summed up to be 1. ",
+        "bbox": [
+            506,
+            569,
+            918,
+            761
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3.2 Image downscaling ",
+        "text_level": 1,
+        "bbox": [
+            508,
+            781,
+            671,
+            796
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "The estimated content adaptive resampling kernels are applied to the corresponding positions of the input HR image to construct the pixel in the downscaled image. For each output pixel, the same resampling kernel is simultaneously applied to three channels of the RGB image. As illustrated by Fig. 2, pixels covered by the resampling kernel are weights summed to obtain the pixel value in the downscaled image. ",
+        "bbox": [
+            506,
+            804,
+            918,
+            900
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Forward pass. Firstly, we need to position each resampling kernel, associated with the pixel of the downscaled image, on the HR image. It can be achieved using the projection operation defined as: ",
+        "bbox": [
+            504,
+            907,
+            916,
+            935
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            493,
+            933,
+            503,
+            940
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "image",
+        "img_path": "images/e83f62f070b3e63750c34e2c3568bc8e248b324b7d5b237e8043a113a973eeb6.jpg",
+        "image_caption": [
+            "Figure 2: Non-uniform resampling. The black $^ +$ represents the center of a pixel in the HR image and the red $^ +$ indicate the position of the resampling kernel element. The blue dashed arrow shows the offset direction and magnitude of the resampling kernel element relative to its corresponding pixel center. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            155,
+            83,
+            410,
+            339
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            80,
+            444,
+            491,
+            472
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/b0bbaf76c531b8d74cbad88196f48d1179031fe75ca5f87e85214eb7018474ed.jpg",
+        "text": "$$\n( u , \\nu ) = ( x + 0 . 5 , y + 0 . 5 ) \\times s c a l e - 0 . 5\n$$",
+        "text_format": "latex",
+        "bbox": [
+            158,
+            478,
+            413,
+            493
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where $( x , y )$ is the indices of a pixel at the $x$ -th row and $y .$ -th ,column in the downscaled image, scale represents the downscaling factor, and the resulting $( u , \\nu )$ is the center of downscaled pixel $p _ { x , y } ^ { \\mathrm { L R } }$ ,projected on the input HR image. Equation 1 assumes ,that pixels have a nonzero size, and the distance between two neighboring samples is one pixel. ",
+        "bbox": [
+            80,
+            497,
+            493,
+            582
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Then, each pixel in the downscaled image is created by local filtering on pixels in the input HR image with the corresponding content adaptive resampling kernel as follows: ",
+        "bbox": [
+            80,
+            587,
+            491,
+            630
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/bbd88d969f1e56ebecd0beb59fc65476fc76b953df936c85ad64bd99be4c4894.jpg",
+        "text": "$$\n\\begin{array} { l } { \\pmb { p } _ { x , y } ^ { \\mathrm { L R } } = \\displaystyle \\sum _ { i = 0 } ^ { m - 1 } \\sum _ { j = 0 } ^ { n - 1 } \\mathbf { K } _ { x , y } ( i , j ) \\cdot s ^ { \\mathrm { H R } } \\left( u + i - \\frac { m } { 2 } + \\Delta \\mathbf { X } _ { x , y } ( i , j ) , \\right. } \\\\ { \\displaystyle \\left. \\nu + j - \\frac { n } { 2 } + \\Delta \\mathbf { Y } _ { x , y } ( i , j ) \\right) } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            99,
+            633,
+            449,
+            708
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where $\\mathbf { K } _ { x , y } \\in \\mathbb { R } ^ { m \\times n }$ is the resampling kernel associated with the , downscaled pixel at location $( x , y )$ , $\\Delta \\mathbf { X } _ { x , y } \\in \\mathbb { R } ^ { m \\times n }$ and $\\Delta \\mathbf { Y } _ { x , y } \\in$ $\\mathbb { R } ^ { m \\times n }$ , ,are the spatial offset for each element in the $\\mathbf { K } _ { x , y }$ . The $s ^ { \\mathrm { H R } }$ ,is the sample point value of the input HR image. Due to the location projection and fractional offsets, $s ^ { \\mathrm { H R } }$ can refer to nonlattice point on the HR image, therefore, $s ^ { \\mathrm { H R } }$ is computed by bilinear interpolating the nearby four pixels around the fractional position: ",
+        "bbox": [
+            80,
+            710,
+            491,
+            823
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/7aaeae1b4a84f09e2d86137a8c233092e6f3cf5bf533f78df54675a6070aa2b1.jpg",
+        "text": "$$\n\\begin{array} { r l } & { s _ { u ^ { \\prime } , \\nu ^ { \\prime } } ^ { \\mathrm { H R } } = ( 1 - \\alpha ) ( 1 - \\beta ) \\cdot p _ { \\lfloor u ^ { \\prime } \\rfloor , \\lfloor \\nu ^ { \\prime } \\rfloor } ^ { \\mathrm { H R } } + \\alpha ( 1 - \\beta ) \\cdot p _ { \\lfloor u ^ { \\prime } \\rfloor , \\lfloor \\nu ^ { \\prime } \\rfloor + 1 } ^ { \\mathrm { H R } } } \\\\ & { \\qquad + ( 1 - \\alpha ) \\beta \\cdot p _ { \\lfloor u ^ { \\prime } \\rfloor + 1 , \\lfloor \\nu ^ { \\prime } \\rfloor } ^ { \\mathrm { H R } } + \\alpha \\beta \\cdot p _ { \\lfloor u ^ { \\prime } \\rfloor + 1 , \\lfloor \\nu ^ { \\prime } \\rfloor + 1 } ^ { \\mathrm { H R } } } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            104,
+            827,
+            450,
+            871
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where $u ^ { \\prime }$ and $\\nu ^ { \\prime }$ are fractional position on the HR image, $\\alpha =$ $u ^ { \\prime } - \\lfloor u ^ { \\prime } \\rfloor$ and $\\beta = \\nu ^ { \\prime } - \\lfloor \\nu ^ { \\prime } \\rfloor$ αare the bilinear interpolation weights. ",
+        "bbox": [
+            80,
+            872,
+            493,
+            901
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Backward pass. The ResamplerNet is trained using the gradient descent technique and we need to back-propagate gradients ",
+        "bbox": [
+            80,
+            906,
+            491,
+            935
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "from the SRNet through the resampling operation. The partial derivative of the downscaled pixel with respect to the resampling kernel weight can be formulated as: ",
+        "bbox": [
+            504,
+            87,
+            918,
+            130
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/b99948ac68fba5be445dfc10868ea66207f037d748093e5df5e36adce0e35b2a.jpg",
+        "text": "$$\n\\begin{array} { r } { \\frac { \\partial p _ { x , y } ^ { \\mathrm { L R } } } { \\partial \\mathbf { K } _ { x , y } ( i , j ) } = s ^ { \\mathrm { H R } } \\left( u + i - \\frac { m } { 2 } + \\Delta \\mathbf { X } _ { x , y } ( i , j ) , \\right. } \\\\ { \\left. \\nu + j - \\frac { n } { 2 } + \\Delta \\mathbf { Y } _ { x , y } ( i , j ) \\right) \\qquad } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            573,
+            138,
+            848,
+            209
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "the partial derivative of downscaled pixel with respect to the element in the resampling kernel is simply the interpolated pixel value. Equation 4 is derived with a single channel image and can be generalized to the color image by summing up values calculated separately on the R, G and B channels. ",
+        "bbox": [
+            504,
+            214,
+            916,
+            285
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "The partial derivative of downscaled pixel with respect to the kernel element offset is computed as: ",
+        "bbox": [
+            504,
+            290,
+            918,
+            319
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/d7d378a52209f42480b3e07fcbf10bdbb739f06750e5ce84eecd109ec28b4321.jpg",
+        "text": "$$\n\\begin{array} { r l } & { \\frac { \\partial { p } _ { x , y } ^ { \\mathrm { L R } } } { \\partial \\Delta \\mathbf { X } _ { x , y } ( i , j ) } = \\frac { \\partial { p } _ { x , y } ^ { \\mathrm { L R } } } { \\partial s _ { u ^ { \\prime } , v ^ { \\prime } } ^ { \\mathrm { H R } } } \\cdot \\frac { \\partial s _ { u ^ { \\prime } , v ^ { \\prime } } ^ { \\mathrm { H R } } } { \\partial \\Delta \\mathbf { X } _ { x , y } ( i , j ) } } \\\\ & { \\frac { \\partial { p } _ { x , y } ^ { \\mathrm { L R } } } { \\partial \\Delta \\mathbf { Y } _ { x , y } ( i , j ) } = \\frac { \\partial { p } _ { x , y } ^ { \\mathrm { L R } } } { \\partial s _ { u ^ { \\prime } , v ^ { \\prime } } ^ { \\mathrm { H R } } } \\cdot \\frac { \\partial s _ { u ^ { \\prime } , v ^ { \\prime } } ^ { \\mathrm { H R } } } { \\partial \\Delta \\mathbf { Y } _ { x , y } ( i , j ) } } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            596,
+            327,
+            831,
+            411
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "because we employ bilinear interpolation to compute $\\pmb { s } _ { u ^ { \\prime } , \\nu ^ { \\prime } } ^ { \\mathrm { H R } }$ u 0 v 0 , there-,fore, the partial derivative of downscaled pixel with respect to the kernel offset is defined as: ",
+        "bbox": [
+            504,
+            420,
+            918,
+            462
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/873dcc380844310d20cf96dac970bb1f9804dd11514d86cfaf5c3c558c09b396.jpg",
+        "text": "$$\n\\begin{array} { r l } & { \\frac { \\partial p _ { x y } ^ { \\mathrm { I R } } } { \\partial \\Delta \\mathbf { X } _ { x y } ( i , j ) } = } \\\\ & { \\mathbf { K } _ { x y } ( i , j ) \\cdot ( 1 - \\boldsymbol { \\it \\beta } ) \\cdot \\left( p _ { | v | , | v | ^ { r } | + 1 } ^ { \\mathrm { H R } } - p _ { | v | , | v ^ { r } | } ^ { \\mathrm { H R } } \\right) + } \\\\ & { \\boldsymbol { \\beta } \\cdot \\left( p _ { | v | + 1 , | v ^ { r } | + 1 } ^ { \\mathrm { H R } } - p _ { | v ^ { r } | + 1 , | v ^ { r } | } ^ { \\mathrm { H R } } \\right) } \\\\ & { \\frac { \\partial p _ { x y } ^ { \\mathrm { I R } } } { \\partial \\Delta \\mathbf { X } _ { x y } ( i , j ) } = } \\\\ & { \\mathbf { K } _ { x y } ( i , j ) \\cdot ( 1 - \\boldsymbol { \\alpha } ) \\cdot \\left( p _ { | v | + 1 , | v ^ { r } | } ^ { \\mathrm { H R } } - p _ { | v ^ { r } | , | v ^ { r } | } ^ { \\mathrm { H R } } \\right) + } \\\\ & { \\boldsymbol { \\alpha } \\cdot \\left( p _ { | v ^ { r } | + 1 , | v ^ { r } | + 1 } ^ { \\mathrm { H R } } - p _ { | v ^ { r } | , | v ^ { r } | + 1 } ^ { \\mathrm { H R } } \\right) } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            570,
+            468,
+            854,
+            640
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "also because Equation 9 is defined with a single color image, we need to sum up partial derivative of each color component with respect to the offset to obtain the final partial derivative of downscaled pixel with respect to the kernel element offset. ",
+        "bbox": [
+            504,
+            646,
+            918,
+            703
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "The pixel value of the downscaled image created using Equation 2 is inherently continuous floating point number. However, common image representation describes the color using integer number ranging from 0 to 255, thus, a quantization step is required. Since simply rounding the floating point number to its nearest integer number is not differentiable, we utilize the soft round method proposed by Nakanishi et al.[27] to derive the gradient in the back-propagation during the training phase. The soft round function is defined as: ",
+        "bbox": [
+            504,
+            708,
+            918,
+            833
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/9b32d29bd887178cd5486d4744b4ba353771ecd891ca2827903b16a20c886644.jpg",
+        "text": "$$\n\\mathrm { r o u n d } _ { \\mathrm { s o f t } } ( x ) = x - \\alpha \\frac { \\sin 2 \\pi x } { 2 \\pi }\n$$",
+        "text_format": "latex",
+        "bbox": [
+            617,
+            840,
+            803,
+            871
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where $\\alpha$ is a tuning parameter used to adjust the gradient around αthe integer position. Note that in the forward propagation, the non-differentiable round function is used to get the nearest integer value. ",
+        "bbox": [
+            504,
+            878,
+            918,
+            935
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "discarded",
+        "text": "$^ 4$ ",
+        "bbox": [
+            493,
+            934,
+            503,
+            940
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "3.3 Image upscaling ",
+        "text_level": 1,
+        "bbox": [
+            81,
+            88,
+            225,
+            102
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The proposed CAR model is trained using back-propagation to maximize the SR performance. The image upscaling module can be of any form of SR networks, even the differentiable bilinear or bicubic upscaling operations. After the seminal super-resolution model using deep learning proposed by Dong et al.[28], i.e., the SRCNN, many state-of-the-art neural SR models have been proposed [29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]. More reviews and discussion about single image SR using deep learning can be referred to [8]. This paper employs state-of-the-art SR model EDSR [33] as the image upscaling module to guide the training of the proposed CAR model. ",
+        "bbox": [
+            81,
+            109,
+            493,
+            262
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The EDSR is one of the state-of-the-art deep SR networks and its superior performance is benefited from the powerful residual learning techniques [26]. The EDSR is built on the success of the SRResNet [32] which achieved good performance by simply employing the ResNet [26] architecture on the SR task. The EDSR enhanced SR performance by removing unnecessary parts (Batch Normalization layer [41]) from the SRResNet and also applying a number of tweaks, such as adding residual scaling operation to stable the training process [33]. The SRNet part of Fig. 1 shows the architecture of the EDSR. It is composed of convolution layers converting the RGB image into feature spaces and a group of residual blocks refining feature maps. A global residual connection is employed to improve the efficiency of the gradient back-propagation. Finally, sub-pixel layers are utilized to upsample and transform features into the target SR image. ",
+        "bbox": [
+            81,
+            267,
+            491,
+            489
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "3.4 Training objectives ",
+        "text_level": 1,
+        "bbox": [
+            81,
+            507,
+            243,
+            522
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "One of the main contributions of our work is that we propose a model to learn image downscaling without any supervision signifing that no constraint is applied to the downscaled image. The only objective guiding the generation of the downscaled image is the SR restoration error. The most common loss function generally defaults to the SR network training is the mean squared error (MSE) or the L2 norm loss, but it tends to lead to poor image quality as perceived by human observers [42]. Lim et al.[33] found that using another local metric, e.g., L1 norm, can speed up the training process and produce better visual results. In order to improve the visual fidelity of the super-resolved image, perceptually-motivated metrics, such as SSIM [16], MS-SSIM [43] and perceptual loss [44] are usually incorporated in the SR network training. To do fair comparisons with the EDSR, we only adopt the L1 norm loss as the restoration metric as suggested by [33]. The L1 norm loss defined for SR is: ",
+        "bbox": [
+            81,
+            530,
+            493,
+            750
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/4183292c088f1125023b5380f7b0bd377ec57cb8a57410ce23d1db38132ef100.jpg",
+        "text": "$$\n\\mathcal { L } ^ { \\mathrm { L } _ { 1 } } ( \\hat { \\mathbf { I } } ) = \\frac { 1 } { N } \\sum _ { p \\in \\mathbf { I } } | p - \\hat { p } |\n$$",
+        "text_format": "latex",
+        "bbox": [
+            210,
+            756,
+            362,
+            795
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "where $\\hat { \\bf I }$ is the SR result, $\\pmb { p }$ and $\\hat { p }$ represent the ground-truth and reconstructed pixel value, $N$ indicates the number of pixels times the number of color channels. ",
+        "bbox": [
+            80,
+            803,
+            491,
+            844
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "We associate spatial offset for each element in the resampling kernel, and the offset is estimated without taking the neighborhoods of the kernel element into account. Independent kernel element offset may break the topology of the resampling kernel. To alleviate this problem, we suggest using the total offset distance of all kernel elements as a regularization which encourages kernel elements to stay in their rest position (avoid unnecessary movements). Additionally, since the pixels indexed by the kernel elements that are far from the central position may have less correlation to the resampling result, we assign different weights to their corresponding offset distance in terms of their position relative to the central position. The offset distance regularization term for a single resampling kernel is thus formulated as: ",
+        "bbox": [
+            80,
+            852,
+            493,
+            935
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            504,
+            88,
+            918,
+            184
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/ee2ebc8dc4770b6f1640a500bc8c679e2fdb45e7c46d09ce7b45899954d0c155.jpg",
+        "text": "$$\n\\mathcal { L } _ { x , y } ^ { \\mathrm { o f f s e t } } = \\sum _ { i = 0 } ^ { m - 1 } \\sum _ { j = 0 } ^ { n - 1 } \\eta + \\sqrt { \\Delta \\mathbf { X } _ { x , y } ( i , j ) ^ { 2 } + \\Delta \\mathbf { Y } _ { x , y } ( i , j ) ^ { 2 } } \\cdot w ( i , j )\n$$",
+        "text_format": "latex",
+        "bbox": [
+            517,
+            190,
+            885,
+            234
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "where $w ( i , j ) = \\ \\sqrt { ( i - { \\textstyle { \\frac { m } { 2 } } } ) ^ { 2 } + ( j - { \\textstyle { \\frac { n } { 2 } } } ) ^ { 2 } } \\ / \\ \\sqrt { { \\textstyle { \\frac { m } { 2 } } } ^ { 2 } + { \\textstyle { \\frac { n } { 2 } } } ^ { 2 } }$ is the normalized distance weight, the $\\eta$ is introduced to act as the offset distance weight regulator. ",
+        "bbox": [
+            504,
+            241,
+            918,
+            294
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The inconsistent resampling kernel offset of spatially neighboring resampling kernels may cause pixel phase shift on the resulting LR images, which is manifested as jaggies, especially on the vertical and horizontal sharp edges (e.g., the LR image in Fig. 5 (b)). To alleviate this phenomenon, we introduce the total variation (TV) loss [45] to constrain the movement of spatially neighboring resampling kernels. Instead of constraining the offsets on both vertical and horizontal directions, we only regularize vertical offsets on the horizontal direction and horizontal offsets on the vertical direction, which we name it the partial TV loss. Besides, variations of each resampling kernel offsets are weighted by its corresponding resampling kernel weights, leading to the following formula: ",
+        "bbox": [
+            504,
+            300,
+            918,
+            479
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/9a3ebdc51480f60d61ef6600d617a49be23a36cd3b9b802520e1d793521ca625.jpg",
+        "text": "$$\n\\begin{array} { l } { { \\displaystyle { \\mathcal { L } } ^ { \\mathrm { T V } } = \\sum _ { x , y } \\left( \\sum _ { i , j } | \\Delta \\mathbf { X } _ { \\cdot , y + 1 } ( i , j ) - \\Delta \\mathbf { X } _ { \\cdot , y } ( i , j ) | \\cdot \\mathbf { K } ( i , j ) \\right. } } \\\\ { { \\displaystyle \\left. + \\sum _ { i , j } | \\Delta \\mathbf { Y } _ { x + 1 , \\cdot } ( i , j ) - \\Delta \\mathbf { Y } _ { x , \\cdot } ( i , j ) | \\cdot \\mathbf { K } ( i , j ) \\right) } } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            535,
+            484,
+            861,
+            574
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Finally, the optimization objective of the entire framework is defined as: ",
+        "bbox": [
+            504,
+            585,
+            918,
+            612
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/932dbef67cbc783bbb0b0a851d31eb4ac45069a4e3a6995ba87344bbb68b4b89.jpg",
+        "text": "$$\n\\mathcal { L } = \\mathcal { L } ^ { \\mathrm { L } _ { 1 } } + \\lambda \\overline { { \\mathcal { L } ^ { \\mathrm { o f f s e t } } } } + \\gamma \\mathcal { L } ^ { \\mathrm { T V } }\n$$",
+        "text_format": "latex",
+        "bbox": [
+            620,
+            608,
+            802,
+            628
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "where the $\\overline { { \\mathcal { L } ^ { \\mathrm { o f f s e t } } } }$ is the mean offset distance regularization term of all the resampling kernels, and $\\lambda$ is a scalar introduced to λcontrol the strength of offset distance regularization. $\\gamma$ is also a γscalar used to tune the contribution of the partial TV loss to the final optimization objective. ",
+        "bbox": [
+            504,
+            633,
+            916,
+            704
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "4 Experiments ",
+        "text_level": 1,
+        "bbox": [
+            506,
+            727,
+            633,
+            743
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "4.1 Experimental setup ",
+        "text_level": 1,
+        "bbox": [
+            506,
+            753,
+            671,
+            767
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "4.1.1 Datasets and metrics ",
+        "text_level": 1,
+        "bbox": [
+            506,
+            775,
+            694,
+            789
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "For training the proposed content adaptive image downscaling resampler generation network under the guidance of EDSR, we employed the widely used DIV2K [46] image dataset. There are 1000 high-quality images in the DIV2K dataset, where 800 images for training, 100 images for validation and the other 100 images for testing. In the testing, four standard datasets, i.e., the Set5 [47], Set14 [48], BSD100 [49] and Urban100 [50] were used as suggested by the EDSR paper [33]. Since we focus on how to downscale images without any supervision, only HR images of the mentioned datasets were utilized. Following the setting in [33], we evaluated the peak noise-signal ratio (PSNR) and SSIM [16] on the Y channel of images represented in the YCbCr (Y, Cb, Cr) color space. ",
+        "bbox": [
+            506,
+            796,
+            918,
+            935
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            493,
+            934,
+            503,
+            940
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            80,
+            88,
+            491,
+            128
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "4.1.2 Implementation details ",
+        "text_level": 1,
+        "bbox": [
+            81,
+            150,
+            281,
+            162
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Regarding the implementation of the ResamplerNet, we first subtracted the mean RGB value of the DIV2K training set. During the downsampling process, we gradually increased the channels of the output feature map from 3 to 128 using $3 \\times 3$ convolution operation followed by the LeakyReLU activation. 5 residual blocks with each having features of 128 channels are used to model the context. For the two branches estimating the resampling kernels and offsets, we used the same architecture which is composed of ‘Conv-LeakyReLU’ pairs with 256 feature channels. A sub-pixel convolution was applied to upscale and transform the input feature maps into resampling kernels and offsets. For the configuration of the EDSR, we adopted the one with 32 residual blocks and 256 features for each convolution in the residual block. ",
+        "bbox": [
+            81,
+            172,
+            491,
+            364
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "One of the important hyper-parameters must be determined is the resampling kernel size and the unit offset length. We defined a $3 \\times 3$ kernel size on the downscaled image space. Its actual size on the HR image space is $( 3 \\times s ) \\times ( 3 \\times s )$ , where $s$ is the downscaling factor. The unit offset length was defined as one pixel on the downscaled image space whose corresponding unit length on the HR image space is $s$ . For the offset distance weight regulator in Equation 9, we empirically set it to be 1. ",
+        "bbox": [
+            81,
+            372,
+            491,
+            483
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "The entire framework was trained on the DIV2K training set using the Adam optimizer [51] with $\\beta _ { 1 } = 0 . 9$ , $\\beta _ { 2 } = 0 . 9 9 9$ and $\\epsilon = \\overline { { 1 0 ^ { - 6 } } }$ β . β .. We set the mini-batch size as 16, and randomly \u000fcrop the input HR image into $1 9 2 \\times 1 9 2$ (for $4 \\times$ downscale and SR) and $9 6 \\times 9 6$ (for $2 \\times$ downscale and SR) patches. Training samples were augmented by applying random horizontal and vertical flip. During training, we conducted validation using 10 images from the DIV2K validation set to select the trained model parameters, and the PSNR on validation was performed on full RGB channels [33]. The initial learning rate was $1 0 ^ { - 4 }$ and decreased when the validation performance does not increase within 100 epoch. ",
+        "bbox": [
+            81,
+            489,
+            491,
+            654
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "4.2 Evaluation of downscaling methods for SR ",
+        "text_level": 1,
+        "bbox": [
+            83,
+            676,
+            397,
+            691
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "This section reports the quantitative and qualitative performance of different image downscaling methods for SR. Then results of ablation studies of the proposed CAR model is presented. We compared the CAR model with four image downscaling methods, i.e., the bicubic downscaling (Bicubic), and other three stateof-the-art image downscaling methods: perceptually optimized image downscaling (Perceptually) [15], detail-preserving image downscaling (DPID) [17], and L0-regularized image downscaling (L0-regularized) [19]. We trained SR models using LR images downscaled by those four downscaling algorithms and LR images downscaled by the proposed CAR model. The DPID requires to manually tune a hyper-parameter, which is content variant, to produce better perceptually favorable results. However, it is unpractical for us to generate large amount LR images by manually tuning, also different people may have different perceptual preference. Thus, default value provided by the source code was adopted. ",
+        "bbox": [
+            81,
+            700,
+            491,
+            934
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "4.2.1 Quantitative and qualitative analysis ",
+        "text_level": 1,
+        "bbox": [
+            509,
+            88,
+            797,
+            102
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Table 1 summarizes the quantitative comparison results of different image downscaling methods for SR. It consists of two parts, one for bicubic upscaling and one for upscaling using the EDSR. We first analyze the SR performance using the EDSR. As shown in Table 1 (Upscaling EDSR), the proposed CAR model trained under the guidance of EDSR considerably boosts the PSNR metric over all the testing cases, and a noticeable gain on the SSIM metric is also obtained. The significant performance gain is benefited from the joint training of the CAR image downscaling model and the EDSR in the end-to-end manner, where the goal of maximizing SR performance encourages the CAR to estimate better resamplers that produce the most suitable downscaled image for SR. ",
+        "bbox": [
+            506,
+            114,
+            918,
+            294
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "When compared to the SR performance of the LR images downscaled by the bicubic interpolation, the three state-of-the-art image downscaling algorithms can hardly achieve satisfying results, although the visual quality superiority of the downscaled images is reported by those original work. This is because those image downscaling methods are designed for better human perception thus the original information is changed considerably, which makes the downscaled image not well adapted to the SR defined by distortion metrics. Additionally, compared to the SR baseline of the bicubic image downscaling, we note a significant performance degradation on the perceptually based image downscaling method. This indicates that downscaled image produced by the SSIM optimization cannot be well super-resolved by the state-of-the-art EDSR. The key reason can be illustrated as the SSIM optimization depends on patch selection which may lead to sub-pixel offset in the downscaled image. Other artifacts may underperform SR includes color splitting and noise exaggeration incurred during SSIM optimization [19]. ",
+        "bbox": [
+            506,
+            301,
+            918,
+            549
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "In addition, we also evaluated SR performance of the CAR model trained under the guidance of the bicubic interpolation based upscaling where the bicubic downscaling was used as the baseline. As reported in Table 1 (Upscaling Bicubic), the CAR model outperforms the fixed bicubic downscaling methods in terms of upscaling using the fixed bicubic interpolation. The comparison results demonstrate the effectiveness of the proposed CAR model that it is flexible and can be trained under the guidance of differentiable upscaling operations, even if the upscaling operator is not learnable. With this discovery, the proposed CAR model can potentially replace the traditional and commonly used bicubic image downscaling operation under the hood, and end users can obtain extra image zoom in quality gain freely when using the bicubic interpolation for upscaling. ",
+        "bbox": [
+            506,
+            556,
+            918,
+            748
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "To further validate the effectiveness of the CAR image downscaling model, we evaluated the CAR model trained with another four state-of-the-art deep SR models, i.e., the SRDenseNet [34], D-DBPN [52], RDN [35] and RCAN [37], using $4 \\times$ downscaling and upscaling factor on five testing datasets. We trained all models using the DIV2K training dataset and all other training setup is set to be the same as described in Section 4.1.2. Table 2 presents the PSNR and SSIM of $4 \\times$ upscaled images corresponding to LR images generated using the bicubic interpolation (MATLAB’s imresize function with default settings) and the CAR model. Experimental results (Bicubic and $\\mathrm { C A R \\dagger }$ ) demonstrate a consistent performance gain of the SR task on images downscaled using the CAR model against that of the bicubic interpolation downscaling. When considering the SR performance of the CAR model trained under the guidance of the bicubic interpolation (Table 1) we can reasonably arrive at the conclusion that the CAR image downscaling model can be learned to adapt to SR models as long as the SR operation is differentiable. ",
+        "bbox": [
+            506,
+            756,
+            918,
+            935
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            495,
+            933,
+            503,
+            941
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "table",
+        "img_path": "images/89c18f12f09c9ef884fb79b0752bda03b15ca2492ddc0436cd75d653485d8344.jpg",
+        "table_caption": [
+            "Table 1: Quantitative evaluation results (PSNR / SSIM) of different image downscaling methods for SR on benchmark datasets: Set5, Set14, BSD100, Urban100 and DIV2K (validation set). "
+        ],
+        "table_footnote": [
+            "Note: Red color indicates the best performance and Blue color represents the second. "
+        ],
+        "table_body": "<table><tr><td rowspan=1 colspan=2>Upscaling</td><td rowspan=1 colspan=3>Bicubic</td><td rowspan=1 colspan=6>EDSR</td></tr><tr><td rowspan=1 colspan=2>Downscaling</td><td rowspan=1 colspan=2>Bicubic</td><td rowspan=1 colspan=1>CAR</td><td rowspan=1 colspan=1>Bicubic</td><td rowspan=1 colspan=1>Perceptually</td><td rowspan=1 colspan=1>DPID</td><td rowspan=1 colspan=2>L0-regularized</td><td rowspan=1 colspan=1>CAR</td></tr><tr><td rowspan=2 colspan=1>Set5</td><td rowspan=1 colspan=1>2x</td><td rowspan=1 colspan=2>33.66 / 0.9299</td><td rowspan=1 colspan=1>34.38 / 0.9426</td><td rowspan=1 colspan=1>38.06 / 0.9615</td><td rowspan=1 colspan=1>31.45 / 0.9212</td><td rowspan=1 colspan=1>37.02 / 0.9573</td><td rowspan=1 colspan=2>35.40 / 0.9514</td><td rowspan=1 colspan=1>38.94 / 0.9658</td></tr><tr><td rowspan=1 colspan=1>4x</td><td rowspan=1 colspan=2>28.42 / 0.8104</td><td rowspan=1 colspan=1>28.93 / 0.8335</td><td rowspan=1 colspan=1>32.35 / 0.8981</td><td rowspan=1 colspan=1>25.65 / 0.7805</td><td rowspan=1 colspan=1>31.75 / 0.8913</td><td rowspan=1 colspan=2>31.05 / 0.8847</td><td rowspan=1 colspan=1>33.88 / 0.9174</td></tr><tr><td rowspan=2 colspan=1>Set14</td><td rowspan=2 colspan=1>2x4x</td><td rowspan=2 colspan=2>30.24 / 0.868826.00 / 0.7027</td><td rowspan=2 colspan=1>31.01/0.890826.39 0.7326</td><td rowspan=1 colspan=1>33.88 / 0.9202</td><td rowspan=2 colspan=1>29.26 / 0.863224.21 / 0.6684</td><td rowspan=2 colspan=1>32.82 / 0.911928.27 / 0.7784</td><td rowspan=2 colspan=2>31.56 / 0.900827.67 / 0.7702</td><td rowspan=2 colspan=1>35.61 / 0.940430.31 / 0.8382</td></tr><tr><td rowspan=1 colspan=1>28.64 / 0.7885</td></tr><tr><td rowspan=2 colspan=1>B100</td><td rowspan=2 colspan=1>2x4x</td><td rowspan=2 colspan=2>29.56 / 0.843125.96 / 00.6675</td><td rowspan=2 colspan=1>30.18 / 0.871426.17 / 0.6963</td><td rowspan=1 colspan=1>32.31 / 0.9021</td><td rowspan=1 colspan=1>28.62 / 0.8383</td><td rowspan=1 colspan=1>31.47 / 0.8922</td><td rowspan=2 colspan=2>30.75 / 0.881627.00 / 0.7293</td><td rowspan=2 colspan=1>33.83 / 0.926229.15 / 0.8001</td></tr><tr><td rowspan=1 colspan=1>27.71 / 0.7432</td><td rowspan=1 colspan=1>24.61 / 0.6391</td><td rowspan=1 colspan=1>27.27 / 0.7341</td></tr><tr><td rowspan=1 colspan=1>Urban100</td><td rowspan=1 colspan=1>2x4x</td><td rowspan=1 colspan=2>26.88 / 0.840323.14 / 0.6577</td><td rowspan=1 colspan=1>27.38 / 0.862023.35 / 0.6844</td><td rowspan=1 colspan=1>32.92 / 0.935926.62 / 0.8041</td><td rowspan=1 colspan=1>26.39 / 0.848321.58 / 0.6295</td><td rowspan=1 colspan=1>31.64 / 0.927126.07 / 0.7967</td><td rowspan=1 colspan=2>30.23 / 0.917225.83 / 0.7957</td><td rowspan=1 colspan=1>35.24 / 0.957229.28 / 0.8711</td></tr><tr><td rowspan=2 colspan=1>DIV2K(validation)</td><td rowspan=1 colspan=1>2x</td><td rowspan=1 colspan=2>31.01 / 0.9393</td><td rowspan=1 colspan=1>33.18 / 0.9317</td><td rowspan=1 colspan=1>36.76 / 0.9482</td><td rowspan=2 colspan=1>31.23 / 0.898426.28 / 0.7381</td><td rowspan=2 colspan=1>35.75 / 0.941930.53 / 0.8373</td><td rowspan=1 colspan=2>34.69 / 0.9354</td><td rowspan=2 colspan=1>38.26 / 0.959932.82 / 0.8837</td></tr><tr><td rowspan=1 colspan=1>4x</td><td rowspan=1 colspan=1>26.66</td><td rowspan=1 colspan=1>0.8521</td><td rowspan=1 colspan=1>28.50 / 0.8557</td><td rowspan=1 colspan=1>31.04 / 0.8452</td><td rowspan=1 colspan=1>30.18</td><td rowspan=1 colspan=1>0.8340</td></tr></table>",
+        "bbox": [
+            78,
+            119,
+            918,
+            285
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "table",
+        "img_path": "images/82730488304377e5ca400bcdd165f909f899e57e5d6bc576855da1029ce1d0e0.jpg",
+        "table_caption": [
+            "Table 2: Evaluation results (PSNR / SSIM) of $4 \\times$ upscaling using different SR networks on benchmark images downscaled by the CAR model. "
+        ],
+        "table_footnote": [
+            "$\\mathrm { C A R \\dagger }$ : the CAR model is trained jointly with its corresponding SR model. $\\mathrm { C A R \\ddag }$ : the SR model is trained using the downscaled images generated by the CAR model that is jointly with the EDSR. Note: Red color indicates the best performance and Blue color represents the second. The ‘-’ indicates that results are not provided by the corresponding original publication. "
+        ],
+        "table_body": "<table><tr><td>Upscaling</td><td>Downscaling</td><td>Set5</td><td>Set14</td><td>B100</td><td>Urban100</td><td>DIV2K</td></tr><tr><td rowspan=\"3\">SRDenseNet</td><td>Bicubic</td><td rowspan=\"3\">32.02 / 0.8934 33.16/ 0.9067</td><td rowspan=\"3\">28.50 / 0.7782 29.85 / 0.8201</td><td rowspan=\"3\">27.53 / 0.7337 28.73 / 0.7794</td><td rowspan=\"3\">26.05 / 0.7819 27.97 / 0.8403</td><td rowspan=\"3\">-/- 32.24 / 0.8674</td></tr><tr><td>CAR†</td></tr><tr><td></td></tr><tr><td rowspan=\"4\">D-DBPN</td><td>CAR‡</td><td>32.63 / 0.9047</td><td>29.24 / 0.8122</td><td>28.44 / 0.7781</td><td>27.12 / 0.8248</td><td>31.77 / 0.8654</td></tr><tr><td>Bicubic</td><td>32.47 / 0.8980</td><td>28.82 / 0.7860</td><td>27.72 / 0.7400</td><td>26.38 / 0.7946</td><td>-/-</td></tr><tr><td>CAR‡</td><td>33.07 / 0.9061</td><td>29.75 / 0.8189</td><td>28.70 / 0.7789</td><td>27.98 / 0.8376</td><td>32.13 / 0.8664</td></tr><tr><td>CAR‡</td><td>32.71 / 0.9055</td><td>29.17 / 0.8076</td><td>28.45 / 0.7784</td><td>27.00 / 0.8222</td><td>31.76 / 0.8650</td></tr><tr><td rowspan=\"3\">RDN</td><td>Bicubic</td><td>32.47 / 0.8990</td><td>28.81 /0.7871</td><td>27.72 / 0.7419</td><td>26.61 / 0.8028</td><td>-/-</td></tr><tr><td>CAR†</td><td>33.34 / 0.9132</td><td>29.93 / 0.8308</td><td>28.89 / 0.7961</td><td>28.53 / 0.8582</td><td>32.32 / 0.8756</td></tr><tr><td>CAR‡</td><td>33.15 / 0.9112</td><td>29.59 / 0.8227</td><td>28.79 / 0.7913</td><td>27.69 / 0.8412</td><td>32.20 / 0.8747</td></tr><tr><td rowspan=\"3\">RCAN</td><td>Bicubic</td><td>32.63 / 0.9002</td><td>28.87 / 0.7889</td><td>27.77 / 0.7436</td><td>26.82 / 0.8087</td><td>30.77 / 0.8459</td></tr><tr><td>CAR†</td><td>33.84 / 0.9187</td><td>30.27 / 0.8383</td><td>29.16 / 0.8021</td><td>29.23 / 0.8719</td><td>32.81 / 0.8842</td></tr><tr><td>CAR‡</td><td>33.37 / 0.9138</td><td>29.87 / 0.8294</td><td>28.95 / 0.7953</td><td>28.28 / 0.8541</td><td>32.46 / 0.8786</td></tr></table>",
+        "bbox": [
+            78,
+            343,
+            919,
+            551
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            81,
+            635,
+            491,
+            717
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "In order to illustrate that the CAR image downscaling model can effectively preserve essential information which can help SR models learn to better recover the original image content, we conducted another experiment. The four state-of-the-art SR models are trained using LR images generated by the proposed CAR model trained jointly with the EDSR. Experimental results shown by the $\\mathbf { \\hat { C } A R } \\mathbf { \\ddagger } ^ { \\prime }$ in Table 2 indicate that the performance of SR models trained using LR images generated by the CAR model trained jointly with the EDSR significantly surpasses that trained using images downscaled by the bicubic interpolation. We also observed that the performance gain of the $\\mathrm { C A R \\ddagger }$ against the Bicubic is larger than the performance degradation against the $\\mathrm { C A R \\dagger }$ . The two findings lead to the conclusion that the CAR image downscaling model does preserve content adaptive information that are essential to superior SR using deep SR ",
+        "bbox": [
+            81,
+            724,
+            491,
+            931
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "models. ",
+        "bbox": [
+            506,
+            636,
+            557,
+            648
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "A qualitative comparison of $4 \\times$ downscaled images for SR is presented in Fig. 3. As can be seen, the CAR model produces downscaled images that are super-resolved with the best visual quality when compared with that of the other four models trained using the EDSR. As shown by the ‘Barbara’ example, due to obvious aliasing occurred during downscaling by other four methods, the EDSR cannot recover the correct direction of the parallel edge pattern formed by a stack of books. The downscaled image generated by the CAR incurs less aliasing and the EDSR well recovered the direction of the parallel edge pattern. For the ‘Comic’ example, we can observe that the SR result of the CAR downscaled image preserves more details. Visual results of the ‘PPT3’ example demonstrates that the SR of downscaled images produced by the CAR better restore continuous edges and produce sharper HR images. ",
+        "bbox": [
+            506,
+            656,
+            918,
+            863
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "4.2.2 Ablation studies ",
+        "text_level": 1,
+        "bbox": [
+            506,
+            882,
+            661,
+            897
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "We conducted ablation experiments on the proposed CAR model to verify the effectiveness of our design. We mainly concern ",
+        "bbox": [
+            501,
+            907,
+            916,
+            935
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "image",
+        "img_path": "images/dcada457d9909ea2d2c845afb30f2ff747ea8de8c52fddf0cbce9bf94055057a.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            78,
+            85,
+            916,
+            281
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "This figure is best viewed in color. Zoom in to see details of the downscaled image. ",
+        "bbox": [
+            80,
+            285,
+            570,
+            299
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/6222e1f4189ae74f289676a7c94011206022ea1f27a2f57f0c12e709311821eb.jpg",
+        "table_caption": [
+            "Figure 3: Qualitative results of $4 \\times$ downscaled image and SR using the EDSR on four example images from the Set14 dataset. (More results are presented in the supplementary file.) ",
+            "Table 3: Ablation results (PSNR / SSIM) of the CAR model on the Set5, Set14, BSD100, Urban100 and DIV2K (validation set). "
+        ],
+        "table_footnote": [
+            "Note: Red color indicates the best performance and Blue color represents the second. "
+        ],
+        "table_body": "<table><tr><td>Model</td><td>Scale</td><td>Set5</td><td>Set14</td><td>B100</td><td>Urban100</td><td>DIV2K</td></tr><tr><td>CAR</td><td>2x</td><td>38.94 / 0.9658</td><td>35.61 / 0.9404</td><td>33.83 / 0.9262</td><td>35.24 / 0.9572</td><td>38.26 / 0.9599</td></tr><tr><td>CAR (w/o TV loss)</td><td>2x</td><td>39.00 / 0.9663</td><td>35.65 / 0.9411</td><td>33.91 / 0.9273</td><td>35.45 / 0.9587</td><td>38.34 / 0.9601</td></tr><tr><td>CAR (w/o offset constrain)</td><td>2x</td><td>38.73 / 0.9641</td><td>35.29 / 0.9372</td><td>33.58 / 0.9213</td><td>35.19 / 0.9560</td><td>38.03 / 0.9581</td></tr><tr><td>CAR (w/o offset)</td><td>2x</td><td>38.09 / 0.9600</td><td>34.46 / 0.9331</td><td>33.25 / 0.9209</td><td>32.91 / 0.9423</td><td>37.24 / 0.9497</td></tr><tr><td>CAR</td><td>4x</td><td>33.88 / 0.9174</td><td>30.31 / 0.8382</td><td>29.15 / 0.8001</td><td>29.28 / 0.8711</td><td>32.82 / 0.8837</td></tr><tr><td>CAR (w/o TV loss)</td><td>4x</td><td>34.13 / 0.9222</td><td>30.46 / 0.8439</td><td>29.36 / 0.8096</td><td>29.36 / 0.8772</td><td>33.05 / 0.8893</td></tr><tr><td>CAR (w/o offset constrain)</td><td>4x</td><td>33.86 / 0.9174</td><td>30.18 / 0.8368</td><td>29.11 / 0.7998</td><td>29.02 / 0.8704</td><td>32.74 / 0.8835</td></tr><tr><td>CAR (w/o offset)</td><td>4x</td><td>33.11 / 0.9168</td><td>29.68 / 0.8322</td><td>28.78 / 0.7921</td><td>27.98 / 0.8675</td><td>32.18 / 0.8830</td></tr></table>",
+        "bbox": [
+            78,
+            391,
+            919,
+            526
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "about the contribution of kernel element offset and the constraint on offset distance to the performance of the SR. Table 3 shows the quantitative ablation results, from which we can observe that the SR performance on all testing cases constantly increases with the addition of kernel element offset and the constraint on offset distance. The baseline model is the CAR without kernel element offset (w/o offset), meaning that the CAR only needs to estimate the resampling kernel weights which will be applied to the position defined by Equation 1 on the HR image (also illustrated as the pixel center in Fig. 2). Then, kernel element offset was incorporated, which brings a noticeable performance improvement. Introducing kernel element offset makes the resampling kernel to be non-uniform and each element in the resampling kernel can seek to proper sampling position to better preserve useful information for the end SR task. Further SR performance is gained by adding kernel element offset distance regularization. The kernel element offset distance regularization encourages the preservation of the resampling kernel topology and avoids unnecessary kernel element movement on the plain region with less structured texture, which potentially makes the training more stable and easier. ",
+        "bbox": [
+            81,
+            566,
+            491,
+            857
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "In order to better illustrate how the kernel offset distance regularization works, we visualized an example of resampling kernel elements and its corresponding offsets (Fig. 4) in the configuration of with (w/) and without (w/o) the offset distance regularization. We only visualized the central 9 of many kernel elements and offsets for a better demonstration. Fig. 4 (c) and (d) present kernel elements and offsets by the CAR model trained without offset distance regularization. Fig. 4 (e) and (f) show the kernel elements and offsets estimated by the CAR model trained with offset distance regularization. It can be observed that kernel elements estimated by the CAR model trained with offset distance regularization only present obvious movement on the strong edges and textured regions (the wheel ring and handle), and almost hold still at the rather smoothed region (the sky region). The kernel elements estimated by the CAR model trained without offset distance regularization also move towards the strong edges. However, it presents intensive movements on the plain region, which may lead to an unstable training process and sub-optimal testing performance, since the gradient of the resampling kernel depends on the interpolated pixel value (Equation 4). The fixed bicubic kernel is also visualized in Fig. 4 (b). When compared with the content varying kernels shown in Fig. 4 (c) and (e), the fixed bicubic kernel will be uniformly applied to all the resampling region no matter what image content is going to be resampled. ",
+        "bbox": [
+            81,
+            863,
+            493,
+            934
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            506,
+            566,
+            916,
+            843
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "The superior SR performance with the CAR model is achieved from the powerful capability of deep neural networks that can approximate arbitrary functions. However, the deep learning model tends to find a tricky way to produce LR images preserving details that are in favor of generating accurate SR images but not for better human perception. Fig. 5 shows an example of $4 \\times$ downscaled image by the CAR and $4 \\times \\mathrm { S R }$ image by the jointly trained EDSR. As shown in Fig. 5 (b), the CAR model learned to preserve more information using much fewer pixel spaces by arranging vertical edges in a regular criss-cross way, which makes the vertical edges in the LR image look jaggy. Jaggies are one type of aliasing that normally manifest as regular artifacts near sharp changes in intensity. However, the human visual system finds regular artifacts more objectionable than irregular artifacts [54]. This problem is possibly caused by the inconsistent movement of the resampling kernels represented by the resampling kernel offsets near the sharp edges. To alleviate it, we introduced the partial TV loss of the horizontal and vertical resampling kernel offsets (Section 3.4) to constrain the rather free movements of the resampling kernel elements. As shown in Fig. 5 (c), we can observe a smoother LR image with much less unsightly artifacts. ",
+        "bbox": [
+            506,
+            849,
+            918,
+            934
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            493,
+            933,
+            503,
+            940
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "image",
+        "img_path": "images/ada8e575a196ac99b995e2b23638b28b456167dfc399b1806b88b06778194b87.jpg",
+        "image_caption": [
+            "Figure 4: An example of the $4 \\times$ downscaled resampling kernel elements and its corresponding offsets. In the figure we only visualized one bicubic resampling kernel, since it will be uniformly applied to all resampling regions. We only visualize the centeral 9 kernel elements $( ( 3 \\times h , 3 \\times w ) )$ predicted by the CAR ,model. The kernel element offset is visualized using the color wheel presented in [53]. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            80,
+            74,
+            491,
+            626
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            81,
+            755,
+            491,
+            934
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/d2188db5131b7141e178f6606e484651a7b828a25090f83f4d0e5938632f1309.jpg",
+        "image_caption": [
+            "Figure 5: An example trade off between perception of the $4 \\times$ downscaled image and distortion of the $4 \\times$ SR image. The first row shows the HR patch (a) and patch of SR results (b and c), the second row shows the downscaled version of the HR patch. The introduction of partial TV loss can produce visually better downscaled image at the expense of some SR performance. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            504,
+            88,
+            915,
+            242
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            504,
+            366,
+            916,
+            406
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "By employing the partial TV loss of the resampling kernel offsets, the CAR model generates better images for perception. However, we also observed SR performance degradation on each testing dataset, which is shown in the ‘CAR’ and ‘CAR (w/o TV loss)’ entries of Table 3. This is because the introduction of the partial TV loss breaks the optimal way of keeping information during downsampling. Other types of aliasing inevitably occurred on the sample-rate conversion, and the SR model cannot recover correct textures from those irregular patterns when compared with that of the regular jaggies. As illustrated by the SR patches shown in Fig. 5 (b) and (c), we can recognize that the SR image corresponding the jagged LR image can better represent the original HR patch than that corresponding to the LR image with less jaggies. ",
+        "bbox": [
+            506,
+            414,
+            918,
+            607
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "4.2.3 Comparison with public benchmark SR results ",
+        "text_level": 1,
+        "bbox": [
+            506,
+            623,
+            859,
+            637
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "To compare the SR performance of downscaled images generated by the proposed CAR model with other deep SR models trained neither on images downscaled using predefined operations (such as bicubic interpolation) or images downscaled by end-to-end trained task driven image downscaling models, we listed several commonly compared public benchmark results on Table 4. The comparison was organized into two groups, SR models trained with LR images produced using the bicubic interpolation method (‘Bicubic‘ group) and LR images generated by models trained under the guidance of SR task (‘Learned’ group). In each group, it was further split into models trained using L2 loss function and L1 loss function. SR models in the ‘Bicubic’ group include the SRCNN [28], VDSR [29], DRRN [55], MemNet [56], DnCNN [57], LapSRN [38], ZSSR [58], CARN [59], SRRAM [60]. In the ‘Learned’ group, we compared the CAR model with two recent state-of-the-art image downscaling models trained jointly with deep SR models, i.e., the CNN-CR CNN-SR [4] model and the TAD TAU model [21]. We also jointly trained the CAR model with the CNN-SR and TAU to do fair comparisons with the performance reported in its corresponding paper. ",
+        "bbox": [
+            506,
+            645,
+            918,
+            935
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            493,
+            933,
+            503,
+            940
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "table",
+        "img_path": "images/3885de7e4e1850bdd00753f39778e04bc173904f7330d80b104d16e335b6db0a.jpg",
+        "table_caption": [
+            "Table 4: Public benchmark results (PSNR / SSIM) of $2 \\times$ and $4 \\times$ upscaling using different SR networks on the Set5, Set14, BSD100, Urban100 and DIV2K validation set. "
+        ],
+        "table_footnote": [
+            "Note: Red color indicates the best performance and Blue color represents the second. The ‘-’ indicates that results are not provided by the corresponding original publication. "
+        ],
+        "table_body": "<table><tr><td>Donwscaling type</td><td>Loss</td><td>Upscaling</td><td>Set5</td><td>Set14</td><td>BSD100</td><td>Urban100</td><td></td><td>DIV2K</td></tr><tr><td rowspan=\"5\"></td><td rowspan=\"5\">L2</td><td>SRCNN</td><td rowspan=\"5\"></td><td>36.66 / 0.9542</td><td>32.42 / 0.9063</td><td>31.36/0.8897</td><td>29.50 / 0.8946</td><td>33.05 / 0.9581</td></tr><tr><td>VDSR</td><td>37.53 / 0.9587</td><td>33.03 / 0.9213</td><td>31.90 / 0.8960</td><td>30.76 / 0.9140</td><td>33.66 / 0.9625</td></tr><tr><td>DRRN</td><td>37.74 / 0.9591</td><td>33.23 / 0.9136</td><td>32.05 / 0.8973</td><td>31.23 / 0.9188</td><td>35.63 / 0.9410</td></tr><tr><td>MemNet</td><td>37.78 / 0.9597</td><td>33.28 / 0.9142</td><td>32.08 / 0.8978</td><td>31.31 / 0.9195</td><td>-/-</td></tr><tr><td>DnCNN</td><td>37.58 / 0.9590</td><td>33.03 / 0.9118</td><td>31.90 / 0.8961</td><td>30.74 / 0.9139</td><td>-/-</td></tr><tr><td rowspan=\"5\"></td><td rowspan=\"5\">L1</td><td>LapSRN ZSSR</td><td>37.52 / 0.9590 37.37 / 0.9570</td><td>33.08 / 0.9130 33.00 / 0.9108</td><td>31.80 / 0.8950 31.65 / 0.8920</td><td>30.41 / 0.9100</td><td>35.31 / 0.9400</td></tr><tr><td></td><td></td><td></td><td></td><td>-/-</td><td>-/-</td></tr><tr><td>CARN</td><td>37.76 / 0.9590 2x</td><td>33.52 / 0.9166</td><td>32.09 / 0.8978</td><td>31.92 / 0.9256</td><td>36.04 / 0.9451</td></tr><tr><td>SRRAM</td><td>37.82 / 0.9592</td><td>33.48 / 0.9171</td><td>32.12 / 0.8983</td><td>32.05 / 0.9264</td><td>-/-</td></tr><tr><td>ESRGAN</td><td>-/-</td><td>-/-</td><td>-/-</td><td>-/-</td><td>-1-</td></tr><tr><td rowspan=\"4\">Learned</td><td rowspan=\"2\">L2</td><td>(CNN-CR)-(CNN-SR) (CAR)-(CNN-SR)</td><td></td><td>38.88/ 38.91 / 0.9656</td><td>35.40/ 35.55 / 0.9401</td><td>33.92/ 33.96/0.9281</td><td>33.68/ 34.73 / 0.9539</td><td>/ - 38.15 / 0.9593</td></tr><tr><td>(CAR)-(EDSR)</td><td>39.01/ 0.9662</td><td>35.64 /0.9406</td><td>33.84 / 0.9262</td><td></td><td>35.15 /0.9568</td><td>38.21 / 0.9597</td></tr><tr><td rowspan=\"2\">L1</td><td>(TAD)-(TAU)</td><td>37.69/</td><td>33.90 /</td><td>32.62 /</td><td>31.96/</td><td></td><td>36.13 /</td></tr><tr><td>(CAR)-(TAU)</td><td>37.93 / 0.9628</td><td>34.19 / 0.9312</td><td>32.78 / 0.7592</td><td></td><td>32.54 / 0.9388</td><td>36.86 / 0.9524</td></tr><tr><td rowspan=\"7\">Bicubic</td><td rowspan=\"7\">L2</td><td>(CAR)-(EDSR)</td><td></td><td>38.94 /0.9658</td><td>35.61 /0.9404</td><td>33.83 / 0.9262</td><td>35.24 / 0.9572</td><td>38.26 / 0.9599</td></tr><tr><td>SRCNN</td><td>30.48 / 0.8628</td><td>27.49 / 0.7503</td><td>26.90 / 0.7101</td><td></td><td>24.52 / 0.7221</td><td>27.78 / 0.8753</td></tr><tr><td>VDSR</td><td></td><td>31.35 / 0.8838</td><td>28.01 / 0.7674</td><td>27.29 / 0.7251</td><td>25.18 / 0.7524</td><td>28.17 / 0.8841</td></tr><tr><td>SRResNet</td><td></td><td>32.05 / 0.8910</td><td>28.53 / 0.7804</td><td>27.57 / 0.7354</td><td>26.07 / 0.7839</td><td>/-</td></tr><tr><td>DRRN</td><td></td><td>31.68 / 0.8888</td><td>28.21 / 0.7720</td><td>27.38 / 0.7284</td><td>25.44 / 0.7638</td><td>29.98 / 0.8270</td></tr><tr><td>MemNet</td><td></td><td>31.74 / 0.8893</td><td>28.26 / 0.7723</td><td>27.40 / 0.7281</td><td>25.50 / 0.7630</td><td>-/-</td></tr><tr><td>DnCNN LapSRN</td><td></td><td>31.40 / 0.8845</td><td>28.04 / 0.7672</td><td>27.29 / 0.7253</td><td>25.20 / 0.7521</td><td>-/-</td></tr><tr><td rowspan=\"7\">Learned</td><td rowspan=\"3\">L1</td><td>ZSSR</td><td></td><td>31.54 / 0.8850</td><td>28.19 / 0.7720</td><td>27.32 / 0.7280 27.12 / 0.7211</td><td>25.21 / 0.7560</td><td>29.88 / 0.8250</td></tr><tr><td>CARN</td><td>31.13 / 0.8796 4x 32.13 / 0.8937</td><td>28.01 / 0.7651 28.60 / 0.7806</td><td>27.58 / 0.7349</td><td></td><td>-/- 26.07 / 0.7837</td><td>-/-</td></tr><tr><td>SRRAM</td><td>32.13 / 0.8932</td><td></td><td>28.54 / 0.7800</td><td>27.56 / 0.7350</td><td>26.05 / 0.7834</td><td>30.43 / 0.8374</td></tr><tr><td rowspan=\"3\">L2</td><td>ESRGAN</td><td>32.73 / 0.9011</td><td>28.99 / 0.7917</td><td></td><td>27.85 / 0.7455</td><td>27.03 / 0.8153</td><td>-/-</td></tr><tr><td>(CNN-CR)-(CNN-SR)</td><td></td><td></td><td></td><td></td><td></td><td>-/-</td></tr><tr><td>(CAR)-(CNN-SR)</td><td>33.73 / 0.9148</td><td>30.22 / 0.8329</td><td>29.13 / 0.7992</td><td></td><td>28.56 / 0.8546</td><td>-- 32.67 / 0.8800</td></tr><tr><td rowspan=\"3\"></td><td>(CAR)-(EDSR)</td><td></td><td>33.87 / 0.9176</td><td>30.34 /0.8381</td><td>29.18/0.8005</td><td>29.23 / 0.8710</td><td></td></tr><tr><td rowspan=\"2\">L1</td><td></td><td>31.59/</td><td>28.36/</td><td>27.57/</td><td></td><td></td><td>32.85 / 0.8835</td></tr><tr><td>(TAD)-(TAU)</td><td></td><td></td><td></td><td>25.56/</td><td></td><td>30.25/</td></tr><tr><td rowspan=\"2\"></td><td rowspan=\"2\"></td><td>(CAR)-(TAU)</td><td></td><td>31.85 / 0.8938</td><td>28.77 / 0.8028</td><td>27.84 / 0.7592</td><td>26.15 / 0.7978</td><td>31.10 / 0.8512</td></tr><tr><td>(CAR)-(EDSR)</td><td>33.88/0.9174</td><td>30.31/ 0.8382</td><td></td><td>29.15/0.8001</td><td>29.28 / 0.8711</td><td>32.82 / 0.8837</td></tr></table>",
+        "bbox": [
+            78,
+            119,
+            919,
+            532
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "As shown in Table 4, SR performance of upscaling models trained jointly with learnable image downscaling model outperform that of SR models trained using images downscaled in a predefined manner. This is because that LR images generated by learnable image downscaling models adaptively preserve content dependent information during downscaling, which essentially helps deep SR models learn to better recover original image content. Comparing our model with recent state-of-theart SR driven image downscaling models, the proposed model achieved the best PSNR performance on four out of five testing datasets on the $2 \\times$ image downscaling and upscaling track. On the $4 \\times$ track, the proposed model achieved the best performance. Noticeable improvement on the Urban100 dataset [50] can be observed. This can be possibly explained by the reason that images of the Urban100 are all buildings with rich sharp edges, and TAD is trained under the constraint of producing LR images similar to images downscaled by bicubic interpolation with pre-filtering which inevitably constrain the edges of LR images generated by the TAD to be blurry like that downscaled by the bicubic interpolation. Therefore, the jointly trained up sampler cannot well recover original edges from those blurred edges of the LR images. As to the proposed CAR model, it is trained without any LR constraint, since the resampling method naturally makes the LR result a valid image. Benefiting from the unsupervised training strategy, the CAR model can adaptively preserve essential edge information for better super-resolution. ",
+        "bbox": [
+            81,
+            583,
+            491,
+            929
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            506,
+            583,
+            915,
+            597
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "4.3 Evaluation of downscaled images ",
+        "text_level": 1,
+        "bbox": [
+            508,
+            616,
+            761,
+            631
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "This section presents the analysis of the quality of the downscaled image produced by the CAR model from two perspectives. We first analyzed the downscaled image in the frequency domain. We used the ‘Barbara’ image from the Set14 dataset as an example because it contains a wealth of high-frequency components (as shown in the first example of Fig. 3). Fig. 6 shows the spectrum obtained by applying FFT on the HR image and the downscaled images generated by the CAR model and four downscaling methods been compared. Each point in the spectrum represents a particular frequency contained in the spatial domain image. The point in the center of the spectrum is the DC component, and points closely around the center point represents low-frequency components. The further away from the center a point is, the higher is its corresponding frequency. ",
+        "bbox": [
+            506,
+            638,
+            918,
+            832
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "The spectrum of the HR image (Fig. 6 (a)) contains a lot of high-frequency components. During image downscaling, spatialaliasing is inevitably occurred since the sampling rate is below the Nyquist frequency. Aliasing can be spotted in the spectrum as spurious bands that are not presented in the spectrum of the HR image (high frequency component is aliased into low frequency), e.g., the black box marked regions in Fig. 6 (c-e) ",
+        "bbox": [
+            506,
+            838,
+            918,
+            935
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            491,
+            933,
+            508,
+            941
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "image",
+        "img_path": "images/8d49bbe65e79ae2d7535ec25f66c42ff6ece37eadb36d60cea274ad0788f3ddf.jpg",
+        "image_caption": [
+            "Figure 6: Spectrum analysis of the $4 \\times$ downscaled ‘Barbara’ image in the Set14 dataset using different downscaling methods. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            84,
+            90,
+            486,
+            371
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "compared to thaty of the original spectrum in Fig. 6 (a). One way to remove aliasing is to use a blurry filter upon resampling (so does the default MATLAB imresize function). As shown by the black box marked regions in Fig. 6 (b), aliasing of the downscaled image produced by the MATLAB imresize function is alleviated. Compared with the spectrum of image produced by the three state-of-the-art image downscaling methods (Fig. 6 (c-e)), less power exaggeration of low frequency components can be observed in the black box indicated regions. Therefore, the spectrum of the CAR generated image demonstrates that less aliasing is produced during the downscaling by the CAR model. A cropped region from the downscaled ‘Barbara’ image is shown in Fig. 6 (g) and less spatial aliasing can be observed from the Bicubic and CAR downscaled image when compared with that of the other three image downscaling methods. ",
+        "bbox": [
+            81,
+            440,
+            493,
+            647
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "table",
+        "img_path": "images/5edb3157fa20c3c9c447c1bf5337ad27c23eb0519eb7da45f99da86eebe8a280.jpg",
+        "table_caption": [
+            "Table 5: Bpp of lossless compressed downscaled images using the JPEG-LS "
+        ],
+        "table_footnote": [
+            "Note: Red color indicates the best performance and Blue color represents the second. "
+        ],
+        "table_body": "<table><tr><td colspan=\"3\">Bicubic</td><td>Perceptually</td><td>DPID</td><td>L0</td><td>CAR</td></tr><tr><td rowspan=\"3\">Set5 Set14 BSD100 Urban100 DIV2K</td><td rowspan=\"3\">2x</td><td>11.99</td><td>13.27</td><td>12.65 12.05</td><td>16.10 15.07</td><td>11.80 11.14</td></tr><tr><td>11.23 11.11</td><td>12.01 11.90</td><td>11.8</td><td>15.31</td><td>10.69</td></tr><tr><td>11.39 10.42</td><td>12.22 11.38</td><td>12.19 11.1</td><td>15.27 14.04</td><td>11.28 10.20</td></tr><tr><td>Average Set5 Set14</td><td rowspan=\"3\">4x</td><td>11.228 14.78 12.61</td><td>12.156 16.52</td><td>11.958 15.32</td><td>15.158 17.41</td><td>11.022 14.39</td></tr><tr><td>BSD100 Urban100</td><td>12.85</td><td>14.27 14.42</td><td>13.32</td><td>15.19 15.59</td><td>12.47 12.61</td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Average</td><td></td><td></td><td></td><td>12.14</td><td></td><td></td></tr><tr><td></td><td></td><td>11.54</td><td></td><td>12.94</td><td>14.97</td><td>12.28</td></tr><tr><td rowspan=\"3\">DIV2K</td><td rowspan=\"3\"></td><td>12.23</td><td>14.26</td><td>13.51</td><td></td><td></td></tr><tr><td></td><td>13.46</td><td></td><td></td><td></td></tr><tr><td>12.802</td><td>14.586</td><td>13.446</td><td>13.91 15.414</td><td>11.39 12.628</td></tr></table>",
+        "bbox": [
+            80,
+            694,
+            491,
+            854
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Additionally, we analyzed the downscaled image from the perspective of lossless compression. Table 5 presents the average bits-per-pixel (bpp) of the lossless compressed images using the lossless JPEG (JPEG-LS) [61]. Downscaled images produced by the CAR model can be more easily compressed than that by downscaling algorithms designed for better human perception. The reason why this happened is that downscaling methods designed for better human perception tend to preserve or enhance edges in a pre-defined manner, and much more high frequency components are retained, thus the downscaled images are less compressible on average. When compared with the bpp of compressed bicubic downscaled images, the CAR model achieved similar compression performance. ",
+        "bbox": [
+            80,
+            893,
+            491,
+            935
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            504,
+            87,
+            918,
+            226
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "4.4 User study ",
+        "text_level": 1,
+        "bbox": [
+            506,
+            243,
+            614,
+            257
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "image",
+        "img_path": "images/9d5c297443d0f54d439b97ca298107577bc9cefd1ee7fd5eda4055e287fec463.jpg",
+        "image_caption": [
+            "Figure 7: User study results comparing the proposed CAR model against reference image downscaling algorithms for the image super-resolution and image downscaling tasks. Each data point is an average over valid records evaluated on 20 image groups and the error bars indicate $9 5 \\%$ confidence interval. The upper part (above the zero axes) is the image quality preference of the SR task, and the lower part (below the zero axes) is the image quality preference of the image downscaling task. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            513,
+            276,
+            908,
+            478
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "To evaluate the visual quality of the generated SR images and LR images corresponding to different downscaling algorithms, we conducted user study which is widely adopted in many image generation tasks. We picked 59 sample images from different testing datasets, i.e., the Set5 (5 images), Set14 (20 images), BSD100 (20 images), and Urban100 (20 images) dataset. Samples are randomly selected with diverse properties, including people, animal, building, natural scenes and computergenerated graphics. We adopted similar evaluation settings used in [14, 15, 17, 19]. The user study were conducted as the $\\mathbf { A } / \\mathbf { B }$ testing: the original image was presented in the middle place with two variants (SR images or downscaled images) showed in either side, among which one is produced by the CAR method and another is generated by one of the competing methods, i.e., Bicubic, Perceptually [15], DPID [17] and L0-regularized [19]. Users were required to answer the question ‘which one looks better’ by exclusively selecting one of the three options from: 1) A is better than B; 2) A equals to B; 3) B is better than A. For all 59 sample images, there are 236 pairwise decisions for each user. All image pairs were shown in random temporal order and the two variants of the original image of a pair are also randomly shown in position A or position B. To test the reliability of the user study result, we add additional 10 image groups by randomly repeating question from the 236 trials. All images were displayed at native resolution of the monitor and zoom functionality of the UI was disabled. Users can only pan the view if the total size of a group of images exceeds the screen resolution. No other restrictions on the viewing way were imposed and users can judge those images at any viewing distance and angle without time limits. ",
+        "bbox": [
+            506,
+            631,
+            918,
+            935
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            490,
+            933,
+            506,
+            941
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            81,
+            88,
+            491,
+            198
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "We invited 29 participants for both the user study on $4 \\times$ image super-resolution and $4 \\times$ image downscaling tasks. Answers from each participant are filtered out if it achieves less than $80 \\%$ consistency [14, 15] on the repeated 10 questions, which generates 29 and 28 valid records for the image super-resolution and image downscaling tasks, respectively. As can be seen from Fig. 7, the total preferences of the SR and image downscaling task opted for the CAR model are larger than that of the reference methods. The upper part (above the zero axes) of Fig. 7 shows the results of the user study on $4 \\times$ image super-resolution task, each group of bars present the comparison between SR images corresponding to the CAR generated LR images and SR images corresponding to LR images produced by the reference method. The results indicate that the CAR model achieves at least $73 \\%$ preference over all other algorithms. Besides, our algorithm achieves more than $98 \\%$ preference compared with the Perceptually method, demonstrating that there is a distinct difference between the SR image corresponding to the perceptually based [15] downscaled image and the original HR image. Although there are about $20 \\%$ preference on ‘A equals to $\\mathbf { B } ^ { \\ast }$ plus ‘B is better than $\\aleph ^ { \\prime }$ on the DPID and L0-regularized entry, it still cannot compete with the significant superiority of the CAR method. When combined with the objective metrics presented in Table 1, we can arrive at the conclusion that LR images produced by algorithms solely optimized for better human perception cannot be well recovered. ",
+        "bbox": [
+            81,
+            207,
+            491,
+            563
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "The lower part (below the zero axes) of Fig. 7 shows the users’ perceptual preference for the $4 \\times$ downscaled images generated by the CAR method versus the Bicubic, Perceptually, DPID, and L0-regularized image downscaling algorithms. We observed that the CAR method gets distinct less preference when compared with that of the Perceptually, DPID, and L0-regularized algorithm, which illustrates that the three state-of-the-art algorithms generate more perceptually favored LR images. However, when compared with the Bicubic downscaling algorithm, the user preference for the CAR method is slightly inferior to that for the Bicubic, and at most cases, participants tend to give no preference for both methods. This indicates that the CAR image downscaling method is comparable to the bicubic downscaling algorithm in terms of human perception. Among the three stateof-the-art image downscaling algorithms, the DPID achieves less agreement since its hyper-parameter is content dependent, and during the test, default value is used. The perceptually based image downscaling and the L0-regularized method achieve more than $7 5 \\%$ user preference because these methods artificially emphasize the edges of image content, which can be good if the image is going to be displayed at a very small size, such as an icon. Whether it is desirable in other cases is debatable. It does tend to make images look better at first glance, but at the expense of realism in terms of signal fidelity. ",
+        "bbox": [
+            81,
+            569,
+            493,
+            900
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "5 Conclusion ",
+        "text_level": 1,
+        "bbox": [
+            506,
+            87,
+            627,
+            102
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "This paper introduces the CAR model for image downscaling, which is an end-to-end system trained by maximizing the SR performance. It simultaneously learns a mapping for resolution reduction and SR performance improvement. One major contribution of our work is that the CAR model is trained in an unsupervised manner meaning that there is no assumption on how the original HR image will be downscaled, which helps the image downscale model to learn to keep essential information for SR task in a more optimal way. This is achieved by the content adaptive resampling kernel generation network which estimates spatial non-uniform resampling kernels for each pixel in the downscaled image according to the input HR image. The downscaled pixel value is obtained by decimating HR pixels covered by the resampling kernel. Our experimental results illustrate that the CAR model trained jointly with the SR networks achieves a new state-of-the-art SR performance while produces downscaled images whose quality are comparable to that of the widely adopted image downscaling method. ",
+        "bbox": [
+            506,
+            109,
+            916,
+            359
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "References ",
+        "text_level": 1,
+        "bbox": [
+            506,
+            382,
+            596,
+            397
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "[1] A. M. Bruckstein, M. Elad, and R. Kimmel. Down-scaling for better transform compression. IEEE Trans. Image Process., 12(9):1132–1144, Sep. 2003. ISSN 1057-7149. doi: 10.1109/TIP.2003.816023.   \n[2] W. Lin and Li Dong. Adaptive downsampling to improve image compression at low bit rates. IEEE Trans. Image Process., 15(9):2513–2521, Sep. 2006. ISSN 1057-7149. doi: 10.1109/TIP.2006.877415.   \n[3] Y. Zhang, D. Zhao, J. Zhang, R. Xiong, and W. Gao. Interpolation-dependent image downsampling. IEEE Trans. Image Process., 20(11):3291–3296, Nov. 2011. ISSN 1057-7149. doi: 10.1109/TIP.2011.2158226.   \n[4] Y. Li, D. Liu, H. Li, L. Li, Z. Li, and F. Wu. Learning a convolutional neural network for image compact-resolution. IEEE Trans. Image Process., 28(3):1092–1107, March 2019. ISSN 1057-7149. doi: 10.1109/TIP.2018.2872876.   \n[5] Claude E. Shannon. Communication in the presence of noise. Proc. IEEE, 86(2):447–457, Feb. 1998.   \n[6] J. Yang, J. Wright, T. S. Huang, and Y. Ma. Image superresolution via sparse representation. IEEE Trans. Image Process., 19(11):2861–2873, Nov. 2010. ISSN 1057-7149. doi: 10.1109/TIP.2010.2050625.   \n[7] Jianchao Yang and Thomas S Huang. Image superresolution: Historical overview and future challenges, pages 1–33. CRC, 1 2017.   \n[8] W. Yang, X. Zhang, Y. Tian, W. Wang, J. Xue, and Q. Liao. Deep learning for single image super-resolution: A brief review. IEEE Trans. Multimedia, pages 1–1, 2019.   \n[9] Saeed Anwar, Salman Khan, and Nick Barnes. A deep journey into super-resolution: A survey, 2019. URL https://arxiv.org/abs/1904.07523.   \n[10] George Wolberg. Digital image warping, volume 10662. IEEE CS, 1990.   \n[11] L. Fang, O. C. Au, K. Tang, and A. K. Katsaggelos. Antialiasing filter design for subpixel downsampling via frequency-domain analysis. IEEE Trans. Image Process., 21(3):1391–1405, March 2012. ISSN 1057-7149. doi: 10.1109/TIP.2011.2165550.   \n[12] Don P. Mitchell and Arun N. Netravali. Reconstruction filters in computer-graphics. SIGGRAPH Comput. Graph., 22(4):221–228, june 1988. ISSN 0097-8930.   \n[13] Claude E. Duchon. Lanczos filtering in one and two dimensions. J. Appl. Meteor., 18(8):1016–1022, Aug. 1979.   \n[14] Johannes Kopf, Ariel Shamir, and Pieter Peers. Contentadaptive image downscaling. ACM Trans. Graph., 32(6): 173:1–173:8, Nov. 2013.   \n[15] A. Cengiz Öztireli and Markus Gross. Perceptually based downscaling of images. ACM Trans. Graph., 34(4):77:1– 77:10, July 2015.   \n[16] Zhou Wang, Alan Conrad Bovik, Hamid Rahim Sheikh, and Eero P. Simoncelli. Image quality assessment: from error visibility to structural similarity. IEEE Trans. Image Process., 13(4):600–612, April 2004.   \n[17] Nicolas Weber, Michael Waechter, Sandra C. Amend, Stefan Guthe, and Michael Goesele. Rapid, detail-preserving image downscaling. ACM Trans. Graph., 35(6):205:1– 205:6, Nov. 2016.   \n[18] Eduardo S. L. Gastal and Manuel M. Oliveira. Spectral remapping for image downscaling. ACM Trans. Graph., 36(4):145:1–145:16, July 2017.   \n[19] Junjie Liu, Shengfeng He, and Rynson W. H. Lau. l0 -regularized image downscaling. IEEE Trans. Image Process., 27(3):1076–1085, March 2018.   \n[20] Xianxu Hou, Yuanhao Gong, Bozhi Liu, Ke Sun, Jingxin Liu, Bolei Xu, Jiang Duan, and Guoping Qiu. Learning based image transformation using convolutional neural networks. IEEE Access, 6:49779–49792, Sep. 2018.   \n[21] Heewon Kim, Myungsub Choi, Bee Lim, and Kyoung Mu Lee. Task-aware image downscaling. In Proceedings of the European Conference on Computer Vision, pages 399–414, 2018.   \n[22] Bert De Brabandere, Xu Jia, Tinne Tuytelaars, and Luc Van Gool. Dynamic filter networks. In Proceedings of the 30th International Conference on Neural Information Processing Systems, pages 667–675, 2016.   \n[23] Jürgen Schmidhuber. Evolutionary principles in selfreferential learning, or on learning how to learn: the meta-meta-... hook. PhD thesis, Technische Universität München, 1987.   \n[24] Jifeng Dai, Haozhi Qi, Yuwen Xiong, Yi Li, Guodong Zhang, Han Hu, and Yichen Wei. Deformable convolutional networks. In IEEE International Conference on Computer Vision, pages 764–773, 2017.   \n[25] Fisher Yu and Vladlen Koltun. Multi-scale context aggregation by dilated convolutions. In International Conference on Learning Representations, 2016.   \n[26] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for image recognition. In IEEE Conference on Computer Vision and Pattern Recognition, pages 770–778, 2016. ",
+        "bbox": [
+            514,
+            402,
+            919,
+            933
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            490,
+            931,
+            508,
+            941
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            76,
+            47,
+            495,
+            943
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "[27] Ken M. Nakanishi, Shin-ichi Maeda, Takeru Miyato, and Daisuke Okanohara. Neural multi-scale image compression. In Computer Vision, pages 718–732, 2019. ",
+        "bbox": [
+            508,
+            88,
+            918,
+            130
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "[28] Chao Dong, Chen Change Loy, Kaiming He, and Xiaoou Tang. Image super-resolution using deep convolutional networks. IEEE Trans. Pattern Anal. Mach. Intell., 38(2): 295–307, Feb. 2016.   \n[29] Jiwon Kim, Jung Kwon Lee, and Kyoung Mu Lee. Accurate image super-resolution using very deep convolutional networks. In IEEE Conference on Computer Vision and Pattern Recognition, pages 1646–1654, 2016.   \n[30] Jiwon Kim, Jung Kwon Lee, and Kyoung Mu Lee. Deeply-recursive convolutional network for image superresolution. In IEEE Conference on Computer Vision and Pattern Recognition, pages 1637–1645, 2016.   \n[31] Wenzhe Shi, Jose Caballero, Ferenc Huszár, Johannes Totz, Andrew P. Aitken, Rob Bishop, Daniel Rueckert, and Zehan Wang. Real-time single image and video superresolution using an efficient sub-pixel convolutional neural network. In IEEE Conference on Computer Vision and Pattern Recognition, pages 1874–1883, 2016.   \n[32] Christian Ledig, Lucas Theis, Ferenc Huszár, Jose Caballero, Andrew Cunningham, Alejandro Acosta, Andrew Aitken, Alykhan Tejani, Johannes Totz, Zehan Wang, and Wenzhe Shi. Photo-realistic single image super-resolution using a generative adversarial network. In IEEE Conference on Computer Vision and Pattern Recognition, pages 105–114, 2017.   \n[33] Bee Lim, Sanghyun Son, Heewon Kim, Seungjun Nah, and Kyoung Mu Lee. Enhanced deep residual networks for single image super-resolution. In IEEE Conference on Computer Vision and Pattern Recognition Workshops, pages 1132–1140, 2017.   \n[34] T. Tong, G. Li, X. Liu, and Q. Gao. Image super-resolution using dense skip connections. In IEEE International Conference on Computer Vision, pages 4809–4817, 2017.   \n[35] Yulun Zhang, Yapeng Tian, Yu Kong, Bineng Zhong, and Yun Fu. Residual dense network for image superresolution. In IEEE Conference on Computer Vision and Pattern Recognition, pages 2472–2481, 2018.   \n[36] Kai Zhang, Wangmeng Zuo, and Lei Zhang. Learning a single convolutional super-resolution network for multiple degradations. In IEEE Conference on Computer Vision and Pattern Recognition, pages 3262–3271, 2018.   \n[37] Yulun Zhang, Kunpeng Li, Kai Li, Lichen Wang, Bineng Zhong, and Yun Fu. Image super-resolution using very deep residual channel attention networks. In Proceedings of the European Conference on Computer Vision, pages 286–301, 2018.   \n[38] W. Lai, J. Huang, N. Ahuja, and M. Yang. Fast and accurate image super-resolution with deep laplacian pyramid networks. IEEE Trans. Pattern Anal. Mach. Intell., pages 1–1, Aug. 2018. ISSN 0162-8828. doi: 10.1109/TPAMI.2018.2865304.   \n[39] Kai Zhang, Wangmeng Zuo, and Lei Zhang. Deep plugand-play super-resolution for arbitrary blur kernels. In IEEE Conference on Computer Vision and Pattern Recognition, pages 1671–1681, 2019.   \n[40] Tao Dai, Jianrui Cai, Yongbing Zhang, Shu-Tao Xia, and Lei Zhang. Second-order attention network for single image super-resolution. In IEEE Conference on Computer Vision and Pattern Recognition, pages 11065–11074, 2019.   \n[41] Sergey Ioffe and Christian Szegedy. Batch normalization: Accelerating deep network training by reducing internal covariate shift. In Proceedings of the 32nd International Conference on International Conference on Machine Learning, pages 448–456, 2015.   \n[42] Hang Zhao, Orazio Gallo, Iuri Frosio, and Jan Kautz. Loss functions for image restoration with neural networks. IEEE Trans. Comput. Imag., 3(1):47–57, March 2017.   \n[43] Zhou Wang, Eero P. Simoncelli, and Alan Conrad Bovik. Multiscale structural similarity for image quality assessment. In The Thrity-Seventh Asilomar Conference on Signals, Systems Computers, pages 1398–1402, 2003.   \n[44] Justin Johnson, Alexandre Alahi, and Li Fei-Fei. Perceptual losses for real-time style transfer and super-resolution. In Proceedings of the European conference on computer vision, pages 694–711, 2016.   \n[45] Leonid I Rudin, Stanley Osher, and Emad Fatemi. Nonlinear total variation based noise removal algorithms. PHYS-ICA D., 60(1-4):259–268, Nov. 1992.   \n[46] Eirikur Agustsson and Radu Timofte. Ntire 2017 challenge on single image super-resolution: Dataset and study. In IEEE Conference on Computer Vision and Pattern Recognition Workshops, pages 1122–1131, 2017.   \n[47] Marco Bevilacqua, Aline Roumy, Christine Guillemot, and Marie-Line Alberi Morel. Low-complexity single-image super-resolution based on nonnegative neighbor embedding. In British Machine Vision Conference, 2012.   \n[48] Roman Zeyde, Michael Elad, and Matan Protter. On single image scale-up using sparse-representations. In Proceedings of the 7th International Conference on Curves and Surfaces, pages 711–730, 2012.   \n[49] David R. Martin, Charless Fowlkes, D. Tal, and Jitendra Malik. A database of human segmented natural images and its application to evaluating segmentation algorithms and measuring ecological statistics. In IEEE International Conference on Computer Vision, pages 416–423, 2001.   \n[50] JiaBin Huang, Abhishek Singh, and Narendra Ahuja. Single image super-resolution from transformed selfexemplars. In IEEE Conference on Computer Vision and Pattern Recognition, pages 5197–5206, 2015.   \n[51] Diederik P. Kingma and Jimmy Ba. Adam: A method for stochastic optimization. In International Conference on Learning Representations, 2015.   \n[52] Muhammad Haris, Greg Shakhnarovich, and Norimichi Ukita. Deep back-projection networks for super-resolution. In IEEE Conference on Computer Vision and Pattern Recognition, pages 1664–1673, 2018.   \n[53] Simon Baker, Stefan Roth, Daniel Scharstein, Michael J. Black, J. P. Lewis, and Richard Szeliski. A database and evaluation methodology for optical flow. In IEEE International Conference on Computer Vision, pages 1–8, 2007.   \n[54] Robert L. Cook. Stochastic sampling in computer graphics. ACM Trans. Graph., 5(1):51–72, Jan. 1986. ISSN 0730- 0301.   \n[55] Y. Tai, J. Yang, and X. Liu. Image super-resolution via deep recursive residual network. In IEEE Conference on Computer Vision and Pattern Recognition, pages 2790– 2798, 2017.   \n[56] R. Chen, Y. Qu, K. Zeng, J. Guo, C. Li, and Y. Xie. Persistent memory residual network for single image super resolution. In IEEE Conference on Computer Vision and Pattern Recognition Workshops, 2018.   \n[57] K. Zhang, W. Zuo, Y. Chen, D. Meng, and L. Zhang. Beyond a gaussian denoiser: Residual learning of deep cnn for image denoising. IEEE Trans. Image Process., 26(7):3142–3155, July 2017. ISSN 1057-7149. doi: 10.1109/TIP.2017.2662206.   \n[58] A. Shocher, N. Cohen, and M. Irani. Zero-shot superresolution using deep internal learning. In IEEE Conference on Computer Vision and Pattern Recognition, pages 3118–3126, 2018.   \n[59] Namhyuk Ahn, Byungkon Kang, and Kyung-Ah Sohn. Fast, accurate, and lightweight super-resolution with cascading residual network. In Proceedings of the European Conference on Computer Vision, pages 252–268, 2018.   \n[60] Jun-Hyuk Kim, Jun-Ho Choi, Manri Cheon, and Jong-Seok Lee. Ram: Residual attention module for single image super-resolution, 2018. URL https://arxiv.org/abs/ 1811.12043.   \n[61] M. J. Weinberger, G. Seroussi, and G. Sapiro. The locoi lossless image compression algorithm: principles and standardization into jpeg-ls. IEEE Trans. Image Process., 9(8):1309–1324, Aug. 2000. ",
+        "bbox": [
+            503,
+            111,
+            921,
+            944
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "discarded",
+        "text": "13 ",
+        "bbox": [
+            490,
+            930,
+            508,
+            941
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            76,
+            58,
+            495,
+            935
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            506,
+            78,
+            921,
+            569
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            491,
+            931,
+            508,
+            941
+        ],
+        "page_idx": 13
+    }
+]

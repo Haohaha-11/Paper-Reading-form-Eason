@@ -52,6 +52,20 @@ LLM latent reasoning / cache augmentation / CoT compression：把额外推理、
 
 ---
 
+### 🩺 Medical Compression
+医学影像压缩 / whole-slide image storage / adaptive downscaling：围绕病理 WSI 的无损压缩、诊断保持型有损压缩、latent 表征压缩和可上采样的内容自适应下采样。
+
+| 论文 | 会议 | 方法特点 |
+|------|------|----------|
+| [AdaSlide](./topics/Medical-Compression/%5BNat%20Commun%202026%5D%20AdaSlide/) | Nature Communications 2026 | AdaSlide 用 RL Compression Decision Agent 按 patch 临床信息量选择保留或压缩，再用 Foundational Image Enhancer 复原，在 WSI 存储成本与诊断完整性之间做自适应权衡。 |
+| [WISE](./topics/Medical-Compression/%5BArxiv%202025%5D%20WISE/) | Arxiv 2025 | WISE 面向 WSI 无损压缩，利用空白区编码、层次投影、bitmap 重排和字典编码处理高频且不规则的病理图像信息。 |
+| [NIC](./topics/Medical-Compression/%5BTPAMI%202020%5D%20NIC/) | IEEE TPAMI 2020 | NIC 把 gigapixel WSI patch 编成低维 embedding 网格，让 CNN 在压缩表示上用弱图像级标签完成分类、回归和可视化定位。 |
+| [CAR](./topics/Medical-Compression/%5BTIP%202020%5D%20CAR/) | IEEE TIP 2020 | CAR 学习内容自适应下采样 kernel 与 offsets，并用 SRNet 反向指导低分辨率图像保留可恢复细节。 |
+
+📖 [Medical Compression 详细总结](./topics/Medical-Compression/README.md)
+
+---
+
 ## 论文文件夹结构
 
 ```text

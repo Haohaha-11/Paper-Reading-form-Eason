@@ -1,0 +1,15 @@
+{
+  "title": "Learned Image Downscaling for Upscaling using Content Adaptive Resampler",
+  "short": "CAR",
+  "authors": "Wanjie Sun; Zhenzhong Chen",
+  "venue": "IEEE TIP",
+  "year": "2020",
+  "arxiv": "1907.12904",
+  "links": [
+    "https://arxiv.org/abs/1907.12904",
+    "https://arxiv.org/pdf/1907.12904"
+  ],
+  "mineru_task": "1cb48a8a-9353-47fc-aed1-8cabaf5523bb",
+  "reading_order": "Medical-Compression topic paper 4",
+  "one_liner_hint": "CAR 学习内容自适应下采样 kernel 与 offsets，让低分辨率图像仍可被 SRNet 高质量上采样，可作为医学压缩/可逆预览策略的通用背景。"
+}
