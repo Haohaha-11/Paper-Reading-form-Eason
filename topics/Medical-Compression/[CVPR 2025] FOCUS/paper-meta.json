@@ -1,0 +1,17 @@
+{
+  "dir": "[CVPR 2025] FOCUS",
+  "title": "FOCUS: Knowledge-enhanced Adaptive Visual Compression for Few-shot Whole Slide Image Classification",
+  "short": "FOCUS",
+  "authors": "Zhengrui Guo; Conghao Xiong; Jiabo Ma; Qichen Sun; Lishuang Feng; Jinzhuo Wang; Hao Chen",
+  "venue": "CVPR",
+  "year": "2025",
+  "arxiv": "2411.14743",
+  "links": [
+    "https://arxiv.org/abs/2411.14743",
+    "https://arxiv.org/pdf/2411.14743",
+    "https://github.com/dddavid4real/FOCUS"
+  ],
+  "reading_order": "Medical-Compression topic paper 5",
+  "one_liner_hint": "FOCUS 用 pathology foundation model 与语言先验做三阶段 adaptive visual compression，在 few-shot WSI 分类中筛掉冗余 patch/token 并保留诊断相关区域。",
+  "mineru_task": "ab8e3467-1f79-4bca-9982-f24b86329fff"
+}

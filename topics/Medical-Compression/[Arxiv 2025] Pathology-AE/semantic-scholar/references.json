@@ -1,0 +1,1598 @@
+{
+  "offset": 0,
+  "citingPaperInfo": {
+    "openAccessPdf": {
+      "url": "",
+      "status": null,
+      "license": null,
+      "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2503.11591, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+    },
+    "title": "Pathology Image Compression with Pre-trained Autoencoders",
+    "authors": [
+      {
+        "authorId": "2212024037",
+        "name": "Srikar Yellapragada"
+      },
+      {
+        "authorId": "1816769252",
+        "name": "Alexandros Graikos"
+      },
+      {
+        "authorId": "2254039688",
+        "name": "Kostas Triaridis"
+      },
+      {
+        "authorId": "2350855175",
+        "name": "Zilinghan Li"
+      },
+      {
+        "authorId": "2281896475",
+        "name": "T. Nandi"
+      },
+      {
+        "authorId": "2361845690",
+        "name": "Ravi K. Madduri"
+      },
+      {
+        "authorId": "2240535492",
+        "name": "Prateek Prasanna"
+      },
+      {
+        "authorId": "2285464801",
+        "name": "J. Saltz"
+      },
+      {
+        "authorId": "2279566980",
+        "name": "Dimitris Samaras"
+      }
+    ]
+  },
+  "data": [
+    {
+      "citedPaper": {
+        "paperId": "410ea66246f0a336b166a01b1b4456b6367a7b57",
+        "externalIds": {
+          "DBLP": "conf/mlmi-ws/FischerNSXAUMBGKNM23",
+          "ArXiv": "2503.11350",
+          "DOI": "10.1007/978-3-031-45676-3_43",
+          "CorpusId": 264307657
+        },
+        "title": "Enhanced Diagnostic Fidelity in Pathology Whole Slide Image Compression via Deep Learning",
+        "venue": "MLMI@MICCAI",
+        "year": 2025,
+        "citationCount": 5,
+        "authors": [
+          {
+            "authorId": "2260365519",
+            "name": "Maximilian Fischer"
+          },
+          {
+            "authorId": "2388315",
+            "name": "P. Neher"
+          },
+          {
+            "authorId": "1961003",
+            "name": "Peter J. Schüffler"
+          },
+          {
+            "authorId": "2181693690",
+            "name": "Shuhan Xiao"
+          },
+          {
+            "authorId": "2260350704",
+            "name": "S. D. Almeida"
+          },
+          {
+            "authorId": "2148692880",
+            "name": "Constantin Ulrich"
+          },
+          {
+            "authorId": "2260348867",
+            "name": "Alexander Muckenhuber"
+          },
+          {
+            "authorId": "4516701",
+            "name": "R. Braren"
+          },
+          {
+            "authorId": "2260350801",
+            "name": "Michael Götz"
+          },
+          {
+            "authorId": "2278745906",
+            "name": "J. Kleesiek"
+          },
+          {
+            "authorId": "1921831",
+            "name": "M. Nolden"
+          },
+          {
+            "authorId": "2139962185",
+            "name": "Klaus H. Maier-Hein"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "ef9ed23a01d1cb69d5da3256d81078581d7e8a2c",
+        "externalIds": {
+          "DBLP": "conf/iclr/ChenCCXYTL025",
+          "ArXiv": "2410.10733",
+          "DOI": "10.48550/arXiv.2410.10733",
+          "CorpusId": 273345623
+        },
+        "title": "Deep Compression Autoencoder for Efficient High-Resolution Diffusion Models",
+        "venue": "International Conference on Learning Representations",
+        "year": 2024,
+        "citationCount": 170,
+        "authors": [
+          {
+            "authorId": "2325895662",
+            "name": "Junyu Chen"
+          },
+          {
+            "authorId": "2114069742",
+            "name": "Han Cai"
+          },
+          {
+            "authorId": "2212250873",
+            "name": "Junsong Chen"
+          },
+          {
+            "authorId": "2320149516",
+            "name": "Enze Xie"
+          },
+          {
+            "authorId": "2202210853",
+            "name": "Shang Yang"
+          },
+          {
+            "authorId": "150127950",
+            "name": "Haotian Tang"
+          },
+          {
+            "authorId": "2288740166",
+            "name": "Muyang Li"
+          },
+          {
+            "authorId": "2326092665",
+            "name": "Yao Lu"
+          },
+          {
+            "authorId": "2283171540",
+            "name": "Song Han"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "ca4b6d02fa924bfe24766a477b3c1f8c3333eaac",
+        "externalIds": {
+          "ArXiv": "2409.09173",
+          "DBLP": "journals/corr/abs-2409-09173",
+          "DOI": "10.48550/arXiv.2409.09173",
+          "CorpusId": 272689381
+        },
+        "title": "Phikon-v2, A large and public feature extractor for biomarker prediction",
+        "venue": "arXiv.org",
+        "year": 2024,
+        "citationCount": 86,
+        "authors": [
+          {
+            "authorId": "2321404252",
+            "name": "Alexandre Filiot"
+          },
+          {
+            "authorId": "2213650866",
+            "name": "Paul Jacob"
+          },
+          {
+            "authorId": "123407192",
+            "name": "Alice Mac Kain"
+          },
+          {
+            "authorId": "2321403353",
+            "name": "Charlie Saillard"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "4ff7118d7b8a0a7c8acf85738017341bd00c21b7",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2408-15218",
+          "ArXiv": "2408.15218",
+          "DOI": "10.48550/arXiv.2408.15218",
+          "CorpusId": 271962997
+        },
+        "title": "Histo-Diffusion: A Diffusion Super-Resolution Method for Digital Pathology with Comprehensive Quality Assessment",
+        "venue": "arXiv.org",
+        "year": 2024,
+        "citationCount": 10,
+        "authors": [
+          {
+            "authorId": "2284370793",
+            "name": "Xuan Xu"
+          },
+          {
+            "authorId": "1818709358",
+            "name": "Saarthak Kapse"
+          },
+          {
+            "authorId": "2240535492",
+            "name": "Prateek Prasanna"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "320a155fec5a96db256ae1e1e7bfa5c5d9cf39ae",
+        "externalIds": {
+          "ArXiv": "2406.12623",
+          "DBLP": "conf/miccai/FischerNWAXSBGMKNM24",
+          "DOI": "10.48550/arXiv.2406.12623",
+          "CorpusId": 270562233
+        },
+        "title": "Learned Image Compression for HE-stained Histopathological Images via Stain Deconvolution",
+        "venue": "MOVI@MICCAI",
+        "year": 2024,
+        "citationCount": 4,
+        "authors": [
+          {
+            "authorId": "2260365519",
+            "name": "Maximilian Fischer"
+          },
+          {
+            "authorId": "2277782078",
+            "name": "Peter Neher"
+          },
+          {
+            "authorId": "2057486434",
+            "name": "Tassilo Wald"
+          },
+          {
+            "authorId": "2260350704",
+            "name": "S. D. Almeida"
+          },
+          {
+            "authorId": "2181693690",
+            "name": "Shuhan Xiao"
+          },
+          {
+            "authorId": "1961003",
+            "name": "Peter J. Schüffler"
+          },
+          {
+            "authorId": "4516701",
+            "name": "R. Braren"
+          },
+          {
+            "authorId": "2260350801",
+            "name": "Michael Götz"
+          },
+          {
+            "authorId": "2260348867",
+            "name": "Alexander Muckenhuber"
+          },
+          {
+            "authorId": "2278745906",
+            "name": "J. Kleesiek"
+          },
+          {
+            "authorId": "2276504609",
+            "name": "Marco Nolden"
+          },
+          {
+            "authorId": "2139962185",
+            "name": "Klaus H. Maier-Hein"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "5b3969e0404b96524e03ddbbae6ac10e3357dc75",
+        "externalIds": {
+          "PubMedCentral": "11153137",
+          "DOI": "10.1038/s41586-024-07441-w",
+          "CorpusId": 269974286,
+          "PubMed": "38778098"
+        },
+        "title": "A whole-slide foundation model for digital pathology from real-world data",
+        "venue": "Nature",
+        "year": 2024,
+        "citationCount": 774,
+        "authors": [
+          {
+            "authorId": "2263936549",
+            "name": "Hanwen Xu"
+          },
+          {
+            "authorId": "2637252",
+            "name": "N. Usuyama"
+          },
+          {
+            "authorId": "2302723013",
+            "name": "Jaspreet Bagga"
+          },
+          {
+            "authorId": "72655349",
+            "name": "Sheng Zhang"
+          },
+          {
+            "authorId": "2302958192",
+            "name": "Rajesh Rao"
+          },
+          {
+            "authorId": "2264107059",
+            "name": "Tristan Naumann"
+          },
+          {
+            "authorId": "2109566188",
+            "name": "Cliff Wong"
+          },
+          {
+            "authorId": "1395101702",
+            "name": "Zelalem Gero"
+          },
+          {
+            "authorId": "2302821596",
+            "name": "Javier González"
+          },
+          {
+            "authorId": "2260374573",
+            "name": "Yu Gu"
+          },
+          {
+            "authorId": "2325993",
+            "name": "Yanbo Xu"
+          },
+          {
+            "authorId": "2072847758",
+            "name": "Mu-Hsin Wei"
+          },
+          {
+            "authorId": "2302884813",
+            "name": "Wenhui Wang"
+          },
+          {
+            "authorId": "2118866998",
+            "name": "Shuming Ma"
+          },
+          {
+            "authorId": "49807919",
+            "name": "Furu Wei"
+          },
+          {
+            "authorId": "120157163",
+            "name": "Jianwei Yang"
+          },
+          {
+            "authorId": "2109738542",
+            "name": "Chun-yue Li"
+          },
+          {
+            "authorId": "2256227183",
+            "name": "Jianfeng Gao"
+          },
+          {
+            "authorId": "2264904835",
+            "name": "Jaylen Rosemon"
+          },
+          {
+            "authorId": "2372668517",
+            "name": "Tucker Bower"
+          },
+          {
+            "authorId": "2190425632",
+            "name": "Soohee Lee"
+          },
+          {
+            "authorId": "6150927",
+            "name": "R. Weerasinghe"
+          },
+          {
+            "authorId": "2162950739",
+            "name": "Bill Wright"
+          },
+          {
+            "authorId": "2248787606",
+            "name": "Ari Robicsek"
+          },
+          {
+            "authorId": "35695043",
+            "name": "B. Piening"
+          },
+          {
+            "authorId": "2298702328",
+            "name": "Carlo Bifulco"
+          },
+          {
+            "authorId": "2302416483",
+            "name": "Sheng Wang"
+          },
+          {
+            "authorId": "1759772",
+            "name": "Hoifung Poon"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "41a66997ce0a366bba3becf7c3f37c9aebb13fbd",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2403-03206",
+          "ArXiv": "2403.03206",
+          "DOI": "10.48550/arXiv.2403.03206",
+          "CorpusId": 268247980
+        },
+        "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+        "venue": "International Conference on Machine Learning",
+        "year": 2024,
+        "citationCount": 3637,
+        "authors": [
+          {
+            "authorId": "35175531",
+            "name": "Patrick Esser"
+          },
+          {
+            "authorId": "3411322",
+            "name": "Sumith Kulal"
+          },
+          {
+            "authorId": "119843260",
+            "name": "A. Blattmann"
+          },
+          {
+            "authorId": "2316859494",
+            "name": "Rahim Entezari"
+          },
+          {
+            "authorId": "2188737195",
+            "name": "Jonas Muller"
+          },
+          {
+            "authorId": "2289994508",
+            "name": "Harry Saini"
+          },
+          {
+            "authorId": "2290013499",
+            "name": "Yam Levi"
+          },
+          {
+            "authorId": "2053482699",
+            "name": "Dominik Lorenz"
+          },
+          {
+            "authorId": "40562186",
+            "name": "Axel Sauer"
+          },
+          {
+            "authorId": "2290014125",
+            "name": "Frederic Boesel"
+          },
+          {
+            "authorId": "2221125727",
+            "name": "Dustin Podell"
+          },
+          {
+            "authorId": "102541178",
+            "name": "Tim Dockhorn"
+          },
+          {
+            "authorId": "2221127565",
+            "name": "Zion English"
+          },
+          {
+            "authorId": "2221126982",
+            "name": "Kyle Lacey"
+          },
+          {
+            "authorId": "2290014122",
+            "name": "Alex Goodwin"
+          },
+          {
+            "authorId": "2290014387",
+            "name": "Yannik Marek"
+          },
+          {
+            "authorId": "1660819540",
+            "name": "Robin Rombach"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "cac496ddebbff6bbba78242780cde01bd962bfc9",
+        "externalIds": {
+          "DOI": "10.1038/s41591-024-02857-3",
+          "CorpusId": 268534221,
+          "PubMed": "38504018"
+        },
+        "title": "Towards a general-purpose foundation model for computational pathology",
+        "venue": "Nature Medicine",
+        "year": 2024,
+        "citationCount": 1334,
+        "authors": [
+          {
+            "authorId": "2274203774",
+            "name": "Richard J. Chen"
+          },
+          {
+            "authorId": "2219976215",
+            "name": "Tong Ding"
+          },
+          {
+            "authorId": "16184125",
+            "name": "Ming Y. Lu"
+          },
+          {
+            "authorId": "25259989",
+            "name": "Drew F. K. Williamson"
+          },
+          {
+            "authorId": "35685584",
+            "name": "Guillaume Jaume"
+          },
+          {
+            "authorId": "2253812042",
+            "name": "Andrew H. Song"
+          },
+          {
+            "authorId": "2152691032",
+            "name": "Bowen Chen"
+          },
+          {
+            "authorId": "2237101584",
+            "name": "Andrew Zhang"
+          },
+          {
+            "authorId": "2187506373",
+            "name": "Daniel Shao"
+          },
+          {
+            "authorId": "46894050",
+            "name": "M. Shaban"
+          },
+          {
+            "authorId": "2048088831",
+            "name": "Mane Williams"
+          },
+          {
+            "authorId": "2099506360",
+            "name": "Lukas Oldenburg"
+          },
+          {
+            "authorId": "2292229852",
+            "name": "Luca L. Weishaupt"
+          },
+          {
+            "authorId": "2109623647",
+            "name": "Judy J. Wang"
+          },
+          {
+            "authorId": "2187496179",
+            "name": "Anurag Vaidya"
+          },
+          {
+            "authorId": "2186875724",
+            "name": "L. Le"
+          },
+          {
+            "authorId": "2273930354",
+            "name": "Georg K. Gerber"
+          },
+          {
+            "authorId": "2060422236",
+            "name": "S. Sahai"
+          },
+          {
+            "authorId": "2125136981",
+            "name": "Walt Williams"
+          },
+          {
+            "authorId": "2260789705",
+            "name": "Faisal Mahmood"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "0746410e1250576cc1b9621ef602e4bceb1c07ca",
+        "externalIds": {
+          "DOI": "10.1038/s41591-024-02856-4",
+          "CorpusId": 268535283,
+          "PubMed": "38504017"
+        },
+        "title": "A visual-language foundation model for computational pathology",
+        "venue": "Nature Medicine",
+        "year": 2024,
+        "citationCount": 863,
+        "authors": [
+          {
+            "authorId": "16184125",
+            "name": "Ming Y. Lu"
+          },
+          {
+            "authorId": "2152691032",
+            "name": "Bowen Chen"
+          },
+          {
+            "authorId": "25259989",
+            "name": "Drew F. K. Williamson"
+          },
+          {
+            "authorId": "2274203774",
+            "name": "Richard J. Chen"
+          },
+          {
+            "authorId": "2224660941",
+            "name": "Ivy Liang"
+          },
+          {
+            "authorId": "2219976215",
+            "name": "Tong Ding"
+          },
+          {
+            "authorId": "35685584",
+            "name": "Guillaume Jaume"
+          },
+          {
+            "authorId": "2292245591",
+            "name": "Igor Odintsov"
+          },
+          {
+            "authorId": "2186875724",
+            "name": "L. Le"
+          },
+          {
+            "authorId": "2273930354",
+            "name": "Georg K. Gerber"
+          },
+          {
+            "authorId": "2243473349",
+            "name": "Anil V Parwani"
+          },
+          {
+            "authorId": "2237101584",
+            "name": "Andrew Zhang"
+          },
+          {
+            "authorId": "2260789705",
+            "name": "Faisal Mahmood"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "c6e6946db4488c6696978438809f1317de2061f7",
+        "externalIds": {
+          "DOI": "10.1101/2023.07.21.23292757",
+          "CorpusId": 260155445
+        },
+        "title": "Scaling Self-Supervised Learning for Histopathology with Masked Image Modeling",
+        "venue": "medRxiv",
+        "year": 2023,
+        "citationCount": 184,
+        "authors": [
+          {
+            "authorId": "2321404252",
+            "name": "Alexandre Filiot"
+          },
+          {
+            "authorId": "1387992855",
+            "name": "Ridouane Ghermi"
+          },
+          {
+            "authorId": "145467351",
+            "name": "Antoine Olivier"
+          },
+          {
+            "authorId": "2213650866",
+            "name": "Paul Jacob"
+          },
+          {
+            "authorId": "2118131750",
+            "name": "L. Fidon"
+          },
+          {
+            "authorId": "123407192",
+            "name": "Alice Mac Kain"
+          },
+          {
+            "authorId": "1392508473",
+            "name": "C. Saillard"
+          },
+          {
+            "authorId": "3375317",
+            "name": "Jean-Baptiste Schiratti"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "baead4b50b13e38164a65de3df984f1da5fc6d9b",
+        "externalIds": {
+          "DBLP": "journals/corr/abs-2307-09570",
+          "ArXiv": "2307.09570",
+          "DOI": "10.48550/arXiv.2307.09570",
+          "CorpusId": 259982521
+        },
+        "title": "SAM-Path: A Segment Anything Model for Semantic Segmentation in Digital Pathology",
+        "venue": "ISIC/Care-AI/MedAGI/DeCaF@MICCAI",
+        "year": 2023,
+        "citationCount": 54,
+        "authors": [
+          {
+            "authorId": "2116207652",
+            "name": "Jingwei Zhang"
+          },
+          {
+            "authorId": "2881417",
+            "name": "Ke Ma"
+          },
+          {
+            "authorId": "1818709358",
+            "name": "Saarthak Kapse"
+          },
+          {
+            "authorId": "1735710",
+            "name": "J. Saltz"
+          },
+          {
+            "authorId": "2397374970",
+            "name": "Maria Vakalopoulou"
+          },
+          {
+            "authorId": "39017169",
+            "name": "P. Prasanna"
+          },
+          {
+            "authorId": "48801624",
+            "name": "D. Samaras"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "c10075b3746a9f3dd5811970e93c8ca3ad39b39d",
+        "externalIds": {
+          "ArXiv": "2112.10752",
+          "DBLP": "journals/corr/abs-2112-10752",
+          "DOI": "10.1109/CVPR52688.2022.01042",
+          "CorpusId": 245335280
+        },
+        "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+        "venue": "Computer Vision and Pattern Recognition",
+        "year": 2021,
+        "citationCount": 24170,
+        "authors": [
+          {
+            "authorId": "1660819540",
+            "name": "Robin Rombach"
+          },
+          {
+            "authorId": "119843260",
+            "name": "A. Blattmann"
+          },
+          {
+            "authorId": "2053482699",
+            "name": "Dominik Lorenz"
+          },
+          {
+            "authorId": "35175531",
+            "name": "Patrick Esser"
+          },
+          {
+            "authorId": "1796707",
+            "name": "B. Ommer"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "f8031326965c635199c16eb8bb427cecc7bd6e3b",
+        "externalIds": {
+          "DBLP": "journals/jamia/SchufflerGYHSSV21",
+          "PubMedCentral": "8344580",
+          "DOI": "10.1093/jamia/ocab085",
+          "CorpusId": 235906958,
+          "PubMed": "34260720"
+        },
+        "title": "Integrated digital pathology at scale: A solution for clinical diagnostics and cancer research at a large academic medical center",
+        "venue": "J. Am. Medical Informatics Assoc.",
+        "year": 2021,
+        "citationCount": 65,
+        "authors": [
+          {
+            "authorId": "1961003",
+            "name": "Peter J. Schüffler"
+          },
+          {
+            "authorId": "151089695",
+            "name": "Luke Geneslaw"
+          },
+          {
+            "authorId": "9438344",
+            "name": "D. V. K. Yarlagadda"
+          },
+          {
+            "authorId": "6806239",
+            "name": "M. Hanna"
+          },
+          {
+            "authorId": "66096542",
+            "name": "Jennifer Samboy"
+          },
+          {
+            "authorId": "66708229",
+            "name": "Evangelos Stamelos"
+          },
+          {
+            "authorId": "2257037352",
+            "name": "Chad M. Vanderbilt"
+          },
+          {
+            "authorId": "1612993149",
+            "name": "J. Philip"
+          },
+          {
+            "authorId": "35546297",
+            "name": "M. Jean"
+          },
+          {
+            "authorId": "40977839",
+            "name": "Lorraine Corsale"
+          },
+          {
+            "authorId": "2114604952",
+            "name": "Allyne Manzo"
+          },
+          {
+            "authorId": "2088145906",
+            "name": "Neeraj H. G. Paramasivam"
+          },
+          {
+            "authorId": "103090929",
+            "name": "J. S. Ziegler"
+          },
+          {
+            "authorId": "3208622",
+            "name": "Jianjiong Gao"
+          },
+          {
+            "authorId": "13665802",
+            "name": "J. Perin"
+          },
+          {
+            "authorId": "2152658129",
+            "name": "Y. S. Kim"
+          },
+          {
+            "authorId": "47693195",
+            "name": "U. Bhanot"
+          },
+          {
+            "authorId": "6132210",
+            "name": "M. Roehrl"
+          },
+          {
+            "authorId": "3842095",
+            "name": "O. Ardon"
+          },
+          {
+            "authorId": "3563707",
+            "name": "S. Chiang"
+          },
+          {
+            "authorId": "4227896",
+            "name": "D. Giri"
+          },
+          {
+            "authorId": "38943942",
+            "name": "C. Sigel"
+          },
+          {
+            "authorId": "6007632",
+            "name": "L. Tan"
+          },
+          {
+            "authorId": "2297352",
+            "name": "Melissa P. Murray"
+          },
+          {
+            "authorId": "2119574170",
+            "name": "Christina Virgo"
+          },
+          {
+            "authorId": "66041675",
+            "name": "Christine England"
+          },
+          {
+            "authorId": "34914586",
+            "name": "Yukako Yagi"
+          },
+          {
+            "authorId": "3741495",
+            "name": "S. Sirintrapun"
+          },
+          {
+            "authorId": "145522969",
+            "name": "D. Klimstra"
+          },
+          {
+            "authorId": "2212006",
+            "name": "M. Hameed"
+          },
+          {
+            "authorId": "30582790",
+            "name": "V. Reuter"
+          },
+          {
+            "authorId": "34459632",
+            "name": "Thomas J. Fuchs"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "720ecbc16f94add77579b38d7276a279782df17d",
+        "externalIds": {
+          "DBLP": "conf/cvpr/LiLE21",
+          "ArXiv": "2011.08939",
+          "MAG": "3100722990",
+          "DOI": "10.1109/CVPR46437.2021.01409",
+          "CorpusId": 227013055,
+          "PubMed": "35047230"
+        },
+        "title": "Dual-stream Multiple Instance Learning Network for Whole Slide Image Classification with Self-supervised Contrastive Learning",
+        "venue": "Computer Vision and Pattern Recognition",
+        "year": 2020,
+        "citationCount": 920,
+        "authors": [
+          {
+            "authorId": "1840770064",
+            "name": "Bin Li"
+          },
+          {
+            "authorId": "47002659",
+            "name": "Yin Li"
+          },
+          {
+            "authorId": "2504157",
+            "name": "K. Eliceiri"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "5c126ae3421f05768d8edd97ecd44b1364e2c99a",
+        "externalIds": {
+          "DBLP": "conf/nips/HoJA20",
+          "MAG": "3100572490",
+          "ArXiv": "2006.11239",
+          "CorpusId": 219955663
+        },
+        "title": "Denoising Diffusion Probabilistic Models",
+        "venue": "Neural Information Processing Systems",
+        "year": 2020,
+        "citationCount": 30107,
+        "authors": [
+          {
+            "authorId": "2126278",
+            "name": "Jonathan Ho"
+          },
+          {
+            "authorId": "1623995772",
+            "name": "Ajay Jain"
+          },
+          {
+            "authorId": "1689992",
+            "name": "P. Abbeel"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "84ef1603307d6a48333cc03a6dc75071017ca3e2",
+        "externalIds": {
+          "MAG": "3012110212",
+          "PubMedCentral": "7113072",
+          "DOI": "10.1200/CCI.19.00068",
+          "CorpusId": 212665605,
+          "PubMed": "32155093"
+        },
+        "title": "Quantitative Assessment of the Effects of Compression on Deep Learning in Digital Pathology Image Analysis",
+        "venue": "JCO Clinical Cancer Informatics",
+        "year": 2020,
+        "citationCount": 37,
+        "authors": [
+          {
+            "authorId": "1519065160",
+            "name": "Yijiang Chen"
+          },
+          {
+            "authorId": "2039310",
+            "name": "A. Janowczyk"
+          },
+          {
+            "authorId": "1705442",
+            "name": "A. Madabhushi"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "a2efa44d01171057223a67db9bff5a78d1035b17",
+        "externalIds": {
+          "PubMedCentral": "6748796",
+          "MAG": "2922239620",
+          "DBLP": "journals/bioinformatics/AmgadEHAEESSISA19",
+          "DOI": "10.1093/bioinformatics/btz083",
+          "CorpusId": 73424650,
+          "PubMed": "30726865"
+        },
+        "title": "Structured crowdsourcing enables convolutional segmentation of histology images",
+        "venue": "Bioinform.",
+        "year": 2019,
+        "citationCount": 300,
+        "authors": [
+          {
+            "authorId": "50072002",
+            "name": "M. Amgad"
+          },
+          {
+            "authorId": "80163499",
+            "name": "H. Elfandy"
+          },
+          {
+            "authorId": "1379952632",
+            "name": "Hagar Hussein"
+          },
+          {
+            "authorId": "1395107556",
+            "name": "Lamees A. Atteya"
+          },
+          {
+            "authorId": "1397722846",
+            "name": "Mai A T. Elsebaie"
+          },
+          {
+            "authorId": "1397722779",
+            "name": "Lamia S. Abo Elnasr"
+          },
+          {
+            "authorId": "32813985",
+            "name": "R. Sakr"
+          },
+          {
+            "authorId": "81236822",
+            "name": "Hazem S. E. Salem"
+          },
+          {
+            "authorId": "144776857",
+            "name": "Ahmed F. Ismail"
+          },
+          {
+            "authorId": "2060088199",
+            "name": "A. M. Saad"
+          },
+          {
+            "authorId": "5793590",
+            "name": "Joumana Ahmed"
+          },
+          {
+            "authorId": "50820507",
+            "name": "Maha A. T. Elsebaie"
+          },
+          {
+            "authorId": "2110108679",
+            "name": "Mustafijur Rahman"
+          },
+          {
+            "authorId": "51929709",
+            "name": "Inas A Ruhban"
+          },
+          {
+            "authorId": "1397722752",
+            "name": "Nada M. Elgazar"
+          },
+          {
+            "authorId": "1397723176",
+            "name": "Yahya Alagha"
+          },
+          {
+            "authorId": "145144755",
+            "name": "M. Osman"
+          },
+          {
+            "authorId": "1397722765",
+            "name": "A. Alhusseiny"
+          },
+          {
+            "authorId": "2141203573",
+            "name": "M. Khalaf"
+          },
+          {
+            "authorId": "1388823506",
+            "name": "A. F. Younes"
+          },
+          {
+            "authorId": "144616325",
+            "name": "Ali Abdulkarim"
+          },
+          {
+            "authorId": "1392194296",
+            "name": "Duaa M. Younes"
+          },
+          {
+            "authorId": "37494785",
+            "name": "A. Gadallah"
+          },
+          {
+            "authorId": "1397722746",
+            "name": "A. Elkashash"
+          },
+          {
+            "authorId": "13787092",
+            "name": "S. Fala"
+          },
+          {
+            "authorId": "6841139",
+            "name": "B. Zaki"
+          },
+          {
+            "authorId": "2913981",
+            "name": "J. Beezley"
+          },
+          {
+            "authorId": "41125198",
+            "name": "D. Chittajallu"
+          },
+          {
+            "authorId": "48624880",
+            "name": "David Manthey"
+          },
+          {
+            "authorId": "48087135",
+            "name": "D. Gutman"
+          },
+          {
+            "authorId": "144584903",
+            "name": "L. Cooper"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "fed7c0d369d8991f6b76a661dedd0d1768a402d2",
+        "externalIds": {
+          "MAG": "2900118953",
+          "ArXiv": "1811.02840",
+          "DBLP": "journals/pami/TellezLLC21",
+          "DOI": "10.1109/TPAMI.2019.2936841",
+          "CorpusId": 53228946,
+          "PubMed": "31442971"
+        },
+        "title": "Neural Image Compression for Gigapixel Histopathology Image Analysis",
+        "venue": "IEEE Transactions on Pattern Analysis and Machine Intelligence",
+        "year": 2018,
+        "citationCount": 238,
+        "authors": [
+          {
+            "authorId": "145554191",
+            "name": "David Tellez"
+          },
+          {
+            "authorId": "145959882",
+            "name": "G. Litjens"
+          },
+          {
+            "authorId": "145441238",
+            "name": "J. A. van der Laak"
+          },
+          {
+            "authorId": "143613202",
+            "name": "F. Ciompi"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "43b7f2450681e5ebcbcf772c8224ae9a2d8fe618",
+        "externalIds": {
+          "DBLP": "journals/mia/GrahamCGDHSTR19",
+          "MAG": "2805735218",
+          "ArXiv": "1806.01963",
+          "DOI": "10.1016/j.media.2018.12.001",
+          "CorpusId": 14039779,
+          "PubMed": "30594772"
+        },
+        "title": "MILD‐Net: Minimal information loss dilated network for gland instance segmentation in colon histology images",
+        "venue": "Medical Image Anal.",
+        "year": 2018,
+        "citationCount": 359,
+        "authors": [
+          {
+            "authorId": "1393638783",
+            "name": "S. Graham"
+          },
+          {
+            "authorId": "36620472",
+            "name": "Hao Chen"
+          },
+          {
+            "authorId": "35647880",
+            "name": "Q. Dou"
+          },
+          {
+            "authorId": "1714602",
+            "name": "P. Heng"
+          },
+          {
+            "authorId": "2229652",
+            "name": "N. Rajpoot"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "57fbd1841a7cf8582682da399d2811655f020c0a",
+        "externalIds": {
+          "CorpusId": 3537028
+        },
+        "title": "UvA-DARE (Digital Academic Repository) Attention-based Deep Multiple Instance Learning Attention-based Deep Multiple Instance Learning",
+        "venue": "",
+        "year": null,
+        "citationCount": 2492,
+        "authors": [
+          {
+            "authorId": "35186565",
+            "name": "Maximilian Ilse"
+          },
+          {
+            "authorId": "1849327",
+            "name": "J. Tomczak"
+          },
+          {
+            "authorId": "1678311",
+            "name": "M. Welling"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "c468bbde6a22d961829e1970e6ad5795e05418d1",
+        "externalIds": {
+          "ArXiv": "1801.03924",
+          "MAG": "2783879794",
+          "DBLP": "journals/corr/abs-1801-03924",
+          "DOI": "10.1109/CVPR.2018.00068",
+          "CorpusId": 4766599
+        },
+        "title": "The Unreasonable Effectiveness of Deep Features as a Perceptual Metric",
+        "venue": "2018 IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "year": 2018,
+        "citationCount": 17269,
+        "authors": [
+          {
+            "authorId": "2844849",
+            "name": "Richard Zhang"
+          },
+          {
+            "authorId": "2094770",
+            "name": "Phillip Isola"
+          },
+          {
+            "authorId": "1763086",
+            "name": "Alexei A. Efros"
+          },
+          {
+            "authorId": "2177801",
+            "name": "Eli Shechtman"
+          },
+          {
+            "authorId": "39231399",
+            "name": "Oliver Wang"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "977560251c2bd4c28a6c7c707c29f4091c5e6247",
+        "externalIds": {
+          "DBLP": "conf/iclr/TheisSCH17",
+          "MAG": "2950237263",
+          "ArXiv": "1703.00395",
+          "DOI": "10.17863/CAM.51995",
+          "CorpusId": 8394195
+        },
+        "title": "Lossy Image Compression with Compressive Autoencoders",
+        "venue": "International Conference on Learning Representations",
+        "year": 2017,
+        "citationCount": 1139,
+        "authors": [
+          {
+            "authorId": "2073063",
+            "name": "Lucas Theis"
+          },
+          {
+            "authorId": "46810836",
+            "name": "Wenzhe Shi"
+          },
+          {
+            "authorId": "2067984410",
+            "name": "A. Cunningham"
+          },
+          {
+            "authorId": "3108066",
+            "name": "Ferenc Huszár"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "8acbe90d5b852dadea7810345451a99608ee54c7",
+        "externalIds": {
+          "MAG": "2963073614",
+          "DBLP": "conf/cvpr/IsolaZZE17",
+          "ArXiv": "1611.07004",
+          "DOI": "10.1109/CVPR.2017.632",
+          "CorpusId": 6200260
+        },
+        "title": "Image-to-Image Translation with Conditional Adversarial Networks",
+        "venue": "Computer Vision and Pattern Recognition",
+        "year": 2016,
+        "citationCount": 22179,
+        "authors": [
+          {
+            "authorId": "2094770",
+            "name": "Phillip Isola"
+          },
+          {
+            "authorId": "2436356",
+            "name": "Jun-Yan Zhu"
+          },
+          {
+            "authorId": "1822702",
+            "name": "Tinghui Zhou"
+          },
+          {
+            "authorId": "1763086",
+            "name": "Alexei A. Efros"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "232148b97bd0543613ffd98fb4edcff79434ce1a",
+        "externalIds": {
+          "DBLP": "journals/corr/BalleLS16a",
+          "MAG": "2951383350",
+          "ArXiv": "1611.01704",
+          "CorpusId": 6775391
+        },
+        "title": "End-to-end Optimized Image Compression",
+        "venue": "International Conference on Learning Representations",
+        "year": 2016,
+        "citationCount": 2041,
+        "authors": [
+          {
+            "authorId": "144517934",
+            "name": "Johannes Ballé"
+          },
+          {
+            "authorId": "2732577",
+            "name": "V. Laparra"
+          },
+          {
+            "authorId": "1689350",
+            "name": "Eero P. Simoncelli"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "263d8ef6980f7a3d80df3bbda522a8758867c10f",
+        "externalIds": {
+          "MAG": "1584451224",
+          "DOI": "10.1038/ng.2764",
+          "CorpusId": 9652087,
+          "PubMed": "24071849"
+        },
+        "title": "The Cancer Genome Atlas Pan-Cancer analysis project",
+        "venue": "Nature Genetics",
+        "year": 2013,
+        "citationCount": 8039,
+        "authors": [
+          {
+            "authorId": "144771089",
+            "name": "J. Weinstein"
+          },
+          {
+            "authorId": "20991761",
+            "name": "E. Collisson"
+          },
+          {
+            "authorId": "2241330",
+            "name": "G. Mills"
+          },
+          {
+            "authorId": "34693865",
+            "name": "K. Shaw"
+          },
+          {
+            "authorId": "5528087",
+            "name": "B. Ozenberger"
+          },
+          {
+            "authorId": "48046478",
+            "name": "K. Ellrott"
+          },
+          {
+            "authorId": "1758585",
+            "name": "I. Shmulevich"
+          },
+          {
+            "authorId": "144882390",
+            "name": "C. Sander"
+          },
+          {
+            "authorId": "33259464",
+            "name": "Joshua M. Stuart"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "ef4f5a50837a7c1b3e87b9300ffc7ba00d461a0f",
+        "externalIds": {
+          "CorpusId": 211146177
+        },
+        "title": "AUTO-ENCODING VARIATIONAL BAYES",
+        "venue": "",
+        "year": 2020,
+        "citationCount": 22898,
+        "authors": [
+          {
+            "authorId": "39848341",
+            "name": "Romain Lopez"
+          },
+          {
+            "authorId": "1441878314",
+            "name": "Pierre Boyeau"
+          },
+          {
+            "authorId": "2163873",
+            "name": "N. Yosef"
+          },
+          {
+            "authorId": "1694621",
+            "name": "Michael I. Jordan"
+          },
+          {
+            "authorId": "39967607",
+            "name": "J. Regier"
+          }
+        ]
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": null,
+        "externalIds": null,
+        "title": "100,000 histological images of human colorectal cancer and healthy tissue",
+        "venue": "",
+        "year": 2018,
+        "citationCount": null,
+        "authors": []
+      }
+    },
+    {
+      "citedPaper": {
+        "paperId": "f01cd1c6e3ff4ca34de966a7cc9b9fb84ce41694",
+        "externalIds": {
+          "ArXiv": "2412.13137",
+          "PubMedCentral": "11889581",
+          "DOI": "10.1016/j.jpi.2025.100421",
+          "CorpusId": 274789252,
+          "PubMed": "40059908"
+        },
+        "title": "Unlocking the potential of digital pathology: Novel baselines for compression",
+        "venue": "Journal of Pathology Informatics",
+        "year": 2024,
+        "citationCount": 2,
+        "authors": [
+          {
+            "authorId": "2260365519",
+            "name": "Maximilian Fischer"
+          },
+          {
+            "authorId": "2277782078",
+            "name": "Peter Neher"
+          },
+          {
+            "authorId": "1961003",
+            "name": "Peter J. Schüffler"
+          },
+          {
+            "authorId": "2335669712",
+            "name": "Sebastian Ziegler"
+          },
+          {
+            "authorId": "2181693690",
+            "name": "Shuhan Xiao"
+          },
+          {
+            "authorId": "2218495096",
+            "name": "R. Peretzke"
+          },
+          {
+            "authorId": "47750250",
+            "name": "D. Clunie"
+          },
+          {
+            "authorId": "2148692880",
+            "name": "Constantin Ulrich"
+          },
+          {
+            "authorId": "2065793436",
+            "name": "M. Baumgartner"
+          },
+          {
+            "authorId": "2260348867",
+            "name": "Alexander Muckenhuber"
+          },
+          {
+            "authorId": "2260350704",
+            "name": "S. D. Almeida"
+          },
+          {
+            "authorId": "2433112489",
+            "name": "Michael Gőtz"
+          },
+          {
+            "authorId": "2278745906",
+            "name": "J. Kleesiek"
+          },
+          {
+            "authorId": "2276504609",
+            "name": "Marco Nolden"
+          },
+          {
+            "authorId": "4516701",
+            "name": "R. Braren"
+          },
+          {
+            "authorId": "2139962185",
+            "name": "Klaus H. Maier-Hein"
+          }
+        ]
+      }
+    }
+  ]
+}

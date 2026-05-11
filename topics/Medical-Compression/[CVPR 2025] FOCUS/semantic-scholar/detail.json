@@ -1,0 +1,56 @@
+{
+  "paperId": "2dc14d75b94d8a3b5d81b794404aa7503cf87b06",
+  "externalIds": {
+    "DBLP": "conf/cvpr/GuoXMSFWC25",
+    "ArXiv": "2411.14743",
+    "DOI": "10.1109/CVPR52734.2025.01453",
+    "CorpusId": 274192709
+  },
+  "url": "https://www.semanticscholar.org/paper/2dc14d75b94d8a3b5d81b794404aa7503cf87b06",
+  "title": "FOCUS: Knowledge-enhanced Adaptive Visual Compression for Few-shot Whole Slide Image Classification",
+  "venue": "Computer Vision and Pattern Recognition",
+  "year": 2024,
+  "referenceCount": 61,
+  "citationCount": 17,
+  "influentialCitationCount": 3,
+  "openAccessPdf": {
+    "url": "",
+    "status": null,
+    "license": null,
+    "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2411.14743, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "tldr": {
+    "model": "tldr@v2.0.0",
+    "text": "The knowledge-enhanced adaptive visual compression framework, dubbed FOCUS, is introduced, which uniquely combines pathology FMs with language prior knowledge to enable a focused analysis of diagnostically relevant regions by prioritizing discriminative WSI patches."
+  },
+  "authors": [
+    {
+      "authorId": "2290623274",
+      "name": "Zhengrui Guo"
+    },
+    {
+      "authorId": "2078508182",
+      "name": "Conghao Xiong"
+    },
+    {
+      "authorId": "2268511388",
+      "name": "Jiabo Ma"
+    },
+    {
+      "authorId": "2327121111",
+      "name": "Qichen Sun"
+    },
+    {
+      "authorId": "2326909168",
+      "name": "Lishuang Feng"
+    },
+    {
+      "authorId": "2326882125",
+      "name": "Jinzhuo Wang"
+    },
+    {
+      "authorId": "2327546220",
+      "name": "Hao Chen"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "dir": "[Arxiv 2025] Pathology-AE",
+  "title": "Pathology Image Compression with Pre-trained Autoencoders",
+  "short": "Pathology-AE",
+  "authors": "Srikar Yellapragada; Alexandros Graikos; Kostas Triaridis; Zilinghan Li; Tarak Nath Nandi; Ravi K Madduri; Prateek Prasanna; Joel Saltz; Dimitris Samaras",
+  "venue": "arXiv",
+  "year": "2025",
+  "arxiv": "2503.11591",
+  "links": [
+    "https://arxiv.org/abs/2503.11591",
+    "https://arxiv.org/pdf/2503.11591",
+    "https://huggingface.co/collections/StonyBrook-CVLab/pathology-fine-tuned-aes-67d45f223a659ff2e3402dd0"
+  ],
+  "reading_order": "Medical-Compression topic paper 6",
+  "one_liner_hint": "Pathology-AE 复用 latent diffusion autoencoder 做病理图像 learned compression，用 pathology foundation model 感知指标微调，并用 K-means latent quantization 提升存储效率。",
+  "mineru_task": "f3fbc5aa-88dd-460d-85fe-ae8af21b7306"
+}

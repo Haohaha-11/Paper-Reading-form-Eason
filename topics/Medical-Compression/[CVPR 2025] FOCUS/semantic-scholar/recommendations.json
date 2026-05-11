@@ -1,0 +1,3506 @@
+{
+  "recommendedPapers": [
+    {
+      "paperId": "95925276f47e6ca7de9557a3d487a0989d72e922",
+      "externalIds": {
+        "ArXiv": "2603.21504",
+        "CorpusId": 286766660
+      },
+      "url": "https://www.semanticscholar.org/paper/95925276f47e6ca7de9557a3d487a0989d72e922",
+      "title": "Parameter-efficient Prompt Tuning and Hierarchical Textual Guidance for Few-shot Whole Slide Image Classification",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2334353160",
+          "name": "Jayanie Bogahawatte"
+        },
+        {
+          "authorId": "39877692",
+          "name": "Sachith Seneviratne"
+        },
+        {
+          "authorId": "2200576384",
+          "name": "Saman K. Halgamuge"
+        }
+      ]
+    },
+    {
+      "paperId": "dc385a99bed010adcb52d64d4db4b95536ee3dad",
+      "externalIds": {
+        "ArXiv": "2603.18660",
+        "CorpusId": 286673592
+      },
+      "url": "https://www.semanticscholar.org/paper/dc385a99bed010adcb52d64d4db4b95536ee3dad",
+      "title": "Multimodal Model for Computational Pathology:Representation Learning and Image Compression",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2376156108",
+          "name": "Peihang Wu"
+        },
+        {
+          "authorId": "2273555881",
+          "name": "Zehong Chen"
+        },
+        {
+          "authorId": "2405383769",
+          "name": "Lijia Xu"
+        }
+      ]
+    },
+    {
+      "paperId": "0c571ff3e5fe60b695c4932dfee336baf0913dbe",
+      "externalIds": {
+        "ArXiv": "2603.23067",
+        "CorpusId": 286774258
+      },
+      "url": "https://www.semanticscholar.org/paper/0c571ff3e5fe60b695c4932dfee336baf0913dbe",
+      "title": "MLLM-HWSI: A Multimodal Large Language Model for Hierarchical Whole Slide Image Understanding",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "1438950177",
+          "name": "B. Alawode"
+        },
+        {
+          "authorId": "2305613997",
+          "name": "Arif Mahmood"
+        },
+        {
+          "authorId": "2425459859",
+          "name": "Muaz Khalifa Al-Radi"
+        },
+        {
+          "authorId": "2357971487",
+          "name": "Shahad Albastaki"
+        },
+        {
+          "authorId": "2357969949",
+          "name": "Asim Khan"
+        },
+        {
+          "authorId": "2239235908",
+          "name": "Muhammad Bilal"
+        },
+        {
+          "authorId": "2240064314",
+          "name": "Moshira Abdalla"
+        },
+        {
+          "authorId": "2362784772",
+          "name": "Mohammed Bennamoun"
+        },
+        {
+          "authorId": "2238686517",
+          "name": "Sajid Javed"
+        }
+      ]
+    },
+    {
+      "paperId": "ff424ee737e90a0b920fb12fa93ab755f4b236ff",
+      "externalIds": {
+        "ArXiv": "2604.23982",
+        "CorpusId": 287782054
+      },
+      "url": "https://www.semanticscholar.org/paper/ff424ee737e90a0b920fb12fa93ab755f4b236ff",
+      "title": "Hierarchical Prototype-based Domain Priors for Multiple Instance Learning in Multimodal Histopathology Analysis",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2099989745",
+          "name": "Xuemei Qiu"
+        },
+        {
+          "authorId": "2290730835",
+          "name": "Dawei Fan"
+        },
+        {
+          "authorId": "2432024163",
+          "name": "Yebin Huang"
+        },
+        {
+          "authorId": "2290853157",
+          "name": "Yanping Chen"
+        },
+        {
+          "authorId": "2366795195",
+          "name": "Lifang Wei"
+        }
+      ]
+    },
+    {
+      "paperId": "1ade83dfb1984566286215e64649992008f5e207",
+      "externalIds": {
+        "ArXiv": "2603.19925",
+        "CorpusId": 286753114
+      },
+      "url": "https://www.semanticscholar.org/paper/1ade83dfb1984566286215e64649992008f5e207",
+      "title": "ReconMIL: Synergizing Latent Space Reconstruction with Bi-Stream Mamba for Whole Slide Image Analysis",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2374488478",
+          "name": "Lubin Gan"
+        },
+        {
+          "authorId": "2375240618",
+          "name": "Jing Zhang"
+        },
+        {
+          "authorId": "2371446912",
+          "name": "Heng-Wei Zhang"
+        },
+        {
+          "authorId": "2172008377",
+          "name": "Xin Di"
+        },
+        {
+          "authorId": "2347331391",
+          "name": "Zhifeng Wang"
+        },
+        {
+          "authorId": "2237476067",
+          "name": "Wen-He Huang"
+        },
+        {
+          "authorId": "2339533583",
+          "name": "Xiaoyan Sun"
+        }
+      ]
+    },
+    {
+      "paperId": "bfc7241293ee508d791f3020e99443c82480d99b",
+      "externalIds": {
+        "ArXiv": "2604.23977",
+        "CorpusId": 287782879
+      },
+      "url": "https://www.semanticscholar.org/paper/bfc7241293ee508d791f3020e99443c82480d99b",
+      "title": "Multi-View Synergistic Learning with Vision-Language Adaption for Low-Resource Biomedical Image Classification",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2292748818",
+          "name": "Xiaoliu Luo"
+        },
+        {
+          "authorId": "2431835860",
+          "name": "Minxue Xiao"
+        },
+        {
+          "authorId": "2320495903",
+          "name": "Ting Xie"
+        },
+        {
+          "authorId": "2343064754",
+          "name": "Mengzhu Wang"
+        },
+        {
+          "authorId": "2253968546",
+          "name": "H. Qi"
+        },
+        {
+          "authorId": "2253900280",
+          "name": "J. Zhou"
+        },
+        {
+          "authorId": "2168621361",
+          "name": "Taiping Zhang"
+        },
+        {
+          "authorId": "2428153655",
+          "name": "Xu Wang"
+        }
+      ]
+    },
+    {
+      "paperId": "198c520a94761f87184be8152b97dcf1c2f4339b",
+      "externalIds": {
+        "ArXiv": "2603.17079",
+        "CorpusId": 286638812
+      },
+      "url": "https://www.semanticscholar.org/paper/198c520a94761f87184be8152b97dcf1c2f4339b",
+      "title": "ACE-LoRA: Graph-Attentive Context Enhancement for Parameter-Efficient Adaptation of Medical Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2235889181",
+          "name": "M. Arda Aydin"
+        },
+        {
+          "authorId": "2312736628",
+          "name": "M. B. Yilmaz"
+        },
+        {
+          "authorId": "70145675",
+          "name": "Aykut Kocc"
+        },
+        {
+          "authorId": "66082327",
+          "name": "Tolga cCukur"
+        }
+      ]
+    },
+    {
+      "paperId": "666d7e84ef1447497eaaca50c47b8e786a37c2bb",
+      "externalIds": {
+        "DOI": "10.1145/3807452",
+        "CorpusId": 287412429
+      },
+      "url": "https://www.semanticscholar.org/paper/666d7e84ef1447497eaaca50c47b8e786a37c2bb",
+      "title": "FUSE-RAG: Few-Shot Universal Segmentation with Retrieval-Augmented Generation for Medical Imaging",
+      "venue": "ACM Transactions on Multimedia Computing, Communications, and Applications (TOMCCAP)",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2306391338",
+          "name": "Mohamed Lamine Allaoui"
+        },
+        {
+          "authorId": "1698715",
+          "name": "M. Allili"
+        },
+        {
+          "authorId": "2429324816",
+          "name": "Belaid Ahror"
+        }
+      ]
+    },
+    {
+      "paperId": "422506d87cdbffb242073f612d6b71b2f464f654",
+      "externalIds": {
+        "DOI": "10.1109/ACCESS.2026.3679948",
+        "CorpusId": 287180687
+      },
+      "url": "https://www.semanticscholar.org/paper/422506d87cdbffb242073f612d6b71b2f464f654",
+      "title": "DFCap: Zero-Shot Image Captioning With Dynamic Fusion Module",
+      "venue": "IEEE Access",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2341526402",
+          "name": "Huaming Ran"
+        },
+        {
+          "authorId": "2166201767",
+          "name": "Dongzhe Li"
+        },
+        {
+          "authorId": "2378421145",
+          "name": "Wensheng Qiao"
+        },
+        {
+          "authorId": "2310198197",
+          "name": "Liliang Zhou"
+        },
+        {
+          "authorId": "48416270",
+          "name": "Jing Shen"
+        },
+        {
+          "authorId": "2266198304",
+          "name": "Haibo Liu"
+        }
+      ]
+    },
+    {
+      "paperId": "89bf52ce3b0a01739fd3d0e1a9eb4876dd3a6ec9",
+      "externalIds": {
+        "ArXiv": "2604.09169",
+        "CorpusId": 287352010
+      },
+      "url": "https://www.semanticscholar.org/paper/89bf52ce3b0a01739fd3d0e1a9eb4876dd3a6ec9",
+      "title": "UniSemAlign: Text-Prototype Alignment with a Foundation Encoder for Semi-Supervised Histopathology Segmentation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "95733163",
+          "name": "Le Thai"
+        },
+        {
+          "authorId": "2175080400",
+          "name": "T. Nguyen"
+        },
+        {
+          "authorId": "2128461661",
+          "name": "H. Pham"
+        },
+        {
+          "authorId": "20449259",
+          "name": "Lan Anh Dinh Thi"
+        },
+        {
+          "authorId": "2248163954",
+          "name": "Duy Nguyen"
+        },
+        {
+          "authorId": "2391809125",
+          "name": "N. Bui"
+        }
+      ]
+    },
+    {
+      "paperId": "16d4f5a6016d5ba1196642ea79588d8ebac56c67",
+      "externalIds": {
+        "DOI": "10.1109/LSP.2026.3685174",
+        "CorpusId": 287560593
+      },
+      "url": "https://www.semanticscholar.org/paper/16d4f5a6016d5ba1196642ea79588d8ebac56c67",
+      "title": "Symptom-Aware Adaptation of CLIP for Few-Shot Medical Image Classification",
+      "venue": "IEEE Signal Processing Letters",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2239166960",
+          "name": "Zexiang Li"
+        },
+        {
+          "authorId": "2278582127",
+          "name": "Wenxu Wang"
+        },
+        {
+          "authorId": "2281164325",
+          "name": "Chengpu Liu"
+        },
+        {
+          "authorId": "2260917319",
+          "name": "Jiawen He"
+        },
+        {
+          "authorId": "2302112837",
+          "name": "Youwei Zhao"
+        },
+        {
+          "authorId": "3429735",
+          "name": "Y. Zhai"
+        },
+        {
+          "authorId": "2057058430",
+          "name": "Ruichun Tang"
+        }
+      ]
+    },
+    {
+      "paperId": "05f9551e6a30138fa7920e26eb032e60f998de6e",
+      "externalIds": {
+        "DOI": "10.1109/WACV61042.2026.00630",
+        "CorpusId": 287921314
+      },
+      "url": "https://www.semanticscholar.org/paper/05f9551e6a30138fa7920e26eb032e60f998de6e",
+      "title": "Training-Free Few-Shot Segmentation via Vision-Language Guided Prompting",
+      "venue": "IEEE Workshop/Winter Conference on Applications of Computer Vision",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2313429415",
+          "name": "Euihyun Yoon"
+        },
+        {
+          "authorId": "2313124451",
+          "name": "Taejin Park"
+        },
+        {
+          "authorId": "2279662552",
+          "name": "Jaekoo Lee"
+        }
+      ]
+    },
+    {
+      "paperId": "6ee9249de605591d390e5fabe4a01b34adbaf948",
+      "externalIds": {
+        "ArXiv": "2604.15711",
+        "DOI": "10.1016/j.media.2026.104080",
+        "CorpusId": 287427451
+      },
+      "url": "https://www.semanticscholar.org/paper/6ee9249de605591d390e5fabe4a01b34adbaf948",
+      "title": "SSMamba: A self-supervised hybrid state space model for pathological image classification",
+      "venue": "Medical Image Analysis",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "66274303",
+          "name": "Enhui Chai"
+        },
+        {
+          "authorId": "2262283449",
+          "name": "Sicheng Chen"
+        },
+        {
+          "authorId": "2161977311",
+          "name": "Tianyi Zhang"
+        },
+        {
+          "authorId": "2283133466",
+          "name": "Xingyu Li"
+        },
+        {
+          "authorId": "2320586748",
+          "name": "Tianxiang Cui"
+        }
+      ]
+    },
+    {
+      "paperId": "25b6ca55983ac7885a41e58b43e1dffa9ed8d7fd",
+      "externalIds": {
+        "ArXiv": "2603.17325",
+        "CorpusId": 286638775
+      },
+      "url": "https://www.semanticscholar.org/paper/25b6ca55983ac7885a41e58b43e1dffa9ed8d7fd",
+      "title": "MedSAD-CLIP: Supervised CLIP with Token-Patch Cross-Attention for Medical Anomaly Detection and Segmentation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2264565656",
+          "name": "Thuy Tran"
+        },
+        {
+          "authorId": "2331510830",
+          "name": "M. Do"
+        },
+        {
+          "authorId": "2424425959",
+          "name": "Phuc Nguyen Duy"
+        },
+        {
+          "authorId": "2303477994",
+          "name": "Min Hun Lee"
+        }
+      ]
+    },
+    {
+      "paperId": "edc54c133cfde06d9293e37476bbeab8234ae576",
+      "externalIds": {
+        "ArXiv": "2603.18101",
+        "CorpusId": 286669718
+      },
+      "url": "https://www.semanticscholar.org/paper/edc54c133cfde06d9293e37476bbeab8234ae576",
+      "title": "Training-Only Heterogeneous Image-Patch-Text Graph Supervision for Advancing Few-Shot Learning Adapters",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2424643426",
+          "name": "Mohammed Rahman Sherif Khan Mohammad"
+        },
+        {
+          "authorId": "2321455697",
+          "name": "Ardhendu Behera"
+        },
+        {
+          "authorId": "2383545758",
+          "name": "Sandip Pradhan"
+        },
+        {
+          "authorId": "2109537234",
+          "name": "Swagat Kumar"
+        },
+        {
+          "authorId": "2259895366",
+          "name": "Amr Ahmed"
+        }
+      ]
+    },
+    {
+      "paperId": "607cac63a70e3d7098dca53fae1d066fa8b0f6f9",
+      "externalIds": {
+        "ArXiv": "2604.10912",
+        "CorpusId": 287432367
+      },
+      "url": "https://www.semanticscholar.org/paper/607cac63a70e3d7098dca53fae1d066fa8b0f6f9",
+      "title": "TAMISeg: Text-Aligned Multi-scale Medical Image Segmentation with Semantic Encoder Distillation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2357684284",
+          "name": "Qiang Gao"
+        },
+        {
+          "authorId": "2316827428",
+          "name": "Yi Wang"
+        },
+        {
+          "authorId": "2395951621",
+          "name": "Yong Zhang"
+        },
+        {
+          "authorId": "2383231005",
+          "name": "Yong Li"
+        },
+        {
+          "authorId": "2279259382",
+          "name": "Yongbing Deng"
+        },
+        {
+          "authorId": "2312347229",
+          "name": "Lan Du"
+        },
+        {
+          "authorId": "2278582014",
+          "name": "Cunjian Chen"
+        }
+      ]
+    },
+    {
+      "paperId": "b95ecc4e3c3fde8a5735913496c0162c09ded5b0",
+      "externalIds": {
+        "DOI": "10.1109/ICCV51701.2025.01899",
+        "CorpusId": 286498761
+      },
+      "url": "https://www.semanticscholar.org/paper/b95ecc4e3c3fde8a5735913496c0162c09ded5b0",
+      "title": "ReMP-AD: Retrieval-Enhanced Multi-Modal Prompt Fusion for Few-Shot Industrial Visual Anomaly Detection",
+      "venue": "IEEE International Conference on Computer Vision",
+      "year": 2025,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2390959032",
+          "name": "Hong Ma"
+        },
+        {
+          "authorId": "2257435164",
+          "name": "Guanglei Yang"
+        },
+        {
+          "authorId": "2265995410",
+          "name": "Debin Zhao"
+        },
+        {
+          "authorId": "2261456902",
+          "name": "Yanli Ji"
+        },
+        {
+          "authorId": "2279210262",
+          "name": "Wangmeng Zuo"
+        }
+      ]
+    },
+    {
+      "paperId": "ffd853914cee26427f610282e78c5cd06de51b8a",
+      "externalIds": {
+        "ArXiv": "2604.15748",
+        "CorpusId": 287607152
+      },
+      "url": "https://www.semanticscholar.org/paper/ffd853914cee26427f610282e78c5cd06de51b8a",
+      "title": "Concept-wise Attention for Fine-grained Concept Bottleneck Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2394076886",
+          "name": "Ming Zhong"
+        },
+        {
+          "authorId": "2430466276",
+          "name": "Guoshuai Zou"
+        },
+        {
+          "authorId": "2157741267",
+          "name": "Kanghao Chen"
+        },
+        {
+          "authorId": "2375228503",
+          "name": "Dexia Chen"
+        },
+        {
+          "authorId": "2299294067",
+          "name": "Ruixuan Wang"
+        }
+      ]
+    },
+    {
+      "paperId": "0e737f961a96d55418de645f0b74591ca495165f",
+      "externalIds": {
+        "ArXiv": "2603.17655",
+        "CorpusId": 286643691
+      },
+      "url": "https://www.semanticscholar.org/paper/0e737f961a96d55418de645f0b74591ca495165f",
+      "title": "Interpretable Cross-Domain Few-Shot Learning with Rectified Target-Domain Local Alignment",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2424596826",
+          "name": "Yaze Zhao"
+        },
+        {
+          "authorId": "2275592358",
+          "name": "Yixiong Zou"
+        },
+        {
+          "authorId": "2260170121",
+          "name": "Yuhua Li"
+        },
+        {
+          "authorId": "2283487404",
+          "name": "Ruixuan Li"
+        }
+      ]
+    },
+    {
+      "paperId": "af8b60e1b8e970ea908fc1612074a300d5a6f104",
+      "externalIds": {
+        "ArXiv": "2603.15774",
+        "CorpusId": 286579800
+      },
+      "url": "https://www.semanticscholar.org/paper/af8b60e1b8e970ea908fc1612074a300d5a6f104",
+      "title": "Domain Adaptation Without the Compute Burden for Efficient Whole Slide Image Analysis",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2240099014",
+          "name": "Umar Marikkar"
+        },
+        {
+          "authorId": "2264508777",
+          "name": "Muhammad Awais"
+        },
+        {
+          "authorId": "22692781",
+          "name": "Sara Atito"
+        }
+      ]
+    },
+    {
+      "paperId": "22add9531e8b8f1cdd16c95b80b06e13bb769122",
+      "externalIds": {
+        "DOI": "10.1109/ICCV51701.2025.00926",
+        "CorpusId": 286515457
+      },
+      "url": "https://www.semanticscholar.org/paper/22add9531e8b8f1cdd16c95b80b06e13bb769122",
+      "title": "GMMamba: Group Masking Mamba for Whole Slide Image Classification",
+      "venue": "IEEE International Conference on Computer Vision",
+      "year": 2025,
+      "citationCount": 3,
+      "authors": [
+        {
+          "authorId": "2291068323",
+          "name": "Tingting Zheng"
+        },
+        {
+          "authorId": "2291490010",
+          "name": "Hongxun Yao"
+        },
+        {
+          "authorId": "2291070246",
+          "name": "Kui Jiang"
+        },
+        {
+          "authorId": "2355957162",
+          "name": "Yi Xiao"
+        },
+        {
+          "authorId": "2317906814",
+          "name": "Sicheng Zhao"
+        }
+      ]
+    },
+    {
+      "paperId": "28dbcc5857260116af895dd2480c6f7017eb142f",
+      "externalIds": {
+        "ArXiv": "2604.18134",
+        "CorpusId": 287635448
+      },
+      "url": "https://www.semanticscholar.org/paper/28dbcc5857260116af895dd2480c6f7017eb142f",
+      "title": "Can LLM-Generated Text Empower Surgical Vision-Language Pre-training?",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2352014061",
+          "name": "Chengan Che"
+        },
+        {
+          "authorId": "2268560784",
+          "name": "Chao Wang"
+        },
+        {
+          "authorId": "2351562284",
+          "name": "Jia-Yuan Huang"
+        },
+        {
+          "authorId": "2352511125",
+          "name": "Xinyue Chen"
+        },
+        {
+          "authorId": "1409483636",
+          "name": "Luis C. García-Peraza-Herrera"
+        }
+      ]
+    },
+    {
+      "paperId": "4b1b0076b29b6d3f116bdd36ad1de20559039e7d",
+      "externalIds": {
+        "ArXiv": "2603.20386",
+        "CorpusId": 286762446
+      },
+      "url": "https://www.semanticscholar.org/paper/4b1b0076b29b6d3f116bdd36ad1de20559039e7d",
+      "title": "Jigsaw Regularization in Whole-Slide Image Classification",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2176485058",
+          "name": "Sowon Jeong"
+        },
+        {
+          "authorId": "1459580514",
+          "name": "Veronika Rovckov'a"
+        }
+      ]
+    },
+    {
+      "paperId": "73279bf7aee1e870f8880cc1fbe29d7b987060ca",
+      "externalIds": {
+        "ArXiv": "2603.28027",
+        "CorpusId": 286973982
+      },
+      "url": "https://www.semanticscholar.org/paper/73279bf7aee1e870f8880cc1fbe29d7b987060ca",
+      "title": "Adapting SAM to Nuclei Instance Segmentation and Classification via Cooperative Fine-Grained Refinement",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2357226768",
+          "name": "Jingze Su"
+        },
+        {
+          "authorId": "2072834089",
+          "name": "T. Zhu"
+        },
+        {
+          "authorId": "2257244478",
+          "name": "Jiaxin Cai"
+        },
+        {
+          "authorId": "2311641881",
+          "name": "Zhiyi Wang"
+        },
+        {
+          "authorId": "2257130601",
+          "name": "Qi Li"
+        },
+        {
+          "authorId": "2321399658",
+          "name": "Xiao Zhang"
+        },
+        {
+          "authorId": "2315312724",
+          "name": "Tong Tong"
+        },
+        {
+          "authorId": "2373544849",
+          "name": "Shu Wang"
+        },
+        {
+          "authorId": "2265457842",
+          "name": "Wenxi Liu"
+        }
+      ]
+    },
+    {
+      "paperId": "fa7df1b1a788bc7027acc1198b2ae6f7f4db888f",
+      "externalIds": {
+        "ArXiv": "2603.16113",
+        "CorpusId": 286579648
+      },
+      "url": "https://www.semanticscholar.org/paper/fa7df1b1a788bc7027acc1198b2ae6f7f4db888f",
+      "title": "PathGLS: Evaluating Pathology Vision-Language Models without Ground Truth through Multi-Dimensional Consistency",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2310485495",
+          "name": "Minbin Chen"
+        },
+        {
+          "authorId": "2155820291",
+          "name": "Zhu Meng"
+        },
+        {
+          "authorId": "2086718454",
+          "name": "Fei Su"
+        }
+      ]
+    },
+    {
+      "paperId": "d8e6afc5f295b9976746f8aa63bfa1e03d85febb",
+      "externalIds": {
+        "ArXiv": "2604.11197",
+        "CorpusId": 287432005
+      },
+      "url": "https://www.semanticscholar.org/paper/d8e6afc5f295b9976746f8aa63bfa1e03d85febb",
+      "title": "MedP-CLIP: Medical CLIP with Region-Aware Prompt Integration",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2233445161",
+          "name": "Jiahui Peng"
+        },
+        {
+          "authorId": "2331691702",
+          "name": "He Yao"
+        },
+        {
+          "authorId": "2331576089",
+          "name": "Jingwen Li"
+        },
+        {
+          "authorId": "121873665",
+          "name": "Yan-Cheng Su"
+        },
+        {
+          "authorId": "2273688390",
+          "name": "Sibo Ju"
+        },
+        {
+          "authorId": "2257339858",
+          "name": "Yujie Lu"
+        },
+        {
+          "authorId": "2276055870",
+          "name": "Jin Ye"
+        },
+        {
+          "authorId": "119896550",
+          "name": "Hongchun Lu"
+        },
+        {
+          "authorId": "2393878173",
+          "name": "Xue Li"
+        },
+        {
+          "authorId": "2228707882",
+          "name": "Lincheng Jiang"
+        },
+        {
+          "authorId": "2237958148",
+          "name": "Min Zhu"
+        },
+        {
+          "authorId": "2237743184",
+          "name": "Junlong Cheng"
+        }
+      ]
+    },
+    {
+      "paperId": "dc7212ca843251b68ba77b1da7ecdfa9ae792893",
+      "externalIds": {
+        "DBLP": "journals/access/ZahraCK26",
+        "DOI": "10.1109/ACCESS.2026.3673165",
+        "CorpusId": 286564460
+      },
+      "url": "https://www.semanticscholar.org/paper/dc7212ca843251b68ba77b1da7ecdfa9ae792893",
+      "title": "Adaptive Text Prompting: A Training-Free Framework for Zero-Shot Action Recognition",
+      "venue": "IEEE Access",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2423969387",
+          "name": "Shadab Zahra"
+        },
+        {
+          "authorId": "3305053",
+          "name": "N. T. Cao"
+        },
+        {
+          "authorId": "2193748545",
+          "name": "Taejoon Kim"
+        }
+      ]
+    },
+    {
+      "paperId": "3775f6e47f3a70231fbd7a206093e73b52e7c1e7",
+      "externalIds": {
+        "ArXiv": "2604.18573",
+        "CorpusId": 287635138
+      },
+      "url": "https://www.semanticscholar.org/paper/3775f6e47f3a70231fbd7a206093e73b52e7c1e7",
+      "title": "T-REN: Learning Text-Aligned Region Tokens Improves Dense Vision-Language Alignment and Scalability",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2056070459",
+          "name": "Savya Khosla"
+        },
+        {
+          "authorId": "2007774255",
+          "name": "V. SethuramanT."
+        },
+        {
+          "authorId": "2430640774",
+          "name": "Aryan Chadha"
+        },
+        {
+          "authorId": "2238205921",
+          "name": "Alexander G. Schwing"
+        },
+        {
+          "authorId": "2261388484",
+          "name": "Derek Hoiem"
+        }
+      ]
+    },
+    {
+      "paperId": "5d04974e79f689dfc2a77d169ed79e62bb5e5331",
+      "externalIds": {
+        "ArXiv": "2605.05164",
+        "CorpusId": 287988843
+      },
+      "url": "https://www.semanticscholar.org/paper/5d04974e79f689dfc2a77d169ed79e62bb5e5331",
+      "title": "Geometry-Aware State Space Model: A New Paradigm for Whole-Slide Image Representation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "66274303",
+          "name": "Enhui Chai"
+        },
+        {
+          "authorId": "2262283449",
+          "name": "Sicheng Chen"
+        },
+        {
+          "authorId": "2349437932",
+          "name": "Tianyi Zhang"
+        },
+        {
+          "authorId": "2430696978",
+          "name": "C.P. Wong"
+        },
+        {
+          "authorId": "2370459460",
+          "name": "Kecheng Huang"
+        },
+        {
+          "authorId": "2349370458",
+          "name": "Zeyu Liu"
+        },
+        {
+          "authorId": "2273899492",
+          "name": "Fei Xia"
+        }
+      ]
+    },
+    {
+      "paperId": "90ca13376874f51cfea2ec72a5ac2665737aff82",
+      "externalIds": {
+        "ArXiv": "2604.17222",
+        "CorpusId": 287634466
+      },
+      "url": "https://www.semanticscholar.org/paper/90ca13376874f51cfea2ec72a5ac2665737aff82",
+      "title": "Region-Affinity Attention for Whole-Slide Breast Cancer Classification in Deep Ultraviolet Imaging",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "122267929",
+          "name": "Nagur Shareef Shaik"
+        },
+        {
+          "authorId": "2134231949",
+          "name": "T. Cherukuri"
+        },
+        {
+          "authorId": "2307085717",
+          "name": "D. Ye"
+        }
+      ]
+    },
+    {
+      "paperId": "90e800f70a8adf9909ee5d67936c412a786ff3a4",
+      "externalIds": {
+        "ArXiv": "2604.16806",
+        "CorpusId": 287618140
+      },
+      "url": "https://www.semanticscholar.org/paper/90e800f70a8adf9909ee5d67936c412a786ff3a4",
+      "title": "Channel Attention-Guided Cross-Modal Knowledge Distillation for Referring Image Segmentation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2187589518",
+          "name": "Chenxu Yang"
+        }
+      ]
+    },
+    {
+      "paperId": "2f37f3e51b09f3f7b33d27251fa9725e48e667ab",
+      "externalIds": {
+        "ArXiv": "2604.12100",
+        "CorpusId": 287435846
+      },
+      "url": "https://www.semanticscholar.org/paper/2f37f3e51b09f3f7b33d27251fa9725e48e667ab",
+      "title": "PC-MIL: Decoupling Feature Resolution from Supervision Scale in Whole-Slide Learning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2218477702",
+          "name": "Syed Fahim Ahmed"
+        },
+        {
+          "authorId": "2429421517",
+          "name": "Gnanesh Rasineni"
+        },
+        {
+          "authorId": "2064738064",
+          "name": "Florian Koehler"
+        },
+        {
+          "authorId": "2253557414",
+          "name": "Abu Zahid Bin Aziz"
+        },
+        {
+          "authorId": "2118661763",
+          "name": "Mei Wang"
+        },
+        {
+          "authorId": "2253163",
+          "name": "A. Gyulassy"
+        },
+        {
+          "authorId": "1733331",
+          "name": "B. Summa"
+        },
+        {
+          "authorId": "2253847340",
+          "name": "J. Q. Brown"
+        },
+        {
+          "authorId": "2285626214",
+          "name": "Valerio Pascucci"
+        },
+        {
+          "authorId": "1903946",
+          "name": "S. Elhabian"
+        }
+      ]
+    },
+    {
+      "paperId": "2a6433dca71d2f9c811650371cb5948a91353e37",
+      "externalIds": {
+        "ArXiv": "2604.01251",
+        "CorpusId": 287072232
+      },
+      "url": "https://www.semanticscholar.org/paper/2a6433dca71d2f9c811650371cb5948a91353e37",
+      "title": "Camouflage-aware Image-Text Retrieval via Expert Collaboration",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2117865546",
+          "name": "Yao Jiang"
+        },
+        {
+          "authorId": "2427428468",
+          "name": "Z. Mao"
+        },
+        {
+          "authorId": "2290065048",
+          "name": "Xuan Wu"
+        },
+        {
+          "authorId": "2261392277",
+          "name": "Keren Fu"
+        },
+        {
+          "authorId": "2261474790",
+          "name": "Qijun Zhao"
+        }
+      ]
+    },
+    {
+      "paperId": "a1c95f497347ceb1a2887a2dbb776f521cf94163",
+      "externalIds": {
+        "DBLP": "conf/aaai/ZhengYZX26",
+        "DOI": "10.1609/aaai.v40i16.38350",
+        "CorpusId": 286678218
+      },
+      "url": "https://www.semanticscholar.org/paper/a1c95f497347ceb1a2887a2dbb776f521cf94163",
+      "title": "Content-aware Information Compression and Selection for Whole Slide Image Analysis",
+      "venue": "AAAI Conference on Artificial Intelligence",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2291068323",
+          "name": "Tingting Zheng"
+        },
+        {
+          "authorId": "2266031419",
+          "name": "Hongxun Yao"
+        },
+        {
+          "authorId": "2317906814",
+          "name": "Sicheng Zhao"
+        },
+        {
+          "authorId": "2355957162",
+          "name": "Yi Xiao"
+        }
+      ]
+    },
+    {
+      "paperId": "75d972baf7382a79025c49b0d10f98b20066f9ff",
+      "externalIds": {
+        "ArXiv": "2604.12403",
+        "CorpusId": 287435964
+      },
+      "url": "https://www.semanticscholar.org/paper/75d972baf7382a79025c49b0d10f98b20066f9ff",
+      "title": "Dual-Modality Anchor-Guided Filtering for Test-time Prompt Tuning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2355549762",
+          "name": "Jung-yun Choi"
+        },
+        {
+          "authorId": "2349548368",
+          "name": "Eunwoo Kim"
+        }
+      ]
+    },
+    {
+      "paperId": "8af6e7ab820d215c5ec9c715f7a95d055982fafd",
+      "externalIds": {
+        "PubMedCentral": "13136301",
+        "DOI": "10.1038/s41598-026-43841-w",
+        "CorpusId": 286672278,
+        "PubMed": "41851237"
+      },
+      "url": "https://www.semanticscholar.org/paper/8af6e7ab820d215c5ec9c715f7a95d055982fafd",
+      "title": "Interactive text-guided image segmentation via vision Mamba and large language models",
+      "venue": "Scientific Reports",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2333322333",
+          "name": "Y. Meng"
+        },
+        {
+          "authorId": "2575592",
+          "name": "Haochen Sun"
+        },
+        {
+          "authorId": "2267147040",
+          "name": "Wei Jiang"
+        }
+      ]
+    },
+    {
+      "paperId": "5a52e44d777562164d34a0377f70abac3df26da4",
+      "externalIds": {
+        "PubMedCentral": "13029792",
+        "DOI": "10.1371/journal.pone.0344978",
+        "CorpusId": 286906532
+      },
+      "url": "https://www.semanticscholar.org/paper/5a52e44d777562164d34a0377f70abac3df26da4",
+      "title": "MedZeroSeg: Zero-shot medical image segmentation via vision foundation models",
+      "venue": "PLoS ONE",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2327206918",
+          "name": "Ronghui Zhang"
+        },
+        {
+          "authorId": "2156270564",
+          "name": "Minnie Huang"
+        },
+        {
+          "authorId": "2329953039",
+          "name": "Rui Li"
+        }
+      ]
+    },
+    {
+      "paperId": "55b6d5b385c6723193a3816a6be04790164567a6",
+      "externalIds": {
+        "ArXiv": "2603.26049",
+        "CorpusId": 286942466
+      },
+      "url": "https://www.semanticscholar.org/paper/55b6d5b385c6723193a3816a6be04790164567a6",
+      "title": "Seeing Like Radiologists: Context- and Gaze-Guided Vision-Language Pretraining for Chest X-rays",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2301512521",
+          "name": "Kang Liu"
+        },
+        {
+          "authorId": "2301703375",
+          "name": "Zhuoqi Ma"
+        },
+        {
+          "authorId": "2114787625",
+          "name": "Siyu Liang"
+        },
+        {
+          "authorId": "2110448281",
+          "name": "Yunan Li"
+        },
+        {
+          "authorId": "2287875070",
+          "name": "Xiyue Gao"
+        },
+        {
+          "authorId": "2259046555",
+          "name": "Chao Liang"
+        },
+        {
+          "authorId": "2301457764",
+          "name": "Kun Xie"
+        },
+        {
+          "authorId": "2301457246",
+          "name": "Qiguang Miao"
+        }
+      ]
+    },
+    {
+      "paperId": "9735166e3bcc462bc8b204d3bd2eb0944099650a",
+      "externalIds": {
+        "DOI": "10.1109/ICCV51701.2025.00521",
+        "CorpusId": 286515198
+      },
+      "url": "https://www.semanticscholar.org/paper/9735166e3bcc462bc8b204d3bd2eb0944099650a",
+      "title": "Knowledge-Guided Part Segmentation",
+      "venue": "IEEE International Conference on Computer Vision",
+      "year": 2025,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2212697511",
+          "name": "Xue Gou"
+        },
+        {
+          "authorId": "2316953410",
+          "name": "Fang Liu"
+        },
+        {
+          "authorId": "2287033797",
+          "name": "Licheng Jiao"
+        },
+        {
+          "authorId": "2281607295",
+          "name": "Shuo Li"
+        },
+        {
+          "authorId": "47681424",
+          "name": "Lingling Li"
+        },
+        {
+          "authorId": "2281635801",
+          "name": "Hao Wang"
+        },
+        {
+          "authorId": "2110952179",
+          "name": "Xu Liu"
+        },
+        {
+          "authorId": "3394474",
+          "name": "Puhua Chen"
+        },
+        {
+          "authorId": "2297947217",
+          "name": "Wenping Ma"
+        }
+      ]
+    },
+    {
+      "paperId": "545cbfc7b957a3f87508254f7f32f66f8337b519",
+      "externalIds": {
+        "ArXiv": "2604.24876",
+        "CorpusId": 287831723
+      },
+      "url": "https://www.semanticscholar.org/paper/545cbfc7b957a3f87508254f7f32f66f8337b519",
+      "title": "ESICA: A Scalable Framework for Text-Guided 3D Medical Image Segmentation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2257157914",
+          "name": "Yuelin Xin"
+        },
+        {
+          "authorId": "2090537328",
+          "name": "Gorkem Can Ates"
+        },
+        {
+          "authorId": "2143854906",
+          "name": "Jun Ma"
+        },
+        {
+          "authorId": "2314960010",
+          "name": "Sumin Kim"
+        },
+        {
+          "authorId": "2153389686",
+          "name": "Ying Zhang"
+        },
+        {
+          "authorId": "2316783826",
+          "name": "Kaleb Smith"
+        },
+        {
+          "authorId": "2302805897",
+          "name": "Kuang Gong"
+        },
+        {
+          "authorId": "2325144539",
+          "name": "Wei Shao"
+        }
+      ]
+    },
+    {
+      "paperId": "acc5e9156848962cce2189e458a3aa070cc7a00c",
+      "externalIds": {
+        "DOI": "10.1109/TIP.2026.3674365",
+        "CorpusId": 286711479,
+        "PubMed": "41860912"
+      },
+      "url": "https://www.semanticscholar.org/paper/acc5e9156848962cce2189e458a3aa070cc7a00c",
+      "title": "Decoupling Target Semantics via Text-Anchored Visual Contrast for Semi-Supervised Medical Image Segmentation",
+      "venue": "IEEE Transactions on Image Processing",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2267336715",
+          "name": "Qingjie Zeng"
+        },
+        {
+          "authorId": "2381273033",
+          "name": "Huan Luo"
+        },
+        {
+          "authorId": "2261253118",
+          "name": "Xinke Ma"
+        },
+        {
+          "authorId": "2267386562",
+          "name": "Zilin Lu"
+        },
+        {
+          "authorId": "2273621697",
+          "name": "Yang Hu"
+        },
+        {
+          "authorId": "143746093",
+          "name": "Mengkang Lu"
+        },
+        {
+          "authorId": "2334054611",
+          "name": "Yanning Zhang"
+        },
+        {
+          "authorId": "2256029665",
+          "name": "Yong Xia"
+        }
+      ]
+    },
+    {
+      "paperId": "9c52d88ce49d2e8d7a3c5a2cc35b680673ebbef5",
+      "externalIds": {
+        "DOI": "10.1109/ACCESS.2026.3679531",
+        "CorpusId": 287066697
+      },
+      "url": "https://www.semanticscholar.org/paper/9c52d88ce49d2e8d7a3c5a2cc35b680673ebbef5",
+      "title": "Spatial–Spectral Operator Mixture Transformer With Mixture-of-Experts Fusion for Endoscopic Classification",
+      "venue": "IEEE Access",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2337891368",
+          "name": "Zaied Alhaj"
+        },
+        {
+          "authorId": "2416128850",
+          "name": "Azzam Altairi"
+        }
+      ]
+    },
+    {
+      "paperId": "eb5a98c1c47a8791f2f1cfc44f9cf39bf2bfeb1c",
+      "externalIds": {
+        "ArXiv": "2604.17087",
+        "CorpusId": 287634916
+      },
+      "url": "https://www.semanticscholar.org/paper/eb5a98c1c47a8791f2f1cfc44f9cf39bf2bfeb1c",
+      "title": "EvoComp: Learning Visual Token Compression for Multimodal Large Language Models via Semantic-Guided Evolutionary Labeling",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2364074232",
+          "name": "Jiafei Song"
+        },
+        {
+          "authorId": "2397831822",
+          "name": "Feng Zhou"
+        },
+        {
+          "authorId": "2393867131",
+          "name": "Jinkai Qu"
+        },
+        {
+          "authorId": "2281338083",
+          "name": "Wenjing Li"
+        },
+        {
+          "authorId": "2269858157",
+          "name": "Tongzi Wu"
+        },
+        {
+          "authorId": "2081993",
+          "name": "Gengjian Xue"
+        },
+        {
+          "authorId": "2343445056",
+          "name": "Zhikang Zhao"
+        },
+        {
+          "authorId": "2430784128",
+          "name": "D. Wei"
+        },
+        {
+          "authorId": "2283967427",
+          "name": "Yichao Lu"
+        },
+        {
+          "authorId": "2356858103",
+          "name": "Bailin Na"
+        }
+      ]
+    },
+    {
+      "paperId": "990eabc94e84f9e63f65d5ce2d573837a6caf2d6",
+      "externalIds": {
+        "ArXiv": "2605.00902",
+        "CorpusId": 287947872
+      },
+      "url": "https://www.semanticscholar.org/paper/990eabc94e84f9e63f65d5ce2d573837a6caf2d6",
+      "title": "Validation of Whole-Slide Foundation Models for Image Retrieval in TCGA Data",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2280266001",
+          "name": "Tianhao Lei"
+        },
+        {
+          "authorId": "2326974839",
+          "name": "Parsa Esmaeilkhani"
+        },
+        {
+          "authorId": "2432873635",
+          "name": "PhD Saghir Alfasly"
+        },
+        {
+          "authorId": "2432873643",
+          "name": "MDPhD Wataru Uegami"
+        },
+        {
+          "authorId": "2383956875",
+          "name": "MD Judy C. Boughey"
+        },
+        {
+          "authorId": "2258987362",
+          "name": "MD Matthew P. Goetz"
+        },
+        {
+          "authorId": "2288380544",
+          "name": "Ph.D Krishna R. Kalari"
+        },
+        {
+          "authorId": "2432873625",
+          "name": "PhD H.R. Tizhoosh"
+        }
+      ]
+    },
+    {
+      "paperId": "7a56be81ef4295a74722c6fc892af2463e79b144",
+      "externalIds": {
+        "ArXiv": "2603.17390",
+        "CorpusId": 286643440
+      },
+      "url": "https://www.semanticscholar.org/paper/7a56be81ef4295a74722c6fc892af2463e79b144",
+      "title": "Harnessing the Power of Foundation Models for Accurate Material Classification",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2291445977",
+          "name": "Qing Lin"
+        },
+        {
+          "authorId": "2191203684",
+          "name": "Feng Yang"
+        },
+        {
+          "authorId": "2406200267",
+          "name": "Chao Zhu"
+        }
+      ]
+    },
+    {
+      "paperId": "612a3c2c4735dab6d2cc6ec6f31c43cf25da5d63",
+      "externalIds": {
+        "PubMedCentral": "13117283",
+        "DOI": "10.3390/jimaging12040162",
+        "CorpusId": 287381807
+      },
+      "url": "https://www.semanticscholar.org/paper/612a3c2c4735dab6d2cc6ec6f31c43cf25da5d63",
+      "title": "D2MNet: Difference-Aware Decoupling and Multi-Prompt Learning for Medical Difference Visual Question Answering",
+      "venue": "Journal of Imaging",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2339335895",
+          "name": "Lingge Lai"
+        },
+        {
+          "authorId": "2291667912",
+          "name": "Weihua Ou"
+        },
+        {
+          "authorId": "2268116411",
+          "name": "Jianping Gou"
+        },
+        {
+          "authorId": "2291816692",
+          "name": "Zhonghua Liu"
+        }
+      ]
+    },
+    {
+      "paperId": "6cbbf29f498360ccaec58fdd3318b3ca06a872ff",
+      "externalIds": {
+        "DOI": "10.1109/TMI.2026.3680920",
+        "CorpusId": 287239923
+      },
+      "url": "https://www.semanticscholar.org/paper/6cbbf29f498360ccaec58fdd3318b3ca06a872ff",
+      "title": "Anatomy-Guided Self-Supervised Distillation Learning for Medical Image Analysis",
+      "venue": "IEEE Transactions on Medical Imaging",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2397800637",
+          "name": "Huihui Yu"
+        },
+        {
+          "authorId": "2256851934",
+          "name": "Qun Dai"
+        }
+      ]
+    },
+    {
+      "paperId": "7e08ece919ad527cf849be7d97242cc7feac8b2b",
+      "externalIds": {
+        "ArXiv": "2604.21530",
+        "CorpusId": 287702039
+      },
+      "url": "https://www.semanticscholar.org/paper/7e08ece919ad527cf849be7d97242cc7feac8b2b",
+      "title": "Attention-based multiple instance learning for predominant growth pattern prediction in lung adenocarcinoma wsi using foundation models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2316771099",
+          "name": "Laura Valeria Perez-Herrera"
+        },
+        {
+          "authorId": "2319891563",
+          "name": "M. J. García-González"
+        },
+        {
+          "authorId": "2387578143",
+          "name": "Karen López-Linares"
+        }
+      ]
+    },
+    {
+      "paperId": "4648f23b830bb7252963b3a4b855416bfe100b94",
+      "externalIds": {
+        "DOI": "10.1109/ACCESS.2026.3683880",
+        "CorpusId": 287671167
+      },
+      "url": "https://www.semanticscholar.org/paper/4648f23b830bb7252963b3a4b855416bfe100b94",
+      "title": "Cross-Architecture Knowledge Distillation for Histopathological Image Analysis",
+      "venue": "IEEE Access",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2342926458",
+          "name": "S. Boudissa"
+        },
+        {
+          "authorId": "2242671438",
+          "name": "Hiroharu Kawanaka"
+        },
+        {
+          "authorId": "2305325959",
+          "name": "Bruce J. Aronow"
+        },
+        {
+          "authorId": "2303492142",
+          "name": "V. B. S. Prasath"
+        }
+      ]
+    },
+    {
+      "paperId": "441ac0436841ad3cb8b58ad91cd32a1dea67ea50",
+      "externalIds": {
+        "ArXiv": "2604.10233",
+        "CorpusId": 287425266
+      },
+      "url": "https://www.semanticscholar.org/paper/441ac0436841ad3cb8b58ad91cd32a1dea67ea50",
+      "title": "Adapting 2D Multi-Modal Large Language Model for 3D CT Image Analysis",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2320202129",
+          "name": "Yang Yu"
+        },
+        {
+          "authorId": "2279756595",
+          "name": "Dunyuan Xu"
+        },
+        {
+          "authorId": "2140324285",
+          "name": "Yaoqian Li"
+        },
+        {
+          "authorId": "2299325858",
+          "name": "Xiaomeng Li"
+        },
+        {
+          "authorId": "2254280871",
+          "name": "Jinpeng Li"
+        },
+        {
+          "authorId": "2066137540",
+          "name": "Pheng-Ann Heng"
+        }
+      ]
+    },
+    {
+      "paperId": "f796b57698b61a2f6860f03106fe7e242d8f91aa",
+      "externalIds": {
+        "ArXiv": "2603.17718",
+        "CorpusId": 286643548
+      },
+      "url": "https://www.semanticscholar.org/paper/f796b57698b61a2f6860f03106fe7e242d8f91aa",
+      "title": "DiffVP: Differential Visual Semantic Prompting for LLM-Based CT Report Generation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2249084725",
+          "name": "Yu Tian"
+        },
+        {
+          "authorId": "2381988709",
+          "name": "Kun Zhang"
+        },
+        {
+          "authorId": "2307701234",
+          "name": "Haoran Ma"
+        },
+        {
+          "authorId": "2349379701",
+          "name": "Rui Yan"
+        },
+        {
+          "authorId": "2276446347",
+          "name": "Yingtai Li"
+        },
+        {
+          "authorId": "2275816793",
+          "name": "Rongsheng Wang"
+        },
+        {
+          "authorId": "2379971020",
+          "name": "S. Zhou"
+        }
+      ]
+    },
+    {
+      "paperId": "2479ae9adc7e4934295210298070836f97a9844b",
+      "externalIds": {
+        "ArXiv": "2603.26033",
+        "CorpusId": 286942587
+      },
+      "url": "https://www.semanticscholar.org/paper/2479ae9adc7e4934295210298070836f97a9844b",
+      "title": "Knowledge is Power: Advancing Few-shot Action Recognition with Multimodal Semantics from MLLMs",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "152375898",
+          "name": "Jiazheng Xing"
+        },
+        {
+          "authorId": "2155590464",
+          "name": "Chao Xu"
+        },
+        {
+          "authorId": "2349411286",
+          "name": "Hangjie Yuan"
+        },
+        {
+          "authorId": "2381586015",
+          "name": "Mengmeng Wang"
+        },
+        {
+          "authorId": "2287927473",
+          "name": "Jun Dan"
+        },
+        {
+          "authorId": "2332361431",
+          "name": "Hangwei Qian"
+        },
+        {
+          "authorId": "2293939761",
+          "name": "Yong Liu"
+        }
+      ]
+    },
+    {
+      "paperId": "6d22d20612b860573a38da81b0a8282f087859e1",
+      "externalIds": {
+        "ArXiv": "2604.05433",
+        "CorpusId": 287208380
+      },
+      "url": "https://www.semanticscholar.org/paper/6d22d20612b860573a38da81b0a8282f087859e1",
+      "title": "Few-Shot Semantic Segmentation Meets SAM3",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2428363816",
+          "name": "Yi-Jen Tsai"
+        },
+        {
+          "authorId": "2269778029",
+          "name": "Yen-Yu Lin"
+        },
+        {
+          "authorId": "2250543210",
+          "name": "Chien-Yao Wang"
+        }
+      ]
+    },
+    {
+      "paperId": "24d06224b1f47e7627cb6c856bac591dad67a9a5",
+      "externalIds": {
+        "ArXiv": "2604.19350",
+        "CorpusId": 287636951
+      },
+      "url": "https://www.semanticscholar.org/paper/24d06224b1f47e7627cb6c856bac591dad67a9a5",
+      "title": "Attend what matters: Leveraging vision foundational models for breast cancer classification using mammograms",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2391959076",
+          "name": "Samyak Sanghvi"
+        },
+        {
+          "authorId": "2220253691",
+          "name": "Piyush Miglani"
+        },
+        {
+          "authorId": "2430772891",
+          "name": "Sarvesh Shashikumar"
+        },
+        {
+          "authorId": "2254289360",
+          "name": "Kaustubh Borgavi"
+        },
+        {
+          "authorId": "2375533833",
+          "name": "Veenu Singla"
+        },
+        {
+          "authorId": "2254297982",
+          "name": "Chetan Arora"
+        }
+      ]
+    },
+    {
+      "paperId": "a37c84bd47bf97d7c3a2ab9f29832d7e158e0f4f",
+      "externalIds": {
+        "ArXiv": "2604.24997",
+        "CorpusId": 287831547
+      },
+      "url": "https://www.semanticscholar.org/paper/a37c84bd47bf97d7c3a2ab9f29832d7e158e0f4f",
+      "title": "DouC: Dual-Branch CLIP for Training-Free Open-Vocabulary Segmentation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2098482483",
+          "name": "Mohamad Zamini"
+        },
+        {
+          "authorId": "2290097767",
+          "name": "Diksha Shukla"
+        }
+      ]
+    },
+    {
+      "paperId": "92c117a35621835bfae6f5d112affb87984c7346",
+      "externalIds": {
+        "ArXiv": "2604.03134",
+        "CorpusId": 287122132
+      },
+      "url": "https://www.semanticscholar.org/paper/92c117a35621835bfae6f5d112affb87984c7346",
+      "title": "SD-FSMIS: Adapting Stable Diffusion for Few-Shot Medical Image Segmentation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2428236376",
+          "name": "Meihua Li"
+        },
+        {
+          "authorId": "2259245910",
+          "name": "Yang Zhang"
+        },
+        {
+          "authorId": "2306766647",
+          "name": "Weizhao He"
+        },
+        {
+          "authorId": "2292031684",
+          "name": "Huaizhi Qu"
+        },
+        {
+          "authorId": "2321669091",
+          "name": "Yisong Li"
+        }
+      ]
+    },
+    {
+      "paperId": "66eba007c05897122800c9761b7fe914b374027d",
+      "externalIds": {
+        "ArXiv": "2604.15729",
+        "CorpusId": 287607323
+      },
+      "url": "https://www.semanticscholar.org/paper/66eba007c05897122800c9761b7fe914b374027d",
+      "title": "MambaBack: Bridging Local Features and Global Contexts in Whole Slide Image Analysis",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2262283449",
+          "name": "Sicheng Chen"
+        },
+        {
+          "authorId": "2430696978",
+          "name": "C.P. Wong"
+        },
+        {
+          "authorId": "2161977311",
+          "name": "Tianyi Zhang"
+        },
+        {
+          "authorId": "66274303",
+          "name": "Enhui Chai"
+        },
+        {
+          "authorId": "2262279946",
+          "name": "Zeyu Liu"
+        },
+        {
+          "authorId": "2294363357",
+          "name": "Fei Xia"
+        }
+      ]
+    },
+    {
+      "paperId": "4ce76062ee8b4628c0f4b1ca04c145dce0fc7019",
+      "externalIds": {
+        "ArXiv": "2603.23308",
+        "CorpusId": 286774553
+      },
+      "url": "https://www.semanticscholar.org/paper/4ce76062ee8b4628c0f4b1ca04c145dce0fc7019",
+      "title": "Curriculum-Driven 3D CT Report Generation via Language-Free Visual Grafting and Zone-Constrained Compression",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2358230880",
+          "name": "V. Bumgardner"
+        },
+        {
+          "authorId": "2366462377",
+          "name": "Mitchell A. Klusty"
+        },
+        {
+          "authorId": "2387546760",
+          "name": "Mahmut S. Gokmen"
+        },
+        {
+          "authorId": "2410326942",
+          "name": "Evan W. Damron"
+        }
+      ]
+    },
+    {
+      "paperId": "d3597b665adf115d306ce7ca12cc959352d3152c",
+      "externalIds": {
+        "DOI": "10.2478/tmmp-2026-0003",
+        "CorpusId": 286584772
+      },
+      "url": "https://www.semanticscholar.org/paper/d3597b665adf115d306ce7ca12cc959352d3152c",
+      "title": "Contextualized Vision Transformers (CVT): Adaptive Spectral Embedding and Feature Gating for Precise Text-Graphics Classification",
+      "venue": "Tatra Mountains Mathematical Publications",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "48672982",
+          "name": "Dr. Mridul Ghosh"
+        },
+        {
+          "authorId": "2344477283",
+          "name": "K. Dürrbeck"
+        },
+        {
+          "authorId": "2344479415",
+          "name": "Roland Fischer"
+        },
+        {
+          "authorId": "2399999659",
+          "name": "Mária Ždímalová"
+        },
+        {
+          "authorId": "2424180006",
+          "name": "Tonmoy Mete"
+        }
+      ]
+    },
+    {
+      "paperId": "251d230be4730b6b5e98b6dc47fd814d3baf7736",
+      "externalIds": {
+        "DOI": "10.1109/TIP.2026.3678751",
+        "CorpusId": 287173144
+      },
+      "url": "https://www.semanticscholar.org/paper/251d230be4730b6b5e98b6dc47fd814d3baf7736",
+      "title": "DPENet: A Dual Prototype-Enhanced Network for Few-Shot Object Detection",
+      "venue": "IEEE Transactions on Image Processing",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2291870954",
+          "name": "Jing Huang"
+        },
+        {
+          "authorId": "2287875669",
+          "name": "Hanzi Wang"
+        },
+        {
+          "authorId": "8673702",
+          "name": "Qiangqiang Wu"
+        },
+        {
+          "authorId": "2295592799",
+          "name": "Jie Li"
+        },
+        {
+          "authorId": "2239964615",
+          "name": "Xinbo Gao"
+        }
+      ]
+    },
+    {
+      "paperId": "6a274d25192e4c1eeb2e9b1469ce98ea35f8c011",
+      "externalIds": {
+        "ArXiv": "2603.22198",
+        "CorpusId": 286766109
+      },
+      "url": "https://www.semanticscholar.org/paper/6a274d25192e4c1eeb2e9b1469ce98ea35f8c011",
+      "title": "Mixture of Mini Experts: Overcoming the Linear Layer Bottleneck in Multiple Instance Learning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2187506373",
+          "name": "Daniel Shao"
+        },
+        {
+          "authorId": "2266232741",
+          "name": "Joel Runevic"
+        },
+        {
+          "authorId": "2108279369",
+          "name": "Richard J. Chen"
+        },
+        {
+          "authorId": "2304403397",
+          "name": "Drew F. K. Williamson"
+        },
+        {
+          "authorId": "2306195060",
+          "name": "Ahrong Kim"
+        },
+        {
+          "authorId": "2253812042",
+          "name": "Andrew H. Song"
+        },
+        {
+          "authorId": "2285427160",
+          "name": "F. Mahmood"
+        }
+      ]
+    },
+    {
+      "paperId": "fb1bfaefe6834659de235f49ed709410221a4f16",
+      "externalIds": {
+        "CorpusId": 286498855
+      },
+      "url": "https://www.semanticscholar.org/paper/fb1bfaefe6834659de235f49ed709410221a4f16",
+      "title": "Bridging the Domain Gap in Agricultural Vision: Parameter-Efficient VLM Adaptation via Expert Descriptions",
+      "venue": "",
+      "year": null,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2053049239",
+          "name": "Deeksha Aggarwal"
+        },
+        {
+          "authorId": "2260543550",
+          "name": "Y. Mittal"
+        }
+      ]
+    },
+    {
+      "paperId": "868ce240626c5c2d2aab29528416fb99f8645408",
+      "externalIds": {
+        "ArXiv": "2604.17797",
+        "CorpusId": 287635596
+      },
+      "url": "https://www.semanticscholar.org/paper/868ce240626c5c2d2aab29528416fb99f8645408",
+      "title": "Weakly-Supervised Referring Video Object Segmentation through Text Supervision",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2268429054",
+          "name": "Miaojing Shi"
+        },
+        {
+          "authorId": "2256226565",
+          "name": "Junjia Huang"
+        },
+        {
+          "authorId": "2381375968",
+          "name": "Zijie Yue"
+        },
+        {
+          "authorId": "2263157382",
+          "name": "Hanli Wang"
+        }
+      ]
+    },
+    {
+      "paperId": "c7b15b8a6d7f63b4561772376acd65b2489542ea",
+      "externalIds": {
+        "ArXiv": "2603.27176",
+        "CorpusId": 286961740
+      },
+      "url": "https://www.semanticscholar.org/paper/c7b15b8a6d7f63b4561772376acd65b2489542ea",
+      "title": "MEDIC-AD: Towards Medical Vision-Language Model's Clinical Intelligence",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2366482661",
+          "name": "Woohyeon Park"
+        },
+        {
+          "authorId": "2366175272",
+          "name": "Jaeik Kim"
+        },
+        {
+          "authorId": "2379385450",
+          "name": "Sunghwan Cho"
+        },
+        {
+          "authorId": "2091511313",
+          "name": "Pamela M. Hong"
+        },
+        {
+          "authorId": "2135380179",
+          "name": "Wookyoung Jeong"
+        },
+        {
+          "authorId": "66322586",
+          "name": "Yoojin Nam"
+        },
+        {
+          "authorId": "2294121992",
+          "name": "Namjoon Kim"
+        },
+        {
+          "authorId": "9413717",
+          "name": "Ginny Y. Wong"
+        },
+        {
+          "authorId": "2290013060",
+          "name": "K. Cheung"
+        },
+        {
+          "authorId": "2366171326",
+          "name": "Jaeyoung Do"
+        }
+      ]
+    },
+    {
+      "paperId": "6bc1a45f9ee97b8754e91d05b6cfb7bae00355ae",
+      "externalIds": {
+        "PubMedCentral": "13025302",
+        "DOI": "10.3390/e28030342",
+        "CorpusId": 286704140
+      },
+      "url": "https://www.semanticscholar.org/paper/6bc1a45f9ee97b8754e91d05b6cfb7bae00355ae",
+      "title": "PromptSeg: An End-to-End Universal Medical Image Segmentation Method via Visual Prompts",
+      "venue": "Entropy",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2184593275",
+          "name": "Minfan Zhao"
+        },
+        {
+          "authorId": "2370683720",
+          "name": "Bingxun Wang"
+        },
+        {
+          "authorId": "2291465519",
+          "name": "Jun Shi"
+        },
+        {
+          "authorId": "2054773963",
+          "name": "Hong An"
+        }
+      ]
+    },
+    {
+      "paperId": "2c8092d46a01a4436465a4bcb25d3d57b1b1b23d",
+      "externalIds": {
+        "DOI": "10.1109/ACCESS.2026.3684906",
+        "CorpusId": 287573524
+      },
+      "url": "https://www.semanticscholar.org/paper/2c8092d46a01a4436465a4bcb25d3d57b1b1b23d",
+      "title": "Visual and Text Prompt Segmentation: A Novel Multi-Model Framework for Remote Sensing",
+      "venue": "IEEE Access",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2211020310",
+          "name": "Xing Zi"
+        },
+        {
+          "authorId": "2338414134",
+          "name": "Kairui Jin"
+        },
+        {
+          "authorId": "2338870306",
+          "name": "Xian Tao"
+        },
+        {
+          "authorId": "2338857411",
+          "name": "Jun Li"
+        },
+        {
+          "authorId": "3069261",
+          "name": "Ali Braytee"
+        },
+        {
+          "authorId": "1753278",
+          "name": "R. Shah"
+        },
+        {
+          "authorId": "2361756396",
+          "name": "Karthick Thiyagarajan"
+        },
+        {
+          "authorId": "2338415987",
+          "name": "Mukesh Prasad"
+        }
+      ]
+    },
+    {
+      "paperId": "ddfea9bf5f66605dc77549b17a091b0a90976ac7",
+      "externalIds": {
+        "ArXiv": "2604.00549",
+        "CorpusId": 287021949
+      },
+      "url": "https://www.semanticscholar.org/paper/ddfea9bf5f66605dc77549b17a091b0a90976ac7",
+      "title": "TF-SSD: A Strong Pipeline via Synergic Mask Filter for Training-free Co-salient Object Detection",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2427128249",
+          "name": "Zhijin He"
+        },
+        {
+          "authorId": "2108914531",
+          "name": "Shuo Jin"
+        },
+        {
+          "authorId": "2148405640",
+          "name": "Siyue Yu"
+        },
+        {
+          "authorId": "2213603212",
+          "name": "Shuwei Wu"
+        },
+        {
+          "authorId": "48335370",
+          "name": "Bingfeng Zhang"
+        },
+        {
+          "authorId": "2149483523",
+          "name": "Li Yu"
+        },
+        {
+          "authorId": "2258803011",
+          "name": "Jimin Xiao"
+        }
+      ]
+    },
+    {
+      "paperId": "adb2da109129356c379aeb8c0284ce1eca77719e",
+      "externalIds": {
+        "ArXiv": "2603.29901",
+        "CorpusId": 286978954
+      },
+      "url": "https://www.semanticscholar.org/paper/adb2da109129356c379aeb8c0284ce1eca77719e",
+      "title": "Less Is More? Selective Visual Attention to High-Importance Regions for Multimodal Radiology Summarization",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2345702359",
+          "name": "Mst. Fahmida Naznin"
+        },
+        {
+          "authorId": "2346118356",
+          "name": "Adnan Ibney Faruq"
+        },
+        {
+          "authorId": "2374034596",
+          "name": "Mushfiqur Rahman"
+        },
+        {
+          "authorId": "151152126",
+          "name": "N. Mondal"
+        },
+        {
+          "authorId": "2047518284",
+          "name": "M. M. H. Shawon"
+        },
+        {
+          "authorId": "2244885819",
+          "name": "Md. Rakibul Hasan"
+        }
+      ]
+    },
+    {
+      "paperId": "8cbae72dd390718f96c3337a8b0eeb2a182c6a27",
+      "externalIds": {
+        "ArXiv": "2605.02126",
+        "CorpusId": 287949858
+      },
+      "url": "https://www.semanticscholar.org/paper/8cbae72dd390718f96c3337a8b0eeb2a182c6a27",
+      "title": "Ultrasound Vision-Language Alignment via Contrastive Learning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2309246141",
+          "name": "Zhuoyang Lyu"
+        },
+        {
+          "authorId": "2321875663",
+          "name": "Yiyan Zhang"
+        },
+        {
+          "authorId": "2293658448",
+          "name": "Tongxin Wang"
+        },
+        {
+          "authorId": "2294181383",
+          "name": "Ruirui Lan"
+        }
+      ]
+    },
+    {
+      "paperId": "af0ea3cd45aff033afd39b0fbc2f914bf4849458",
+      "externalIds": {
+        "ArXiv": "2603.17746",
+        "CorpusId": 286643521
+      },
+      "url": "https://www.semanticscholar.org/paper/af0ea3cd45aff033afd39b0fbc2f914bf4849458",
+      "title": "Concept-to-Pixel: Prompt-Free Universal Medical Image Segmentation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2296975856",
+          "name": "Haoyu Chen"
+        },
+        {
+          "authorId": "2140487415",
+          "name": "Fenghe Tang"
+        },
+        {
+          "authorId": "2343033354",
+          "name": "Wenxin Ma"
+        },
+        {
+          "authorId": "2379971020",
+          "name": "S. Zhou"
+        }
+      ]
+    },
+    {
+      "paperId": "267e929576a8c4ad640501a4ea2d8442cb3cdab9",
+      "externalIds": {
+        "ArXiv": "2603.17554",
+        "CorpusId": 286643443
+      },
+      "url": "https://www.semanticscholar.org/paper/267e929576a8c4ad640501a4ea2d8442cb3cdab9",
+      "title": "Prompt-Free Universal Region Proposal Network",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2185987802",
+          "name": "Qi Tang"
+        },
+        {
+          "authorId": "2354219348",
+          "name": "Changhan Liu"
+        },
+        {
+          "authorId": "2393426901",
+          "name": "Shaofeng Zhang"
+        },
+        {
+          "authorId": "2269784954",
+          "name": "Wenbin Li"
+        },
+        {
+          "authorId": "2105557652",
+          "name": "Qi Fan"
+        },
+        {
+          "authorId": "2400129851",
+          "name": "Yang Gao"
+        }
+      ]
+    },
+    {
+      "paperId": "2e995f421ac572b269785d5c3e1454b4bc336d7a",
+      "externalIds": {
+        "ArXiv": "2604.12346",
+        "CorpusId": 287435939
+      },
+      "url": "https://www.semanticscholar.org/paper/2e995f421ac572b269785d5c3e1454b4bc336d7a",
+      "title": "Unlocking the Potential of Grounding DINO in Videos: Parameter-Efficient Adaptation for Limited-Data Spatial-Temporal Localization",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2373430911",
+          "name": "Zanyi Wang"
+        },
+        {
+          "authorId": "2349943170",
+          "name": "Fan Li"
+        },
+        {
+          "authorId": "2335769891",
+          "name": "Dengyang Jiang"
+        },
+        {
+          "authorId": "2375242632",
+          "name": "Liuzhuozheng Li"
+        },
+        {
+          "authorId": "2366681207",
+          "name": "Yu Zhong"
+        },
+        {
+          "authorId": "2257001357",
+          "name": "Guang Dai"
+        },
+        {
+          "authorId": "2232952603",
+          "name": "Mengmeng Wang"
+        }
+      ]
+    },
+    {
+      "paperId": "5316b2eafc26ea62a77f6dce929abb05794a0c5a",
+      "externalIds": {
+        "ArXiv": "2603.21957",
+        "CorpusId": 286765652
+      },
+      "url": "https://www.semanticscholar.org/paper/5316b2eafc26ea62a77f6dce929abb05794a0c5a",
+      "title": "Unified Spatiotemporal Token Compression for Video-LLMs at Ultra-Low Retention",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2364825282",
+          "name": "Jun Du"
+        },
+        {
+          "authorId": "2302294673",
+          "name": "Jia-Hao Xue"
+        },
+        {
+          "authorId": "2363681639",
+          "name": "Anqi Li"
+        },
+        {
+          "authorId": "2298565386",
+          "name": "Jincheng Dai"
+        },
+        {
+          "authorId": "2293727078",
+          "name": "Guo Lu"
+        }
+      ]
+    },
+    {
+      "paperId": "38cf0399370a3ed4fb8c563bf106d947e8d6a901",
+      "externalIds": {
+        "ArXiv": "2604.18225",
+        "CorpusId": 287635197
+      },
+      "url": "https://www.semanticscholar.org/paper/38cf0399370a3ed4fb8c563bf106d947e8d6a901",
+      "title": "Is SAM3 ready for pathology segmentation?",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2212186678",
+          "name": "Qiuyu Kong"
+        },
+        {
+          "authorId": "2316560444",
+          "name": "Shakiba Sharifi"
+        },
+        {
+          "authorId": "2374130453",
+          "name": "Zanxi Ruan"
+        },
+        {
+          "authorId": "2253817175",
+          "name": "Yiming Wang"
+        },
+        {
+          "authorId": "2294586241",
+          "name": "Marco Cristani"
+        }
+      ]
+    },
+    {
+      "paperId": "d681e97053bd9ab6c7bc01bba500835dc33f36aa",
+      "externalIds": {
+        "PubMedCentral": "12995301",
+        "DOI": "10.1371/journal.pone.0343823",
+        "CorpusId": 286639021,
+        "PubMed": "41843890"
+      },
+      "url": "https://www.semanticscholar.org/paper/d681e97053bd9ab6c7bc01bba500835dc33f36aa",
+      "title": "Long-text caption generation for surgical image with a concept retrieval augmented large multimodal model",
+      "venue": "PLoS ONE",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "9184023",
+          "name": "Jiquan Liu"
+        },
+        {
+          "authorId": "2341942070",
+          "name": "Yichen Zhu"
+        },
+        {
+          "authorId": "2145120889",
+          "name": "Jingyi Feng"
+        },
+        {
+          "authorId": "2422566730",
+          "name": "Xiaoyan Zhang"
+        },
+        {
+          "authorId": "2363726719",
+          "name": "Ziyu Zhou"
+        },
+        {
+          "authorId": "2386095164",
+          "name": "Ye Tao"
+        },
+        {
+          "authorId": "2275546055",
+          "name": "Huilong Duan"
+        }
+      ]
+    },
+    {
+      "paperId": "423869b85b70cee2162d2f1645e75e4407aecf8a",
+      "externalIds": {
+        "PubMedCentral": "13117866",
+        "DOI": "10.3390/jimaging12040143",
+        "CorpusId": 286825070
+      },
+      "url": "https://www.semanticscholar.org/paper/423869b85b70cee2162d2f1645e75e4407aecf8a",
+      "title": "Vision and Language Reference for a Segment Anything Model for Few-Shot Segmentation",
+      "venue": "Journal of Imaging",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2321872154",
+          "name": "Kosuke Sakurai"
+        },
+        {
+          "authorId": "2053965325",
+          "name": "Ryotaro Shimizu"
+        },
+        {
+          "authorId": "2257964700",
+          "name": "Masayuki Goto"
+        }
+      ]
+    },
+    {
+      "paperId": "350499e0e34b001a97ac6d25d36266ac2e9928bd",
+      "externalIds": {
+        "ArXiv": "2604.14563",
+        "CorpusId": 287508599
+      },
+      "url": "https://www.semanticscholar.org/paper/350499e0e34b001a97ac6d25d36266ac2e9928bd",
+      "title": "Revisiting Token Compression for Accelerating ViT-based Sparse Multi-View 3D Object Detectors",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2279220591",
+          "name": "Mingqian Ji"
+        },
+        {
+          "authorId": "2284518907",
+          "name": "Shanshan Zhang"
+        },
+        {
+          "authorId": "2279867887",
+          "name": "Jian Yang"
+        }
+      ]
+    },
+    {
+      "paperId": "6c1a0d9fdc2ac3827761fae255ca1eac98d38e47",
+      "externalIds": {
+        "DOI": "10.1109/ICCV51701.2025.00119",
+        "CorpusId": 286507331
+      },
+      "url": "https://www.semanticscholar.org/paper/6c1a0d9fdc2ac3827761fae255ca1eac98d38e47",
+      "title": "SemiVisBooster: Boosting Semi-Supervised Learning for Fine-Grained Classification through Pseudo-Label Semantic Guidance",
+      "venue": "IEEE International Conference on Computer Vision",
+      "year": 2025,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2301105308",
+          "name": "Wenjin Zhang"
+        },
+        {
+          "authorId": "2310894832",
+          "name": "Xinyu Li"
+        },
+        {
+          "authorId": "2301108119",
+          "name": "Chenyang Gao"
+        },
+        {
+          "authorId": "2397882663",
+          "name": "Ivan Marsic"
+        }
+      ]
+    },
+    {
+      "paperId": "4462a63dcbea1644820ed346946e6e3e68dc5c63",
+      "externalIds": {
+        "DOI": "10.1109/LSP.2026.3682188",
+        "CorpusId": 287286939
+      },
+      "url": "https://www.semanticscholar.org/paper/4462a63dcbea1644820ed346946e6e3e68dc5c63",
+      "title": "Tuning Less, Learning More: Toward a More Generalizable Image Manipulation Detector",
+      "venue": "IEEE Signal Processing Letters",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2116664533",
+          "name": "Yixin Chen"
+        },
+        {
+          "authorId": "2254317449",
+          "name": "Ziyuan Yang"
+        },
+        {
+          "authorId": "2391647452",
+          "name": "Yi Zhang"
+        }
+      ]
+    },
+    {
+      "paperId": "eb8b1d930e8ce5986bd7220ef44ade0f82a35ed7",
+      "externalIds": {
+        "ArXiv": "2603.19026",
+        "CorpusId": 286673417
+      },
+      "url": "https://www.semanticscholar.org/paper/eb8b1d930e8ce5986bd7220ef44ade0f82a35ed7",
+      "title": "Rethinking MLLM Itself as a Segmenter with a Single Segmentation Token",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2284291510",
+          "name": "Anqi Zhang"
+        },
+        {
+          "authorId": "2260610261",
+          "name": "X. Ji"
+        },
+        {
+          "authorId": "2256997271",
+          "name": "Guangyu Gao"
+        },
+        {
+          "authorId": "2238591914",
+          "name": "Jianbo Jiao"
+        },
+        {
+          "authorId": "123266818",
+          "name": "C. Liu"
+        },
+        {
+          "authorId": "2315287501",
+          "name": "Yunchao Wei"
+        }
+      ]
+    },
+    {
+      "paperId": "14e672c476a33b30d2d0538eb838b026b821ec17",
+      "externalIds": {
+        "DOI": "10.1088/2631-8695/ae62df",
+        "CorpusId": 287687905
+      },
+      "url": "https://www.semanticscholar.org/paper/14e672c476a33b30d2d0538eb838b026b821ec17",
+      "title": "PESH: a parameter-efficient fine-tuning small sample histopathology images training framework",
+      "venue": "Engineering Research Express",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2333400328",
+          "name": "Dong Zhang"
+        }
+      ]
+    },
+    {
+      "paperId": "5fe7fb9eb6c00356f623b0b4f10a77f6b7568b6a",
+      "externalIds": {
+        "ArXiv": "2604.02252",
+        "CorpusId": 287073966
+      },
+      "url": "https://www.semanticscholar.org/paper/5fe7fb9eb6c00356f623b0b4f10a77f6b7568b6a",
+      "title": "SPAR: Single-Pass Any-Resolution ViT for Open-vocabulary Segmentation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2363877183",
+          "name": "Naomi Kombol"
+        },
+        {
+          "authorId": "2427459270",
+          "name": "Ivan Martinovi'c"
+        },
+        {
+          "authorId": "1389866701",
+          "name": "Sinivsa vSegvi'c"
+        },
+        {
+          "authorId": "1706195",
+          "name": "Giorgos Tolias"
+        }
+      ]
+    },
+    {
+      "paperId": "c61c9e2c3d73909eeeb80fe17f77f2d114f3cc24",
+      "externalIds": {
+        "DOI": "10.3390/app16073181",
+        "CorpusId": 286886554
+      },
+      "url": "https://www.semanticscholar.org/paper/c61c9e2c3d73909eeeb80fe17f77f2d114f3cc24",
+      "title": "Cross-Modal Few-Shot Learning via Siamese Similarity Networks on CLIP Embeddings for Fine-Grained Image Classification",
+      "venue": "Applied Sciences",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2266972588",
+          "name": "Julius Olaniyan"
+        },
+        {
+          "authorId": "3294109",
+          "name": "S. Verkijika"
+        },
+        {
+          "authorId": "1859899",
+          "name": "I. Obagbuwa"
+        }
+      ]
+    },
+    {
+      "paperId": "f763072467b5a0f32d9b0d0ae43fb87031ff19e5",
+      "externalIds": {
+        "PubMedCentral": "13139452",
+        "DOI": "10.1038/s41598-026-49319-z",
+        "CorpusId": 287980899
+      },
+      "url": "https://www.semanticscholar.org/paper/f763072467b5a0f32d9b0d0ae43fb87031ff19e5",
+      "title": "Visual information extraction from documents via classification-guided large vision-language models",
+      "venue": "Scientific Reports",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2139527987",
+          "name": "Huafu Li"
+        },
+        {
+          "authorId": "2155229619",
+          "name": "Guo Chen"
+        },
+        {
+          "authorId": "2345416431",
+          "name": "Jiazhi Xia"
+        },
+        {
+          "authorId": "2387126465",
+          "name": "Lei Wang"
+        },
+        {
+          "authorId": "2239100461",
+          "name": "Wei Du"
+        },
+        {
+          "authorId": "2433243072",
+          "name": "Yun Yao"
+        },
+        {
+          "authorId": "2346297180",
+          "name": "Weijun Peng"
+        },
+        {
+          "authorId": "2433195970",
+          "name": "Liming Li"
+        }
+      ]
+    },
+    {
+      "paperId": "ab013b4416e99c85f93d8373008c4191fd301b2e",
+      "externalIds": {
+        "DOI": "10.1109/ICCV51701.2025.00224",
+        "CorpusId": 286520958
+      },
+      "url": "https://www.semanticscholar.org/paper/ab013b4416e99c85f93d8373008c4191fd301b2e",
+      "title": "Hierarchical Variational Test-Time Prompt Generation for Zero-Shot Generalization",
+      "venue": "IEEE International Conference on Computer Vision",
+      "year": 2025,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2267484392",
+          "name": "Zhao Wu"
+        },
+        {
+          "authorId": "2261732890",
+          "name": "Fang Liu"
+        },
+        {
+          "authorId": "2287033797",
+          "name": "Licheng Jiao"
+        },
+        {
+          "authorId": "2281607295",
+          "name": "Shuo Li"
+        },
+        {
+          "authorId": "52395419",
+          "name": "Lingling"
+        },
+        {
+          "authorId": "2433085352",
+          "name": "LiXu Liu"
+        },
+        {
+          "authorId": "3394474",
+          "name": "Puhua Chen"
+        },
+        {
+          "authorId": "2297947217",
+          "name": "Wenping Ma"
+        }
+      ]
+    },
+    {
+      "paperId": "d25455f74a61055f5531b193c3f242ac15e863be",
+      "externalIds": {
+        "ArXiv": "2605.02616",
+        "CorpusId": 287950979
+      },
+      "url": "https://www.semanticscholar.org/paper/d25455f74a61055f5531b193c3f242ac15e863be",
+      "title": "Global-Local Feature Decoding with Adapter-Guided SAMv2 for Salient Object Detection",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2261544021",
+          "name": "Morteza Moradi"
+        },
+        {
+          "authorId": "2284073067",
+          "name": "Mohammad Moradi"
+        },
+        {
+          "authorId": "2382395274",
+          "name": "S. Palazzo"
+        },
+        {
+          "authorId": "2277099153",
+          "name": "Ali Borji"
+        },
+        {
+          "authorId": "2120814918",
+          "name": "C. Spampinato"
+        }
+      ]
+    },
+    {
+      "paperId": "6339f75ac57bcc6f2a5e509f32b592edcc075814",
+      "externalIds": {
+        "ArXiv": "2603.27206",
+        "CorpusId": 286961530
+      },
+      "url": "https://www.semanticscholar.org/paper/6339f75ac57bcc6f2a5e509f32b592edcc075814",
+      "title": "Make It Up: Fake Images, Real Gains in Generalized Few-shot Semantic Segmentation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2269812086",
+          "name": "Guo-Sen Xie"
+        },
+        {
+          "authorId": "2300811619",
+          "name": "Xin He"
+        },
+        {
+          "authorId": "2426712979",
+          "name": "Dingying Fan"
+        },
+        {
+          "authorId": "2257360976",
+          "name": "Le Zhang"
+        },
+        {
+          "authorId": "2331127159",
+          "name": "Ming-Ming Cheng"
+        },
+        {
+          "authorId": "2342734013",
+          "name": "Yun Liu"
+        }
+      ]
+    },
+    {
+      "paperId": "c4e8ffe1eb1bb5aa97dec3342d2a97e44c27dba9",
+      "externalIds": {
+        "PubMedCentral": "13134167",
+        "DOI": "10.1186/s12880-026-02281-8",
+        "CorpusId": 286768953,
+        "PubMed": "41872819"
+      },
+      "url": "https://www.semanticscholar.org/paper/c4e8ffe1eb1bb5aa97dec3342d2a97e44c27dba9",
+      "title": "A dual-consistency semi-supervised learning method for histopathology image segmentation",
+      "venue": "BMC Medical Imaging",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2212919026",
+          "name": "Mingjian Xie"
+        },
+        {
+          "authorId": "2243240847",
+          "name": "Weifeng Zhang"
+        },
+        {
+          "authorId": "2242945529",
+          "name": "Yiqun Geng"
+        },
+        {
+          "authorId": "2259991245",
+          "name": "Yuting Duan"
+        },
+        {
+          "authorId": "2291860861",
+          "name": "Dekai Wang"
+        },
+        {
+          "authorId": "2320194960",
+          "name": "Hongzhong Tang"
+        },
+        {
+          "authorId": "2243170363",
+          "name": "Liangli Hong"
+        }
+      ]
+    },
+    {
+      "paperId": "eb82adeba106d1487b09e72420285d32def9d663",
+      "externalIds": {
+        "ArXiv": "2603.18541",
+        "CorpusId": 286670001
+      },
+      "url": "https://www.semanticscholar.org/paper/eb82adeba106d1487b09e72420285d32def9d663",
+      "title": "Remedying Target-Domain Astigmatism for Cross-Domain Few-Shot Object Detection",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2117937336",
+          "name": "Yong Jiang"
+        },
+        {
+          "authorId": "2275592358",
+          "name": "Yixiong Zou"
+        },
+        {
+          "authorId": "2260170121",
+          "name": "Yuhua Li"
+        },
+        {
+          "authorId": "2283487404",
+          "name": "Ruixuan Li"
+        }
+      ]
+    },
+    {
+      "paperId": "d8d005083f6546bd952d6e8de3c6d1cbeacefe92",
+      "externalIds": {
+        "ArXiv": "2603.24804",
+        "CorpusId": 286789617
+      },
+      "url": "https://www.semanticscholar.org/paper/d8d005083f6546bd952d6e8de3c6d1cbeacefe92",
+      "title": "GoldiCLIP: The Goldilocks Approach for Balancing Explicit Supervision for Language-Image Pretraining",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "1557796060",
+          "name": "D. Mohan"
+        },
+        {
+          "authorId": "78859465",
+          "name": "Hossein Souri"
+        },
+        {
+          "authorId": "50980023",
+          "name": "Vitali Petsiuk"
+        },
+        {
+          "authorId": "2067799001",
+          "name": "Juhong Min"
+        },
+        {
+          "authorId": "2392778671",
+          "name": "Gopal Sharma"
+        },
+        {
+          "authorId": "2373559546",
+          "name": "Luowei Zhou"
+        },
+        {
+          "authorId": "2373443384",
+          "name": "Suren Kumar"
+        }
+      ]
+    },
+    {
+      "paperId": "113f5ae4d66c95b5ae39f9619894a1798a1a99aa",
+      "externalIds": {
+        "ArXiv": "2604.12012",
+        "CorpusId": 287436161
+      },
+      "url": "https://www.semanticscholar.org/paper/113f5ae4d66c95b5ae39f9619894a1798a1a99aa",
+      "title": "TIPSv2: Advancing Vision-Language Pretraining with Enhanced Patch-Text Alignment",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2072987566",
+          "name": "Bingyi Cao"
+        },
+        {
+          "authorId": "2327166758",
+          "name": "Koert Chen"
+        },
+        {
+          "authorId": "2027105",
+          "name": "Kevis-Kokitsi Maninis"
+        },
+        {
+          "authorId": "2336951061",
+          "name": "Kaifeng Chen"
+        },
+        {
+          "authorId": "30899347",
+          "name": "Arjun Karpur"
+        },
+        {
+          "authorId": "2327118351",
+          "name": "Ye Xia"
+        },
+        {
+          "authorId": "121065970",
+          "name": "Sahil Dua"
+        },
+        {
+          "authorId": "80698766",
+          "name": "T. Dabral"
+        },
+        {
+          "authorId": "2275814516",
+          "name": "Guangxing Han"
+        },
+        {
+          "authorId": "2357492510",
+          "name": "Bohyung Han"
+        },
+        {
+          "authorId": "2343748926",
+          "name": "J. Ainslie"
+        },
+        {
+          "authorId": "2330315833",
+          "name": "Alex Bewley"
+        },
+        {
+          "authorId": "2324571329",
+          "name": "M. Jacob"
+        },
+        {
+          "authorId": "2324636748",
+          "name": "Ren'e Wagner"
+        },
+        {
+          "authorId": "3459502",
+          "name": "W. Ramos"
+        },
+        {
+          "authorId": "2256998553",
+          "name": "Krzysztof Choromanski"
+        },
+        {
+          "authorId": "2237806111",
+          "name": "Mojtaba Seyedhosseini"
+        },
+        {
+          "authorId": "2290352183",
+          "name": "Howard Zhou"
+        },
+        {
+          "authorId": "2302855463",
+          "name": "André Araújo"
+        }
+      ]
+    },
+    {
+      "paperId": "927f5d173059135853f505cc6294dc2ef964631f",
+      "externalIds": {
+        "ArXiv": "2604.00314",
+        "CorpusId": 287021558
+      },
+      "url": "https://www.semanticscholar.org/paper/927f5d173059135853f505cc6294dc2ef964631f",
+      "title": "Prompt-Guided Prefiltering for VLM Image Compression",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "1914802",
+          "name": "Bardia Azizian"
+        },
+        {
+          "authorId": "2204579269",
+          "name": "Ivan V. Bajić"
+        }
+      ]
+    },
+    {
+      "paperId": "1d15870e4eb7d43f2c4ff3980a0cdb14d0fa6f1a",
+      "externalIds": {
+        "DOI": "10.1117/12.3087908",
+        "CorpusId": 287141351
+      },
+      "url": "https://www.semanticscholar.org/paper/1d15870e4eb7d43f2c4ff3980a0cdb14d0fa6f1a",
+      "title": "Semantic segmentation of medical images in radiotherapy through large-language-model‑augmented learning",
+      "venue": "Medical Imaging",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2269755296",
+          "name": "Xianjin Dai"
+        },
+        {
+          "authorId": "147834035",
+          "name": "P. Rajendran"
+        },
+        {
+          "authorId": "150356874",
+          "name": "Zhuoran Jiang"
+        },
+        {
+          "authorId": "2248728156",
+          "name": "Yong Yang"
+        },
+        {
+          "authorId": "2308047425",
+          "name": "M. Gensheimer"
+        },
+        {
+          "authorId": "2269513665",
+          "name": "Lei Xing"
+        }
+      ]
+    },
+    {
+      "paperId": "62c2193ecf7a537ee4eb9525aee5c64c06285de9",
+      "externalIds": {
+        "ArXiv": "2604.09955",
+        "CorpusId": 287425600
+      },
+      "url": "https://www.semanticscholar.org/paper/62c2193ecf7a537ee4eb9525aee5c64c06285de9",
+      "title": "Learnable Motion-Focused Tokenization for Effective and Efficient Video Unsupervised Domain Adaptation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2374904318",
+          "name": "Tzu-Ling Liu"
+        },
+        {
+          "authorId": "2331624393",
+          "name": "Ian Stavness"
+        },
+        {
+          "authorId": "2532612",
+          "name": "Mrigank Rochan"
+        }
+      ]
+    },
+    {
+      "paperId": "c569f2bc9050d880773f595ab45a29852ace0bda",
+      "externalIds": {
+        "ArXiv": "2604.19233",
+        "CorpusId": 287636266
+      },
+      "url": "https://www.semanticscholar.org/paper/c569f2bc9050d880773f595ab45a29852ace0bda",
+      "title": "Adaptive Slicing-Assisted Hyper Inference for Enhanced Small Object Detection in High-Resolution Imagery",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2318857807",
+          "name": "Francesco Moretti"
+        },
+        {
+          "authorId": "2302894948",
+          "name": "Yigao Jin"
+        },
+        {
+          "authorId": "2430728384",
+          "name": "Guiqin Mario"
+        }
+      ]
+    },
+    {
+      "paperId": "f2763af29e71bac25c138312da7b9d56b7ae21e2",
+      "externalIds": {
+        "DOI": "10.1117/12.3082623",
+        "CorpusId": 287127314
+      },
+      "url": "https://www.semanticscholar.org/paper/f2763af29e71bac25c138312da7b9d56b7ae21e2",
+      "title": "A structure‑preserving and semantics‑controllable diffusion tool for histopathology image synthesis and resolution enhancement",
+      "venue": "Medical Imaging",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2284370793",
+          "name": "Xuan Xu"
+        },
+        {
+          "authorId": "1818709358",
+          "name": "Saarthak Kapse"
+        },
+        {
+          "authorId": "2240535492",
+          "name": "Prateek Prasanna"
+        }
+      ]
+    },
+    {
+      "paperId": "fd50a6cb8bbdefa005bafef4cc2526e211f94fa9",
+      "externalIds": {
+        "ArXiv": "2603.28555",
+        "CorpusId": 286974273
+      },
+      "url": "https://www.semanticscholar.org/paper/fd50a6cb8bbdefa005bafef4cc2526e211f94fa9",
+      "title": "Domain-Invariant Prompt Learning for Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2151859212",
+          "name": "Arsham Gholamzadeh Khoee"
+        },
+        {
+          "authorId": "2374079578",
+          "name": "Yi Yu"
+        },
+        {
+          "authorId": "2288142837",
+          "name": "Robert Feldt"
+        }
+      ]
+    },
+    {
+      "paperId": "1a884fcba6ffee393929f95750086f256e7b997a",
+      "externalIds": {
+        "DOI": "10.3390/electronics15061242",
+        "CorpusId": 286648754
+      },
+      "url": "https://www.semanticscholar.org/paper/1a884fcba6ffee393929f95750086f256e7b997a",
+      "title": "Attention-Weighted Hierarchical Decoding for Few-Shot Semantic Segmentation: A Case Study on Batik Cultural Heritage Patterns",
+      "venue": "Electronics",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2424595549",
+          "name": "Yuzhou Ma"
+        },
+        {
+          "authorId": "2365232846",
+          "name": "Haolong Qian"
+        },
+        {
+          "authorId": "2256599010",
+          "name": "Wei Li"
+        }
+      ]
+    },
+    {
+      "paperId": "0e64c47da72d2a0b2fca6326dad6e17a352e25d4",
+      "externalIds": {
+        "ArXiv": "2603.13682",
+        "CorpusId": 286568552
+      },
+      "url": "https://www.semanticscholar.org/paper/0e64c47da72d2a0b2fca6326dad6e17a352e25d4",
+      "title": "Every Error has Its Magnitude: Asymmetric Mistake Severity Training for Multiclass Multiple Instance Learning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2354523441",
+          "name": "Sungrae Hong"
+        },
+        {
+          "authorId": "46973224",
+          "name": "Jiwon Jeong"
+        },
+        {
+          "authorId": "2373602231",
+          "name": "Jisu Shin"
+        },
+        {
+          "authorId": "2298765473",
+          "name": "D. Han"
+        },
+        {
+          "authorId": "2277511729",
+          "name": "Sol Lee"
+        },
+        {
+          "authorId": "2291541794",
+          "name": "Kyungeun Kim"
+        },
+        {
+          "authorId": "2316747268",
+          "name": "M. Yi"
+        }
+      ]
+    },
+    {
+      "paperId": "01b63a875815da94a50202660321b79e53ecce06",
+      "externalIds": {
+        "ArXiv": "2603.25891",
+        "CorpusId": 286942165
+      },
+      "url": "https://www.semanticscholar.org/paper/01b63a875815da94a50202660321b79e53ecce06",
+      "title": "Few Shots Text to Image Retrieval: New Benchmarking Dataset and Optimization Methods",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "5463800",
+          "name": "Ofer Idan"
+        },
+        {
+          "authorId": "1933350406",
+          "name": "Vladi Vexler"
+        },
+        {
+          "authorId": "3178854",
+          "name": "G. Lederman"
+        },
+        {
+          "authorId": "1413991229",
+          "name": "D. Sivov"
+        },
+        {
+          "authorId": "2426532662",
+          "name": "A. Zada"
+        },
+        {
+          "authorId": "2426533099",
+          "name": "Shir Niego Komforti"
+        }
+      ]
+    }
+  ]
+}
