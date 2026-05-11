@@ -5,3 +5,5 @@ layout.json
 !.env.example
 .mineru_token
 secrets/
+pdf-parts/
+mineru-parts/

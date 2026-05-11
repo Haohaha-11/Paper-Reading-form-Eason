@@ -1,0 +1,20 @@
+{
+  "dir": "[System Card 2026] Claude-Sonnet-4.6",
+  "title": "Claude Sonnet 4.6 System Card",
+  "short": "Claude-Sonnet-4.6",
+  "authors": "Anthropic",
+  "venue": "Anthropic System Card",
+  "year": "2026",
+  "date": "February 2026",
+  "source": "Anthropic",
+  "url": "https://www.anthropic.com/claude-sonnet-4-6-system-card",
+  "links": [
+    "https://www.anthropic.com/system-cards",
+    "https://www.anthropic.com/claude-sonnet-4-6-system-card"
+  ],
+  "reading_order": "Tech-repoorts Claude system card 3",
+  "one_liner_hint": "Claude Sonnet 4.6 System Card 覆盖 Sonnet 线的 coding、agentic/search、long context、multimodal、安全评估和 ASL-3 部署决策。",
+  "mineru_task": "93f19f87-6048-4809-ab26-81fcc2cbfc0f",
+  "source_url": "https://www.anthropic.com/claude-sonnet-4-6-system-card",
+  "resolved_pdf_url": "https://www-cdn.anthropic.com/bbd8ef16d70b7a1665f14f306ee88b53f686aa75.pdf"
+}

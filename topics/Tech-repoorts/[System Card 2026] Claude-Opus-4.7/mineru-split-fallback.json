@@ -1,0 +1,4 @@
+{
+  "fallback": "pypdf",
+  "error": "MinerU failed for Claude-Opus-4.7 part 1-180: {'code': 0, 'msg': 'ok', 'trace_id': '998e9300f89a41ea68b3930b7d56d1cb', 'data': {'task_id': 'bb170215-fc54-4a00-bf6b-481ba3631bc7', 'state': 'failed', 'err_msg': 'failed to read file, please check if the file is corrupted and try uploading again'}}"
+}

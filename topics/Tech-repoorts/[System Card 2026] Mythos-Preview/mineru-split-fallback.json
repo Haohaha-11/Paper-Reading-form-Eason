@@ -1,0 +1,4 @@
+{
+  "fallback": "pypdf",
+  "error": "MinerU failed for Mythos-Preview part 1-180: {'code': 0, 'msg': 'ok', 'trace_id': '8e5abdd049ed0dac8e0bbf4c1d2bc292', 'data': {'task_id': '388c8647-6bb2-41fa-87a6-227faaf00d71', 'state': 'failed', 'err_msg': 'failed to read file, please check if the file is corrupted and try uploading again'}}"
+}

@@ -1,0 +1,20 @@
+{
+  "dir": "[System Card 2026] Mythos-Preview",
+  "title": "Mythos Preview System Card",
+  "short": "Mythos-Preview",
+  "authors": "Anthropic",
+  "venue": "Anthropic System Card",
+  "year": "2026",
+  "date": "April 2026",
+  "source": "Anthropic",
+  "url": "https://www.anthropic.com/claude-mythos-preview-system-card",
+  "links": [
+    "https://www.anthropic.com/system-cards",
+    "https://www.anthropic.com/claude-mythos-preview-system-card"
+  ],
+  "reading_order": "Tech-repoorts Claude system card 2",
+  "one_liner_hint": "Mythos Preview System Card 是 Anthropic 对 Mythos Preview 的能力、安全和部署约束说明，适合观察 Claude 产品线中非标准命名模型的定位。",
+  "mineru_task": "local-pypdf-fallback",
+  "source_url": "https://www.anthropic.com/claude-mythos-preview-system-card",
+  "resolved_pdf_url": "https://cdn.sanity.io/files/4zrzovbb/website/7624816413e9b4d2e3ba620c5a5e091b98b190a5.pdf"
+}

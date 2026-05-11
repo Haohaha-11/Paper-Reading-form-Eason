@@ -1,0 +1,20 @@
+{
+  "dir": "[System Card 2026] Claude-Opus-4.7",
+  "title": "Claude Opus 4.7 System Card",
+  "short": "Claude-Opus-4.7",
+  "authors": "Anthropic",
+  "venue": "Anthropic System Card",
+  "year": "2026",
+  "date": "April 2026",
+  "source": "Anthropic",
+  "url": "https://www.anthropic.com/claude-opus-4-7-system-card",
+  "links": [
+    "https://www.anthropic.com/system-cards",
+    "https://www.anthropic.com/claude-opus-4-7-system-card"
+  ],
+  "reading_order": "Tech-repoorts Claude system card 1",
+  "one_liner_hint": "Claude Opus 4.7 System Card 记录 frontier Opus 模型的能力、安全评估和部署边界，适合与 Sonnet / Mythos 对照 Claude 系列的能力-风险权衡。",
+  "mineru_task": "local-pypdf-fallback",
+  "source_url": "https://www.anthropic.com/claude-opus-4-7-system-card",
+  "resolved_pdf_url": "https://cdn.sanity.io/files/4zrzovbb/website/037f06850df7fbe871e206dad004c3db5fd50340.pdf"
+}

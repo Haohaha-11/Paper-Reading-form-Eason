@@ -1,0 +1,5 @@
+{
+  "extractor": "pypdf",
+  "reason": "MinerU page limit or split-PDF parse failure",
+  "pages": 245
+}

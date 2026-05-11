@@ -1,0 +1,12 @@
+[
+  {
+    "start": 1,
+    "end": 180,
+    "path": "pdf-parts/part-001-180.pdf"
+  },
+  {
+    "start": 181,
+    "end": 245,
+    "path": "pdf-parts/part-181-245.pdf"
+  }
+]
