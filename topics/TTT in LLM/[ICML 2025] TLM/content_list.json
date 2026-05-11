@@ -1,0 +1,3843 @@
+[
+    {
+        "type": "text",
+        "text": "Test-Time Learning for Large Language Models ",
+        "text_level": 1,
+        "bbox": [
+            245,
+            109,
+            730,
+            132
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Jinwu ${ \\bf H } { \\bf u } ^ { 1 2 ^ { * } }$ Zitian Zhang 1 \\* Guohao Chen 1 2 \\* Xutao Wen 1 Chao Shuai 3 Wei Luo 2 4 \\* Bin Xiao 5 † Yuanqing Li 2 † Mingkui Tan 1 6 † ",
+        "bbox": [
+            166,
+            175,
+            805,
+            208
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Abstract ",
+        "text_level": 1,
+        "bbox": [
+            243,
+            234,
+            316,
+            251
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "1. Introduction ",
+        "text_level": 1,
+        "bbox": [
+            501,
+            234,
+            627,
+            251
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "While Large Language Models (LLMs) have exhibited remarkable emergent capabilities through extensive pre-training, they still face critical limitations in generalizing to specialized domains and handling diverse linguistic variations, known as distribution shifts. In this paper, we propose a Test-Time Learning (TTL) paradigm for LLMs, namely TLM, which dynamically adapts LLMs to target domains using only unlabeled test data during testing. Specifically, we first provide empirical evidence and theoretical insights to reveal that more accurate predictions from LLMs can be achieved by minimizing the input perplexity of the unlabeled test data. Based on this insight, we formulate the Test-Time Learning process of LLMs as input perplexity minimization, enabling selfsupervised enhancement of LLM performance. Furthermore, we observe that high-perplexity samples tend to be more informative for model optimization. Accordingly, we introduce a Sample Efficient Learning Strategy that actively selects and emphasizes these high-perplexity samples for test-time updates. Lastly, to mitigate catastrophic forgetting and ensure adaptation stability, we adopt Low-Rank Adaptation (LoRA) instead of full-parameter optimization, which allows lightweight model updates while preserving more original knowledge from the model. We introduce the AdaptEval benchmark for TTL and demonstrate through experiments that TLM improves performance by at least $20 \\%$ compared to original LLMs on domain knowledge adaptation. ",
+        "bbox": [
+            120,
+            260,
+            442,
+            743
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Large Language Models (LLMs) such as GPT-4 (Achiam et al., 2023) and LLaMA (Dubey et al., 2024) have significantly advanced the field of natural language processing (NLP), demonstrating exceptional capabilities in both understanding and generating human-like text (Wang et al., 2025a). Such success is achieved through extensive pretraining on massive corpora, enabling them to learn rich language representations that facilitate superior performance in various NLP tasks (Hu et al., 2025a; Zhong et al., 2024). ",
+        "bbox": [
+            501,
+            261,
+            885,
+            396
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Despite their impressive capabilities, LLMs face significant challenges when deployed in real-world environments with dynamic and diverse data distributions. These challenges stem from the inherent sensitivity of deep learning models, including LLMs, to distribution shifts between training and test data, often leading to substantial performance degradation (Akyurek et al.¨ , 2024). These distributional shifts manifest in two main ways: 1) Domain-Specific Terminology: Encountering rare or specialized terms and structures in fields such as medicine or agriculture may limit the model’s performance (Gu et al., 2021). 2) Linguistic Diversity Variations: Variations in user intent and linguistic diversity, including dialects and slang, lead to distributional discrepancies that negatively affect the model’s comprehension and response generation (Bella et al., 2024). ",
+        "bbox": [
+            501,
+            405,
+            885,
+            628
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Recently, several attempts have been proposed to improve the performance of models in dynamic and diverse realworld environments. Most existing methods can be broadly categorized into four types, as shown in Table 1. Finetuning (Hu et al., 2022; Thirunavukarasu et al., 2023) adapts pre-trained models to specific tasks by updating their parameters with labeled data, but it is constrained by the need for extensive labeled datasets, limiting its practicality in dynamic environments. Retrieval-Augmented Generation (RAG) (Fan et al., 2024) improves performance without requiring labeled data updates by leveraging external knowledge retrieved during inference, but its success depends heavily on the quality of the retrieved information. Test-Time Adaptation (TTA) (Wang et al., 2021; Niu et al., 2022a; Chen et al., 2024b) adjusts model parameters during inference using only unlabeled test data, allowing the model to adapt to distribution shifts in real-time. However, most TTA methods rely on entropy minimization as the optimization objective, which overlooks the autoregressive dependencies within LLMs, limiting its effectiveness in improving performance on dynamic tasks (see Figure 1a). Test-Time Training (TTT) (Hardt & Sun, 2024; Hubotter et al. ¨ , 2024) retrieves data relevant to the input from the training set or knowledge base during inference to fine-tune the model, improving its performance in dynamic scenarios. However, these methods assume that the model’s training data or knowledge data is accessible, which is often not the case in practice, and they also incur additional retrieval overhead. ",
+        "bbox": [
+            501,
+            638,
+            885,
+            893
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "\\*Equal contribution 1School of Software Engineering, South China University of Technology, China 2Pazhou Laboratory, China 3Zhejiang University, China 4South China Agricultural University, China. 5Chongqing University of Posts and Telecommunications, China 6Key Laboratory of Big Data and Intelligent Robot, Ministry of Education, China. Correspondence to: Mingkui Tan <mingkuitan@scut.edu.cn>, Yuanqing Li <auyqli@scut.edu.cn>, Bin Xiao <xiaobin@cqupt.edu.cn>. ",
+        "bbox": [
+            88,
+            777,
+            473,
+            880
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "arXiv:2505.20633v1 [cs.CL] 27 May 2025 ",
+        "bbox": [
+            24,
+            256,
+            62,
+            710
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            482,
+            922,
+            490,
+            934
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "Preprint. ",
+        "bbox": [
+            89,
+            892,
+            140,
+            905
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "table",
+        "img_path": "images/579bbf4d55100a393be77d2309a1f516c2fe7037118eb2672013aa4a470421ac.jpg",
+        "table_caption": [
+            "Table 1. Characteristics of problem settings for adapting trained models to potentially shifted test domains. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td colspan=\"7\">Setting Knowledge Source Data Target Data Training Loss Testing Loss Learning Type</td></tr><tr><td>Fine-tuning</td><td>×</td><td>×</td><td>xt, yt</td><td>L(xt, yt)</td><td></td><td>Supervised</td></tr><tr><td>Retrieval-Augmented Generation (Fan et al., 2024)</td><td></td><td>×</td><td>xt</td><td></td><td>−</td><td></td></tr><tr><td>Test-Time Adaptation (Wang et al., 2021)</td><td>×</td><td>×</td><td>xt</td><td>×</td><td>L(xt)</td><td>Unsupervised</td></tr><tr><td>Test-Time Training (Hardt &amp; Sun, 2024)</td><td>✓</td><td>$x , y}$</td><td>xt</td><td>×</td><td>L(xt; xs, ys)</td><td>−</td></tr><tr><td>Test-Time Learning (Ours)</td><td>×</td><td>×</td><td>xt</td><td>×</td><td>L(xt)</td><td>Self-supervised</td></tr></table>",
+        "bbox": [
+            89,
+            107,
+            885,
+            218
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            89,
+            250,
+            473,
+            415
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Although recent methods address distributional shifts in test data, they still face the following limitations: 1) Difficulty in acquiring labeled data: High-quality labeled data for SFT of LLMs, especially for domain-specific tasks, is timeconsuming, and becomes more difficult in online model updates. 2) Neglecting autoregressive dependencies: Many existing methods, such as TTA, overlook the autoregressive nature of LLMs, leading to potential harm when using entropy minimization for parameter updates. 3) High training overhead and catastrophic forgetting: Many methods require substantial computational resources to update model parameters and may suffer from catastrophic forgetting. ",
+        "bbox": [
+            88,
+            422,
+            473,
+            603
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "To address these limitations, we propose a Test-Time Learning (TTL) method for Large Language Models, namely TLM, which dynamically adapts LLMs using only unlabeled test data. Specifically, we provide empirical evidence and theoretical insights to reveal that more accurate autoregressive predictions from LLMs can be achieved by minimizing the input perplexity of the unlabeled test data (see Observation 1). Based on this insight, we formulate the TTL process of LLMs as input perplexity minimization, enabling self-supervised enhancement of LLM performance. Furthermore, we observe that high-perplexity test samples contribute more significantly to model updates compared to low-perplexity samples (see Observation 2). Building on this observation, we propose a Sample Efficient Learning Strategy that employs a perplexity-based weighting scheme to actively select and emphasize high-perplexity test samples for backpropagation, thereby facilitating efficient parameter updates during Test-Time Learning. Moreover, we observe that during the Test-Time Learning, Low-Rank Adaptation (LoRA) (Hu et al., 2022) is more effective at mitigating catastrophic forgetting compared to full parameter updates (see Observation 3). Based on this, we utilize LoRA for TTL parameter updates, enabling lightweight training and effectively mitigating catastrophic forgetting, in contrast to updating the full parameters of LLMs. Lastly, we construct a comprehensive benchmark named AdaptEval for TTL. ",
+        "bbox": [
+            88,
+            611,
+            473,
+            897
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            500,
+            250,
+            885,
+            354
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "We summarize our main contributions as follows: ",
+        "bbox": [
+            500,
+            363,
+            825,
+            377
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "• Empirical Insights on Input Perplexity Minimization: We empirically demonstrate that output perplexity can be reduced by minimizing input perplexity. Based on this insight, we adopt input perplexity minimization as the optimization objective, enabling LLMs to adapt effectively to target domains during test time. ",
+        "bbox": [
+            517,
+            395,
+            885,
+            486
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "• Sample Efficient Learning Strategy with High-Perplexity Focus: We propose a Sample Efficient Learning Strategy using a perplexity-based weighting scheme to select high-perplexity test samples for update, ensuring efficient utilization of computational resources. Moreover, we use LoRA to enable lightweight training and mitigate catastrophic forgetting. ",
+        "bbox": [
+            517,
+            496,
+            885,
+            601
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "• Benchmark and Experimental Validation of Test-Time Learning: We establish the AdaptEval benchmark for TTL and demonstrate through experiments that our TLM improves performance by at least $20 \\%$ over original LLMs on domain knowledge adaptation. ",
+        "bbox": [
+            517,
+            611,
+            885,
+            685
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2. Related Work ",
+        "text_level": 1,
+        "bbox": [
+            501,
+            705,
+            637,
+            722
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "The adaptability of deep learning models to dynamic and diverse real-world environments has emerged as a prominent focus in recent research. Various methods have been proposed to enhance model performance under distributional shifts, as summarized in Table 1. ",
+        "bbox": [
+            501,
+            732,
+            885,
+            806
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Fine-Tuning adapts pre-trained models to specific tasks or domains by updating their parameters, such as LoRA, with labeled data (Hu et al., 2022; Thirunavukarasu et al., 2023; Chen et al., 2024c; Wang et al., 2025b). This approach allows models to specialize in domain-specific tasks by leveraging transfer learning to refine their capabilities. ",
+        "bbox": [
+            500,
+            815,
+            885,
+            905
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            336,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            482,
+            922,
+            491,
+            934
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "However, it is often constrained by the need for extensive labeled datasets and high computational costs, which limit its practicality in dynamic environments where data distributions are continuously evolving. In contrast, our work aims to dynamically update the model at test-time using unlabeled input data, eliminating the need for extensive labeled datasets and addressing the challenges posed by evolving data distributions. ",
+        "bbox": [
+            88,
+            85,
+            473,
+            205
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Retrieval-Augmented Generation (RAG) incorporates external knowledge by retrieving relevant information from a knowledge base during inference (Jiang et al., 2024; Qian et al., 2024; Asai et al., 2024). This allows the model to generate more accurate and contextually grounded responses without requiring parameter updates. Qian et al. (2024) propose MemoRAG, a retrieval-augmented generation framework enhanced by long-term memory for improved task performance. RAG is effective for tasks requiring up-todate or domain knowledge but relies heavily on the quality of retrieved information and incurs additional computational latency, limiting its suitability for time-sensitive tasks. ",
+        "bbox": [
+            89,
+            213,
+            473,
+            393
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Test-Time Adaptation (TTA) dynamically updates model parameters during inference by utilizing unlabeled test data (Wang et al., 2021; Niu et al., 2022a; 2023; Chen et al., 2024b;a; Liang et al., 2024; Yi et al., 2024). This approach enables real-time adaptation to distributional shifts, making it suitable for scenarios where labeled data is unavailable or the test data distribution deviates significantly from the training distribution. Wang et al. (2021) propose the test entropy minimization method, which improves model confidence by minimizing prediction entropy through online updates of normalization statistics and affine transformations. Most TTA methods rely on entropy minimization, but this approach is not well-suited for the dynamic updates required by LLMs, as shown in Figure 1a. To address this issue, we propose minimizing the perplexity of test samples as the optimization objective, which effectively enhances the performance of LLMs in dynamic environments. ",
+        "bbox": [
+            89,
+            402,
+            473,
+            659
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Test-Time Training (TTT) retrieves relevant data from the training set or a knowledge base during inference and uses it to fine-tune the models (Niu et al., 2022b; Hardt & Sun, 2024; Hubotter et al.¨ , 2024). This allows the model to leverage adjacent data to better adapt to current test inputs, improving its performance in dynamic scenarios. Hardt & Sun (2024) propose a test-time training approach for LLMs by fine-tuning the model on retrieved nearest neighbors from a large-scale text embedding index. Hubotter et al. ¨ (2024) propose SIFT, a data selection algorithm that optimizes information gain to outperform Nearest Neighbor retrieval for test-time fine-tuning with low computational overhead. However, TTT assumes that the model’s training data or knowledge base is accessible during deployment, and the retrieval process introduces computational overhead, which is often impractical. Unlike TTT, our focus is on TTL, which dynamically updates LLMs during test time using only unlabeled test data. ",
+        "bbox": [
+            89,
+            665,
+            472,
+            892
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            500,
+            85,
+            885,
+            128
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3. Problem Formulation ",
+        "text_level": 1,
+        "bbox": [
+            501,
+            150,
+            702,
+            166
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Without loss of generality, let $P ( x )$ denote the distribution of the training data $\\{ x _ { i } \\} _ { i = 1 } ^ { N }$ , where $x _ { i } \\sim P ( x )$ . The $f _ { \\Theta ^ { \\mathrm { o } } } ( x )$ represent a general Large Language Model (LLM) that has been supervised fine-tuned (SFT) on labeled training data $\\{ ( x _ { i } , y _ { i } ) \\} _ { i = 1 } ^ { N }$ , with parameters $\\Theta ^ { \\circ }$ . During training, the model $f _ { \\Theta ^ { \\mathrm { o } } } ( x )$ is optimized to generate coherent and contextually appropriate sequences by predicting the next token in an autoregressive manner, effectively fitting the training data and generalizing to test data from the same distribution $x \\sim P ( x )$ . However, in real-world deployments, the distribution of test data may differ significantly from the training distribution due to various factors, leading to a phenomenon known as distribution shift. For general LLMs (e.g., LLaMA and Qwen), two primary types of out-of-distribution (OOD) scenarios can occur during inference: 1) Vertical Domain Shift: This occurs when test data contains domain-specific terminology, such as in medical, legal, or technical fields, which the model was not explicitly trained on, impairing its performance. 2) Distributional Shift in Non-Specific Domains: Even without a specific vertical domain, factors like user intent variations and linguistic diversity (e.g., dialects, slang) can shift test data distribution from training data, affecting model understanding and response generation. In these cases, the generative performance of the model $f _ { \\Theta ^ { \\mathrm { o } } } ( x )$ may deteriorate significantly because the model has not been explicitly trained to handle such distribution shifts, resulting in less coherent or contextually appropriate text generation on OOD test samples $x \\sim Q ( x )$ , where $Q ( x ) \\neq P ( x )$ . ",
+        "bbox": [
+            500,
+            175,
+            885,
+            598
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Test-Time Learning (TTL) seeks to improve the performance of LLMs in the target domain by adjusting the model using only test data. Specifically, given a set of OOD test samples $\\{ x _ { j } \\} _ { j = 1 } ^ { M }$ , where $x _ { j } \\sim Q ( x )$ , the goal of TTL is to optimize the model parameters $\\Theta$ to improve the quality and coherence of generated text for these test samples. Formally, TTL can be framed as the following optimization problem, where the objective is to minimize an unsupervised criterion defined over the test data: ",
+        "bbox": [
+            501,
+            606,
+            885,
+            741
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/f1ef84e5ec80d23dcc86050728287392aa158528ef096c95c95dce012ff8acc8.jpg",
+        "text": "$$\n\\operatorname* { m i n } _ { \\overline { { \\Theta } } } \\mathcal { L } ( x ; \\Theta ) , x \\sim Q ( x ) ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            602,
+            757,
+            781,
+            782
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "where ${ \\overline { { \\Theta } } } \\subseteq \\Theta$ represents the subset of model parameters to be updated during the TTL. The TTL objective $\\mathcal { L } ( \\cdot )$ can take various forms, such as minimizing the perplexity. The key challenge of TTL is to design efficient adaptation strategies that can utilize unlabeled test data to improve performance on OOD samples while maintaining training efficiency and effectively mitigating catastrophic forgetting. ",
+        "bbox": [
+            500,
+            799,
+            885,
+            905
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            482,
+            922,
+            491,
+            934
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Minimization Strategies. ",
+        "bbox": [
+            88,
+            233,
+            346,
+            258
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "image",
+        "img_path": "images/2a577c363deb4f90d965f9b76b20fb0858187f7ccf6a97efd3e354a9240b3cca.jpg",
+        "image_caption": [
+            "ity to output under Llama3.1-8B-Instruct. time perplexity minimization. ",
+            "Figure 1. Summary of our exploration and observations: (a) demonstrates that perplexity minimization improves the performance of LLMs, while entropy minimization (Wang et al., 2021) may harm their performance; (b) reveals that the trend of LLM’s perplexity to the input ${ \\mathcal { P } } ( x )$ and perplexity to the output $\\mathcal { P } ( y | x )$ is the same (results are normalized), i.e., we can $\\operatorname* { m i n } _ { \\Theta } \\mathcal { P } ( y | x ; \\Theta )$ by $\\operatorname* { m i n } _ { \\Theta } \\mathcal { P } ( x ; \\Theta )$ ; and (c) emphasizes that training on high-perplexity samples makes more contribution than low-perplexity ones. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            88,
+            82,
+            883,
+            251
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "4. Test-Time Learning for LLMs ",
+        "text_level": 1,
+        "bbox": [
+            89,
+            349,
+            361,
+            367
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "In this paper, we propose a Test-Time Learning (TTL) method for Large Language Models (LLMs) called TLM, which dynamically adapts LLMs using only unlabeled test data. The pipeline of TLM is shown in Algorithm 1, our proposed TLM is composed of three key components. 1) Input Perplexity Minimization Objective: Inspired by the strong correlation between input perplexity and output perplexity, we adopt input perplexity minimization as the optimization objective. This enables LLMs to better fit the target data distribution during test time, as detailed in Sec. 4.1. 2) Sample-Efficient Learning Strategy: Not all test samples equally impact model updates. Employing a perplexitybased weighting scheme, the model actively selects and emphasizes high-perplexity test samples for backpropagation, thereby enabling efficient parameter updates during Test-Time Learning (c.f. Sec. 4.2). 3) Lightweight Parameter Updates via LoRA: To mitigate catastrophic forgetting and reduce computational costs, we integrate LoRA into TTL. By updating only a small subset of model parameters, LoRA enables lightweight training and effectively mitigates catastrophic forgetting, making our proposed method suitable for real-world deployment $\\cdot . f .$ Sec. 4.3). ",
+        "bbox": [
+            88,
+            376,
+            473,
+            708
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "4.1. Perplexity Minimization for Test-Time Learning ",
+        "text_level": 1,
+        "bbox": [
+            88,
+            724,
+            455,
+            739
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Perplexity (Bengio et al., 2000) is a widely used measure in language modeling that quantifies how well a model predicts a sequence of tokens (Devlin et al., 2019; Brown et al., 2020). Given a sequence of tokens $\\{ x _ { 1 } , x _ { 2 } , . . . , x _ { T } \\}$ , the perplexity $\\mathcal { P }$ is defined as the exponentiation of the average negative log-likelihood of the predicted tokens: ",
+        "bbox": [
+            88,
+            748,
+            473,
+            838
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/98b813df46fa37e772ed160e17bf3e9dfb82acd5557956fff7a8036ea0beaa7c.jpg",
+        "text": "$$\n\\begin{array} { r } { \\mathcal { P } \\big ( \\{ x _ { 1 } , x _ { 2 } , . . . , x _ { T } \\} \\big ) = e ^ { \\big ( - \\frac { 1 } { T } \\sum _ { t = 1 } ^ { T } \\log p ( x _ { t } | x _ { 1 : t - 1 } ; \\Theta ) \\big ) } , } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            101,
+            845,
+            441,
+            867
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where $\\log p ( x _ { t } | x _ { 1 : t - 1 } ; \\Theta )$ is the conditional probability of predicting token $t _ { i }$ given the previous tokens, parameter-",
+        "bbox": [
+            88,
+            875,
+            473,
+            905
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Algorithm 1 The pipeline of proposed TLM. ",
+        "text_level": 1,
+        "bbox": [
+            501,
+            352,
+            794,
+            367
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Input: Test samples $\\mathcal { D } _ { T e s t } = \\{ x _ { j } \\} _ { j = 1 } ^ { M }$ , the trained LLM $f _ { \\Theta } ( \\cdot )$ , LoRA $\\Delta \\Theta$ with trainable parameters $\\boldsymbol { B }$ and $\\mathcal { A }$ batch size $B$ .   \n1: Initialize LoRA parameters $\\Delta \\Theta$ .   \n2: Add LoRA parameters to trained LLM $\\tilde { \\Theta } = \\Theta + \\Delta \\Theta$ .   \n3: for a batch $\\mathcal { X } = \\{ x _ { b } \\} _ { b = 1 } ^ { B }$ do   \n4: Calculate predictions $\\tilde { y }$ for all $x \\in \\mathcal { X }$ via $f _ { \\Theta } ( \\cdot )$ .   \n5: Calculate sample selection score $S ( x )$ via Eqn. (6).   \n6: Update LLM $\\bar { ( \\Theta ) }$ with Eqn.(5).   \n7: end for ",
+        "bbox": [
+            503,
+            372,
+            885,
+            522
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Output: The output answer $\\{ \\tilde { y } \\} _ { j = 1 } ^ { M }$ for all $x \\in \\mathcal { D } _ { T e s t }$ ized by $\\Theta$ . A lower perplexity indicates that the model’s predictions are more confident and closely align with the true distribution of the data, which implies better model fitting (Jumelet & Zuidema, 2023). Therefore, for a given question-answer pair $\\{ x , y \\}$ , minimizing the perplexity of the model’s response $y$ can enhance the model’s ability to fit the target data distribution, leading to improved performance on out-of-distribution (OOD) data. Specifically, by minimizing the perplexity $\\mathcal { P } ( \\boldsymbol { y } | \\boldsymbol { x } ; \\Theta )$ of the answer $y$ given the input $x$ , which can be formulated as: ",
+        "bbox": [
+            500,
+            523,
+            861,
+            540
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            501,
+            570,
+            885,
+            722
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/4fb260098c4a1282103ade15491a19fbfb6ca8a32629a8ff7a79b0d0be32105e.jpg",
+        "text": "$$\n\\operatorname* { m i n } _ { \\Theta } \\mathcal { P } ( y | x ; \\Theta ) = \\operatorname* { m i n } _ { \\Theta } e ^ { ( - \\frac { 1 } { T } \\sum _ { t = 1 } ^ { T } \\log p ( y _ { t } | x , y _ { 1 : t - 1 } ; \\Theta ) ) } .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            508,
+            731,
+            857,
+            757
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "This minimization process improves the model’s performance in the target data distribution. However, during the testing phase, we can only access the user’s input $x$ and not the ground truth output $y$ . To address this limitation, we hypothesize that minimizing the perplexity of the input $x$ , denoted as $\\operatorname* { m i n } _ { \\Theta } \\mathcal { P } ( x ; \\Theta )$ , may reduce the perplexity of the model’s response $y$ . The mathematical justification for this transformation is based on the assumption that the model parameters $\\Theta$ influence both $\\mathcal { P } ( \\boldsymbol { y } | \\boldsymbol { x } ; \\boldsymbol { \\Theta } )$ and $\\mathcal { P } ( x ; \\Theta )$ in a related manner, which can be described as follows: ",
+        "bbox": [
+            501,
+            765,
+            885,
+            905
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            480,
+            924,
+            490,
+            934
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            88,
+            84,
+            423,
+            99
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Assumption 1 (Autoregressive Property): The LLM generates each token $y _ { t }$ based on the input $x$ and previously generated tokens $y _ { 1 : t - 1 }$ : $\\mathcal { P } ( y _ { t } | x , y _ { 1 : t - 1 } ; \\Theta )$ . The standard next-token prediction objective makes model predictions inherently conditional on previous context quality. ",
+        "bbox": [
+            89,
+            108,
+            473,
+            183
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Assumption 2 (Shared Parameter Influence): LLM parameters $\\Theta$ influence both the input perplexity $\\mathcal { P } ( x ; \\Theta )$ and the conditional output perplexity $\\mathcal { P } ( \\boldsymbol { y } | \\boldsymbol { x } ; \\Theta )$ . This assumption is valid across various LLM architectures, such as encoder-only and decoder-only models. ",
+        "bbox": [
+            88,
+            190,
+            473,
+            265
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Reducing Output Perplexity through Input Perplexity Minimization. Minimizing the perplexity to the input $\\mathcal { P } ( x ; \\Theta )$ is equivalent to maximizing the input generation probability $P ( x ; \\Theta )$ . We employ a gradient-based theoretical analysis to formalize the intuition that questionconditioned updates benefit answer predictions, based on a key assumption. Let $\\Theta ^ { \\prime } = \\Theta - \\eta \\nabla \\Theta \\big ( - \\log P ( \\boldsymbol { x } ; \\Theta ) \\big )$ denote the updated parameters after a single TTL step. Using a first-order Taylor expansion: ",
+        "bbox": [
+            88,
+            273,
+            473,
+            409
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/045aed600e81b8e98f4043b491d4c0dbc593f60e1504ef65c01a1cde34e20ff5.jpg",
+        "text": "$$\n\\begin{array} { r l r } { \\log P _ { \\Theta ^ { \\prime } } ( y | x ) } & { \\approx \\mathcal { O } ( \\eta ^ { 2 } ) + \\log P _ { \\Theta } ( y | x ) } & { ( 4 } \\\\ & { } & { + \\eta \\underbrace { \\left[ \\nabla _ { \\Theta } \\log P ( x ; \\Theta ) \\right] ^ { \\top } \\nabla _ { \\Theta } \\log P _ { \\Theta } ( y | x ) } _ { \\mathrm { C r o s s - g r a d i e n t t e r m } } , } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            89,
+            415,
+            467,
+            472
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "where $y$ is the answer to the question $x$ . Our core assumption is that $\\langle \\nabla _ { x } , \\nabla _ { y } \\rangle = \\left[ \\nabla _ { \\Theta } \\log P ( x ; \\theta ) \\right] ^ { \\top } \\nabla _ { \\Theta } \\log P _ { \\Theta } ( y | x ) \\ge$ 0 for question-answer pairs with strong semantic alignment. Under this condition, the cross-gradient term becomes nonnegative, guaranteeing: $\\log P _ { \\Theta ^ { \\prime } } ( y | x ) \\ge \\log P _ { \\Theta } ( y | x )$ for small $\\eta$ (We compute the gradient inner product using 400 batches (batch size $= 5 0$ ) of QA pairs from the Domain-Bench on LLaMA3.1-8B. Results show $9 8 . 7 5 \\%$ of batchsamples satisfy the non-negativity condition, with average $\\langle \\nabla _ { x } , \\nabla _ { y } \\rangle = + 5 . 6 0 )$ . ",
+        "bbox": [
+            89,
+            482,
+            473,
+            635
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "This form is consistent with the autoregressive property in Assumption 1. Naturally, based on the Shared Parameter Influence in Assumption 2, minimizing $\\mathcal { P } ( x ; \\Theta )$ enhances the model’s overall understanding and representation of $x$ . This improved representation facilitates more accurate and confident next-token predictions, which is expected to reduce $\\mathcal { P } ( \\boldsymbol { y } | \\boldsymbol { x } ; \\boldsymbol { \\Theta } )$ . To further investigate this, we conduct a preliminary study, leading to the following observation: ",
+        "bbox": [
+            88,
+            641,
+            473,
+            762
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Observation 1: Trend of LLM’s perplexity to the input $\\mathcal { P } ( x ; \\Theta )$ and perplexity to the output $\\mathcal { P } ( \\boldsymbol { y } | \\boldsymbol { x } ; \\Theta )$ is the same. In the context of LLMs, it is observed that the perplexity associated with the input $\\mathcal { P } ( x ; \\Theta )$ and the perplexity of the output $\\mathcal { P } ( \\boldsymbol { y } | \\boldsymbol { x } ; \\boldsymbol { \\Theta } )$ exhibit similar trends. Specifically, we compute the trends of the perplexity of the input $\\mathcal { P } ( x ; \\Theta )$ and the perplexity of the output $\\mathcal { P } ( \\boldsymbol { y } | \\boldsymbol { x } ; \\boldsymbol { \\Theta } )$ on the four collected vertical domain datasets (see Supp. B) using Llama3.1-8b-Instruct (Dubey et al., 2024) with varying degrees of training (for ease of presentation, we show the normalized results here). As shown in Figure 1b, the relationship between input perplexity $\\mathcal { P } ( x ; \\Theta )$ and output perplexity $\\mathcal { P } ( \\boldsymbol { y } | \\boldsymbol { x } ; \\Theta )$ demonstrates a strong positive correlation across all four vertical domains. This indicates that reducing output perplexity is possible by minimizing input perplexity in LLMs. ",
+        "bbox": [
+            89,
+            770,
+            473,
+            905
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "image",
+        "img_path": "images/5a78cc3563f398e6433c4b7ea5ae19decf12b1bfc29b539335bc50a7a2309ce8.jpg",
+        "image_caption": [
+            "Figure 2. Comparison of prevent forgetting on DomainBench under Llama3.1-8B-Instruct. This observation reveals that LoRA (Hu et al., 2022) prevents catastrophic forgetting more effectively than Full-Param updates across DomainBench (see Supp. B). "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            531,
+            82,
+            849,
+            227
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            500,
+            337,
+            885,
+            443
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "4.2. Sample Efficient Learning Strategy ",
+        "text_level": 1,
+        "bbox": [
+            503,
+            459,
+            774,
+            474
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Minimizing input perplexity $\\mathcal { P } ( x ; \\Theta )$ can enhance the performance of LLMs on target distribution data, as shown in Sec. 4.1. However, our intuition is that different test samples may produce varying effects during Test-Time Learning. To investigate this, we conduct a preliminary study, leading to the following observation: ",
+        "bbox": [
+            501,
+            483,
+            885,
+            573
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Observation 2: High-perplexity samples contribute more to LLM updates than low-perplexity ones. We select different proportions of samples (the samples are pre-sorted according to their perplexity values $\\mathcal { P } ( x ; \\Theta ) )$ for Test-Time Learning, and the resulting model is evaluated on all test samples. As shown in Figure 1c, we find that: 1) training the test samples with high-perplexity makes more contribution than low-perplexity ones, and 2) training on test samples with very low-perplexity may hurt performance. The possible reason is that low-perplexity samples are already well-modeled by the pre-trained LLMs, offering little new information for further learning, which could lead to overfitting or a lack of generalization. In contrast, highperplexity samples present more challenging data, driving greater adaptation during Test-Time Learning. ",
+        "bbox": [
+            500,
+            582,
+            885,
+            808
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Based on Observation 2, we propose a Sample Efficient Learning Strategy to actively select samples for backpropagation, thereby enabling efficient Test-Time Learning. Specifically, we design an active sample selection score for each sample, denoted as $S ( x )$ . The criterion is that a sample should be informative for Test-Time Learning, providing enough information to drive the model’s learning process, referred to as an informative sample. By setting $S ( x ) = 0$ for uninformative samples, we can reduce unnecessary backpropagation computations during Test-Time Learning, thereby improving the overall efficiency. Relying on the sample score $S ( x )$ , we use perplexity loss for model training. Then, the sample-efficient perplexity minimization is to minimize the following objective: ",
+        "bbox": [
+            501,
+            815,
+            885,
+            905
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            482,
+            922,
+            491,
+            934
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "table",
+        "img_path": "images/7bbf91b5a2164176a8392c6e0cff0ac4a4cdef609c645d0ed496f9a553a68bb3.jpg",
+        "table_caption": [
+            "Table 2. Comparison of experimental results on the DomainBench and InstructionBench of the AdaptEval (see Supp. B). We mark the better scores in bold for better visualization and easier interpretation. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"2\">Method</td><td colspan=\"4\">DomainBench</td><td colspan=\"3\">InstructionBench</td></tr><tr><td>Geography</td><td>Agriculture</td><td>Medicine</td><td>Finance</td><td>Alpaca-GPT4</td><td>Dolly</td><td>InstructionWild</td></tr><tr><td>Llama3.2-3B-Instruct</td><td>0.2395</td><td>0.0850</td><td>0.1411</td><td>0.2229</td><td>0.3564</td><td>0.3378</td><td>0.2562</td></tr><tr><td>Tent</td><td>0.1825</td><td>0.0150</td><td>0.1571</td><td>0.1093</td><td>0.0336</td><td>0.2105</td><td>0.0264</td></tr><tr><td>EATA</td><td>0.0064</td><td>0.0227</td><td>0.0259</td><td>0.0149</td><td>0.1410</td><td>0.0090</td><td>0.0122</td></tr><tr><td>COME</td><td>0.1000</td><td>0.1181</td><td>0.1542</td><td>0.1200</td><td>0.0437</td><td>0.2186</td><td>0.0697</td></tr><tr><td>TLM (Ours)</td><td>0.2893</td><td>0.1687</td><td>0.2308</td><td>0.2953</td><td>0.3883</td><td>0.3470</td><td>0.2824</td></tr><tr><td>Llama3-8B-Instruct</td><td>0.2450</td><td>0.0834</td><td>0.1265</td><td>0.2329</td><td>0.3752</td><td>0.3671</td><td>0.2608</td></tr><tr><td>Tent</td><td>0.0778</td><td>0.0067</td><td>0.0105</td><td>0.0372</td><td>0.2001</td><td>0.0036</td><td>0.0820</td></tr><tr><td>EATA</td><td>0.2081</td><td>0.0017</td><td>0.0127</td><td>0.1257</td><td>0.1397</td><td>0.1725</td><td>0.1088</td></tr><tr><td> COME</td><td>0.0048</td><td>0.0039</td><td>0.0301</td><td>0.0328</td><td>0.1424</td><td>0.0700</td><td>0.0240</td></tr><tr><td>TLM (Ours)</td><td>0.3212</td><td>0.1319</td><td>0.2372</td><td>0.3242</td><td>0.4274</td><td>0.3785</td><td>0.2932</td></tr><tr><td>Llama2-13B-chat</td><td>0.2182</td><td>0.0840</td><td>0.1315</td><td>0.2382</td><td>0.3741</td><td>0.2892</td><td>0.2781</td></tr><tr><td>Tent</td><td>0.0320</td><td>0.0196</td><td>0.1131</td><td>0.0049</td><td>0.0955</td><td>0.0076</td><td>0.1108</td></tr><tr><td>EATA</td><td>0.2800</td><td>0.0771</td><td>0.1348</td><td>0.1155</td><td>0.0811</td><td>0.0513</td><td>0.1006</td></tr><tr><td>COME</td><td>0.1981</td><td>0.0380</td><td>0.1239</td><td>0.0172</td><td>0.0806</td><td>0.0000</td><td>0.0189</td></tr><tr><td>TLM (Ours)</td><td>0.2668</td><td>0.1013</td><td>0.2179</td><td>0.2760</td><td>0.3966</td><td>0.3007</td><td>0.2865</td></tr><tr><td>Qwen2.5-7B-Instruct</td><td>0.2649</td><td>0.0981</td><td>0.1313</td><td>0.2739</td><td>0.4439</td><td>0.3121</td><td>0.2866</td></tr><tr><td>Tent</td><td>0.2362</td><td>0.1180</td><td>0.0524</td><td>0.1648</td><td>0.2132</td><td>0.1946</td><td>0.1710</td></tr><tr><td>EATA</td><td>0.2109</td><td>0.1203</td><td>0.1334</td><td>0.2846</td><td>0.0000</td><td>0.2056</td><td>0.1710</td></tr><tr><td> COME</td><td>0.2306</td><td>0.1180</td><td>0.0463</td><td>0.1780</td><td>0.3781</td><td>0.2182</td><td>0.1710</td></tr><tr><td>TLM (Ours)</td><td>0.3081</td><td>0.1652</td><td>0.2394</td><td>0.3311</td><td>0.4608</td><td>0.3177</td><td>0.3482</td></tr></table>",
+        "bbox": [
+            91,
+            126,
+            882,
+            421
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            88,
+            454,
+            473,
+            574
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/ec18df76145eb7d06b8e8d15bfc279c10ea41ddbdd6a7cd760d31db7e8b7f346.jpg",
+        "text": "$$\n\\operatorname* { m i n } _ { \\overline { { \\Theta } } } S ( x ) \\mathcal { P } ( x ; \\Theta ) .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            215,
+            580,
+            343,
+            604
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "To obtain the active sample selection score $S ( x )$ , we propose a perplexity-based weighting scheme to accurately identify reliable samples and emphasize their contribution to Test-Time Learning. Formally, the active sample selection score $S ( x )$ can be calculated as follows: ",
+        "bbox": [
+            88,
+            609,
+            473,
+            685
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/526e03db5766872074616dc8ea43ecea2541ca2600f0e6ab1dc90b143e0504d8.jpg",
+        "text": "$$\n\\begin{array} { r } { S ( x ) = \\lambda \\cdot e ^ { [ \\log \\mathcal { P } ( x ; \\Theta ) - \\log \\mathcal { P } _ { 0 } ] } \\cdot \\mathbb { I } _ { \\left\\{ \\mathcal { P } ( x ; \\Theta ) > \\mathcal { P } _ { 0 } \\right\\} } ( \\mathbf { x } ) , } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            111,
+            689,
+            436,
+            710
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "where $\\mathbb { I } _ { \\{ \\cdot \\} } ( \\cdot )$ is an indicator function, $\\lambda$ and $\\mathcal { P } _ { 0 }$ are a predefined threshold. The above weighting function excludes low-perplexity samples from Test-Time Learning and assigns higher weights to high-perplexity test samples, enabling them to contribute more significantly to model updates. It is important to note that evaluating $S ( x )$ does not involve any gradient backpropagation. ",
+        "bbox": [
+            88,
+            714,
+            475,
+            820
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "4.3. Modulating Parameters for Test-Time Learning ",
+        "text_level": 1,
+        "bbox": [
+            88,
+            837,
+            452,
+            852
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Observation3: Low-Rank Adaptation prevents catastrophic forgetting more effectively than Full-Param updates during test-time learning. We conduct Test-Time ",
+        "bbox": [
+            88,
+            861,
+            475,
+            905
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Learning on DomainBench (see Supp. B) using both Full-Param and Low-Rank Adaptation (LoRA) (Hu et al., 2022) updates, and evaluate the LLM’s performance on GSM8K (Cobbe et al., 2021). From Figure 2, we observe that LoRA, compared to Full-Param updates, better preserves the model’s originally learned general knowledge, thereby demonstrating a significant regularization effect. This is likely due to LoRA’s ability to fine-tune only a small subset of model parameters, which effectively reduces the risk of overfitting and catastrophic forgetting. ",
+        "bbox": [
+            501,
+            454,
+            885,
+            604
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Based on Observation 3, we adopt the LoRA for Test-Time Learning, where the optimization objective is Eqn. 5 is modified accordingly as follows: ",
+        "bbox": [
+            500,
+            612,
+            885,
+            657
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/a3829bf0498bed0eac105e5658febe0805b1af8cf0fff42a85d804ca49322a74.jpg",
+        "text": "$$\n\\operatorname* { m i n } _ { \\tilde { \\Theta } } S ( x ) \\mathcal { P } ( x ; \\tilde { \\Theta } ) = \\operatorname* { m i n } _ { \\Delta \\Theta } S ( x ) \\mathcal { P } ( x ; \\Theta + \\Delta \\Theta ) ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            534,
+            665,
+            846,
+            691
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "where $\\Delta \\Theta = B \\mathbf { A }$ is zero at the beginning of training, with A using random Gaussian initialization and $\\boldsymbol { B }$ set to zero, and we update only $\\Delta \\Theta$ during the Test-Time Learning. ",
+        "bbox": [
+            500,
+            700,
+            885,
+            746
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "5. Experiments ",
+        "text_level": 1,
+        "bbox": [
+            500,
+            765,
+            627,
+            782
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "5.1. Experimental Settings ",
+        "text_level": 1,
+        "bbox": [
+            501,
+            791,
+            684,
+            806
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Datasets. To evaluate the effectiveness of our TLM, we construct a comprehensive benchmark named AdaptEval, designed to cover diverse tasks and domains. AdaptEval consists of three categories of datasets. 1) DomainBench includes four vertical domain knowledge datasets: Geography, Agriculture, Medicine, and Finance, and is designed to evaluate the LLM adaptability to specialized fields. 2) InstructionBench contains three general-purpose instructionfollowing datasets: Alpaca-GPT4, Dolly, and Instruction-Wild, and focuses on the LLM adaptability to instructionbased tasks. 3) ReasoningBench comprises three reasoning capability datasets: GSM8K, MetaMath, and Logiqa, and aims to assess the LLM logical reasoning and problemsolving abilities. These datasets collectively form a diverse and challenging evaluation suite, designed to thoroughly assess the effectiveness of TLM in adapting LLMs to tasks requiring vertical knowledge, instruction-following capabilities, and logical reasoning under distribution shifts. More details can be found in Supp. B. ",
+        "bbox": [
+            500,
+            815,
+            885,
+            905
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            336,
+            58,
+            637,
+            70
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "discarded",
+        "text": "6 ",
+        "bbox": [
+            482,
+            924,
+            491,
+            934
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "table",
+        "img_path": "images/7b8e14612e335a725824f35d9fba234c42e0f7e2111400202be9ce7e80dcd495.jpg",
+        "table_caption": [
+            "Table 3. Comparison experimental results on the ReasoningBench. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"2\">Method</td><td colspan=\"3\">ReasoningBench</td></tr><tr><td>GSM8K</td><td>MetaMath</td><td>Logiqa</td></tr><tr><td>Llama3.2-3B-Instruct</td><td>0.7756</td><td>0.7976</td><td>0.4194</td></tr><tr><td>Tent</td><td>0.7726</td><td>0.7412</td><td>0.4012</td></tr><tr><td>EATA</td><td>0.0032</td><td>0.0310</td><td>0.0284</td></tr><tr><td>•COME</td><td>0.7710</td><td>0.7308</td><td>0.4196</td></tr><tr><td>TLM (Ours)</td><td>0.9096</td><td>0.8818</td><td>0.4572</td></tr><tr><td>Llama3-8B-Instruct</td><td>0.7610</td><td>0.6912</td><td>0.4550</td></tr><tr><td>Tent</td><td>0.7578</td><td>0.6550</td><td>0.4378</td></tr><tr><td>EATA</td><td>0.0250</td><td>0.5454</td><td>0.2192</td></tr><tr><td>COME</td><td>0.7479</td><td>0.6460</td><td>0.2180</td></tr><tr><td>TLM (Ours)</td><td>0.8074</td><td>0.7006</td><td>0.4868</td></tr><tr><td>Llama2-13B-chat</td><td>0.3458</td><td>0.2498</td><td>0.3992</td></tr><tr><td>Tent</td><td>0.2706</td><td>0.0040</td><td>0.2566</td></tr><tr><td>EATA</td><td>0.3392</td><td>0.0572</td><td>0.2606</td></tr><tr><td>•COME</td><td>0.3272</td><td>0.2646</td><td>0.2462</td></tr><tr><td>TLM (Ours)</td><td>0.3508</td><td>0.2576</td><td>0.4124</td></tr><tr><td>Qwen2.5-7B-Instruct</td><td>0.8378</td><td>0.7430</td><td>0.5952</td></tr><tr><td>Tent</td><td>0.8455</td><td>0.7412</td><td>0.5934</td></tr><tr><td>EATA</td><td>0.7098</td><td>0.0070</td><td>0.2172</td></tr><tr><td> COME</td><td>0.8556</td><td>0.7559</td><td>0.5908</td></tr><tr><td>TLM (Ours)</td><td>0.8424</td><td>0.7560</td><td>0.6046</td></tr></table>",
+        "bbox": [
+            93,
+            113,
+            467,
+            409
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            89,
+            445,
+            473,
+            640
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Metrics. We use Rouge-Lsum (R-Lsum) (Lin, 2004) as the evaluation metric for DomainBench and InstructionBench, while Exact Match $( E M )$ (Chang et al., 2024) is used for ReasoningBench. More metrics can be found in Supp. C.1. ",
+        "bbox": [
+            88,
+            648,
+            473,
+            709
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "LLMs and Baseline. We use a diverse range of LLMs of varying sizes and types, including Llama3.2-3B-Instruct, Llama3-8B-Instruct (Dubey et al., 2024), Llama2-13B-Chat (Touvron et al., 2023a), and Qwen2.5-7B-Instruct (Yang et al., 2024). We evaluate our TLM against the baseline methods, Tent (Wang et al., 2021), EATA (Niu et al., 2022a), and COME (Zhang et al., 2025). They are state-of-the-art TTA methods that update model parameters using unlabeled data. We adapt Tent, EATA, and COME to the offline setting for a fair comparison. The implementation details can be found in the Supp. C. ",
+        "bbox": [
+            88,
+            717,
+            473,
+            882
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Implementation Details. We use Adam as the update rule, with a batch size of 1 and the learning rate of $5 e { - } 5 /$ $5 e { - } 5 / \\ 1 e { - } 6$ for DomainBench/ InstructionBench/ ReasoningBench. The $\\lambda$ and $\\mathcal { P } _ { 0 }$ in Eqn. 6 are set to 0.10 and $e ^ { 3 }$ To improve the stability of outputs produced by LLMs, we apply greedy decoding with a temperature of 0 across all experiments. More details in Supp. C.2. The source code is available at https://github.com/Fhujinwu/TLM ",
+        "bbox": [
+            88,
+            890,
+            472,
+            905
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "table",
+        "img_path": "images/0bb2ade3f4d8f99db8d8cca014246d65ee69bd9f0fd2dc200b487bc7cf87e023.jpg",
+        "table_caption": [
+            "Table 4. Experimental results for the component of our proposed method on the DomainBench of the AdaptEval. The SEL means “Sample Efficient Learning Strategy” and the (·) indicates relative improvement over the result in the previous column. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Version</td><td>Llama3-8B</td><td>Ours (w/o SEL)</td><td>Ours</td></tr><tr><td>Geography</td><td>0.2450</td><td>0.3190(+30.2%)</td><td>0.3212(+0.7%)</td></tr><tr><td>Agriculture</td><td>0.0834</td><td>0.1255(+50.5%)</td><td>0.1319(+5.1%)</td></tr><tr><td>Medicine</td><td>0.1265</td><td>0.2326(+83.9%)</td><td>0.2372(+2.0%)</td></tr><tr><td>Finance</td><td>0.2329</td><td>0.3222(+38.3%)</td><td>0.3242(+0.6%)</td></tr><tr><td>#Backwards</td><td></td><td>5000</td><td>4772(-4.6%)</td></tr></table>",
+        "bbox": [
+            503,
+            154,
+            879,
+            247
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            500,
+            285,
+            885,
+            390
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "5.2. Comparison Experiments ",
+        "text_level": 1,
+        "bbox": [
+            501,
+            406,
+            709,
+            421
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "We compare our proposed TLM, the original LLM, Tent, EATA, and COME to demonstrate the superior performance of our method. We conduct experiments on different types of datasets, including DomainBench, InstructionBench, and ReasoningBench, as summarized in Table 2 and 3. More detailed results can be found in Supp. D. ",
+        "bbox": [
+            500,
+            430,
+            885,
+            520
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Our proposed TLM is consistently better than the original LLMs. From Table 2 and 3, our method consistently outperforms the original LLMs across all types of datasets and different LLM architectures. For instance, on the four datasets of DomainBench, the proposed TLM achieves at least a $2 0 . 0 0 \\%$ improvement over the original LLMs. Specifically, on the Geography dataset, our proposed TLM improves performance by a relative $2 0 . 7 9 \\%$ $( 0 . 2 3 9 5 \\ $ 0.2893) compared to Llama3.2-3B-Instruct. ",
+        "bbox": [
+            501,
+            529,
+            885,
+            664
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Superior performance on Domain Knowledge Adaptation. To evaluate the effectiveness of our proposed TLM in adapting to vertical domain knowledge, we conduct experiments on DomainBench, which includes four datasets. From Table 2, the results demonstrate that the proposed TLM outperforms the original LLMs, Tent, and EATA, achieving significant performance improvements. For example, in test-time updating of model parameters on Qwen2.5-7B-Instruct, the proposed method yields a relatively $3 7 . 3 2 \\%$ $0 . 1 2 0 3  0 . 1 6 5 2 $ improvement on the Agriculture dataset compared to the EATA. ",
+        "bbox": [
+            501,
+            672,
+            885,
+            837
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Superior performance on instruction-based task. As shown in Table 2, our proposed TLM achieves substantial improvements over the original LLMs and Tent across all instruction-based datasets. For instance, on the Alpaca-",
+        "bbox": [
+            500,
+            845,
+            885,
+            905
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            482,
+            922,
+            490,
+            934
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "image",
+        "img_path": "images/e6d6d03d1470f325bc370ead5ad57eaed002f6fd1ac42a2869af5eca0f442cdf.jpg",
+        "image_caption": [
+            "Figure 3. Effects of different perplexity margins $\\mathcal { P } _ { 0 }$ in Eqn. 6. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            106,
+            82,
+            454,
+            236
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "GPT4 dataset, our proposed TLM improves the performance of Llama3.2-8B-Instruct by $1 3 . 9 1 \\%$ $( 0 . 3 7 5 2  $ 0.4274), showing a relative improvement of about $1 1 3 . 6 0 \\%$ $( 0 . 2 0 0 1  0 . 4 2 7 4 )$ ) compared to Tent, demonstrating its effective adaptation to general instruction-following tasks. ",
+        "bbox": [
+            88,
+            291,
+            473,
+            367
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Superior performance on logical reasoning task. As shown in Table 3, our proposed TLM significantly outperforms the original LLMs and Tent on all reasoning datasets in ReasoningBench. For instance, on the GSM8K dataset, our proposed TLM improves the performance of Llama3- 8B-Instruct by $6 . 1 0 \\%$ , highlighting its ability to enhance logical reasoning under complex arithmetic and problemsolving tasks. These results confirm that our method not only adapts effectively to distributional shifts but also enhances the reasoning capabilities of LLMs during test time. ",
+        "bbox": [
+            89,
+            376,
+            473,
+            525
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "5.3. Ablation Studies ",
+        "text_level": 1,
+        "bbox": [
+            88,
+            542,
+            233,
+            556
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Effectiveness of Input Perplexity Minimization. To evaluate the effectiveness of input perplexity minimization, we conduct experiments comparing the performance of Llama3- 8B-Instruct and our method without the Sample Efficient Learning Strategy (Ours w/o SEL). As shown in Table 4, input perplexity minimization significantly improves the performance of LLMs across all datasets compared to the original Llama3-8B-Instruct, demonstrating that minimizing input perplexity effectively enhances the LLM’s ability to adapt to target domains. Specifically, by minimizing input perplexity during Test-Time to update the LLM parameters, we achieve a relative performance improvement of over $30 \\%$ compared to the original Llama3-8B-Instruct model. Notably, on the Medicine dataset, the improvement reaches $8 3 . 9 \\%$ . The effectiveness of input perplexity minimization $\\mathcal { P } ( x ; \\Theta )$ lies in its ability to enhance the LLM’s understanding and representation of the input, which helps improve the model’s adaptation to the target domain data. ",
+        "bbox": [
+            89,
+            565,
+            473,
+            837
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Effectiveness of Sample Efficient Learning Strategy in Eqn. 5. The Sample Efficient Learning Strategy improves the efficiency of TTL by actively selecting high-perplexity samples that contribute more to the LLM’s adaptation. As shown in Table 4, by prioritizing the most informative and relevant test samples for backpropagation, this strategy not only further enhances LLM performance but also reduces unnecessary computational overhead. Specifically, using the Sample Efficient Learning Strategy results in a relative performance improvement of approximately $2 . 0 \\%$ on the target test data, while reducing the training data by about $5 . 0 \\%$ . For instance, the relative performance improvement on the Agriculture dataset is $5 . 1 \\%$ . ",
+        "bbox": [
+            88,
+            845,
+            473,
+            905
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/8619b5ed02db16532d2bf15eefcab199795054c85ef1905c8959ea4beec14ad3.jpg",
+        "table_caption": [
+            "Table 5. Experimental results of our proposed method in the Online setting. Geo., Agri., Med., and Fin. represent the Geography, Agriculture, Medicine, and Finance, respectively. LLM refers to Llama3-8B-Instruct. NF4 is 4-bit NormalFloat. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"2\">Method</td><td colspan=\"4\">DomainBench</td><td rowspan=\"2\">#Backwards</td></tr><tr><td>Geo.</td><td>Agri.</td><td>Med.</td><td>Fin.</td></tr><tr><td>LLM</td><td>0.2450</td><td>0.0834</td><td>0.1265</td><td>0.2329</td><td></td></tr><tr><td>Tent (Online)</td><td>0.0804</td><td>0.0112</td><td>0.0142</td><td>0.0489</td><td>5000</td></tr><tr><td>EATA (Online)</td><td>0.1008</td><td>0.0186</td><td>0.0202</td><td>0.0815</td><td>4943(-1.1%)</td></tr><tr><td>Ours (Online)</td><td>0.2787</td><td>0.1579</td><td>0.1340</td><td>0.2455</td><td>1514(-69.7%)</td></tr><tr><td>LLM (NF4)</td><td>0.2439</td><td>0.0859</td><td>0.1237</td><td>0.2325</td><td></td></tr><tr><td>Ours (NF4)</td><td>0.3069</td><td>0.1533</td><td>0.2306</td><td>0.3193</td><td>4783(-4.3%)</td></tr></table>",
+        "bbox": [
+            501,
+            151,
+            883,
+            270
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            501,
+            314,
+            885,
+            449
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Effects of the $\\mathcal { P } _ { 0 }$ in Eqn. 6. The threshold $\\mathcal { P } _ { 0 }$ in Eqn. 6 plays a crucial role in controlling the threshold for sample selection during Test-Time Learning. To explore the optimal threshold for $\\mathcal { P } _ { 0 }$ , we conduct experiments with values of $\\mathcal { P } _ { 0 }$ set to $\\{ e ^ { 2 } , e ^ { 3 } , e ^ { 4 } , e ^ { 5 } , e ^ { 6 } \\}$ . As shown in Figure 3, when $\\mathcal { P } _ { 0 } = e ^ { 3 }$ , our method achieves the best performance on three datasets, namely Geography, Medicine, and Finance, while also showing near-optimal performance on the Agriculture dataset. Therefore, we select $\\mathcal { P } _ { 0 } = e ^ { 3 }$ for all experiments. When $\\mathcal { P } _ { 0 }$ is set too high or too low, it negatively affects performance. Specifically, a value that is too high restricts the number of high-perplexity samples selected, limiting the model’s ability to adapt to new and complex data. On the other hand, a value that is too low includes too many low-perplexity samples, which do not contribute effectively to adaptation and could lead to inefficiencies and overfitting. ",
+        "bbox": [
+            500,
+            458,
+            885,
+            699
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "5.4. More Discussions ",
+        "text_level": 1,
+        "bbox": [
+            501,
+            715,
+            651,
+            729
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Online Test-Time Experiments. To further assess the performance of our TLM, we conduct experiments in the online Test-Time Learning setting. The online setting is similar to Test-Time Adaptation (Wang et al., 2021; Niu et al., 2022a), where the model processes the input to generate an output while simultaneously updating its parameters. Notably, the model parameters are updated only once every 100 test samples. From Table 5, the proposed method also achieves significant performance improvements over Llama3-8B-Instruct across different domain datasets in the online setting. Additionally, our proposed method reduces the number of backward by $6 9 . 7 \\%$ $\\mathrm { 5 0 0 0 }  \\mathrm { 1 5 1 4 } \\mathrm { \\Omega }$ in the online setting. This is because, as the LLM is updated, some samples progressively become easier for the model, and are thus excluded from TTL in Eqn. (6) ",
+        "bbox": [
+            501,
+            739,
+            885,
+            905
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "discarded",
+        "text": "8 ",
+        "bbox": [
+            482,
+            922,
+            491,
+            934
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            88,
+            85,
+            472,
+            145
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Experiments on Quantized LLM. To evaluate the performance of our method on quantized LLMs, we conduct experiments on a 4-bit quantized version of Llama3-8B-Instruct, following the settings of QLoRA (Dettmers et al., 2024). From Table 5, our method also demonstrates strong performance on target domain datasets when applied to quantized LLMs. Specifically, the proposed method improves at least $2 5 . 0 \\%$ cover Llama3-8B-Instruct (NF4) on four datasets on DomainBench, highlighting the broad applicability of our TTL scheme. ",
+        "bbox": [
+            89,
+            154,
+            473,
+            303
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "6. Conclusion ",
+        "text_level": 1,
+        "bbox": [
+            88,
+            323,
+            202,
+            339
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "In this paper, we propose a novel Test-Time Learning (TTL) method for Large Language Models (LLMs), named TLM, to address the challenges posed by dynamic and diverse data distributions in real-world environments. By leveraging only unlabeled test data, TLM efficiently adapts LLMs and improves their robustness in target domains. Specifically, through observation and theoretical analysis, we argue that reducing output perplexity can be achieved by minimizing the input perplexity of unlabeled test data. Based on this insight, we adopt input perplexity minimization as the optimization objective for test-time LLM updates. Moreover, we find that high-perplexity test samples play a more crucial role in model updates than low-perplexity samples. This insight motivates the development of our Sample Efficient Learning Strategy, which actively selects and emphasizes high-perplexity test samples for backpropagation, optimizing the learning process. Lastly, we reveal that Low-Rank Adaptation is more effective than full parameter updates in mitigating catastrophic forgetting, and we utilize it for parameter updates during TTL, enabling lightweight model adaptation while effectively preserving prior knowledge. ",
+        "bbox": [
+            89,
+            349,
+            473,
+            666
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Acknowledgements ",
+        "text_level": 1,
+        "bbox": [
+            89,
+            685,
+            251,
+            702
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "This work was partially supported by the Joint Funds of the National Natural Science Foundation of China (Grant No.U24A20327), Key-Area Research and Development Program of Guangdong Province (2018B010107001), TCL Science and Technology Innovation Fund, and the Young Scholar Project of Pazhou Lab (No.PZL2021KF0021). ",
+        "bbox": [
+            89,
+            712,
+            473,
+            801
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Impact Statement ",
+        "text_level": 1,
+        "bbox": [
+            89,
+            821,
+            238,
+            838
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "This paper presents work whose goal is to advance the field of Machine Learning. There are many potential societal consequences of our work, none of which we feel must be ",
+        "bbox": [
+            88,
+            848,
+            472,
+            892
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "specifically highlighted here. ",
+        "bbox": [
+            501,
+            85,
+            689,
+            99
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "References ",
+        "text_level": 1,
+        "bbox": [
+            501,
+            119,
+            591,
+            136
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Achiam, J., Adler, S., Agarwal, S., Ahmad, L., Akkaya, I., Aleman, F. L., Almeida, D., Altenschmidt, J., Altman, S., Anadkat, S., et al. Gpt-4 technical report. arXiv preprint arXiv:2303.08774, 2023. ",
+        "bbox": [
+            501,
+            143,
+            885,
+            203
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Akyurek, E., Damani, M., Qiu, L., Guo, H., Kim, Y., and An-¨ dreas, J. The surprising effectiveness of test-time training for abstract reasoning. arXiv preprint arXiv:2411.07279, 2024. ",
+        "bbox": [
+            500,
+            215,
+            885,
+            273
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Anil, R., Dai, A. M., Firat, O., Johnson, M., Lepikhin, D., Passos, A., Shakeri, S., Taropa, E., Bailey, P., Chen, Z., et al. Palm 2 technical report. arXiv preprint arXiv:2305.10403, 2023. ",
+        "bbox": [
+            500,
+            286,
+            885,
+            347
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Asai, A., Wu, Z., Wang, Y., Sil, A., and Hajishirzi, H. Selfrag: Learning to retrieve, generate, and critique through self-reflection. In The Twelfth International Conference on Learning Representations, 2024. ",
+        "bbox": [
+            500,
+            358,
+            885,
+            419
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Bai, J., Bai, S., Chu, Y., Cui, Z., Dang, K., Deng, X., Fan, Y., Ge, W., Han, Y., Huang, F., et al. Qwen technical report. arXiv preprint arXiv:2309.16609, 2023. ",
+        "bbox": [
+            500,
+            430,
+            885,
+            474
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Bartler, A., Buhler, A., Wiewel, F., D ¨ obler, M., and Yang, ¨ B. Mt3: Meta test-time training for self-supervised testtime adaption. In International Conference on Artificial Intelligence and Statistics, pp. 3080–3090. PMLR, 2022. ",
+        "bbox": [
+            500,
+            487,
+            885,
+            546
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Bella, G., Helm, P., Koch, G., and Giunchiglia, F. Tackling language modelling bias in support of linguistic diversity. In The 2024 ACM Conference on Fairness, Accountability, and Transparency, pp. 562–572, 2024. ",
+        "bbox": [
+            500,
+            558,
+            885,
+            619
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Bengio, Y., Ducharme, R., and Vincent, P. A neural probabilistic language model. Advances in neural information processing systems, 13, 2000. ",
+        "bbox": [
+            500,
+            631,
+            885,
+            675
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Boudiaf, M., Mueller, R., Ben Ayed, I., and Bertinetto, L. Parameter-free online test-time adaptation. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 8344–8353, 2022. ",
+        "bbox": [
+            500,
+            686,
+            885,
+            747
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Brown, T., Mann, B., Ryder, N., Subbiah, M., Kaplan, J. D., Dhariwal, P., Neelakantan, A., Shyam, P., Sastry, G., Askell, A., et al. Language models are few-shot learners. Advances in neural information processing systems, 33: 1877–1901, 2020. ",
+        "bbox": [
+            501,
+            758,
+            887,
+            833
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Chang, Y., Wang, X., Wang, J., Wu, Y., Yang, L., Zhu, K., Chen, H., Yi, X., Wang, C., Wang, Y., et al. A survey on evaluation of large language models. ACM Transactions on Intelligent Systems and Technology, 15(3):1–45, 2024. ",
+        "bbox": [
+            501,
+            845,
+            885,
+            905
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "discarded",
+        "text": "9 ",
+        "bbox": [
+            480,
+            922,
+            491,
+            934
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Chen, G., Niu, S., Chen, D., Zhang, S., Li, C., Li, Y., and Tan, M. Cross-device collaborative test-time adaptation. In The Thirty-eighth Annual Conference on Neural Information Processing Systems, 2024a. ",
+        "bbox": [
+            88,
+            85,
+            475,
+            145
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Chen, M., Tworek, J., Jun, H., Yuan, Q., Pinto, H. P. D. O., Kaplan, J., Edwards, H., Burda, Y., Joseph, N., Brockman, G., et al. Evaluating large language models trained on code. arXiv preprint arXiv:2107.03374, 2021. ",
+        "bbox": [
+            86,
+            157,
+            475,
+            218
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Chen, Y., Niu, S., Wang, Y., Xu, S., Song, H., and Tan, M. Towards robust and efficient cloud-edge elastic model adaptation via selective entropy distillation. In The Twelfth International Conference on Learning Representations, 2024b. ",
+        "bbox": [
+            88,
+            229,
+            475,
+            305
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Chen, Y., Qian, S., Tang, H., Lai, X., Liu, Z., Han, S., and Jia, J. Longlora: Efficient fine-tuning of long-context large language models. In The Twelfth International Conference on Learning Representations, 2024c. ",
+        "bbox": [
+            86,
+            318,
+            473,
+            378
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Chowdhery, A., Narang, S., Devlin, J., Bosma, M., Mishra, G., Roberts, A., Barham, P., Chung, H. W., Sutton, C., Gehrmann, S., et al. Palm: Scaling language modeling with pathways. Journal of Machine Learning Research, 24(240):1–113, 2023. ",
+        "bbox": [
+            88,
+            390,
+            475,
+            465
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Chung, H. W., Hou, L., Longpre, S., Zoph, B., Tay, Y., Fedus, W., Li, Y., Wang, X., Dehghani, M., Brahma, S., et al. Scaling instruction-finetuned language models. Journal of Machine Learning Research, 25(70):1–53, 2024. ",
+        "bbox": [
+            86,
+            479,
+            475,
+            539
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Cobbe, K., Kosaraju, V., Bavarian, M., Chen, M., Jun, H., Kaiser, L., Plappert, M., Tworek, J., Hilton, J., Nakano, R., et al. Training verifiers to solve math word problems. arXiv preprint arXiv:2110.14168, 2021. ",
+        "bbox": [
+            86,
+            551,
+            475,
+            611
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Dettmers, T., Pagnoni, A., Holtzman, A., and Zettlemoyer, L. Qlora: Efficient finetuning of quantized llms. Advances in Neural Information Processing Systems, 36, 2024. ",
+        "bbox": [
+            86,
+            625,
+            475,
+            670
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Devlin, J., Chang, M.-W., Lee, K., and Toutanova, K. Bert: Pre-training of deep bidirectional transformers for language understanding, 2019. URL https://arxiv. org/abs/1810.04805. ",
+        "bbox": [
+            86,
+            681,
+            475,
+            742
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Du, Z., Qian, Y., Liu, X., Ding, M., Qiu, J., Yang, Z., and Tang, J. GLM: General language model pretraining with autoregressive blank infilling. In Muresan, S., Nakov, P., and Villavicencio, A. (eds.), Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pp. 320–335, Dublin, Ireland, May 2022. Association for Computational Linguistics. doi: 10.18653/v1/2022. acl-long.26. URL https://aclanthology.org/ 2022.acl-long.26/. ",
+        "bbox": [
+            89,
+            755,
+            475,
+            905
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Dubey, A., Jauhri, A., Pandey, A., Kadian, A., Al-Dahle, A., Letman, A., Mathur, A., Schelten, A., Yang, A., Fan, A., et al. The llama 3 herd of models. arXiv preprint arXiv:2407.21783, 2024. ",
+        "bbox": [
+            504,
+            85,
+            885,
+            145
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Fan, W., Ding, Y., Ning, L., Wang, S., Li, H., Yin, D., Chua, T.-S., and Li, Q. A survey on rag meeting llms: Towards retrieval-augmented large language models. In Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining, pp. 6491–6501, 2024. ",
+        "bbox": [
+            500,
+            154,
+            887,
+            243
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Fleuret, F. et al. Test time adaptation through perturbation robustness. In NeurIPS 2021 Workshop on Distribution Shifts: Connecting Methods and Applications, 2021. ",
+        "bbox": [
+            500,
+            253,
+            885,
+            299
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Gandelsman, Y., Sun, Y., Chen, X., and Efros, A. Test-time training with masked autoencoders. Advances in Neural Information Processing Systems, 35:29374–29385, 2022. ",
+        "bbox": [
+            500,
+            308,
+            885,
+            353
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Gao, J., Zhang, J., Liu, X., Darrell, T., Shelhamer, E., and Wang, D. Back to the source: Diffusion-driven adaptation to test-time corruption. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 11786–11796, 2023. ",
+        "bbox": [
+            500,
+            361,
+            885,
+            436
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Gu, Y., Tinn, R., Cheng, H., Lucas, M., Usuyama, N., Liu, X., Naumann, T., Gao, J., and Poon, H. Domain-specific language model pretraining for biomedical natural language processing. ACM Transactions on Computing for Healthcare (HEALTH), 3(1):1–23, 2021. ",
+        "bbox": [
+            500,
+            445,
+            885,
+            520
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Hardt, M. and Sun, Y. Test-time training on nearest neighbors for large language models. In The Twelfth International Conference on Learning Representations, 2024. ",
+        "bbox": [
+            500,
+            530,
+            887,
+            575
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "He, P., Liu, X., Gao, J., and Chen, W. Deberta: Decodingenhanced bert with disentangled attention. In International Conference on Learning Representations, 2021. ",
+        "bbox": [
+            500,
+            584,
+            887,
+            628
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Hong, J., Lyu, L., Zhou, J., and Spranger, M. Mecta: Memory-economic continual test-time model adaptation. In 2023 International Conference on Learning Representations, 2023. ",
+        "bbox": [
+            498,
+            637,
+            885,
+            696
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Hu, E. J., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., Wang, L., Chen, W., et al. Lora: Low-rank adaptation of large language models. In International Conference on Learning Representations, 2022. ",
+        "bbox": [
+            498,
+            707,
+            885,
+            767
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Hu, J., Wang, Y., Zhang, S., Zhou, K., Chen, G., Hu, Y., Xiao, B., and Tan, M. Dynamic ensemble reasoning for llm experts. Proceedings of the Thirty-Fourth International Joint Conference on Artificial Intelligence, 2025a. ",
+        "bbox": [
+            500,
+            776,
+            885,
+            837
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Hu, J., Zhang, W., Wang, Y., Hu, Y., Xiao, B., Tan, M., and Du, Q. Dynamic compressing prompts for efficient inference of large language models. arXiv preprint arXiv:2504.11004, 2025b. ",
+        "bbox": [
+            500,
+            845,
+            885,
+            905
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            478,
+            922,
+            495,
+            934
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Hubotter, J., Bongni, S., Hakimi, I., and Krause, A. Effi- ¨ ciently learning at test-time: Active fine-tuning of llms. In NeurIPS 2024 Workshop on Mathematics of Modern Machine Learning, 2024. ",
+        "bbox": [
+            88,
+            85,
+            473,
+            145
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Iwasawa, Y. and Matsuo, Y. Test-time classifier adjustment module for model-agnostic domain generalization. Advances in Neural Information Processing Systems, 34: 2427–2440, 2021. ",
+        "bbox": [
+            86,
+            157,
+            475,
+            217
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Jiang, Z., Xu, F., Gao, L., Sun, Z., Liu, Q., Dwivedi-Yu, J., Yang, Y., Callan, J., and Neubig, G. Active retrieval augmented generation. In Bouamor, H., Pino, J., and Bali, K. (eds.), Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing, pp. 7969–7992, Singapore, December 2023. Association for Computational Linguistics. doi: 10.18653/v1/2023. emnlp-main.495. URL https://aclanthology. org/2023.emnlp-main.495/. ",
+        "bbox": [
+            86,
+            229,
+            475,
+            364
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Jiang, Z., Ma, X., and Chen, W. Longrag: Enhancing retrieval-augmented generation with long-context llms. arXiv preprint arXiv:2406.15319, 2024. ",
+        "bbox": [
+            86,
+            377,
+            475,
+            422
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Jumelet, J. and Zuidema, W. Transparency at the source: Evaluating and interpreting language models with access to the true distribution. In Findings of the Association for Computational Linguistics: EMNLP 2023, pp. 4354– 4369, 2023. ",
+        "bbox": [
+            88,
+            435,
+            475,
+            510
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Karpukhin, V., Oguz, B., Min, S., Lewis, P., Wu, L., Edunov, S., Chen, D., and Yih, W.-t. Dense passage retrieval for open-domain question answering. In Webber, B., Cohn, T., He, Y., and Liu, Y. (eds.), Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP), pp. 6769– 6781, Online, November 2020. Association for Computational Linguistics. doi: 10.18653/v1/2020.emnlp-main. 550. URL https://aclanthology.org/2020. emnlp-main.550/. ",
+        "bbox": [
+            88,
+            522,
+            475,
+            672
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Kim, G., Kim, S., Jeon, B., Park, J., and Kang, J. Tree of clarifications: Answering ambiguous questions with retrieval-augmented large language models. In The 2023 Conference on Empirical Methods in Natural Language Processing, 2023. URL https://openreview. net/forum?id $=$ vDvFT7IX4O. ",
+        "bbox": [
+            88,
+            685,
+            475,
+            775
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Le Scao, T., Fan, A., Akiki, C., Pavlick, E., Ilic, S., Hesslow, ´ D., Castagne, R., Luccioni, A. S., Yvon, F., Gall ´ e, M., ´ et al. Bloom: A 176b-parameter open-access multilingual language model. 2023. ",
+        "bbox": [
+            86,
+            787,
+            475,
+            848
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Lee, J., Jung, D., Lee, S., Park, J., Shin, J., Hwang, U., and Yoon, S. Entropy is not enough for test-time adaptation: From the perspective of disentangled factors. In The ",
+        "bbox": [
+            86,
+            861,
+            475,
+            905
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Twelfth International Conference on Learning Representations, 2024. URL https://openreview.net/ forum?id ${ \\underline { { \\underline { { \\mathbf { \\Pi } } } } } } =$ 9w3iw8wDuE. ",
+        "bbox": [
+            516,
+            85,
+            887,
+            128
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Lewis, M., Liu, Y., Goyal, N., Ghazvininejad, M., Mohamed, A., Levy, O., Stoyanov, V., and Zettlemoyer, L. Bart: Denoising sequence-to-sequence pre-training for natural language generation, translation, and comprehension. In Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics, pp. 7871–7880, 2020a. ",
+        "bbox": [
+            500,
+            140,
+            887,
+            244
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N., Kuttler, H., Lewis, M., Yih, W.-t., Rockt ¨ aschel, ¨ T., et al. Retrieval-augmented generation for knowledgeintensive nlp tasks. Advances in Neural Information Processing Systems, 33:9459–9474, 2020b. ",
+        "bbox": [
+            500,
+            255,
+            885,
+            330
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Li, X., Nie, E., and Liang, S. From classification to generation: Insights into crosslingual retrieval augmented ICL. In NeurIPS 2023 Workshop on Instruction Tuning and Instruction Following, 2023. URL https: //openreview.net/forum?id $\\underline { { \\underline { { \\mathbf { \\Pi } } } } } =$ KLPLCXo4aD. ",
+        "bbox": [
+            500,
+            340,
+            887,
+            415
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Liang, J., He, R., and Tan, T. A comprehensive survey on test-time adaptation under distribution shifts. International Journal of Computer Vision, pp. 1–34, 2024. ",
+        "bbox": [
+            500,
+            425,
+            885,
+            470
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Lin, C.-Y. Rouge: A package for automatic evaluation of summaries. In Text summarization branches out, pp. 74–81, 2004. ",
+        "bbox": [
+            498,
+            481,
+            885,
+            525
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Lin, X. V., Chen, X., Chen, M., Shi, W., Lomeli, M., James, R., Rodriguez, P., Kahn, J., Szilvasy, G., Lewis, M., Zettlemoyer, L., and tau Yih, W. RA-DIT: Retrievalaugmented dual instruction tuning. In The Twelfth International Conference on Learning Representations, 2024. URL https://openreview.net/forum? id $=$ 22OTbutug9. ",
+        "bbox": [
+            500,
+            535,
+            887,
+            640
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Liu, Y. Roberta: A robustly optimized bert pretraining approach. arXiv preprint arXiv:1907.11692, 364, 2019. ",
+        "bbox": [
+            500,
+            651,
+            885,
+            680
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Liu, Y., Kothari, P., Van Delft, B., Bellot-Gurlet, B., Mordan, T., and Alahi, A. Ttt++: When does self-supervised test-time training fail or thrive? Advances in Neural Information Processing Systems, 34:21808–21820, 2021. ",
+        "bbox": [
+            498,
+            690,
+            885,
+            750
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Mirza, M. J., Soneira, P. J., Lin, W., Kozinski, M., Possegger, H., and Bischof, H. Actmad: Activation matching to align distributions for test-time-training. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 24152–24161, 2023. ",
+        "bbox": [
+            500,
+            760,
+            885,
+            835
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Nado, Z., Padhy, S., Sculley, D., D’Amour, A., Lakshminarayanan, B., and Snoek, J. Evaluating prediction-time batch normalization for robustness under covariate shift. arXiv preprint arXiv:2006.10963, 2020. ",
+        "bbox": [
+            500,
+            845,
+            885,
+            905
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            478,
+            922,
+            493,
+            935
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Niu, S., Wu, J., Zhang, Y., Chen, Y., Zheng, S., Zhao, P., and Tan, M. Efficient test-time model adaptation without forgetting. In International conference on machine learning, pp. 16888–16905. PMLR, 2022a. ",
+        "bbox": [
+            88,
+            85,
+            473,
+            145
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Niu, S., Wu, J., Zhang, Y., Xu, G., Li, H., Zhao, P., Huang, J., Wang, Y., and Tan, M. Boost test-time performance with closed-loop inference. arXiv preprint arXiv:2203.10853, 2022b. ",
+        "bbox": [
+            86,
+            155,
+            475,
+            214
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Niu, S., Wu, J., Zhang, Y., Wen, Z., Chen, Y., Zhao, P., and Tan, M. Towards stable test-time adaptation in dynamic wild world. In The Eleventh International Conference on Learning Representations, 2023. ",
+        "bbox": [
+            86,
+            224,
+            473,
+            285
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Niu, S., Miao, C., Chen, G., Wu, P., and Zhao, P. Test-time model adaptation with only forward passes. In Fortyfirst International Conference on Machine Learning, 2024. URL https://openreview.net/forum? id=qz1Vx1v9iK. ",
+        "bbox": [
+            88,
+            295,
+            475,
+            369
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Oh, Y., Lee, J., Choi, J., Jung, D., Hwang, U., and Yoon, S. Efficient diffusion-driven corruption editor for test-time adaptation. In European Conference on Computer Vision, pp. 184–201. Springer, 2025. ",
+        "bbox": [
+            86,
+            380,
+            475,
+            440
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Papineni, K., Roukos, S., Ward, T., and Zhu, W.-J. Bleu: a method for automatic evaluation of machine translation. In Proceedings of the 40th annual meeting of the Association for Computational Linguistics, pp. 311–318, 2002. ",
+        "bbox": [
+            88,
+            449,
+            475,
+            523
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Peng, B., Galley, M., He, P., Cheng, H., Xie, Y., Hu, Y., Huang, Q., Liden, L., Yu, Z., Chen, W., et al. Check your facts and try again: Improving large language models with external knowledge and automated feedback. arXiv preprint arXiv:2302.12813, 2023. ",
+        "bbox": [
+            88,
+            535,
+            473,
+            609
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Qian, H., Zhang, P., Liu, Z., Mao, K., and Dou, Z. Memorag: Moving towards next-gen rag via memory-inspired knowledge discovery. arXiv preprint arXiv:2409.05591, 2024. ",
+        "bbox": [
+            86,
+            619,
+            475,
+            679
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Radford, A. Improving language understanding by generative pre-training. 2018. ",
+        "bbox": [
+            88,
+            690,
+            475,
+            719
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Raffel, C., Shazeer, N., Roberts, A., Lee, K., Narang, S., Matena, M., Zhou, Y., Li, W., and Liu, P. J. Exploring the limits of transfer learning with a unified text-to-text transformer. Journal of machine learning research, 21 (140):1–67, 2020. ",
+        "bbox": [
+            88,
+            729,
+            473,
+            805
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Ram, O., Levine, Y., Dalmedigos, I., Muhlgay, D., Shashua, A., Leyton-Brown, K., and Shoham, Y. In-context retrieval-augmented language models. Transactions of the Association for Computational Linguistics, 11:1316– 1331, 2023. doi: 10.1162/tacl a 00605. URL https: //aclanthology.org/2023.tacl-1.75/. ",
+        "bbox": [
+            88,
+            815,
+            475,
+            905
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Reimers, N. and Gurevych, I. Sentence-bert: Sentence embeddings using siamese bert-networks. In Conference on Empirical Methods in Natural Language Processing, 2019. URL https://api.semanticscholar. org/CorpusID:201646309. ",
+        "bbox": [
+            500,
+            85,
+            887,
+            160
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Ren, Y., Cao, Y., Guo, P., Fang, F., Ma, W., and Lin, Z. Retrieve-and-sample: Document-level event argument extraction via hybrid retrieval augmentation. In Rogers, A., Boyd-Graber, J., and Okazaki, N. (eds.), Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pp. 293–306, Toronto, Canada, July 2023. Association for Computational Linguistics. doi: 10.18653/v1/2023. acl-long.17. URL https://aclanthology.org/ 2023.acl-long.17/. ",
+        "bbox": [
+            500,
+            167,
+            887,
+            319
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Schneider, S., Rusak, E., Eck, L., Bringmann, O., Brendel, W., and Bethge, M. Improving robustness against common corruptions by covariate shift adaptation. Advances in neural information processing systems, 33: 11539–11551, 2020. ",
+        "bbox": [
+            500,
+            327,
+            885,
+            402
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Shao, Z., Yu, Z., Wang, M., and Yu, J. Prompting large language models with answer heuristics for knowledgebased visual question answering. In Proceedings of the IEEE/CVF Conference on computer vision and pattern recognition, pp. 14974–14983, 2023. ",
+        "bbox": [
+            500,
+            411,
+            885,
+            486
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Shu, M., Nie, W., Huang, D.-A., Yu, Z., Goldstein, T., Anandkumar, A., and Xiao, C. Test-time prompt tuning for zero-shot generalization in vision-language models. Advances in Neural Information Processing Systems, 35: 14274–14289, 2022. ",
+        "bbox": [
+            500,
+            494,
+            885,
+            570
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Song, J., Lee, J., Kweon, I. S., and Choi, S. Ecotta: Memoryefficient continual test-time adaptation via self-distilled regularization. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 11920–11929, 2023. ",
+        "bbox": [
+            500,
+            579,
+            885,
+            654
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Sun, Y., Wang, X., Liu, Z., Miller, J., Efros, A., and Hardt, M. Test-time training with self-supervision for generalization under distribution shifts. In International conference on machine learning, pp. 9229–9248. PMLR, 2020. ",
+        "bbox": [
+            500,
+            662,
+            885,
+            723
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Tay, Y., Dehghani, M., Tran, V. Q., Garcia, X., Wei, J., Wang, X., Chung, H. W., Bahri, D., Schuster, T., Zheng, S., Zhou, D., Houlsby, N., and Metzler, D. UL2: Unifying language learning paradigms. In The Eleventh International Conference on Learning Representations, 2023. URL https://openreview.net/forum? id $=$ 6ruVLB727MC. ",
+        "bbox": [
+            501,
+            731,
+            887,
+            835
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Thirunavukarasu, A. J., Ting, D. S. J., Elangovan, K., Gutierrez, L., Tan, T. F., and Ting, D. S. W. Large language models in medicine. Nature medicine, 29(8):1930–1940, 2023. ",
+        "bbox": [
+            500,
+            845,
+            885,
+            904
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            478,
+            922,
+            495,
+            934
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Touvron, H., Lavril, T., Izacard, G., Martinet, X., Lachaux, M.-A., Lacroix, T., Roziere, B., Goyal, N., Hambro, E.,\\` Azhar, F., et al. Llama: Open and efficient foundation language models. arXiv preprint arXiv:2302.13971, 2023a. ",
+        "bbox": [
+            89,
+            85,
+            475,
+            145
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Touvron, H., Martin, L., Stone, K., Albert, P., Almahairi, A., Babaei, Y., Bashlykov, N., Batra, S., Bhargava, P., Bhosale, S., et al. Llama 2: Open foundation and finetuned chat models. arXiv preprint arXiv:2307.09288, 2023b. ",
+        "bbox": [
+            88,
+            155,
+            475,
+            229
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Trivedi, H., Balasubramanian, N., Khot, T., and Sabharwal, A. Interleaving retrieval with chain-of-thought reasoning for knowledge-intensive multi-step questions. In Rogers, A., Boyd-Graber, J., and Okazaki, N. (eds.), Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pp. 10014–10037, Toronto, Canada, July 2023. Association for Computational Linguistics. doi: 10.18653/v1/2023. acl-long.557. URL https://aclanthology.org/ 2023.acl-long.557/. ",
+        "bbox": [
+            88,
+            241,
+            475,
+            391
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, Ł., and Polosukhin, I. Attention is all you need. Advances in neural information processing systems, 30, 2017. ",
+        "bbox": [
+            88,
+            402,
+            475,
+            462
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Wang, D., Shelhamer, E., Liu, S., Olshausen, B., and Darrell, T. Tent: Fully test-time adaptation by entropy minimization. International Conference on Learning Representations, 2021. ",
+        "bbox": [
+            86,
+            473,
+            475,
+            532
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Wang, Q., Hu, J., Li, Z., Wang, Y., Hu, Y., Tan, M., et al. Generating long-form story using dynamic hierarchical outlining with memory-enhancement. The 2025 Annual Conference of the Nations of the Americas Chapter of the ACL, 2025a. ",
+        "bbox": [
+            88,
+            542,
+            475,
+            617
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Wang, Y., Li, P., Sun, M., and Liu, Y. Self-knowledge guided retrieval augmentation for large language models. In The 2023 Conference on Empirical Methods in Natural Language Processing, 2023. URL https: //openreview.net/forum?id $\\underline { { \\underline { { \\mathbf { \\Pi } } } } }$ MoEfm3iPMy. ",
+        "bbox": [
+            88,
+            628,
+            473,
+            704
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Wang, Y., Hu, J., Huang, Z., Lin, K., Zhang, Z., Chen, P., Hu, Y., Wang, Q., Yu, Z., Sun, B., Xing, X., Zheng, Q., and Tan, M. Enhancing user-oriented proactivity in open-domain dialogues with critic guidance. Proceedings of the Thirty-Fourth International Joint Conference on Artificial Intelligence, 2025b. ",
+        "bbox": [
+            89,
+            714,
+            475,
+            804
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Wei, J., Tay, Y., Bommasani, R., Raffel, C., Zoph, B., Borgeaud, S., Yogatama, D., Bosma, M., Zhou, D., Metzler, D., Chi, E. H., Hashimoto, T., Vinyals, O., Liang, P., Dean, J., and Fedus, W. Emergent abilities of large language models. Transactions on Machine Learning Research, 2022a. ISSN 2835-8856. URL https:// openreview.net/forum?id $\\underline { { \\underline { { \\mathbf { \\Pi } } } } } =$ yzkSU5zdwD. Survey Certification. ",
+        "bbox": [
+            89,
+            815,
+            475,
+            905
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            514,
+            85,
+            885,
+            114
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Wei, J., Wang, X., Schuurmans, D., Bosma, M., Xia, F., Chi, E., Le, Q. V., Zhou, D., et al. Chain-of-thought prompting elicits reasoning in large language models. Advances in neural information processing systems, 35:24824–24837, 2022b. ",
+        "bbox": [
+            501,
+            126,
+            885,
+            199
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Yang, A., Yang, B., Zhang, B., Hui, B., Zheng, B., Yu, B., Li, C., Liu, D., Huang, F., Wei, H., et al. Qwen2. 5 technical report. arXiv preprint arXiv:2412.15115, 2024. ",
+        "bbox": [
+            500,
+            210,
+            885,
+            256
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Yi, C., Chen, H., Zhang, Y., Xu, Y., Zhou, Y., and Cui, L. From question to exploration: Can classic test-time adaptation strategies be effectively applied in semantic segmentation? In Proceedings of the 32nd ACM International Conference on Multimedia, pp. 10085–10094, 2024. ",
+        "bbox": [
+            500,
+            265,
+            885,
+            356
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Zhang, M., Levine, S., and Finn, C. Memo: Test time robustness via adaptation and augmentation. Advances in neural information processing systems, 35:38629–38642, 2022a. ",
+        "bbox": [
+            500,
+            367,
+            885,
+            426
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Zhang, Q., Bian, Y., Kong, X., Zhao, P., and Zhang, C. Come: Test-time adaption by conservatively minimizing entropy. In The Thirteenth International Conference on Learning Representations, 2025. ",
+        "bbox": [
+            500,
+            438,
+            885,
+            497
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Zhang, S., Roller, S., Goyal, N., Artetxe, M., Chen, M., Chen, S., Dewan, C., Diab, M., Li, X., Lin, X. V., et al. Opt: Open pre-trained transformer language models. arXiv preprint arXiv:2205.01068, 2022b. ",
+        "bbox": [
+            500,
+            507,
+            887,
+            568
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Zhang, T., Kishore, V., Wu, F., Weinberger, K. Q., and Artzi, Y. Bertscore: Evaluating text generation with bert. arXiv preprint arXiv:1904.09675, 2019. ",
+        "bbox": [
+            500,
+            578,
+            885,
+            622
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Zhao, W. X., Zhou, K., Li, J., Tang, T., Wang, X., Hou, Y., Min, Y., Zhang, B., Zhang, J., Dong, Z., et al. A survey of large language models. arXiv preprint arXiv:2303.18223, 2023. ",
+        "bbox": [
+            500,
+            633,
+            885,
+            693
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Zhong, W., Guo, L., Gao, Q., Ye, H., and Wang, Y. Memorybank: Enhancing large language models with long-term memory. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 38, pp. 19724–19731, 2024. ",
+        "bbox": [
+            500,
+            704,
+            885,
+            763
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Zhu, Y., Kiros, R., Zemel, R., Salakhutdinov, R., Urtasun, R., Torralba, A., and Fidler, S. Aligning books and movies: Towards story-like visual explanations by watching movies and reading books. In Proceedings of the IEEE international conference on computer vision, pp. 19–27, 2015. ",
+        "bbox": [
+            500,
+            773,
+            887,
+            864
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            478,
+            922,
+            495,
+            934
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Supplementary Materials for “Test-Time Learning for Large Language Models” ",
+        "text_level": 1,
+        "bbox": [
+            230,
+            122,
+            741,
+            167
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "In the Supplementary, we provide descriptions of more related works, details, and experimental results of the proposed TLM.   \nWe organize the supplementary into the following sections. • In Section A, we provide descriptions of related works regarding Large Language Models, Retrieval-Augmented Generation, and Test-Time Adaptation.   \n• In Section B, we present a more detailed version of our AdaptEval Benchmark.   \n• In Section C, we present a more detailed implementation of our experiments.   \n• In Section D, we report more results of our experiments.   \n• In Section E, we provide the discussion of TLM and future directions. ",
+        "bbox": [
+            88,
+            218,
+            887,
+            248
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            104,
+            267,
+            888,
+            415
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "A. More Related Work ",
+        "text_level": 1,
+        "bbox": [
+            89,
+            433,
+            281,
+            450
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "A.1. Large Language Models ",
+        "text_level": 1,
+        "bbox": [
+            89,
+            459,
+            292,
+            474
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "The rapid progress in natural language processing (NLP) has been marked by the emergence of large language models (LLMs), which have fundamentally transformed the landscape of artificial intelligence. These models, rooted in the Transformer architecture (Vaswani et al., 2017), leverage extensive pre-training on massive text corpora to acqire remarkable capabilities. They have shown impressive performance across a wide range of tasks (Wei et al., 2022a; Hu et al., 2025b), such as high-quality question answering (Shao et al., 2023; Peng et al., 2023), coding (Chen et al., 2021), and intermediate reasoning (Wei et al., 2022b). The unprecedented success of LLMs has spurred significant discussions regarding their application for achieving artificial general intelligence (AGI) (Zhao et al., 2023). Based on their architectural design, existing LLMs can be categorized into three major classes: encoder-only models, decoder-only models, and encoder-decoder models. ",
+        "bbox": [
+            88,
+            483,
+            885,
+            603
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Encoder-only models. The encoder-only models primarily employ the Transformer encoder to encode input sequences into rich contextual representations. They are particularly effective in natural language understanding (NLU) tasks, where the focus lies in extracting semantic meaning from text. One notable example is BERT (Devlin et al., 2019), which uses bidirectional encoding to capture context from both preceding and succeeding tokens. Pre-trained on extensive datasets like BooksCorpus (Zhu et al., 2015) (800M words) and English Wikipedia (2,500M words), BERT set new benchmarks on datasets such as GLUE and MultiNLI. Subsequent iterations, including RoBERTa (Liu, 2019) and DeBERTa (He et al., 2021), introduced architectural refinements and improved pre-training strategies, further enhancing performance. Despite their strengths in understanding tasks, encoder-only models are inherently unsuited for tasks that require sequence generation, such as translation or text completion. ",
+        "bbox": [
+            88,
+            611,
+            885,
+            747
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Decoder-only models. This kind of models, in contrast, rely solely on the Transformer decoder and are designed to generate text in an auto-regressive manner, where each token is generated sequentially, conditioned on previously generated tokens. Obviously These models excel in natural language generation (NLG) tasks, such as summarization, content creation and QA. The Generative Pre-trained Transformer (GPT) series (Radford, 2018; Brown et al., 2020; Achiam et al., 2023) developed by OpenAI examines this class, with GPT-3 being a landmark model that features 175 billion parameters. Trained on a diverse corpus spanning Common Crawl (Raffel et al., 2020), WebText2, Books 1, Books 2, and Wikipedia datasets. GPT-3 has demonstrated extraordinary few-shot and zero-shot learning capabilities on many language tasks. In addition to GPT series, many decoder-only models have been developed, such as OPT, LLaMA, Llama2, Llama3 from Meta (Zhang et al., 2022b; Touvron et al., 2023a;b; Dubey et al., 2024), PaLM, PaLM2 from Google (Chowdhery et al., 2023; Anil et al., 2023), BLOOM from BigScience (Le Scao et al., 2023), and Qwen series from Alibaba (Bai et al., 2023; Yang et al., 2024). ",
+        "bbox": [
+            88,
+            753,
+            887,
+            905
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            478,
+            922,
+            495,
+            934
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "However, decoder-only models, while excelling in generative tasks, often lack the nuanced comprehension abilities required for deep understanding of long and complex input contexts. ",
+        "bbox": [
+            93,
+            84,
+            887,
+            114
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Encoder-decoder models. Encoder-decoder models incorporate both the encoder and decoder components of the Transformer, combining the strengths of the two structures to handle tasks that require input understanding and sequence generation. Prominent examples of encoder-decoder models include GLM from Tsinghua University (Du et al., 2022), T5, FLAN-T5, and UL2 from Google (Raffel et al., 2020; Chung et al., 2024; Tay et al., 2023), as well as BART from Meta (Lewis et al., 2020a). For instance, GLM adopts an autoregressive blank-infilling objective to effectively address three core challenges in NLP: natural language understanding (NLU), unconditional text generation, and conditional generation. With a maximum capacity of 130 billion parameters, it is pre-trained on datasets such as BookCorpus (Tay et al., 2023) and Wikipedia. GLM surpasses BERT on the SuperGLUE benchmark by $4 . 6 \\% - 5 . 0 \\%$ and demonstrates superior performance compared to FLAN-T5 on both NLU and generation tasks using fewer parameters and training data. ",
+        "bbox": [
+            88,
+            122,
+            885,
+            258
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "A.2. Retrieval-Augmented Generation ",
+        "text_level": 1,
+        "bbox": [
+            91,
+            275,
+            354,
+            290
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "As one of the most representative techniques in the field of generative AI, Retrieval-Augmented Generation (RAG) aims to enhance the quality of the generated text content with retrieved information. It achieves this by integrating two critical components: (i) a retrieval mechanism that accesses relevant documents or information from external knowledge sources, and (ii) a generative module that synthesizes this information to produce coherent and contextually accurate text (Lewis et al., 2020b). By combining these capabilities, RAG models are able to generate not only fluent and human-like text but also outputs that are grounded in up-to-date and factual data, significantly enhancing their reliability and applicability in real-world scenarios. We categorized existing RAG methods into the following two main classes according to whether training is needed for further discussion: training-free approaches and training-based approaches. ",
+        "bbox": [
+            88,
+            297,
+            885,
+            420
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Training-free RAG. Training-free RAG methods address the challenges of frequent fine-tuning and updating model parameters, which require substantial computational resources and time (Lewis et al., 2020b). These approaches leverage retrieved knowledge directly at inference time by incorporating the retrieved text into the prompt, eliminating the need for additional training. As the performance of large language models (LLMs) is highly sensitive to input queries, many training-free RAG methods refine prompts by integrating external knowledge (Jiang et al., 2023; Li et al., 2023; Kim et al., 2023; Ram et al., 2023; Trivedi et al., 2023; Wang et al., 2023). For example, In-Context RALM (Ram et al., 2023) augments the generation process by prepending retrieved documents to the original prompt without altering LLM parameters. IRCoT (Trivedi et al., 2023) enhances reasoning by interleaving chain-of-thought (CoT) generation and retrieval, ensuring access to more relevant information across iterative reasoning steps. SKR (Wang et al., 2023) enables flexible utilization of both internal and external knowledge by guiding LLMs to decide whether a question can be answered based on internal knowledge before invoking the retriever. Despite their efficiency, training-free RAG methods often face limitations in optimizing the retriever and generator for specific downstream tasks, leading to suboptimal utilization of retrieved knowledge. To address this, training-based RAG approaches fine-tune both components, enabling large language models to effectively adapt and integrate external information. ",
+        "bbox": [
+            88,
+            426,
+            885,
+            637
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Training-based RAG. This kind of methods aim to optimize both the retriever and generator to enhance their alignment and effectiveness. One typical success is DPR (Karpukhin et al., 2020), which employs two independent BERT (Devlin et al., 2019) encoders for queries and passages and trains them via contrastive learning. Ren et al. (2023) employs a two-stage approach, starting with the pretrain S-BERT (Reimers & Gurevych, 2019) as a retrieval backbone, enhanced by an adaptive hybrid strategy to effectively gather relevant demonstration. Next, a T5 model is used as the generator, which is further fine-tuned to align with the target labels and inputs. In contrast, RA-DIT (Lin et al., 2024) first fine-tuning LLMs to effectively use retrieved knowledge and then refining the retriever to align with the model’s requirements. To address indiscriminate retrieval and the incorporation of irrelevant passages, Self-RAG (Asai et al., 2024) introduces special tokens to dynamically assess the necessity of retrieval and control its behavior. More recently, MemoRAG (Qian et al., 2024) incorporates a memory module that generates context-specific cues to link the knowledge base to precise information, improving retrieval accuracy and response quality. ",
+        "bbox": [
+            88,
+            645,
+            885,
+            811
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Despite their advantages, RAG models rely heavily on the quality and relevance of the retrieved knowledge, as inaccuracies or irrelevant information can directly compromise the quality of the generated output. Furthermore, the dual-step process of retrieval and generation for each query introduces significant computational overhead, posing challenges for real-time and resource-constrained applications. ",
+        "bbox": [
+            88,
+            819,
+            885,
+            880
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            336,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            478,
+            922,
+            495,
+            934
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "table",
+        "img_path": "images/449844324db635741283164864a66914b177c8c93d2c814a86d8954f2ac70b3e.jpg",
+        "table_caption": [
+            "Table 6. Components of AdaptEval. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Category</td><td>Dataset</td><td>Sources</td></tr><tr><td rowspan=\"4\">DomainBench</td><td>Geosignal</td><td>Geoscience knowledge base, etc.</td></tr><tr><td>Agriculture-QA</td><td>Agriculture data</td></tr><tr><td>GenMedGPT-5k</td><td>ChatGPT-generated data</td></tr><tr><td>Wealth-alpaca_lora</td><td>FiQA data, etc.</td></tr><tr><td rowspan=\"3\">InstructionBench</td><td>Dolly-15k</td><td>Databricks data</td></tr><tr><td>Alpaca_gpt4_en</td><td>GPT-4 instruction data</td></tr><tr><td>InstructionWild</td><td>User instruction data</td></tr><tr><td rowspan=\"3\">ReasoningBench</td><td>GSM8k</td><td>OpenAI data</td></tr><tr><td>MetaMathQA</td><td>Advanced math datasets</td></tr><tr><td>Logiqa</td><td>Civil service logic tests</td></tr></table>",
+        "bbox": [
+            251,
+            107,
+            720,
+            291
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "A.3. Test-Time Adaptation ",
+        "text_level": 1,
+        "bbox": [
+            89,
+            330,
+            274,
+            345
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Test-time adaptation (TTA) aims to improve a model’s performance on unseen test data, which may undergo distribution shifts, by learning directly from the test data during the testing phase. Based on their reliance on backward propagation, we categorize the related TTA works into the following two groups for discussion. ",
+        "bbox": [
+            88,
+            354,
+            887,
+            400
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Backpropagation (BP)-Based TTA. A foundational approach in this category is Test-Time Training (TTT) proposed by (Sun et al., 2020). TTT involves training a source model using both supervised and self-supervised objectives during the training phase. At test time, the model is adapted using self-supervised objectives such as rotation prediction (Sun et al., 2020), contrastive learning (Liu et al., 2021; Bartler et al., 2022), or reconstruction learning (Gandelsman et al., 2022). To address scenarios where modifying the training process or accessing source data is not feasible, Fully TTA methods directly update pre-trained models during testing. These methods rely on unsupervised learning objectives, with entropy minimization (Wang et al., 2021; Niu et al., 2023) emerging as one of the most widely used techniques due to its simplicity and effectiveness. Entropy minimization encourages the model to produce confident predictions by reducing uncertainty in its output distribution. This approach effectively aligns predictions to a single class. Beyond entropy minimization, other unsupervised objectives, such as prediction consistency maximization (Zhang et al., 2022a; Fleuret et al., 2021) and feature distribution alignment (Mirza et al., 2023), have also been explored, enhancing the model’s ability to adapt to diverse test-time scenarios. ",
+        "bbox": [
+            88,
+            406,
+            885,
+            588
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "To further enhance the efficiency of backpropagation-based TTA, recent research efforts have focused on tow primary aspects: (1) Sample Efficiency: As not all test samples contribute equally to adaptation. Several recent works (Niu et al., 2022a; 2023; Shu et al., 2022; Lee et al., 2024) have introduced sample selection strategies to focus on reliable and non-redundant samples, reducing the noise in the gradient and the number of samples for TTA, thereby enhancing adaptation performance and efficiency. (2) Memory Efficiency: Addressing the memory-intensive nature of backpropagation, methods such as EcoTTA (Song et al., 2023) optimize parameter-efficient components during adaptation, while MECTA (Hong et al., 2023) reduces batch size to lower memory consumption. Additionally, MECTA introduces a domain-aware batch normalization layer to stabilize model updates, even with smaller batch sizes. Similar to the sample efficiency methods, we propose a Sample-Efficient Learning Strategy that uses a perplexity-based weighting scheme to prioritize high-perplexity test samples for backpropagation, ensuring efficient utilization of computational resources. ",
+        "bbox": [
+            88,
+            595,
+            885,
+            747
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Backpropagation-Free TTA. The development of BP-free TTA has seen significant progress, with early research focusing primarily on the adjustment of batch normalization (BN) layer statistics using test data. These methods primarily involved recalculating the mean and variance of BN layers based on testing data (Nado et al., 2020; Schneider et al., 2020). However, such approaches were limited to adapting BN layers, restricting their applicability to architectures that heavily rely on BN. To overcome these limitations, more generalized methodologies have been proposed to enhance the flexibility and effectiveness of BP-free TTA. For instance, reconstruction-based approaches focusing on input-level adaptation leverage advanced techniques like diffusion models to preprocess corrupted test images before prediction (Gao et al., 2023; Oh et al., 2025). Additionally, output-level adaptation methods have been developed, such as T3A (Iwasawa & Matsuo, 2021), which utilizes prototype-based classifier adjustment for adaptive predictions, and LAME (Boudiaf et al., 2022), which directly corrects the predicted logits. The recent advanced FOA (Niu et al., 2024) adapts models to unseen test samples without backpropagation by learning a prompt through a derivative-free covariance matrix adaptation strategy and adjusting model activations to align with the source training domain. Looking forward, there is great potential to extend our method to the realm of efficient BP-Free TTA, thereby further broadening the practical applicability of our approach in diverse real-world scenarios. ",
+        "bbox": [
+            88,
+            753,
+            885,
+            905
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            336,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            478,
+            922,
+            495,
+            934
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "image",
+        "img_path": "images/12086e79b7c8bebcbfb3e1b403ba4ded851de86a8cd1e2ed8c92edb9530df120.jpg",
+        "image_caption": [
+            "Figure 4. Distributions of AdaptEval. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            297,
+            90,
+            676,
+            383
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            88,
+            445,
+            885,
+            506
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "B. AdaptEval Benchmark ",
+        "text_level": 1,
+        "bbox": [
+            89,
+            525,
+            305,
+            542
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "To the best of our knowledge, no existing benchmark is specifically designed to evaluate the adaptability of Large Language Models (LLMs) across diverse data distributions. Since the diversity of tasks and domains inherently captures variations in data distributions, we address this gap by introducing a comprehensive benchmark, AdaptEval, which spans a wide range of tasks and domains to thoroughly assess the effectiveness of our proposed TLM. AdaptEval is designed to capture two primary types of out-of-distribution (OOD) scenarios at test time: vertical domain shift and distributional shift in non-specific domains, as described in the previous section. To build a diverse and challenging evaluation framework, we collect high-quality datasets from HuggingFace, ensuring coverage across various data distributions. Specifically, AdaptEval consists of three categories of datasets: DomainBench, InstructionBench, and ReasoningBench. These categories are tailored to evaluate LLMs’ adaptability to tasks requiring vertical knowledge, instruction-following capabilities, and logical reasoning under distribution shifts. A summary of the datasets included in AdaptEval is presented in Table 6, with further analysis provided below. ",
+        "bbox": [
+            88,
+            551,
+            885,
+            717
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "AdaptEval consists of the following three core categories, as shown in Figure 4. ",
+        "bbox": [
+            89,
+            724,
+            607,
+            739
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "• DomainBench. This category includes four vertical domain knowledge datasets: Geography, Agriculture, Medicine, and Finance. It evaluates the adaptability of LLMs to specialized fields by assessing their ability to handle tasks requiring domain-specific expertise, such as named entity recognition, judgment, and question answering. By incorporating domain-specific terminology and real-world complexities that may challenge model performance, DomainBench provides a rigorous evaluation of models’ proficiency in mastering and applying specialized knowledge. ",
+        "bbox": [
+            107,
+            758,
+            887,
+            834
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "• InstructionBench. This category comprises three general-purpose instruction-following datasets: Alpaca-GPT4, Dolly, and InstructionWild. It evaluates the adaptability of LLms to instruction-based tasks by assessing their ability to comprehend, interpret, and execute a diverse range of user instructions. The datasets cover various task types, such as question answering, text classification, and summarization, while introducing variations in user intent, phrasing, and linguistic styles, providing a thorough assessment of the model’s capacity to process and respond effectively to diverse instructions in real-world scenarios. ",
+        "bbox": [
+            107,
+            845,
+            885,
+            905
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            336,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            478,
+            922,
+            495,
+            934
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "image",
+        "img_path": "images/93c70f2310a15900c2f58cef2ad989cc3cb682d427f64130563c131c1d03d776.jpg",
+        "image_caption": [
+            "Figure 5. Distribution of Sequence Lengths for Samples in DomainBench. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            153,
+            106,
+            808,
+            297
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            119,
+            362,
+            882,
+            391
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "• ReasoningBench. This category contains three reasoning-focused datasets: GSM8k, MetaMath, and Logiqa, designed to evaluate the logical reasoning and math problem-solving abilities of LLMs. It evaluates the model’s ability to handle intricate reasoning processes through diverse scenarios, including multi-step mathematical reasoning, complex math problem solving, and logical reading comprehension. ReasoningBench evaluates tasks that require precise and consistent reasoning, offering a thorough test of a model’s ability to tackle complex problems and produce logical, accurate solutions. ",
+        "bbox": [
+            107,
+            412,
+            885,
+            503
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "B.1. DomainBench ",
+        "text_level": 1,
+        "bbox": [
+            89,
+            526,
+            220,
+            541
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "DomainBench focuses on evaluating the model’s adaptability and performance in four vertical domains: Geography, Agricultural, Medical, and Financial. To ensure the comprehensiveness and scientific rigor of the evaluation, DomainBench integrates four meticulously selected datasets: GeoSignal, Agriculture-QA, GenMedGPT-5k, and Wealth-Alpaca Lora. Each dataset is sourced from a broad range of specialized domains, enabling the measurement of large model performance on complex domain-specific knowledge and task execution. The distribution of sequence lengths for the dataset samples and an example table of dataset entries are provided in Figure 5 and Table 7. ",
+        "bbox": [
+            88,
+            550,
+            887,
+            641
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "Geography: The GeoSignal1 dataset is a knowledge-intensive instruction-tuning resource tailored for the Earth Sciences domain, aiming to improve model performance in this field. It comprises approximately $3 9 . 7 \\mathrm { k }$ samples, created through a mix of human curation and semi-automatic methods. The dataset is designed to align with user intent, featuring two sections: a general section for human instruction alignment and a professional section focused on Earth Sciences expertise. It includes tasks such as Named Entity Recognition (NER), relation inference, fact verification, and question answering, enriched with domain-specific terminology like “volcanic neck” and “geomagnetic elements”. Data sources span a multi-modal Earth Sciences knowledge graph (GAKG), academic resources (DDE Scholar), and various databases and QA platforms. From this dataset, we randomly select $5 \\mathrm { k }$ samples to form the Geography dataset, which evaluates the model’s domain knowledge and task performance in Geography. ",
+        "bbox": [
+            88,
+            648,
+            885,
+            785
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "Agriculture: The Agriculture- $\\mathbf { \\mathrm { . } Q A } ^ { 2 }$ dataset focuses on agricultural QA, containing about $2 2 . 6 \\mathrm { k }$ samples. It covers various aspects of agricultural production, such as crop cultivation, livestock farming, soil management, and farming practices. These QA tasks challenge the model’s ability to transfer knowledge and comprehend natural language, especially within the highly specialized agricultural field. We randomly select 5k samples to create the Agriculture dataset, aiming to evaluate the model’s performance in handling agricultural QA tasks. ",
+        "bbox": [
+            88,
+            791,
+            887,
+            867
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "discarded",
+        "text": "1https://huggingface.co/datasets/daven3/geosignal 2https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only ",
+        "bbox": [
+            107,
+            878,
+            534,
+            905
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            336,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            478,
+            924,
+            495,
+            934
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "table",
+        "img_path": "images/78c9bd858daa2b0d2819ac62d245d81ef3339d8fe26a0ad0042331ef5c336681.jpg",
+        "table_caption": [
+            "Table 7. Examples of DomainBench data. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=1 colspan=1>Geography</td><td rowspan=1 colspan=1>Input: I wonder about the fossil of the Odonata. Can you help?Output: Certainly, the Odonata has a fossil of Odonata Wolfe et al. 2016.</td></tr><tr><td rowspan=1 colspan=1>Agriculture</td><td rowspan=1 colspan=1>Input: Why do cassava propagated through stem cuttings mature faster compared to seed propagation?Output: This is because the stem cuttings already have a head start in development and can quicklyestablish roots and start growing.</td></tr><tr><td rowspan=1 colspan=1>Medicine</td><td rowspan=1 colspan=1>Instruction: If you are a doctor, please answer the medical questions based on the patient&#x27;s description.Input: Doctor, I&#x27;m experiencing some strange symptoms. I&#x27;ve been acting hostile towards my family, andI&#x27;m having problems with my movement. Also, I&#x27;ve noticed that I&#x27;ve been slurring my words lately.Output: Based on what you&#x27;ve described, it sounds like you may be experiencing delirium, which is astate of mental confusion that can cause changes in behavior, movement problems, and difficulty speakingclearly. We&#x27;ll need to run some tests to determine the underlying cause, but it&#x27;s important that we actquickly to manage your symptoms and prevent any complications.</td></tr><tr><td rowspan=1 colspan=1>Finance</td><td rowspan=1 colspan=1>Input: Assemble an outfit for a Halloween party.Output: For a Halloween party, assemble an outfit that will make you stand out! Start with a base layero black trousers and a white t-shirt. Then pair it with an eye-catching statement piece, such as abrightorange blazer. For shoes, choose something with a spooky vibe, like a pair of lace-up boots with gothicbuckles.Accessorize with a deep red scarf and a blackfedora.Finish off the look with a classic caneand agolden pocket watch.</td></tr></table>",
+        "bbox": [
+            88,
+            106,
+            882,
+            382
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "Medicine: GenMedGPT- $5 \\mathrm { k } ^ { 3 }$ with a total of $5 . 4 5 \\mathrm { k }$ samples is a medical dialogue dataset generated by ChatGPT, and is designed to emulate real-life conversations between patients and doctors. It provides rich, scenario-specific content that closely mirrors real medical scenarios. The dataset encompasses a wide range of medical queries from patients and responses or diagnoses from doctors. We randomly select $5 \\mathrm { k }$ samples to create the Medicine dataset, aiming to assess the model’s performance in medical dialogue, particularly its adaptability to medical contexts and the quality of its responses. ",
+        "bbox": [
+            88,
+            416,
+            885,
+            492
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "Finance: The Wealth-Alpaca Lora4 dataset is focused on the financial domain, consisting of $4 4 . 3 \\mathrm { k }$ samples. It integrates general task data (Alpaca dataset), financial domain data (FiQA dataset), and custom task data generated using GPT-3.5. This dataset is extensively used for sentiment analysis, opinion mining, and QA tasks in financial texts, covering a variety of real-world applications in finance. We randomly select $5 \\mathrm { k }$ samples to create the Finance dataset, designed to evaluate the model’s specialized performance in financial QA tasks. ",
+        "bbox": [
+            88,
+            500,
+            885,
+            575
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "B.2. InstructionBench ",
+        "text_level": 1,
+        "bbox": [
+            88,
+            592,
+            243,
+            606
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "InstructionBench aims to assess the adaptability and performance of models across a diverse range of general instruction tasks, including, but not limited to, question answering (QA), text summarization, and classification. This benchmark integrates three carefully curated high-quality datasets: Alpaca-GPT4, Dolly, and InstructionWild, encompassing a variety of instruction tasks generated through both human and model-driven approaches. The evaluation is designed to be both comprehensive and rigorous. The distribution of dataset samples and an example table of dataset entries are provided in Figure 6 and Table 8. ",
+        "bbox": [
+            88,
+            614,
+            885,
+            705
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "Dolly: The Dolly- $1 5 \\mathrm { k } ^ { 5 }$ dataset, created by Databricks, consists of $1 5 \\mathrm { k }$ high-quality, human-generated prompt-response pairs. It is specifically designed for the instruction fine-tuning of large language models. Unlike datasets generated through model outputs or copy-pasting, Dolly- $1 5 \\mathrm { k }$ maintains authenticity and high quality by relying solely on human input. The dataset encompasses common instruction fine-tuning tasks, including QA, summarization, and classification. We follow the official guide from Databricks6 and concatenate the sample fields into complete training samples. A subset of 5k samples is randomly selected to evaluate model performance. ",
+        "bbox": [
+            88,
+            713,
+            885,
+            804
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "Alpaca-GPT4: The Alpaca- $\\scriptstyle { \\mathrm { G P T 4 } } ^ { 7 }$ dataset comprises ${ 5 2 } \\mathrm { k }$ instruction-following samples generated using GPT-4. The dataset is constructed by first manually creating a comprehensive set of instructions across a wide range of tasks, followed by data generation and quality assurance using GPT-4. It includes diverse task types, such as various QA and summarization tasks. From this dataset, we randomly select $5 \\mathrm { k }$ samples to test the model’s generalization capabilities and performance on instruction tasks. ",
+        "bbox": [
+            89,
+            811,
+            883,
+            827
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "discarded",
+        "text": "3https://huggingface.co/datasets/wangrongsheng/GenMedGPT-5k-en 4https://huggingface.co/datasets/gbharti/wealth-alpaca lora 5https://huggingface.co/datasets/databricks/databricks-dolly-15k 6https://github.com/databrickslabs/dolly/blob/master/training/consts.py 7https://huggingface.co/datasets/llamafactory/alpaca gpt4 en ",
+        "bbox": [
+            107,
+            837,
+            527,
+            905
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            478,
+            922,
+            495,
+            934
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "image",
+        "img_path": "images/7c473134b737b6b2570ca1cb9c461b424ad3e906a36c31846afa9602b3fd7878.jpg",
+        "image_caption": [
+            "Figure 6. Distribution of Sequence Lengths for Samples in InstructionBench. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            155,
+            106,
+            808,
+            297
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/26359d586ea248b55f40342c75fe51f657b959458bbe9a8f9caea6e576bd1546.jpg",
+        "image_caption": [
+            "Figure 7. Distribution of Sequence Lengths for Samples in ReasoningBench. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            155,
+            369,
+            807,
+            561
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            88,
+            622,
+            885,
+            681
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "InstructionWild: InstructionWild8 is a large dataset focused on real-world user instructions, consisting of over $5 0 \\mathrm { k }$ highquality bilingual (Zh-En) instructions. The data is derived from real user-shared scenarios, offering diversity and broad applicability. Its format aligns with that of the Alpaca dataset, enabling seamless integration and usage. The dataset covers common instruction fine-tuning tasks such as QA and summarization. We randomly extract 5k samples to evaluate the model’s ability to understand and execute instructions effectively. ",
+        "bbox": [
+            88,
+            689,
+            885,
+            765
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "B.3. ReasoningBench ",
+        "text_level": 1,
+        "bbox": [
+            89,
+            782,
+            236,
+            797
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "ReasoningBench is designed to evaluate models’ logical reasoning and problem-solving abilities through tasks such as mathematical problem solving, multi-step reasoning, and logical reading comprehension. This benchmark integrates three high-quality reasoning datasets, GSM8K, MetaMath, and LogiQA, to comprehensively assess models’ reasoning performance across diverse dimensions and task types. The distribution of dataset samples and an example table of dataset entries are provided in Figure 7 and Table 9. ",
+        "bbox": [
+            89,
+            806,
+            885,
+            881
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "discarded",
+        "text": "8https://huggingface.co/datasets/fuliucansheng/InstructionWild ",
+        "bbox": [
+            111,
+            892,
+            478,
+            905
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            478,
+            922,
+            496,
+            934
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "table",
+        "img_path": "images/9d1338a962c8f7b4f41c016347089402abc622c0f01e81299ded4e5e34249455.jpg",
+        "table_caption": [
+            "Table 8. Examples of InstructionBench data. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Dolly</td><td>Instruction: Below is an instruction that describes a task. Write a response that appropriately completes the request.</td></tr><tr><td>Alpaca-GPT4</td><td>Response: Output: Marshan Lynch Input: Imagine you are talking to a child, explain the concept of DNA. Output: Okay kiddo, so you know how we all have things that make us special and unique? Like how you have your mom&#x27;s eyes and your dad&#x27;s hair? Well, that&#x27;s because of something called DNA. DNA is like the directions or the recipe that our bodies follow to make us who we are. It decides things like the color of our eyes, how tall we&#x27;ll grow, and even how our personality is.\\n\\n Just like you follow</td></tr><tr><td>InstructionWild</td><td>can have traits from both of them. But even though we share DNA with our family, while there is nobody else in the world with the exact same DNA as us. We are all unique and special in our own way!\\n \\n Isn&#x27;t that cool? Do you have any more question about it? Inpu:Create a list of fve unique travel destinations that are not popular tourist spots.Providea brie description for each destination, highlighting what sets it apart from other popular travel locations. Output: Meghalaya, India: Located in the northeast part of India, Meghalaya is known for its beautiful rivers, ancient caves, and rich cultural heritage. It\\u2019s one of the least explored regions of the country, making it an ideal destination for those looking for an escape from the crowds of popular tourist spots. n Atacama Desert, Chile: The driest desert in the world, the Atacama Desert is an other-worldly landscape of stunning terrain and amazing geological formations. Itu2 019s home to some of the clearest skies on the planet and offers incredible stargazing opportunities. \\n Antarctica: For the adventurous traveler, Antarctica is a wild, unforgiving landscape like no other.</td></tr></table>",
+        "bbox": [
+            88,
+            101,
+            880,
+            625
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "GSM8K: $\\mathrm { G S M 8 K ^ { 9 } }$ is a high-quality dataset of linguistically diverse elementary school math word problems, constructed by OpenAI. It contains a total of $8 . 5 \\mathrm { k }$ samples. The dataset’s unique feature lies in its human-crafted problems, avoiding templated language, and providing natural language solutions instead of purely mathematical expressions. This design ensures a closer alignment with real-world problem-solving scenarios. The primary task type is multi-step mathematical reasoning, which effectively diagnoses deficiencies in a model’s reasoning capabilities. Consistent with common pratice, we apply a zero-shot chain-of-thought (CoT) prompt to each sample, guiding the model to think step by step. For evaluation, we combine the training and test sets and randomly select $5 \\mathrm { k }$ samples. ",
+        "bbox": [
+            88,
+            662,
+            887,
+            770
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "MetaMath: MetaMath10 is a large-scale dataset comprising approximately $3 9 5 \\mathrm { k }$ samples, designed to enhance mathematical reasoning through a question-guided approach. It diversifies mathematical problems by rephrasing and restructuring them from multiple perspectives, offering a robust and challenging benchmark for evaluating mathematical reasoning abilities. The dataset focuses on QA tasks and spans a broad spectrum of mathematical problem complexities. Similar to GSM8k, we apply a zero-shot CoT prompt to each sample to guide the model in logical reasoning. For evaluation purposes, we randomly select 5k samples from the training set. ",
+        "bbox": [
+            89,
+            776,
+            887,
+            867
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "discarded",
+        "text": "9https://huggingface.co/datasets/openai/gsm8k 10https://huggingface.co/datasets/meta-math/MetaMathQA ",
+        "bbox": [
+            104,
+            878,
+            450,
+            905
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            477,
+            922,
+            493,
+            934
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "table",
+        "img_path": "images/8679633c7c381dc7e85f95f592268b11e3d57d5decc2c4a34d5df4c963844bae.jpg",
+        "table_caption": [
+            "Table 9. Examples of ReasoningBench data. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=1 colspan=1>GSM8K</td><td rowspan=1 colspan=1>Input: Below is an instruction that describes a task. Write a response that appropriately completes therequest. \\\\n## Instruction:\\nFive food companies sponsored a local food bank. Foster Farms donated45 dressed chickens; American Summits donated twice the number of bottled water than the number ofdressed chicken donated by Foster Farms; Hormel donated three times the number of dressed chickens thatFoster Farms donated; Boudin Butchers donated one-third of the number of dressed chickens that Hormeldonated; Del Monte Foods donated 30 fewer bottles of water than American Summits. How many fooditems did the companies donate in total? Response: Let&#x27;s think step by step.Output: 375</td></tr><tr><td rowspan=1 colspan=1>MetaMath</td><td rowspan=1 colspan=1>Input: Below is an instruction that describes a task. Write a response that appropriately completes therequest. Instruction:\\ n What is the value of the ceiling function applied to √4 ? \\n Response: Let&#x27;s think4step by step.Output: -3</td></tr><tr><td rowspan=1 colspan=1>LogiQA</td><td rowspan=1 colspan=1>Input: Write a multi-choice question for the following article:n Article: Researchers believe that ifmothers are exposed to more pesticides in the first few months of pregnancy, the babies born may beless intelligent. They believe that the embryonic brain begins to develop shortly after pregnancy, so thepre-pregnancy is the baby&#x27;s brain In the critical period of development, exposure to more pesticides maychange the environment around the developing embryo&#x27;s brain in pregnant women. n Question: Whichof the following, if true, would best support a researcher&#x27;s point of view?n Options:A. Many babies arebor early due to their mothers&#x27;exposure to pesticides.B. Insecticides are a potential threat to people&#x27;health, and it can also cause many diseases such as Parkinson&#x27;s disease, cancer and mental illness. n C.Previous research has found that increased exposure to pesticides can cause thyroid problems in pregnantwomen, and the thyroid status of pregnant women can affect the intellectual development of the fetus.D. Researchers conducted a follow-up survey of 1,500 pregnant women and found that children born topregnant women who were more exposed to pesticides performed significantly worse in mathematics andlanguage. \\n \\n Answer:Output: C</td></tr></table>",
+        "bbox": [
+            86,
+            106,
+            882,
+            508
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "LogiQA: LogiQA11 is a high-quality, comprehensive dataset focused on logical reasoning, derived from logical reasoning questions used in the Chinese National Civil Service Examination. It consists of 8k QA samples, covering a variety of deductive reasoning tasks designed to test a model’s adaptability to logical reasoning and problem-solving. During dataset construction, strict filtering was applied to exclude samples with inappropriate formats or those involving charts and mathematical calculations, ensuring the dataset’s purity and quality. Following the official dataset guidelines12, we create multiple-choice prompts and randomly select 5k samples for evaluation. ",
+        "bbox": [
+            88,
+            547,
+            885,
+            638
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "C. More Details for Experiment Settings ",
+        "text_level": 1,
+        "bbox": [
+            88,
+            657,
+            426,
+            676
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "C.1. More Metrics ",
+        "text_level": 1,
+        "bbox": [
+            88,
+            684,
+            218,
+            699
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "To provide a more comprehensive evaluation of the proposed method, we employ additional evaluation metrics, including BERTScore (BS F1) (Zhang et al., 2019), BLEU (Papineni et al., 2002), Rouge-1 (R-1), Rouge-2 (R-2), and Rouge-L (R-L). These metrics help assess various aspects of model performance, such as the quality of generated text, its similarity to reference outputs, and the model’s ability to capture key information at different levels of granularity. ",
+        "bbox": [
+            89,
+            708,
+            885,
+            768
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "C.2. Implementation Details ",
+        "text_level": 1,
+        "bbox": [
+            89,
+            785,
+            285,
+            800
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "The training and evaluation are conducted on the 80G memory-sized NVIDIA A800 GPUs with CUDA version 12.1. Our method is implemented using the PyTorch framework with Pytorch, version 2.5.1. The training framework used is LLaMA-Factory13. For the LoRA setup, we use random Gaussian initialization for matrix $\\mathcal { A }$ and set matrix $\\boldsymbol { B }$ to zero, with a rank of $r = 8$ . The LoRA is applied only to the $W _ { q }$ and $W _ { v }$ . ",
+        "bbox": [
+            89,
+            809,
+            887,
+            853
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "discarded",
+        "text": "11https://huggingface.co/datasets/lucasmccabe/logiqa 12https://github.com/csitfun/LogiQA2.0/blob/main/logiqa/multi-choice-prompt.py 13https://github.com/hiyouga/LLaMA-Factory ",
+        "bbox": [
+            102,
+            864,
+            586,
+            905
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            477,
+            922,
+            495,
+            934
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "table",
+        "img_path": "images/ecdd5b4e320d66b35b8713086e09e8e03c04edb0952947e23663b69dc2999d72.jpg",
+        "table_caption": [
+            "Table 10. Comparison of experimental results on the Geography dataset of DomainBench. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Method</td><td>BERTScore ↑</td><td>BLEURT ↑</td><td>BLEU ↑</td><td>Rouge-1 ↑</td><td>Rouge-2 ↑</td><td>Rouge-L ↑</td></tr><tr><td>Llama3.2-3B-Instruct</td><td>0.6905</td><td>-0.6794</td><td>0.0638</td><td>0.2661</td><td>0.1020</td><td>0.1917</td></tr><tr><td>Tent</td><td>0.6661</td><td>-1.1320</td><td>0.0444</td><td>0.2149</td><td>0.1149</td><td>0.1780</td></tr><tr><td>EATA</td><td>0.5274</td><td>-1.4276</td><td>0.0032</td><td>0.0065</td><td>0.0007</td><td>0.0064</td></tr><tr><td>TLM (Ours)</td><td>0.7160</td><td>-0.7278</td><td>0.0952</td><td>0.3203</td><td>0.1526</td><td>0.2534</td></tr><tr><td>Llama3-8B-Instruct</td><td>0.6953</td><td>-0.6161</td><td>0.0709</td><td>0.2711</td><td>0.1040</td><td>0.1977</td></tr><tr><td>Tent</td><td>0.6007</td><td>-1.5575</td><td>0.0087</td><td>0.0932</td><td>0.0100</td><td>0.0756</td></tr><tr><td>EATA</td><td>0.6751</td><td>-1.0290</td><td>0.0575</td><td>0.2432</td><td>0.1290</td><td>0.1949</td></tr><tr><td>TLM (Ours)</td><td>0.7284</td><td>-0.5860</td><td>0.1064</td><td>0.3540</td><td>0.1650</td><td>0.2835</td></tr><tr><td>Llama2-13B-chat</td><td>0.6707</td><td>-0.7337</td><td>0.0495</td><td>0.2430</td><td>0.0975</td><td>0.1706</td></tr><tr><td>Tent</td><td>0.4541</td><td>-1.2410</td><td>0.0011</td><td>0.0321</td><td>0.0000</td><td>0.0320</td></tr><tr><td>EATA</td><td>0.6999</td><td>-0.7661</td><td>0.0703</td><td>0.3132</td><td>0.1441</td><td>0.2421</td></tr><tr><td>TLM (Ours)</td><td>0.6902</td><td>-0.6738</td><td>0.0722</td><td>0.2996</td><td>0.1319</td><td>0.2225</td></tr><tr><td>Qwen2.5-7B-Instruct</td><td>0.7003</td><td>-0.5802</td><td>0.0823</td><td>0.2911</td><td>0.1125</td><td>0.2128</td></tr><tr><td>Tent</td><td>0.6925</td><td>-0.9422</td><td>0.0810</td><td>0.2703</td><td>0.1293</td><td>0.2242</td></tr><tr><td>EATA</td><td>0.6856</td><td>-0.9806</td><td>0.0723</td><td>0.2444</td><td>0.1182</td><td>0.2063</td></tr><tr><td>TLM (Ours)</td><td>0.7214</td><td>-0.5093</td><td>0.1039</td><td>0.3412</td><td>0.1481</td><td>0.2632</td></tr></table>",
+        "bbox": [
+            112,
+            108,
+            861,
+            361
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            88,
+            398,
+            495,
+            415
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "Tent (Wang et al., 2021) is a Test-Time Adaptation (TTA) method originally designed for image classification tasks, which adapts a model’s parameters during inference based on the entropy of predictions. In the context of dynamic parameter updates for Large Language Models (LLMs), we adapt the Tent method to work with LLMs by leveraging the prediction entropy of the 80 tokens generated by the model. Specifically, we calculate the entropy of the model’s predictions for these 80 tokens during each test-time update and use this information to adjust the LLM’s parameters. ",
+        "bbox": [
+            88,
+            421,
+            883,
+            497
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "EATA (Niu et al., 2022a) is a state-of-the-art TTA method for image classification models, which adjusts model parameters based on low-entropy samples during inference. In the context of dynamic parameter updates for LLMs, we adapt the EATA method by leveraging the prediction entropy of 80 tokens generated by the model to select samples. Specifically, during each test-time update, we compute the entropy of the model’s predictions for these 80 tokens and, following the setup of EATA, adjust the parameters of the LLM (with the hyperparameter $E _ { 0 }$ of EATA set to 0.4). However, performing EATA updates on Llama2-13B-chat may result in out-of-memory errors. To address this issue, we reduce the number of tokens from 80 to 30 when applying EATA updates on Llama2-13B-chat. ",
+        "bbox": [
+            88,
+            505,
+            885,
+            611
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "Offline and Online Settings. In our experiments, we consider two distinct settings: Offline and Online. In the Offline setting, all test data is processed at once, and the model’s parameters are updated using all available test samples before any testing is performed. In the Online setting, test data sequentially, where the model is updated after each individual test sample or batch. This setting better reflects real-world scenarios where data arrives in a continuous stream, requiring real-time updates to the model. ",
+        "bbox": [
+            88,
+            618,
+            885,
+            694
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "D. More Results of Experiment ",
+        "text_level": 1,
+        "bbox": [
+            89,
+            712,
+            349,
+            731
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "To comprehensively evaluate the effectiveness of the proposed TLM, we report additional evaluation metrics and results. As shown in Table 10, the proposed method outperforms both the entropy-minimization-based method (Tent) and the original LLMs on the Geography dataset. Specifically, the proposed method achieves a $4 . 7 6 \\%$ improvement in BERTScore compared to Llama3-8B-Instruct. As shown in Table 11, our proposed TLM outperforms Tent on the Agriculture dataset. For instance, our proposed TLM achieves a $1 4 6 . 6 1 \\%$ improvement in the BLEU metric compared to Qwen2.5-7B-Instruct. From Table 12, the proposed method outperforms the original LLM on the Medicine dataset. Specifically, compared to Llama3-8B-Instruct, the proposed method achieves a relative improvement of $7 . 0 5 \\%$ in BERTScore. As shown in Table 13, our proposed TLM outperforms Tent on the Finance dataset. For instance, our proposed TLM achieves a relative improvement $1 2 2 . 5 0 \\%$ improvement in the BLEU metric compared to Llama3.2-3B-Instruct. From Table 14, the proposed method outperforms the original LLM on the Alpaca-GPT4 dataset. Specifically, compared to Llama3-8B-Instruct, the proposed method achieves a relative improvement of $4 . 3 0 \\%$ in BERTScore. As shown in Table 15, the proposed method outperforms both Tent and the original LLMs across all metrics on the Dolly dataset. Specifically, the proposed method achieves a relative improvement of $1 . 1 1 \\%$ in BERTScore compared to Llama3-8B-Instruct. As shown in Table 16, our proposed TLM outperforms Tent on the InstructionWild dataset. For instance, our proposed TLM achieves a relative improvement $5 0 . 1 5 \\%$ improvement in the BLEU metric compared to Llama3.2-3B-Instruct. ",
+        "bbox": [
+            88,
+            738,
+            885,
+            905
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            478,
+            922,
+            495,
+            934
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "table",
+        "img_path": "images/9eed0a9dd91bfc03d5b0981f09e1f01d1852f9cfe60dea78c965e3351d8c0fa0.jpg",
+        "table_caption": [
+            "Table 11. Comparison of experimental results on the Agriculture dataset of DomainBench. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Method</td><td>BERTScore ↑</td><td>BLEURT ↑</td><td>BLEU ↑</td><td>Rouge-1 ↑</td><td>Rouge-2 ↑</td><td>Rouge-L ↑</td></tr><tr><td>Llama3.2-3B-Instruct</td><td>0.6672</td><td>-0.7595</td><td>0.0104</td><td>0.0927</td><td>0.0316</td><td>0.0684</td></tr><tr><td>Tent</td><td>0.6350</td><td>-0.9975</td><td>0.0015</td><td>0.0159</td><td>0.0034</td><td>0.0148</td></tr><tr><td>EATA</td><td>0.6659</td><td>-0.8355</td><td>0.0022</td><td>0.0263</td><td>0.0046</td><td>0.0247</td></tr><tr><td>TLM (Ours)</td><td>0.6787</td><td>-0.6668</td><td>0.0288</td><td>0.1935</td><td>0.0655</td><td>0.1518</td></tr><tr><td>Llama3-8B-Instruct</td><td>0.6666</td><td>-0.7288</td><td>0.0106</td><td>0.0903</td><td>0.0328</td><td>0.0665</td></tr><tr><td>Tent</td><td>0.5746</td><td>-1.2577</td><td>0.0008</td><td>0.0075</td><td>0.0011</td><td>0.0066</td></tr><tr><td>EATA</td><td>0.5870</td><td>-1.3074</td><td>0.0003</td><td>0.0019</td><td>0.0000</td><td>0.0016</td></tr><tr><td>TLM (Ours)</td><td>0.6526</td><td>-0.6703</td><td>0.0189</td><td>0.1477</td><td>0.0496</td><td>0.1110</td></tr><tr><td>Llama2-13B-chat</td><td>0.6235</td><td>-0.6134</td><td>0.0116</td><td>0.0910</td><td>0.0319</td><td>0.0668</td></tr><tr><td>Tent</td><td>0.5901</td><td>-0.9157</td><td>0.0015</td><td>0.0200</td><td>0.0019</td><td>0.0193</td></tr><tr><td>EATA</td><td>0.6065</td><td>-0.6084</td><td>0.0101</td><td>0.0843</td><td>0.0257</td><td>0.0675</td></tr><tr><td>TLM (Ours)</td><td>0.6354</td><td>-0.5929</td><td>0.0144</td><td>0.1108</td><td>0.0379</td><td>0.0826</td></tr><tr><td>Qwen2.5-7B-Instruct</td><td>0.6562</td><td>-0.7226</td><td>0.0118</td><td>0.1068</td><td>0.0377</td><td>0.0768</td></tr><tr><td>Tent</td><td>0.6667</td><td>-1.1641</td><td>0.0118</td><td>0.1399</td><td>0.0346</td><td>0.1145</td></tr><tr><td>EATA</td><td>0.6562</td><td>-1.1517</td><td>0.0113</td><td>0.1425</td><td>0.0357</td><td>0.1166</td></tr><tr><td>TLM (Ours)</td><td>0.6755</td><td>-0.6219</td><td>0.0291</td><td>0.1841</td><td>0.0663</td><td>0.1394</td></tr></table>",
+        "bbox": [
+            112,
+            108,
+            861,
+            361
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            88,
+            386,
+            885,
+            446
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "text",
+        "text": "E. Discussions and Future Works ",
+        "text_level": 1,
+        "bbox": [
+            89,
+            465,
+            367,
+            483
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "text",
+        "text": "To the best of our knowledge, addressing the challenges faced by LLMs in real-world deployments, such as distributional shifts in test data, has not been thoroughly explored. In this work, we introduce the Test-Time Learning (TTL) task, aiming to dynamically adapt LLMs using only unlabeled test data during testing. Additionally, we propose the AdaptEval benchmark, designed to evaluate the effectiveness of TTL in enhancing model performance across a variety of domains. Experimental results demonstrate that the proposed Test-Time Learning approach effectively improves LLM performance on target domains. However, we believe there are several potential research directions worth exploring in the future: ",
+        "bbox": [
+            88,
+            492,
+            885,
+            583
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "text",
+        "text": "Cross-Domain Continuous Adaptation: When deploying LLMs across multiple domains, it is essential to achieve continuous adaptation without overfitting to a specific domain. This requires balancing the transfer of knowledge across domains while mitigating catastrophic forgetting. Future work could explore methods for seamless domain adaptation that improves model generalization across dynamic and diverse tasks. ",
+        "bbox": [
+            88,
+            589,
+            885,
+            651
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "text",
+        "text": "Only Forward Passes: LLMs have large parameter sizes, and deployed models in practical settings may not support backpropagation due to memory or computational limitations. This restricts the ability to perform Test-Time Learning during inference, highlighting the need for more efficient methods that enable model adaptation without requiring backpropagation. ",
+        "bbox": [
+            89,
+            659,
+            885,
+            704
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            334,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            477,
+            922,
+            495,
+            934
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "table",
+        "img_path": "images/165d9bbb79817ae80650ab2a9b81b661245230b3045cd083f2406e5c5a90e77c.jpg",
+        "table_caption": [
+            "Table 12. Comparison of experimental results on the Medicine dataset of DomainBench. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Method</td><td>BERTScore ↑</td><td>BLEURT ↑</td><td>BLEU ↑</td><td>Rouge-1 ↑</td><td>Rouge-2 ↑</td><td>Rouge-L ↑</td></tr><tr><td>Llama3.2-3B-Instruct</td><td>0.6677</td><td>-0.7668</td><td>0.0165</td><td>0.1588</td><td>0.0269</td><td>0.1037</td></tr><tr><td>Tent</td><td>0.6322</td><td>-1.2819</td><td>0.0191</td><td>0.1897</td><td>0.0276</td><td>0.1204</td></tr><tr><td>EATA</td><td>0.6554</td><td>-0.9669</td><td>0.0018</td><td>0.0312</td><td>0.0017</td><td>0.0178</td></tr><tr><td>TLM (Ours)</td><td>0.7005</td><td>-0.5603</td><td>0.0463</td><td>0.2559</td><td>0.0728</td><td>0.1844</td></tr><tr><td>Llama3-8B-Instruct</td><td>0.6628</td><td>-0.7486</td><td>0.0136</td><td>0.1398</td><td>0.0343</td><td>0.0911</td></tr><tr><td>Tent</td><td>0.5525</td><td>-1.3487</td><td>0.0014</td><td>0.0113</td><td>0.0006</td><td>0.0089</td></tr><tr><td>EATA</td><td>0.6072</td><td>-1.1079</td><td>0.0011</td><td>0.0139</td><td>0.0011</td><td>0.0100</td></tr><tr><td>TLM (Ours)</td><td>0.7095</td><td>-0.4781</td><td>0.0486</td><td>0.2646</td><td>0.0836</td><td>0.1889</td></tr><tr><td>Llama2-13B-chat</td><td>0.6559</td><td>-0.5971</td><td>0.0158</td><td>0.1439</td><td>0.0397</td><td>0.0956</td></tr><tr><td>Tent</td><td>0.6235</td><td>-0.5867</td><td>0.0100</td><td>0.1250</td><td>0.0261</td><td>0.0874</td></tr><tr><td>EATA</td><td>0.6543</td><td>-0.4349</td><td>0.0145</td><td>0.1465</td><td>0.0410</td><td>0.1007</td></tr><tr><td>TLM (Ours)</td><td>0.6988</td><td>-0.4615</td><td>0.0512</td><td>0.2370</td><td>0.0890</td><td>0.1760</td></tr><tr><td>Qwen2.5-7B-Instruct</td><td>0.6561</td><td>-0.6598</td><td>0.0136</td><td>0.1441</td><td>0.0369</td><td>0.0909</td></tr><tr><td>Tent</td><td>0.5884</td><td>-1.1911</td><td>0.0097</td><td>0.0548</td><td>0.0214</td><td>0.0454</td></tr><tr><td>EATA</td><td>0.6408</td><td>-0.7171</td><td>0.0163</td><td>0.1672</td><td>0.0304</td><td>0.1202</td></tr><tr><td>TLM (Ours)</td><td>0.7082</td><td>-0.5964</td><td>0.0623</td><td>0.2623</td><td>0.1003</td><td>0.1967</td></tr></table>",
+        "bbox": [
+            112,
+            171,
+            859,
+            424
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "table",
+        "img_path": "images/90a2334d65f2b65b0f5a48e4b2d1fa5d850ce4871a1fbc7d532c2ce85a42f9bf.jpg",
+        "table_caption": [
+            "Table 13. Comparison of experimental results on the Finance dataset of DomainBench. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Method</td><td>BERTScore ↑</td><td>BLEURT ↑</td><td>BLEU ↑</td><td>Rouge-1 ↑</td><td>Rouge-2 ↑</td><td>Rouge-L ↑</td></tr><tr><td>Llama3.2-3B-Instruct</td><td>0.6809</td><td>-0.6532</td><td>0.0360</td><td>0.2425</td><td>0.0791</td><td>0.1602</td></tr><tr><td>Tent</td><td>0.6322</td><td>-1.2819</td><td>0.0191</td><td>0.1149</td><td>0.0549</td><td>0.1084</td></tr><tr><td>EATA</td><td>0.5028</td><td>-1.2700</td><td>0.0010</td><td>0.0150</td><td>0.0001</td><td>0.0149</td></tr><tr><td>TLM (Ours)</td><td>0.7060</td><td>-0.5113</td><td>0.0801</td><td>0.3206</td><td>0.1255</td><td>0.2367</td></tr><tr><td>Llama3-8B-Instruct</td><td>0.6862</td><td>-0.6230</td><td>0.0407</td><td>0.2530</td><td>0.0873</td><td>0.1682</td></tr><tr><td>Tent</td><td>0.5919</td><td>-0.9704</td><td>0.0032</td><td>0.0390</td><td>0.0072</td><td>0.0351</td></tr><tr><td>EATA</td><td>0.6431</td><td>-1.2160</td><td>0.0149</td><td>0.1398</td><td>0.0567</td><td>0.1183</td></tr><tr><td>TLM (Ours)</td><td>0.7153</td><td>-0.4411</td><td>0.0952</td><td>0.3514</td><td>0.1448</td><td>0.2576</td></tr><tr><td>Llama2-13B-chat</td><td>0.6814</td><td>-0.6217</td><td>0.0427</td><td>0.2591</td><td>0.0892</td><td>0.1722</td></tr><tr><td>Tent</td><td>0.4878</td><td>-1.1973</td><td>0.0006</td><td>0.0049</td><td>0.0000</td><td>0.0049</td></tr><tr><td>EATA</td><td>0.6203</td><td>-1.0560</td><td>0.0250</td><td>0.1241</td><td>0.0574</td><td>0.1113</td></tr><tr><td>TLM (Ours)</td><td>0.6979</td><td>-0.5110</td><td>0.0628</td><td>0.3009</td><td>0.1104</td><td>0.2064</td></tr><tr><td>Qwen2.5-7B-Instruct</td><td>0.6978</td><td>-0.5370</td><td>0.0639</td><td>0.2969</td><td>0.1124</td><td>0.2025</td></tr><tr><td>Tent</td><td>0.6623</td><td>-1.1316</td><td>0.0313</td><td>0.1835</td><td>0.0845</td><td>0.1533</td></tr><tr><td>EATA</td><td>0.7103</td><td>-0.5746</td><td>0.0810</td><td>0.3127</td><td>0.1358</td><td>0.2409</td></tr><tr><td>TLM (Ours)</td><td>0.7220</td><td>-0.3890</td><td>0.0968</td><td>0.3607</td><td>0.1487</td><td>0.2616</td></tr></table>",
+        "bbox": [
+            112,
+            585,
+            861,
+            838
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            336,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            477,
+            922,
+            495,
+            934
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "table",
+        "img_path": "images/beab4f76fc2266e180afe2e7bd188513909ebbd07a44cd1df7aa92b2dc2b0959.jpg",
+        "table_caption": [
+            "Table 14. Comparison of experimental results on the Alpaca-GPT4 dataset of InstructionBench. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Method</td><td>BERTScore ↑</td><td>BLEURT ↑</td><td>BLEU ↑</td><td>Rouge-1 ↑</td><td>Rouge-2 ↑</td><td>Rouge-L ↑</td></tr><tr><td>Llama3.2-3B-Instruct</td><td>0.7260</td><td>-0.5164</td><td>0.0953</td><td>0.3885</td><td>0.1712</td><td>0.2619</td></tr><tr><td>Tent</td><td>0.5656</td><td>-1.5454</td><td>0.0054</td><td>0.0351</td><td>0.0032</td><td>0.0305</td></tr><tr><td>EATA</td><td>0.6553</td><td>-1.2411</td><td>0.0220</td><td>0.1513</td><td>0.0753</td><td>0.1359</td></tr><tr><td>TLM (Ours)</td><td>0.7523</td><td>-0.4148</td><td>0.1239</td><td>0.4170</td><td>0.2062</td><td>0.3184</td></tr><tr><td>Llama3-8B-Instruct</td><td>0.7353</td><td>-0.4655</td><td>0.1082</td><td>0.4076</td><td>0.1863</td><td>0.2796</td></tr><tr><td>Tent</td><td>0.6712</td><td>-1.0652</td><td>0.0421</td><td>0.2193</td><td>0.1193</td><td>0.1881</td></tr><tr><td>EATA</td><td>0.6398</td><td>-0.8220</td><td>0.0271</td><td>0.1499</td><td>0.0725</td><td>0.1332</td></tr><tr><td>TLM (Ours)</td><td>0.7669</td><td>-0.3090</td><td>0.1479</td><td>0.4582</td><td>0.2349</td><td>0.3528</td></tr><tr><td>Llama2-13B-chat</td><td>0.7326</td><td>-0.5290</td><td>0.1091</td><td>0.4068</td><td>0.1830</td><td>0.2777</td></tr><tr><td>Tent</td><td>0.6249</td><td>-1.4903</td><td>0.0108</td><td>0.0998</td><td>0.0444</td><td>0.0937</td></tr><tr><td>EATA</td><td>0.5073</td><td>-0.7398</td><td>0.0094</td><td>0.0813</td><td>0.0191</td><td>0.0799</td></tr><tr><td>TLM (Ours)</td><td>0.7386</td><td>-0.5150</td><td>0.1229</td><td>0.4311</td><td>0.1987</td><td>0.3040</td></tr><tr><td>Qwen2.5-7B-Instruct</td><td>0.7624</td><td>-0.2949</td><td>0.1556</td><td>0.4803</td><td>0.2353</td><td>0.3406</td></tr><tr><td>Tent</td><td>0.6787</td><td>-0.9809</td><td>0.0501</td><td>0.2323</td><td>0.1315</td><td>0.2031</td></tr><tr><td>EATA</td><td>0.0000</td><td>-1.9681</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td></tr><tr><td>TLM (Ours)</td><td>0.7829</td><td>-0.2137</td><td>0.1749</td><td>0.4919</td><td>0.2648</td><td>0.3819</td></tr></table>",
+        "bbox": [
+            112,
+            171,
+            859,
+            424
+        ],
+        "page_idx": 25
+    },
+    {
+        "type": "table",
+        "img_path": "images/d3a1415f5bb39b2bbfc32f3dfc50d71f856d60dbc3803eda65db2d55960bc785.jpg",
+        "table_caption": [
+            "Table 15. Comparison of experimental results on the Dolly dataset of InstructionBench. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Method</td><td>BERTScore ↑</td><td>BLEURT ↑</td><td>BLEU ↑</td><td>Rouge-1 ↑</td><td>Rouge-2 ↑</td><td>Rouge-L ↑</td></tr><tr><td>Llama3.2-3B-Instruct</td><td>0.7289</td><td>-0.4824</td><td>0.0946</td><td>0.3778</td><td>0.1903</td><td>0.2935</td></tr><tr><td>Tent</td><td>0.6866</td><td>-0.5922</td><td>0.0797</td><td>0.2374</td><td>0.1398</td><td>0.2039</td></tr><tr><td>EATA</td><td>0.5767</td><td>-1.5690</td><td>0.0027</td><td>0.0092</td><td>0.0002</td><td>0.0086</td></tr><tr><td>TLM (Ours)</td><td>0.7334</td><td>-0.4783</td><td>0.1030</td><td>0.3878</td><td>0.1997</td><td>0.3048</td></tr><tr><td>Llama3-8B-Instruct</td><td>0.7415</td><td>-0.4088</td><td>0.1114</td><td>0.4126</td><td>0.2137</td><td>0.3222</td></tr><tr><td>Tent</td><td>0.5905</td><td>-1.4648</td><td>0.0000</td><td>0.0036</td><td>0.0000</td><td>0.0036</td></tr><tr><td>EATA</td><td>0.6559</td><td>-1.2475</td><td>0.0275</td><td>0.1991</td><td>0.0868</td><td>0.1661</td></tr><tr><td>TLM (Ours)</td><td>0.7497</td><td>-0.3972</td><td>0.1194</td><td>0.4239</td><td>0.2226</td><td>0.3388</td></tr><tr><td>Llama2-13B-chat</td><td>0.7074</td><td>-0.8015</td><td>0.0743</td><td>0.3274</td><td>0.1550</td><td>0.2407</td></tr><tr><td>Tent</td><td>0.4111</td><td>-0.7963</td><td>0.0008</td><td>0.0076</td><td>0.0000</td><td>0.0076</td></tr><tr><td>EATA</td><td>0.5355</td><td>-0.9809</td><td>0.0076</td><td>0.0632</td><td>0.0175</td><td>0.0577</td></tr><tr><td>TLM (Ours)</td><td>0.7108</td><td>-0.8169</td><td>0.0789</td><td>0.3411</td><td>0.1625</td><td>0.2516</td></tr><tr><td>Qwen2.5-7B-Instruct</td><td>0.7212</td><td>-0.4784</td><td>0.0911</td><td>0.3501</td><td>0.1790</td><td>0.2634</td></tr><tr><td>Tent</td><td>0.6674</td><td>-1.1697</td><td>0.0420</td><td>0.2373</td><td>0.1036</td><td>0.1051</td></tr><tr><td>EATA</td><td>0.6737</td><td>-1.1244</td><td>0.0491</td><td>0.2482</td><td>0.1132</td><td>0.1963</td></tr><tr><td>TLM (Ours)</td><td>0.7216</td><td>-0.5209</td><td>0.0931</td><td>0.3567</td><td>0.1832</td><td>0.2685</td></tr></table>",
+        "bbox": [
+            112,
+            585,
+            861,
+            838
+        ],
+        "page_idx": 25
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            336,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 25
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            477,
+            922,
+            496,
+            934
+        ],
+        "page_idx": 25
+    },
+    {
+        "type": "table",
+        "img_path": "images/8b69f2922414108de930c8776ebe9ce3261f27814fd52e3ec68409270f99cfe3.jpg",
+        "table_caption": [
+            "Table 16. Comparison of experimental results on the InstructionWild dataset of InstructionBench. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Method</td><td>BERTScore ↑</td><td>BLEURT ↑</td><td>BLEU ↑</td><td>Rouge-1 ↑</td><td>Rouge-2 ↑</td><td>Rouge-L ↑</td></tr><tr><td>Llama3.2-3B-Instruct</td><td>0.7019</td><td>-0.4837</td><td>0.0337</td><td>0.2796</td><td>0.0942</td><td>0.1699</td></tr><tr><td>Tent</td><td>0.5409</td><td>-1.2307</td><td>0.0018</td><td>0.0341</td><td>0.0008</td><td>0.0341</td></tr><tr><td>EATA</td><td>0.4537</td><td>-1.3202</td><td>0.0011</td><td>0.0123</td><td>0.0006</td><td>0.0122</td></tr><tr><td>TLM (Ours)</td><td>0.7044</td><td>-0.4503</td><td>0.0506</td><td>0.3104</td><td>0.1136</td><td>0.2004</td></tr><tr><td>Llama3-8B-Instruct</td><td>0.7071</td><td>-0.4469</td><td>0.0363</td><td>0.2846</td><td>0.0976</td><td>0.1735</td></tr><tr><td>Tent</td><td>0.6092</td><td>-0.5438</td><td>0.0148</td><td>0.0933</td><td>0.0317</td><td>0.0910</td></tr><tr><td>EATA</td><td>0.6455</td><td>-0.5337</td><td>0.0133</td><td>0.0956</td><td>0.0452</td><td>0.1125</td></tr><tr><td>TLM (Ours)</td><td>0.7133</td><td>-0.3669</td><td>0.0554</td><td>0.3206</td><td>0.1207</td><td>0.2050</td></tr><tr><td>Llama2-13B-chat</td><td>0.7025</td><td>-0.4040</td><td>0.0464</td><td>0.3032</td><td>0.1062</td><td>0.1860</td></tr><tr><td>Tent</td><td>0.5390</td><td>-0.6001</td><td>0.0253</td><td>0.1294</td><td>0.0464</td><td>0.1260</td></tr><tr><td>EATA</td><td>0.5869</td><td>-0.7337</td><td>0.0159</td><td>0.1129</td><td>0.0295</td><td>0.0947</td></tr><tr><td>TLM (Ours)</td><td>0.7056</td><td>-0.3792</td><td>0.0499</td><td>0.3122</td><td>0.1119</td><td>0.1926</td></tr><tr><td>Qwen2.5-7B-Instruct</td><td>0.7071</td><td>-0.4295</td><td>0.0436</td><td>0.3116</td><td>0.1070</td><td>0.1875</td></tr><tr><td>Tent</td><td>0.6865</td><td>-1.0060</td><td>0.0153</td><td>0.1829</td><td>0.1232</td><td>0.1615</td></tr><tr><td>EATA</td><td>0.6911</td><td>-0.9889</td><td>0.0157</td><td>0.1830</td><td>0.1233</td><td>0.1615</td></tr><tr><td>TLM (Ours)</td><td>0.7261</td><td>-0.2746</td><td>0.0813</td><td>0.3806</td><td>0.1498</td><td>0.2472</td></tr></table>",
+        "bbox": [
+            112,
+            380,
+            859,
+            632
+        ],
+        "page_idx": 26
+    },
+    {
+        "type": "discarded",
+        "text": "Test-Time Learning for Large Language Models ",
+        "bbox": [
+            336,
+            58,
+            638,
+            70
+        ],
+        "page_idx": 26
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            477,
+            922,
+            495,
+            934
+        ],
+        "page_idx": 26
+    }
+]

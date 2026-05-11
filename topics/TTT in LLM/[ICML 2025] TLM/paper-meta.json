@@ -1,0 +1,16 @@
+{
+  "dir": "[ICML 2025] TLM",
+  "title": "Test-Time Learning for Large Language Models",
+  "short": "TLM",
+  "authors": "Jinwu Hu; Zhitian Zhang; Guohao Chen; Xutao Wen; Chao Shuai; Wei Luo; Bin Xiao; Yuanqing Li; Mingkui Tan",
+  "venue": "ICML",
+  "year": "2025",
+  "arxiv": "2505.20633",
+  "links": [
+    "https://arxiv.org/abs/2505.20633",
+    "https://arxiv.org/pdf/2505.20633"
+  ],
+  "reading_order": "TTT in LLM topic paper 3",
+  "one_liner_hint": "TLM 将 LLM test-time learning 表述为无标签测试数据的 input perplexity minimization，用高困惑度样本选择和 LoRA 更新实现域适应。",
+  "mineru_task": "232d8220-5565-422b-b4c7-ca42040b6591"
+}

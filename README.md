@@ -68,6 +68,19 @@ LLM latent reasoning / cache augmentation / CoT compression：把额外推理、
 
 ---
 
+### 🔁 TTT in LLM
+Test-Time Training / Test-Time Learning / long-context continual adaptation：让 LLM 在推理时用上下文或无标签测试数据更新 fast weights、LoRA 或部分权重，从而适应新信息和分布变化。
+
+| 论文 | 会议 | 方法特点 |
+|------|------|----------|
+| [In-Place-TTT](./topics/TTT%20in%20LLM/%5BICLR%202026%5D%20In-Place-TTT/) | ICLR 2026 Oral | In-Place TTT 把 LLM MLP block 的 final projection matrix 当作 fast weights，用 LM-aligned objective 和 chunk-wise update 做可插拔 test-time training。 |
+| [TTT-E2E](./topics/TTT%20in%20LLM/%5BArxiv%202025%5D%20TTT-E2E/) | Arxiv 2025 | TTT-E2E 将 long-context LM 视作 continual learning，用测试时 next-token prediction 更新权重，并用训练时 meta-learning 学适合测试时学习的初始化。 |
+| [TLM](./topics/TTT%20in%20LLM/%5BICML%202025%5D%20TLM/) | ICML 2025 | TLM 把 LLM test-time learning 表述为无标签测试数据的 input perplexity minimization，用高困惑度样本选择和 LoRA 更新做域适应。 |
+
+📖 [TTT in LLM 详细总结](./topics/TTT%20in%20LLM/README.md)
+
+---
+
 ## 论文文件夹结构
 
 ```text
