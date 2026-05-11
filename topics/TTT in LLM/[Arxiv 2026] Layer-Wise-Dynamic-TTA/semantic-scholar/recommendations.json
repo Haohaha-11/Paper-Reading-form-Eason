@@ -1,0 +1,1211 @@
+{
+  "status_code": 200,
+  "data": {
+    "recommendedPapers": [
+      {
+        "paperId": "80c66d2b868beede25df341ccbeb5a9e83ecd277",
+        "externalIds": {
+          "ArXiv": "2603.27665",
+          "CorpusId": 286974897
+        },
+        "url": "https://www.semanticscholar.org/paper/80c66d2b868beede25df341ccbeb5a9e83ecd277",
+        "title": "Test-Time Instance-Specific Parameter Composition: A New Paradigm for Adaptive Generative Modeling",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "9b162eb6bc718edc2e808d2fc2bf7b1f10e71de3",
+        "externalIds": {
+          "ArXiv": "2604.19254",
+          "CorpusId": 287637029
+        },
+        "url": "https://www.semanticscholar.org/paper/9b162eb6bc718edc2e808d2fc2bf7b1f10e71de3",
+        "title": "ShadowPEFT: Shadow Network for Parameter-Efficient Fine-Tuning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "1427454a24da2dcd1ced9dd59b3aed86b3a7e4bc",
+        "externalIds": {
+          "ArXiv": "2604.13552",
+          "CorpusId": 287479460
+        },
+        "url": "https://www.semanticscholar.org/paper/1427454a24da2dcd1ced9dd59b3aed86b3a7e4bc",
+        "title": "Training-Free Test-Time Contrastive Learning for Large Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "929bc0a5291c5f0b2bad0b2b0b7c0ca048715083",
+        "externalIds": {
+          "ArXiv": "2604.13368",
+          "CorpusId": 287479562
+        },
+        "url": "https://www.semanticscholar.org/paper/929bc0a5291c5f0b2bad0b2b0b7c0ca048715083",
+        "title": "TLoRA+: A Low-Rank Parameter-Efficient Fine-Tuning Method for Large Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "c2e4a2a187d31c452ab18e8583f4f637936465fb",
+        "externalIds": {
+          "ArXiv": "2605.06183",
+          "CorpusId": 288014500
+        },
+        "url": "https://www.semanticscholar.org/paper/c2e4a2a187d31c452ab18e8583f4f637936465fb",
+        "title": "Rethinking Adapter Placement: A Dominant Adaptation Module Perspective",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "951204fc438130597f17583dd3e6ea1019a7e61b",
+        "externalIds": {
+          "ArXiv": "2604.00533",
+          "CorpusId": 287021764
+        },
+        "url": "https://www.semanticscholar.org/paper/951204fc438130597f17583dd3e6ea1019a7e61b",
+        "title": "Learning from Many and Adapting to the Unknown in Open-set Test Streams",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "1b14f0d4b04a7993b7ea62a4a79cd5a3e985ff33",
+        "externalIds": {
+          "ArXiv": "2603.18411",
+          "CorpusId": 286670095
+        },
+        "url": "https://www.semanticscholar.org/paper/1b14f0d4b04a7993b7ea62a4a79cd5a3e985ff33",
+        "title": "TARo: Token-level Adaptive Routing for LLM Test-time Alignment",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "6a34fbd59a656b2b3bb2a35cfa9b4bb235046ce1",
+        "externalIds": {
+          "ArXiv": "2603.14228",
+          "CorpusId": 286571757
+        },
+        "url": "https://www.semanticscholar.org/paper/6a34fbd59a656b2b3bb2a35cfa9b4bb235046ce1",
+        "title": "Not All Directions Matter: Towards Structured and Task-Aware Low-Rank Model Adaptation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 5
+      },
+      {
+        "paperId": "bab615dc945d1170e100635b3f74df25707629c8",
+        "externalIds": {
+          "ArXiv": "2604.22565",
+          "CorpusId": 287773974
+        },
+        "url": "https://www.semanticscholar.org/paper/bab615dc945d1170e100635b3f74df25707629c8",
+        "title": "Learning Evidence Highlighting for Frozen LLMs",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "e3037ca6c00d43bd50dc4a8fd0c42e48251bcd81",
+        "externalIds": {
+          "CorpusId": 287828999
+        },
+        "url": "https://www.semanticscholar.org/paper/e3037ca6c00d43bd50dc4a8fd0c42e48251bcd81",
+        "title": "Not All Directions Matter: Toward Structured and Task-Aware Low-Rank Adaptation",
+        "venue": "",
+        "year": null,
+        "citationCount": 1
+      },
+      {
+        "paperId": "1893aed0ad01bcdce84888d644c91ab39e5a3f0c",
+        "externalIds": {
+          "ArXiv": "2604.15351",
+          "CorpusId": 287607184
+        },
+        "url": "https://www.semanticscholar.org/paper/1893aed0ad01bcdce84888d644c91ab39e5a3f0c",
+        "title": "Aletheia: Gradient-Guided Layer Selection for Efficient LoRA Fine-Tuning Across Architectures",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "c8843c95d8df222c1fef3b30b975e6a37debda48",
+        "externalIds": {
+          "ArXiv": "2605.03403",
+          "CorpusId": 287962802
+        },
+        "url": "https://www.semanticscholar.org/paper/c8843c95d8df222c1fef3b30b975e6a37debda48",
+        "title": "GRPO-TTA: Test-Time Visual Tuning for Vision-Language Models via GRPO-Driven Reinforcement Learning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "eb8772047fa8c627a3b3e0e4981165f98503e9cf",
+        "externalIds": {
+          "ArXiv": "2604.03867",
+          "CorpusId": 287200324
+        },
+        "url": "https://www.semanticscholar.org/paper/eb8772047fa8c627a3b3e0e4981165f98503e9cf",
+        "title": "Where to Steer: Input-Dependent Layer Selection for Steering Improves LLM Alignment",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "fc17f8d04ade560b95bc234e4c20ba05bbd2c412",
+        "externalIds": {
+          "ArXiv": "2603.17558",
+          "CorpusId": 286643270
+        },
+        "url": "https://www.semanticscholar.org/paper/fc17f8d04ade560b95bc234e4c20ba05bbd2c412",
+        "title": "Zipper-LoRA: Dynamic Parameter Decoupling for Speech-LLM based Multilingual Speech Recognition",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "4e53a0ab785135b181742f00e3c8defe28f78bc2",
+        "externalIds": {
+          "ArXiv": "2604.21728",
+          "CorpusId": 287702291
+        },
+        "url": "https://www.semanticscholar.org/paper/4e53a0ab785135b181742f00e3c8defe28f78bc2",
+        "title": "Ramen: Robust Test-Time Adaptation of Vision-Language Models with Active Sample Selection",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "6154a42935b73a57eaa46d6077296105dfa22f6d",
+        "externalIds": {
+          "ArXiv": "2604.14010",
+          "CorpusId": 287480782
+        },
+        "url": "https://www.semanticscholar.org/paper/6154a42935b73a57eaa46d6077296105dfa22f6d",
+        "title": "Parameter Importance is Not Static: Evolving Parameter Isolation for Supervised Fine-Tuning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "a4444d5937c57c3fb577b591956a5211b85c07ec",
+        "externalIds": {
+          "ArXiv": "2604.14339",
+          "CorpusId": 287508395
+        },
+        "url": "https://www.semanticscholar.org/paper/a4444d5937c57c3fb577b591956a5211b85c07ec",
+        "title": "Shuffle the Context: RoPE-Perturbed Self-Distillation for Long-Context Adaptation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "7da3df85076586e137a432284cb7cbd4f124e0aa",
+        "externalIds": {
+          "ArXiv": "2605.04913",
+          "CorpusId": 287988463
+        },
+        "url": "https://www.semanticscholar.org/paper/7da3df85076586e137a432284cb7cbd4f124e0aa",
+        "title": "Rethinking Local Learning: A Cheaper and Faster Recipe for LLM Post-Training",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "e196474b2bafe7f214bfaa7dbc25cd207d134b0b",
+        "externalIds": {
+          "ArXiv": "2604.01762",
+          "CorpusId": 287072046
+        },
+        "url": "https://www.semanticscholar.org/paper/e196474b2bafe7f214bfaa7dbc25cd207d134b0b",
+        "title": "FourierMoE: Fourier Mixture-of-Experts Adaptation of Large Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "b2cfb889311ce13d2f4de0241a53aeba86eda1e7",
+        "externalIds": {
+          "ArXiv": "2604.01694",
+          "CorpusId": 287071832
+        },
+        "url": "https://www.semanticscholar.org/paper/b2cfb889311ce13d2f4de0241a53aeba86eda1e7",
+        "title": "MiCA Learns More Knowledge Than LoRA and Full Fine-Tuning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "43788077cd656c0b6a563df5cbf2a26e72b9c324",
+        "externalIds": {
+          "ArXiv": "2604.16657",
+          "CorpusId": 287618255
+        },
+        "url": "https://www.semanticscholar.org/paper/43788077cd656c0b6a563df5cbf2a26e72b9c324",
+        "title": "Cross-Modal Bayesian Low-Rank Adaptation for Uncertainty-Aware Multimodal Learning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "a3c12e362e650dd29ca2f65913ed71ff3248f3dc",
+        "externalIds": {
+          "ArXiv": "2605.05732",
+          "CorpusId": 288013833
+        },
+        "url": "https://www.semanticscholar.org/paper/a3c12e362e650dd29ca2f65913ed71ff3248f3dc",
+        "title": "CRAFT: Forgetting-Aware Intervention-Based Adaptation for Continual Learning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "dbfe46413405b95e0ecac1b754d856f5ea109f80",
+        "externalIds": {
+          "ArXiv": "2604.18124",
+          "CorpusId": 287635216
+        },
+        "url": "https://www.semanticscholar.org/paper/dbfe46413405b95e0ecac1b754d856f5ea109f80",
+        "title": "TLoRA: Task-aware Low Rank Adaptation of Large Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "80fad13cdb47b0daeb98c797a42bc99c40e564f0",
+        "externalIds": {
+          "ArXiv": "2604.04516",
+          "CorpusId": 287201733
+        },
+        "url": "https://www.semanticscholar.org/paper/80fad13cdb47b0daeb98c797a42bc99c40e564f0",
+        "title": "GAIN: Multiplicative Modulation for Domain Adaptation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "ae0d850558824342337ce9ce3a4997d63255c36a",
+        "externalIds": {
+          "ArXiv": "2605.01046",
+          "CorpusId": 287947698
+        },
+        "url": "https://www.semanticscholar.org/paper/ae0d850558824342337ce9ce3a4997d63255c36a",
+        "title": "Learning in the Fisher Subspace: A Guided Initialization for LoRA Fine-Tuning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "803c1ff2e8179cf0d7b6a39583c534e58aa5c8f4",
+        "externalIds": {
+          "ArXiv": "2604.16171",
+          "CorpusId": 287607898
+        },
+        "url": "https://www.semanticscholar.org/paper/803c1ff2e8179cf0d7b6a39583c534e58aa5c8f4",
+        "title": "JumpLoRA: Sparse Adapters for Continual Learning in Large Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "7af7715da759ebb9eed116f2965978ea88fbac72",
+        "externalIds": {
+          "ArXiv": "2603.12875",
+          "CorpusId": 286517843
+        },
+        "url": "https://www.semanticscholar.org/paper/7af7715da759ebb9eed116f2965978ea88fbac72",
+        "title": "Test-time RL alignment exposes task familiarity artifacts in LLM benchmarks",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "6fbe602cd24153ddeb1604884faee9c39e7468d1",
+        "externalIds": {
+          "ArXiv": "2604.15609",
+          "CorpusId": 287607688
+        },
+        "url": "https://www.semanticscholar.org/paper/6fbe602cd24153ddeb1604884faee9c39e7468d1",
+        "title": "Adapting in the Dark: Efficient and Stable Test-Time Adaptation for Black-Box Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "07dbacb0de020d22426f37d7aaf0ce06c16051e9",
+        "externalIds": {
+          "ArXiv": "2604.01168",
+          "CorpusId": 287023714
+        },
+        "url": "https://www.semanticscholar.org/paper/07dbacb0de020d22426f37d7aaf0ce06c16051e9",
+        "title": "S0 Tuning: Zero-Overhead Adaptation of Hybrid Recurrent-Attention Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "16e721b13d3255f85e582af7cadc86a96bb21016",
+        "externalIds": {
+          "ArXiv": "2604.27715",
+          "CorpusId": 287915866
+        },
+        "url": "https://www.semanticscholar.org/paper/16e721b13d3255f85e582af7cadc86a96bb21016",
+        "title": "Improving Calibration in Test-Time Prompt Tuning for Vision-Language Models via Data-Free Flatness-Aware Prompt Pretraining",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "3008be7598614b60f81742bc80a47d63d1c604b7",
+        "externalIds": {
+          "ArXiv": "2604.06169",
+          "CorpusId": 287209501
+        },
+        "url": "https://www.semanticscholar.org/paper/3008be7598614b60f81742bc80a47d63d1c604b7",
+        "title": "In-Place Test-Time Training",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "b8767957a7138793d675be1699e91f93a001770e",
+        "externalIds": {
+          "ArXiv": "2605.04341",
+          "CorpusId": 287982084
+        },
+        "url": "https://www.semanticscholar.org/paper/b8767957a7138793d675be1699e91f93a001770e",
+        "title": "Budgeted LoRA: Distillation as Structured Compute Allocation for Efficient Inference",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "7859527d0a853ca545e7430ac72e669803860116",
+        "externalIds": {
+          "ArXiv": "2605.03229",
+          "CorpusId": 287963566
+        },
+        "url": "https://www.semanticscholar.org/paper/7859527d0a853ca545e7430ac72e669803860116",
+        "title": "Sparse Memory Finetuning as a Low-Forgetting Alternative to LoRA and Full Finetuning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "4e7d59aa052b49a05d4c58d9de6cbe37ac35ce55",
+        "externalIds": {
+          "ArXiv": "2604.07808",
+          "CorpusId": 287255654
+        },
+        "url": "https://www.semanticscholar.org/paper/4e7d59aa052b49a05d4c58d9de6cbe37ac35ce55",
+        "title": "GRASS: Gradient-based Adaptive Layer-wise Importance Sampling for Memory-efficient Large Language Model Fine-tuning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "af39d824769ed81b6b4b4ad93982737dac4aa51c",
+        "externalIds": {
+          "ArXiv": "2604.17751",
+          "CorpusId": 287635483
+        },
+        "url": "https://www.semanticscholar.org/paper/af39d824769ed81b6b4b4ad93982737dac4aa51c",
+        "title": "HiP-LoRA: Budgeted Spectral Plasticity for Robust Low-Rank Adaptation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "5b91002c738e6a97a37560bae1dff774a0ce31f5",
+        "externalIds": {
+          "ArXiv": "2603.26096",
+          "CorpusId": 286942387
+        },
+        "url": "https://www.semanticscholar.org/paper/5b91002c738e6a97a37560bae1dff774a0ce31f5",
+        "title": "AcTTA: Rethinking Test-Time Adaptation via Dynamic Activation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "8848f293aef8f7f2eafa7683649dd3ebe42436ac",
+        "externalIds": {
+          "ArXiv": "2604.09624",
+          "CorpusId": 287425592
+        },
+        "url": "https://www.semanticscholar.org/paper/8848f293aef8f7f2eafa7683649dd3ebe42436ac",
+        "title": "Self-Calibrating Language Models via Test-Time Discriminative Distillation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "42c3881539b48c7665cbd3b429646dd6179c1b23",
+        "externalIds": {
+          "ArXiv": "2603.15990",
+          "CorpusId": 286579903
+        },
+        "url": "https://www.semanticscholar.org/paper/42c3881539b48c7665cbd3b429646dd6179c1b23",
+        "title": "W2T: LoRA Weights Already Know What They Can Do",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "86069080753d15934dd4006b602f81966205ac67",
+        "externalIds": {
+          "ArXiv": "2603.13792",
+          "CorpusId": 286568634
+        },
+        "url": "https://www.semanticscholar.org/paper/86069080753d15934dd4006b602f81966205ac67",
+        "title": "IGU-LoRA: Adaptive Rank Allocation via Integrated Gradients and Uncertainty-Aware Scoring",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "f277f079a0efc5af51e112ce1957d1c1c24afcaf",
+        "externalIds": {
+          "ArXiv": "2604.21901",
+          "CorpusId": 287702342
+        },
+        "url": "https://www.semanticscholar.org/paper/f277f079a0efc5af51e112ce1957d1c1c24afcaf",
+        "title": "GiVA: Gradient-Informed Bases for Vector-Based Adaptation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "e1de3c3dda2eeca940896fbdcda20615ab5a3e9d",
+        "externalIds": {
+          "ArXiv": "2603.20100",
+          "CorpusId": 286752823
+        },
+        "url": "https://www.semanticscholar.org/paper/e1de3c3dda2eeca940896fbdcda20615ab5a3e9d",
+        "title": "An Empirical Study of SFT-DPO Interaction and Parameterization in Small Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "417187a0dcd50e1ccc93b3e4bcc229850ca0b753",
+        "externalIds": {
+          "ArXiv": "2604.18075",
+          "CorpusId": 287635367
+        },
+        "url": "https://www.semanticscholar.org/paper/417187a0dcd50e1ccc93b3e4bcc229850ca0b753",
+        "title": "Enhancing Continual Learning of Vision-Language Models via Dynamic Prefix Weighting",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "ea217bc0e44e990e205a8b60a0303056d5a38190",
+        "externalIds": {
+          "ArXiv": "2605.06117",
+          "CorpusId": 288014718
+        },
+        "url": "https://www.semanticscholar.org/paper/ea217bc0e44e990e205a8b60a0303056d5a38190",
+        "title": "BoostLLM: Boosting-inspired LLM Fine-tuning for Few-shot Tabular Classification",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "2a94f0b621e2be488ed99d7bcfc904a41ceb00e2",
+        "externalIds": {
+          "ArXiv": "2604.04364",
+          "CorpusId": 287202909
+        },
+        "url": "https://www.semanticscholar.org/paper/2a94f0b621e2be488ed99d7bcfc904a41ceb00e2",
+        "title": "Context is All You Need",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "a591de74698274fdbb93befea33a001b9f57e667",
+        "externalIds": {
+          "ArXiv": "2604.11841",
+          "CorpusId": 287436276
+        },
+        "url": "https://www.semanticscholar.org/paper/a591de74698274fdbb93befea33a001b9f57e667",
+        "title": "Polynomial Expansion Rank Adaptation: Enhancing Low-Rank Fine-Tuning with High-Order Interactions",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "306a719fe63f93f4d3362f4a673491a5f47d7b9a",
+        "externalIds": {
+          "ArXiv": "2605.01605",
+          "CorpusId": 287950415
+        },
+        "url": "https://www.semanticscholar.org/paper/306a719fe63f93f4d3362f4a673491a5f47d7b9a",
+        "title": "Where Do Prompt Perturbations Break Generation? A Segment-Level View of Robustness in LoRA-Tuned Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "767be2141a4252c163857cb045cc38f83b65f565",
+        "externalIds": {
+          "DOI": "10.66280/ijair.v1i1.101",
+          "CorpusId": 287803079
+        },
+        "url": "https://www.semanticscholar.org/paper/767be2141a4252c163857cb045cc38f83b65f565",
+        "title": "An Adaptive Prompt Optimization Framework for Domain-Specific Large Language Models",
+        "venue": "International Journal of Artificial Intelligence Research",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "b390c37ca1709ae2b184bd7d89aeef1c4dd7c825",
+        "externalIds": {
+          "ArXiv": "2604.16615",
+          "CorpusId": 287617904
+        },
+        "url": "https://www.semanticscholar.org/paper/b390c37ca1709ae2b184bd7d89aeef1c4dd7c825",
+        "title": "Beyond Feature Fusion: Contextual Bayesian PEFT for Multimodal Uncertainty Estimation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "8cdef71097688cdcff0fff6b1aa57236c3b10310",
+        "externalIds": {
+          "ArXiv": "2603.14254",
+          "CorpusId": 286571866
+        },
+        "url": "https://www.semanticscholar.org/paper/8cdef71097688cdcff0fff6b1aa57236c3b10310",
+        "title": "ZOTTA: Test-Time Adaptation with Gradient-Free Zeroth-Order Optimization",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "610bb08ac716036a394e3ef3eef13bff431dc1b0",
+        "externalIds": {
+          "ArXiv": "2604.06291",
+          "CorpusId": 287248206
+        },
+        "url": "https://www.semanticscholar.org/paper/610bb08ac716036a394e3ef3eef13bff431dc1b0",
+        "title": "TalkLoRA: Communication-Aware Mixture of Low-Rank Adaptation for Large Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "01d2a341152df080ca937e34e317a5133b3e33e7",
+        "externalIds": {
+          "ArXiv": "2603.18428",
+          "CorpusId": 286669824
+        },
+        "url": "https://www.semanticscholar.org/paper/01d2a341152df080ca937e34e317a5133b3e33e7",
+        "title": "Adaptive Decoding via Test-Time Policy Learning for Self-Improving Generation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "ca3a586972880f3cd37078c99670ae4a2925b510",
+        "externalIds": {
+          "ArXiv": "2603.23985",
+          "CorpusId": 286775987
+        },
+        "url": "https://www.semanticscholar.org/paper/ca3a586972880f3cd37078c99670ae4a2925b510",
+        "title": "Diet Your LLM: Dimension-wise Global Pruning of LLMs via Merging Task-specific Importance Score",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "4f0b79bf017379ad5b3848bb011cef5e3524f73f",
+        "externalIds": {
+          "ArXiv": "2604.08598",
+          "DOI": "10.1145/3805712.3809598",
+          "CorpusId": 287351948
+        },
+        "url": "https://www.semanticscholar.org/paper/4f0b79bf017379ad5b3848bb011cef5e3524f73f",
+        "title": "Pretrain-then-Adapt: Uncertainty-Aware Test-Time Adaptation for Text-based Person Search",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "eb9128e5bf86fcf67cff77ac8b79fc396dfce0ea",
+        "externalIds": {
+          "ArXiv": "2605.04651",
+          "CorpusId": 287981927
+        },
+        "url": "https://www.semanticscholar.org/paper/eb9128e5bf86fcf67cff77ac8b79fc396dfce0ea",
+        "title": "FAAST: Forward-Only Associative Learning via Closed-Form Fast Weights for Test-Time Supervised Adaptation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "979f3d876de4f5b3c0f5f1c6b23365a09dd88006",
+        "externalIds": {
+          "ArXiv": "2605.04468",
+          "CorpusId": 287982026
+        },
+        "url": "https://www.semanticscholar.org/paper/979f3d876de4f5b3c0f5f1c6b23365a09dd88006",
+        "title": "Stabilizing LLM Supervised Fine-Tuning via Explicit Distributional Control",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "be2b65c49713eef3501846e51ac4d680a391af76",
+        "externalIds": {
+          "ArXiv": "2604.17535",
+          "CorpusId": 287635294
+        },
+        "url": "https://www.semanticscholar.org/paper/be2b65c49713eef3501846e51ac4d680a391af76",
+        "title": "OPSDL: On-Policy Self-Distillation for Long-Context Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 2
+      },
+      {
+        "paperId": "f4812e23e13ef4174a9f09890c6c67aabb47c6af",
+        "externalIds": {
+          "ArXiv": "2605.01959",
+          "DOI": "10.1109/icassp55912.2026.11462836",
+          "CorpusId": 287698308
+        },
+        "url": "https://www.semanticscholar.org/paper/f4812e23e13ef4174a9f09890c6c67aabb47c6af",
+        "title": "Flexi-LoRA with Input-Adaptive Ranks: Efficient Finetuning for Speech and Reasoning Tasks",
+        "venue": "IEEE International Conference on Acoustics, Speech, and Signal Processing",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "84277627a53d81f0e4741a28dedd906645d4ec74",
+        "externalIds": {
+          "ArXiv": "2604.08468",
+          "CorpusId": 287256647
+        },
+        "url": "https://www.semanticscholar.org/paper/84277627a53d81f0e4741a28dedd906645d4ec74",
+        "title": "TTVS: Boosting Self-Exploring Reinforcement Learning via Test-time Variational Synthesis",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "66cae564d7d72200f3fb80a0600183ce7477d09d",
+        "externalIds": {
+          "DOI": "10.54097/6w0gxa44",
+          "CorpusId": 287346583
+        },
+        "url": "https://www.semanticscholar.org/paper/66cae564d7d72200f3fb80a0600183ce7477d09d",
+        "title": "Low Rank Adaptation Enables Efficient Domain Transfer in Billion Parameter Language Models",
+        "venue": "Computer Life",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "d9dd72b2c447b7b433f2269ac9630886d5cb389f",
+        "externalIds": {
+          "ArXiv": "2603.24034",
+          "CorpusId": 286776284
+        },
+        "url": "https://www.semanticscholar.org/paper/d9dd72b2c447b7b433f2269ac9630886d5cb389f",
+        "title": "From Oracle to Noisy Context: Mitigating Contextual Exposure Bias in Speech-LLMs",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "ba52fb17838983ec46e2013295e5882514cbbaa8",
+        "externalIds": {
+          "ArXiv": "2604.13356",
+          "CorpusId": 287480030
+        },
+        "url": "https://www.semanticscholar.org/paper/ba52fb17838983ec46e2013295e5882514cbbaa8",
+        "title": "Peer-Predictive Self-Training for Language Model Reasoning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "943432b7edb0d246bdead5aba4dcc4c1bbe8645e",
+        "externalIds": {
+          "ArXiv": "2604.05248",
+          "CorpusId": 287208084
+        },
+        "url": "https://www.semanticscholar.org/paper/943432b7edb0d246bdead5aba4dcc4c1bbe8645e",
+        "title": "Improving Sparse Memory Finetuning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "5aee6464412cb5a3967a07aa93b655cde66d9383",
+        "externalIds": {
+          "ArXiv": "2604.20915",
+          "CorpusId": 287701750
+        },
+        "url": "https://www.semanticscholar.org/paper/5aee6464412cb5a3967a07aa93b655cde66d9383",
+        "title": "Absorber LLM: Harnessing Causal Synchronization for Test-Time Training",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "451eb5e398df86d304463ccb2a878f9d3429fcbd",
+        "externalIds": {
+          "ArXiv": "2604.27796",
+          "CorpusId": 287915053
+        },
+        "url": "https://www.semanticscholar.org/paper/451eb5e398df86d304463ccb2a878f9d3429fcbd",
+        "title": "Post-Optimization Adaptive Rank Allocation for LoRA",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "9fe85265584ef6cc6f33aef41cf425564396e7bb",
+        "externalIds": {
+          "DBLP": "conf/aaai/ZhangXZ26",
+          "DOI": "10.1609/aaai.v40i41.40784",
+          "CorpusId": 286684031
+        },
+        "url": "https://www.semanticscholar.org/paper/9fe85265584ef6cc6f33aef41cf425564396e7bb",
+        "title": "L2-LoRA: Improving Low-Rank Adaptation with Layer-Specific Regularization",
+        "venue": "AAAI Conference on Artificial Intelligence",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "11a59bc5be3dca14533d936fa32cbd1041f48cbd",
+        "externalIds": {
+          "ArXiv": "2603.18446",
+          "CorpusId": 286669651
+        },
+        "url": "https://www.semanticscholar.org/paper/11a59bc5be3dca14533d936fa32cbd1041f48cbd",
+        "title": "UT-ACA: Uncertainty-Triggered Adaptive Context Allocation for Long-Context Inference",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "a274edd844ccdde5022ef062f9a391a2c5d0cc38",
+        "externalIds": {
+          "ArXiv": "2603.27707",
+          "CorpusId": 286974201
+        },
+        "url": "https://www.semanticscholar.org/paper/a274edd844ccdde5022ef062f9a391a2c5d0cc38",
+        "title": "Low-Rank Adaptation Reduces Catastrophic Forgetting in Sequential Transformer Encoder Fine-Tuning: Controlled Empirical Evidence and Frozen-Backbone Representation Probes",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "f7bde2bd86add0555171962c3a9ad6d00a91e482",
+        "externalIds": {
+          "ArXiv": "2605.03869",
+          "CorpusId": 287980204
+        },
+        "url": "https://www.semanticscholar.org/paper/f7bde2bd86add0555171962c3a9ad6d00a91e482",
+        "title": "On Adaptivity in Zeroth-Order Optimization",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "1b13f0aabe25dff91c382ccf98c49faeac4a17f8",
+        "externalIds": {
+          "ArXiv": "2605.01732",
+          "CorpusId": 287950366
+        },
+        "url": "https://www.semanticscholar.org/paper/1b13f0aabe25dff91c382ccf98c49faeac4a17f8",
+        "title": "EGAD: Entropy-Guided Adaptive Distillation for Token-Level Knowledge Transfer",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "b21fc0582a24f29054ce95c68a328005004c05b1",
+        "externalIds": {
+          "ArXiv": "2604.17215",
+          "CorpusId": 287634352
+        },
+        "url": "https://www.semanticscholar.org/paper/b21fc0582a24f29054ce95c68a328005004c05b1",
+        "title": "Continual Safety Alignment via Gradient-Based Sample Selection",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "e40568840e63c771cec2e607668c638888aa6708",
+        "externalIds": {
+          "ArXiv": "2604.07663",
+          "CorpusId": 287255799
+        },
+        "url": "https://www.semanticscholar.org/paper/e40568840e63c771cec2e607668c638888aa6708",
+        "title": "SAGE: Sign-Adaptive Gradient for Memory-Efficient LLM Optimization",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "659aae419078eb81bb3515fd4da27470a7bf10e5",
+        "externalIds": {
+          "ArXiv": "2604.11838",
+          "CorpusId": 287436049
+        },
+        "url": "https://www.semanticscholar.org/paper/659aae419078eb81bb3515fd4da27470a7bf10e5",
+        "title": "A Layer-wise Analysis of Supervised Fine-Tuning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "6ee0a8d06fe8af8421ab43820fdc1fce9491c419",
+        "externalIds": {
+          "ArXiv": "2604.03388",
+          "CorpusId": 287200401
+        },
+        "url": "https://www.semanticscholar.org/paper/6ee0a8d06fe8af8421ab43820fdc1fce9491c419",
+        "title": "Scalable Variational Bayesian Fine-Tuning of LLMs via Orthogonalized Low-Rank Adapters",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "a1df02d3eb827f73ec98eeb2356ef166dd2e82b6",
+        "externalIds": {
+          "DBLP": "journals/spl/ZengZ26a",
+          "DOI": "10.1109/LSP.2026.3673210",
+          "CorpusId": 286543852
+        },
+        "url": "https://www.semanticscholar.org/paper/a1df02d3eb827f73ec98eeb2356ef166dd2e82b6",
+        "title": "FI-LoRA: Dynamic and Lightweight Low-Rank Adaptation Guided by Fisher Information",
+        "venue": "IEEE Signal Processing Letters",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "3019c38e37d46541c1494a47a6146efefecfe1c5",
+        "externalIds": {
+          "ArXiv": "2605.06047",
+          "CorpusId": 288014481
+        },
+        "url": "https://www.semanticscholar.org/paper/3019c38e37d46541c1494a47a6146efefecfe1c5",
+        "title": "TFM-Retouche: A Lightweight Input-Space Adapter for Tabular Foundation Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "80fca29583775baac458ad3e8ab1b9db798afb03",
+        "externalIds": {
+          "ArXiv": "2603.24518",
+          "CorpusId": 286775840
+        },
+        "url": "https://www.semanticscholar.org/paper/80fca29583775baac458ad3e8ab1b9db798afb03",
+        "title": "TuneShift-KD: Knowledge Distillation and Transfer for Fine-tuned Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "198c520a94761f87184be8152b97dcf1c2f4339b",
+        "externalIds": {
+          "ArXiv": "2603.17079",
+          "CorpusId": 286638812
+        },
+        "url": "https://www.semanticscholar.org/paper/198c520a94761f87184be8152b97dcf1c2f4339b",
+        "title": "ACE-LoRA: Graph-Attentive Context Enhancement for Parameter-Efficient Adaptation of Medical Vision-Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "808fea83e3b4a75f468f217111e07645c2fef45c",
+        "externalIds": {
+          "DOI": "10.1109/TASLPRO.2026.3682068",
+          "CorpusId": 287275727
+        },
+        "url": "https://www.semanticscholar.org/paper/808fea83e3b4a75f468f217111e07645c2fef45c",
+        "title": "Toward a Unified Perspective on Parameter-Efficient Fine Tuning for Speaker Verification",
+        "venue": "IEEE Transactions on Audio, Speech, and Language Processing",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "3f85ab80d5efb5a7d668f4a50371b70b4364624e",
+        "externalIds": {
+          "ArXiv": "2604.18264",
+          "CorpusId": 287635095
+        },
+        "url": "https://www.semanticscholar.org/paper/3f85ab80d5efb5a7d668f4a50371b70b4364624e",
+        "title": "Universally Empowering Zeroth-Order Optimization via Adaptive Layer-wise Sampling",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "216ff398103b70efe9cf066fafc02445500ec642",
+        "externalIds": {
+          "ArXiv": "2604.19048",
+          "CorpusId": 287636471
+        },
+        "url": "https://www.semanticscholar.org/paper/216ff398103b70efe9cf066fafc02445500ec642",
+        "title": "SAMoRA: Semantic-Aware Mixture of LoRA Experts for Task-Adaptive Learning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "ad193e50330a8473decca92531851dc848bee077",
+        "externalIds": {
+          "ArXiv": "2604.05096",
+          "CorpusId": 287208268
+        },
+        "url": "https://www.semanticscholar.org/paper/ad193e50330a8473decca92531851dc848bee077",
+        "title": "RAG or Learning? Understanding the Limits of LLM Adaptation under Continuous Knowledge Drift in the Real World",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "9c19452aa58a952755cdcef432c3cd6163b22174",
+        "externalIds": {
+          "DBLP": "conf/aaai/FanJCHCJZTW26",
+          "DOI": "10.1609/aaai.v40i25.39243",
+          "CorpusId": 286678116
+        },
+        "url": "https://www.semanticscholar.org/paper/9c19452aa58a952755cdcef432c3cd6163b22174",
+        "title": "MoETTA: Test-Time Adaptation Under Mixed Distribution Shifts with MoE-LayerNorm",
+        "venue": "AAAI Conference on Artificial Intelligence",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "5e971e7f3614099cedb6b800ec55fa4972e7e8ff",
+        "externalIds": {
+          "ArXiv": "2603.27814",
+          "CorpusId": 286974615
+        },
+        "url": "https://www.semanticscholar.org/paper/5e971e7f3614099cedb6b800ec55fa4972e7e8ff",
+        "title": "RG-TTA: Regime-Guided Meta-Control for Test-Time Adaptation in Streaming Time Series",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "39e25d9832db32f2d1a912504cc2cf8976a2e1e6",
+        "externalIds": {
+          "DOI": "10.1145/3774904.3792500",
+          "CorpusId": 287346979
+        },
+        "url": "https://www.semanticscholar.org/paper/39e25d9832db32f2d1a912504cc2cf8976a2e1e6",
+        "title": "LoRA-E2: Effective and Efficient Low-rank Adaptation",
+        "venue": "Proceedings of the ACM Web Conference 2026",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "2298dfb993fcbea7f252aafd6a5fd6ba6845f66d",
+        "externalIds": {
+          "ArXiv": "2603.17946",
+          "CorpusId": 286643554
+        },
+        "url": "https://www.semanticscholar.org/paper/2298dfb993fcbea7f252aafd6a5fd6ba6845f66d",
+        "title": "CARE: Covariance-Aware and Rank-Enhanced Decomposition for Enabling Multi-Head Latent Attention",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "4a6b991ff5a1cf670925d16b89690c2b22db2f3e",
+        "externalIds": {
+          "ArXiv": "2604.07394",
+          "CorpusId": 287255601
+        },
+        "url": "https://www.semanticscholar.org/paper/4a6b991ff5a1cf670925d16b89690c2b22db2f3e",
+        "title": "Flux Attention: Context-Aware Hybrid Attention for Efficient LLMs Inference",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "1b2fb99eb343e819c8ca0d81b7506792112d7531",
+        "externalIds": {
+          "ArXiv": "2604.16535",
+          "CorpusId": 287618068
+        },
+        "url": "https://www.semanticscholar.org/paper/1b2fb99eb343e819c8ca0d81b7506792112d7531",
+        "title": "SCATR: Simple Calibrated Test-Time Ranking",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "fb07ca32c832e79ca7e5fdae160519911659a7e9",
+        "externalIds": {
+          "ArXiv": "2604.15756",
+          "CorpusId": 287607172
+        },
+        "url": "https://www.semanticscholar.org/paper/fb07ca32c832e79ca7e5fdae160519911659a7e9",
+        "title": "TTL: Test-time Textual Learning for OOD Detection with Pretrained Vision-Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "d71a87fc2f652bf5f03fbf9d986836531234883e",
+        "externalIds": {
+          "ArXiv": "2603.28696",
+          "CorpusId": 286974044
+        },
+        "url": "https://www.semanticscholar.org/paper/d71a87fc2f652bf5f03fbf9d986836531234883e",
+        "title": "AdaptToken: Entropy-based Adaptive Token Selection for MLLM Long Video Understanding",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "8ef32c8d1e3ee93a67ab66c905f5e7807d2a272e",
+        "externalIds": {
+          "ArXiv": "2604.00677",
+          "CorpusId": 287022174
+        },
+        "url": "https://www.semanticscholar.org/paper/8ef32c8d1e3ee93a67ab66c905f5e7807d2a272e",
+        "title": "CL-VISTA: Benchmarking Continual Learning in Video Large Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "2b54c913928d51c09c3cf9be07fd2b5944344821",
+        "externalIds": {
+          "DOI": "10.5220/0014320100004084",
+          "CorpusId": 286727467
+        },
+        "url": "https://www.semanticscholar.org/paper/2b54c913928d51c09c3cf9be07fd2b5944344821",
+        "title": "Realistic Evaluation of Test-Time Adaptation: Unsupervised Model Selection",
+        "venue": "Proceedings of the 21st International Conference on Computer Vision Theory and Applications",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "f848d4535379a8f6e23350c6f01316c445d6234c",
+        "externalIds": {
+          "ArXiv": "2604.01833",
+          "CorpusId": 287071750
+        },
+        "url": "https://www.semanticscholar.org/paper/f848d4535379a8f6e23350c6f01316c445d6234c",
+        "title": "Language-Pretraining-Induced Bias: A Strong Foundation for General Vision Tasks",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "f0655ac6e18372e4fc6fcca2f0a791b327965786",
+        "externalIds": {
+          "ArXiv": "2603.20410",
+          "CorpusId": 286762258
+        },
+        "url": "https://www.semanticscholar.org/paper/f0655ac6e18372e4fc6fcca2f0a791b327965786",
+        "title": "SLE-FNO: Single-Layer Extensions for Task-Agnostic Continual Learning in Fourier Neural Operators",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "55023084424280b5b87c2ec0a0f73296dfb4e0cc",
+        "externalIds": {
+          "ArXiv": "2604.11590",
+          "CorpusId": 287433498
+        },
+        "url": "https://www.semanticscholar.org/paper/55023084424280b5b87c2ec0a0f73296dfb4e0cc",
+        "title": "Learning Robustness at Test-Time from a Non-Robust Teacher",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "983e6600aa121de59db7a6698298187aab89d075",
+        "externalIds": {
+          "ArXiv": "2604.06253",
+          "CorpusId": 287248072
+        },
+        "url": "https://www.semanticscholar.org/paper/983e6600aa121de59db7a6698298187aab89d075",
+        "title": "FLeX: Fourier-based Low-rank EXpansion for multilingual transfer",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "0239a7b8264704d4a8e6b3a63ce417d8c56b73ef",
+        "externalIds": {
+          "ArXiv": "2603.17942",
+          "CorpusId": 286643229
+        },
+        "url": "https://www.semanticscholar.org/paper/0239a7b8264704d4a8e6b3a63ce417d8c56b73ef",
+        "title": "Efficient Training-Free Multi-Token Prediction via Embedding-Space Probing",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "808244339543caf7ef2cd368bc1a641b42441773",
+        "externalIds": {
+          "ArXiv": "2603.21606",
+          "CorpusId": 286765670
+        },
+        "url": "https://www.semanticscholar.org/paper/808244339543caf7ef2cd368bc1a641b42441773",
+        "title": "mSFT: Addressing Dataset Mixtures Overfitting Heterogeneously in Multi-task SFT",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "0b4d534e9e92c4fbb1723b21a2ceabfd6a9712f0",
+        "externalIds": {
+          "ArXiv": "2604.24927",
+          "CorpusId": 287831439
+        },
+        "url": "https://www.semanticscholar.org/paper/0b4d534e9e92c4fbb1723b21a2ceabfd6a9712f0",
+        "title": "Large Language Models Explore by Latent Distilling",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "0d826a4bb5c11864a19ffc54b7cfc17351d13aca",
+        "externalIds": {
+          "ArXiv": "2604.00696",
+          "CorpusId": 287021620
+        },
+        "url": "https://www.semanticscholar.org/paper/0d826a4bb5c11864a19ffc54b7cfc17351d13aca",
+        "title": "TTA-Vid: Generalized Test-Time Adaptation for Video Reasoning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "7bbba5def4ceae2726bbc810983f5569d2c0494e",
+        "externalIds": {
+          "ArXiv": "2603.16127",
+          "CorpusId": 286579656
+        },
+        "url": "https://www.semanticscholar.org/paper/7bbba5def4ceae2726bbc810983f5569d2c0494e",
+        "title": "Pre-training LLM without Learning Rate Decay Enhances Supervised Fine-Tuning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 3
+      }
+    ]
+  }
+}

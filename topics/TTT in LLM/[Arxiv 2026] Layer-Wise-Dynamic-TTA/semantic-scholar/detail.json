@@ -1,0 +1,43 @@
+{
+  "status_code": 200,
+  "data": {
+    "paperId": "1ec7975d06044ed111b4a97a708e8a1e353dd1dc",
+    "externalIds": {
+      "DBLP": "journals/corr/abs-2602-09719",
+      "ArXiv": "2602.09719",
+      "DOI": "10.48550/arXiv.2602.09719",
+      "CorpusId": 285463170
+    },
+    "url": "https://www.semanticscholar.org/paper/1ec7975d06044ed111b4a97a708e8a1e353dd1dc",
+    "title": "Unsupervised Layer-Wise Dynamic Test Time Adaptation for LLMs",
+    "venue": "arXiv.org",
+    "year": 2026,
+    "referenceCount": 23,
+    "citationCount": 0,
+    "influentialCitationCount": 0,
+    "openAccessPdf": {
+      "url": "",
+      "status": null,
+      "license": null,
+      "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2602.09719, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+    },
+    "tldr": {
+      "model": "tldr@v2.0.0",
+      "text": null
+    },
+    "authors": [
+      {
+        "authorId": "2400351925",
+        "name": "Longhuan Xu"
+      },
+      {
+        "authorId": "2400127408",
+        "name": "Cunjian Chen"
+      },
+      {
+        "authorId": "2400142926",
+        "name": "Feng Yin"
+      }
+    ]
+  }
+}

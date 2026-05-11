@@ -1,0 +1,583 @@
+{
+  "status_code": 200,
+  "data": {
+    "offset": 0,
+    "citingPaperInfo": {
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2604.20915, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "title": "Absorber LLM: Harnessing Causal Synchronization for Test-Time Training",
+      "authors": [
+        {
+          "authorId": "2362856809",
+          "name": "Zhixin Zhang"
+        },
+        {
+          "authorId": "2431200799",
+          "name": "Shabo Zhang"
+        },
+        {
+          "authorId": "2363201562",
+          "name": "Chengcan Wu"
+        },
+        {
+          "authorId": "2191808925",
+          "name": "Zeming Wei"
+        },
+        {
+          "authorId": "2297768119",
+          "name": "Meng Sun"
+        }
+      ]
+    },
+    "data": [
+      {
+        "citedPaper": {
+          "paperId": "3008be7598614b60f81742bc80a47d63d1c604b7",
+          "externalIds": {
+            "ArXiv": "2604.06169",
+            "CorpusId": 287209501
+          },
+          "url": "https://www.semanticscholar.org/paper/3008be7598614b60f81742bc80a47d63d1c604b7",
+          "title": "In-Place Test-Time Training",
+          "venue": "",
+          "year": 2026,
+          "citationCount": 1
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "33464bb41cf9291e57d73789c591367010e3c166",
+          "externalIds": {
+            "ArXiv": "2512.24695",
+            "DBLP": "journals/corr/abs-2512-24695",
+            "DOI": "10.48550/arXiv.2512.24695",
+            "CorpusId": 282913080
+          },
+          "url": "https://www.semanticscholar.org/paper/33464bb41cf9291e57d73789c591367010e3c166",
+          "title": "Nested Learning: The Illusion of Deep Learning Architectures",
+          "venue": "arXiv.org",
+          "year": 2025,
+          "citationCount": 39
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "73f12089f8fda4946edfb82333f6595c6c132027",
+          "externalIds": {
+            "ArXiv": "2509.17138",
+            "CorpusId": 281420850
+          },
+          "url": "https://www.semanticscholar.org/paper/73f12089f8fda4946edfb82333f6595c6c132027",
+          "title": "Analyzing Memory Effects in Large Language Models through the lens of Cognitive Psychology",
+          "venue": "",
+          "year": 2025,
+          "citationCount": 2
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "35ab93f41115e860bee5e202b71061addfd0fd5d",
+          "externalIds": {
+            "DBLP": "conf/icml/0020LDXVZDC0KHG25",
+            "ArXiv": "2407.04620",
+            "DOI": "10.48550/arXiv.2407.04620",
+            "CorpusId": 271039606
+          },
+          "url": "https://www.semanticscholar.org/paper/35ab93f41115e860bee5e202b71061addfd0fd5d",
+          "title": "Learning to (Learn at Test Time): RNNs with Expressive Hidden States",
+          "venue": "International Conference on Machine Learning",
+          "year": 2024,
+          "citationCount": 253
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "917479a7a72ee7c1fb320c14d770e30ef322ef28",
+          "externalIds": {
+            "DBLP": "journals/corr/abs-2404-08819",
+            "ArXiv": "2404.08819",
+            "DOI": "10.48550/arXiv.2404.08819",
+            "CorpusId": 269149086
+          },
+          "url": "https://www.semanticscholar.org/paper/917479a7a72ee7c1fb320c14d770e30ef322ef28",
+          "title": "The Illusion of State in State-Space Models",
+          "venue": "International Conference on Machine Learning",
+          "year": 2024,
+          "citationCount": 157
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "ac5824e9ff924a937d9eef379d0b581de2417678",
+          "externalIds": {
+            "ArXiv": "2404.06654",
+            "DBLP": "journals/corr/abs-2404-06654",
+            "DOI": "10.48550/arXiv.2404.06654",
+            "CorpusId": 269032933
+          },
+          "url": "https://www.semanticscholar.org/paper/ac5824e9ff924a937d9eef379d0b581de2417678",
+          "title": "RULER: What's the Real Context Size of Your Long-Context Language Models?",
+          "venue": "arXiv.org",
+          "year": 2024,
+          "citationCount": 830
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "7bbc7595196a0606a07506c4fb1473e5e87f6082",
+          "externalIds": {
+            "ArXiv": "2312.00752",
+            "DBLP": "journals/corr/abs-2312-00752",
+            "CorpusId": 265551773
+          },
+          "url": "https://www.semanticscholar.org/paper/7bbc7595196a0606a07506c4fb1473e5e87f6082",
+          "title": "Mamba: Linear-Time Sequence Modeling with Selective State Spaces",
+          "venue": "arXiv.org",
+          "year": 2023,
+          "citationCount": 6865
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "94a5f96308729e31c1ffbc0f0618db87795092fe",
+          "externalIds": {
+            "DBLP": "journals/corr/abs-2310-06770",
+            "ArXiv": "2310.06770",
+            "DOI": "10.48550/arXiv.2310.06770",
+            "CorpusId": 263829697
+          },
+          "url": "https://www.semanticscholar.org/paper/94a5f96308729e31c1ffbc0f0618db87795092fe",
+          "title": "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?",
+          "venue": "International Conference on Learning Representations",
+          "year": 2023,
+          "citationCount": 2087
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "02ad9f3fefe33cb9ca546591bec65dbdf7766c80",
+          "externalIds": {
+            "ArXiv": "2310.01889",
+            "DBLP": "conf/iclr/0055ZA24",
+            "DOI": "10.48550/arXiv.2310.01889",
+            "CorpusId": 263608461
+          },
+          "url": "https://www.semanticscholar.org/paper/02ad9f3fefe33cb9ca546591bec65dbdf7766c80",
+          "title": "Ring Attention with Blockwise Transformers for Near-Infinite Context",
+          "venue": "International Conference on Learning Representations",
+          "year": 2023,
+          "citationCount": 460
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "f81a1b4510631d14b5b565c4701ee056f8d5c72f",
+          "externalIds": {
+            "DBLP": "journals/corr/abs-2309-12499",
+            "ArXiv": "2309.12499",
+            "DOI": "10.1145/3643757",
+            "CorpusId": 262217135
+          },
+          "url": "https://www.semanticscholar.org/paper/f81a1b4510631d14b5b565c4701ee056f8d5c72f",
+          "title": "CodePlan: Repository-Level Coding using LLMs and Planning",
+          "venue": "Proc. ACM Softw. Eng.",
+          "year": 2023,
+          "citationCount": 196
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "28c6ac721f54544162865f41c5692e70d61bccab",
+          "externalIds": {
+            "DBLP": "journals/fcsc/WangMFZYZCTCLZWW24",
+            "ArXiv": "2308.11432",
+            "DOI": "10.1007/s11704-024-40231-1",
+            "CorpusId": 261064713
+          },
+          "url": "https://www.semanticscholar.org/paper/28c6ac721f54544162865f41c5692e70d61bccab",
+          "title": "A survey on large language model based autonomous agents",
+          "venue": "Frontiers of Computer Science",
+          "year": 2023,
+          "citationCount": 2803
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "2f7364d8e5cf94315bf8905f57de9c5543e9a4bf",
+          "externalIds": {
+            "DBLP": "journals/corr/abs-2305-14788",
+            "ArXiv": "2305.14788",
+            "DOI": "10.48550/arXiv.2305.14788",
+            "CorpusId": 258865249
+          },
+          "url": "https://www.semanticscholar.org/paper/2f7364d8e5cf94315bf8905f57de9c5543e9a4bf",
+          "title": "Adapting Language Models to Compress Contexts",
+          "venue": "Conference on Empirical Methods in Natural Language Processing",
+          "year": 2023,
+          "citationCount": 312
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "026b3396a63ed5772329708b7580d633bb86bec9",
+          "externalIds": {
+            "DBLP": "conf/emnlp/PengAAAABCCCDDG23",
+            "ArXiv": "2305.13048",
+            "DOI": "10.18653/v1/2023.findings-emnlp.936",
+            "CorpusId": 258832459
+          },
+          "url": "https://www.semanticscholar.org/paper/026b3396a63ed5772329708b7580d633bb86bec9",
+          "title": "RWKV: Reinventing RNNs for the Transformer Era",
+          "venue": "Conference on Empirical Methods in Natural Language Processing",
+          "year": 2023,
+          "citationCount": 1023
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "b9870e130f61ff900fe00dbcc5782c9b31773d32",
+          "externalIds": {
+            "DBLP": "journals/corr/abs-2304-08467",
+            "ArXiv": "2304.08467",
+            "DOI": "10.48550/arXiv.2304.08467",
+            "CorpusId": 258179012
+          },
+          "url": "https://www.semanticscholar.org/paper/b9870e130f61ff900fe00dbcc5782c9b31773d32",
+          "title": "Learning to Compress Prompts with Gist Tokens",
+          "venue": "Neural Information Processing Systems",
+          "year": 2023,
+          "citationCount": 352
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "5278a8eb2ba2429d4029745caf4e661080073c81",
+          "externalIds": {
+            "DBLP": "conf/uist/ParkOCMLB23",
+            "ArXiv": "2304.03442",
+            "DOI": "10.1145/3586183.3606763",
+            "CorpusId": 258040990
+          },
+          "url": "https://www.semanticscholar.org/paper/5278a8eb2ba2429d4029745caf4e661080073c81",
+          "title": "Generative Agents: Interactive Simulacra of Human Behavior",
+          "venue": "ACM Symposium on User Interface Software and Technology",
+          "year": 2023,
+          "citationCount": 3929
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "cb1b5d949a1d711b1bd3a2924e045ad3f893252c",
+          "externalIds": {
+            "ArXiv": "2303.02536",
+            "DBLP": "journals/corr/abs-2303-02536",
+            "DOI": "10.48550/arXiv.2303.02536",
+            "CorpusId": 257365438
+          },
+          "url": "https://www.semanticscholar.org/paper/cb1b5d949a1d711b1bd3a2924e045ad3f893252c",
+          "title": "Finding Alignments Between Interpretable Causal Variables and Distributed Neural Representations",
+          "venue": "CLEaR",
+          "year": 2023,
+          "citationCount": 163
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "57e849d0de13ed5f91d086936296721d4ff75a75",
+          "externalIds": {
+            "DBLP": "journals/corr/abs-2302-13971",
+            "ArXiv": "2302.13971",
+            "CorpusId": 257219404
+          },
+          "url": "https://www.semanticscholar.org/paper/57e849d0de13ed5f91d086936296721d4ff75a75",
+          "title": "LLaMA: Open and Efficient Foundation Language Models",
+          "venue": "arXiv.org",
+          "year": 2023,
+          "citationCount": 19748
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "87c5b281fa43e6f27191b20a8dd694eda1126336",
+          "externalIds": {
+            "DBLP": "journals/corr/abs-2205-14135",
+            "ArXiv": "2205.14135",
+            "DOI": "10.52202/068431-1189",
+            "CorpusId": 249151871
+          },
+          "url": "https://www.semanticscholar.org/paper/87c5b281fa43e6f27191b20a8dd694eda1126336",
+          "title": "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness",
+          "venue": "Neural Information Processing Systems",
+          "year": 2022,
+          "citationCount": 4191
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "ca9047c78d48b606c4e4f0c456b1dda550de28b2",
+          "externalIds": {
+            "DBLP": "conf/nips/GuJGSDRR21",
+            "ArXiv": "2110.13985",
+            "CorpusId": 239998472
+          },
+          "url": "https://www.semanticscholar.org/paper/ca9047c78d48b606c4e4f0c456b1dda550de28b2",
+          "title": "Combining Recurrent, Convolutional, and Continuous-time Models with Linear State-Space Layers",
+          "venue": "Neural Information Processing Systems",
+          "year": 2021,
+          "citationCount": 1101
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "a8ca46b171467ceb2d7652fbfb67fe701ad86092",
+          "externalIds": {
+            "DBLP": "conf/iclr/HuSWALWWC22",
+            "ArXiv": "2106.09685",
+            "CorpusId": 235458009
+          },
+          "url": "https://www.semanticscholar.org/paper/a8ca46b171467ceb2d7652fbfb67fe701ad86092",
+          "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+          "venue": "International Conference on Learning Representations",
+          "year": 2021,
+          "citationCount": 18863
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "5951ede73a1dbb9c5ea8b4d95f31c5ed646aacbd",
+          "externalIds": {
+            "DBLP": "conf/nips/GeigerLIP21",
+            "ArXiv": "2106.02997",
+            "CorpusId": 235358214
+          },
+          "url": "https://www.semanticscholar.org/paper/5951ede73a1dbb9c5ea8b4d95f31c5ed646aacbd",
+          "title": "Causal Abstractions of Neural Networks",
+          "venue": "Neural Information Processing Systems",
+          "year": 2021,
+          "citationCount": 363
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "3803ea42e1fc773db3b1d0fa05f41b5ebf0a61d1",
+          "externalIds": {
+            "DBLP": "journals/pieee/ScholkopfLBKKGB21",
+            "DOI": "10.1109/JPROC.2021.3058954",
+            "CorpusId": 261325982
+          },
+          "url": "https://www.semanticscholar.org/paper/3803ea42e1fc773db3b1d0fa05f41b5ebf0a61d1",
+          "title": "Toward Causal Representation Learning",
+          "venue": "Proceedings of the IEEE",
+          "year": 2021,
+          "citationCount": 1349
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "db1afe3b3cd4cd90e41fbba65d3075dd5aebb61e",
+          "externalIds": {
+            "DBLP": "journals/corr/abs-2101-00027",
+            "ArXiv": "2101.00027",
+            "CorpusId": 230435736
+          },
+          "url": "https://www.semanticscholar.org/paper/db1afe3b3cd4cd90e41fbba65d3075dd5aebb61e",
+          "title": "The Pile: An 800GB Dataset of Diverse Text for Language Modeling",
+          "venue": "arXiv.org",
+          "year": 2020,
+          "citationCount": 2768
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "3fbf6339273c50b04e886fa9bd4ad18c952a683d",
+          "externalIds": {
+            "DBLP": "conf/iclr/ChoromanskiLDSG21",
+            "ArXiv": "2009.14794",
+            "MAG": "3091156754",
+            "CorpusId": 222067132
+          },
+          "url": "https://www.semanticscholar.org/paper/3fbf6339273c50b04e886fa9bd4ad18c952a683d",
+          "title": "Rethinking Attention with Performers",
+          "venue": "International Conference on Learning Representations",
+          "year": 2020,
+          "citationCount": 2199
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "6f68e1bb253925d8431588555d3010419f322e04",
+          "externalIds": {
+            "DBLP": "conf/icml/KatharopoulosV020",
+            "MAG": "3037798801",
+            "ArXiv": "2006.16236",
+            "CorpusId": 220250819
+          },
+          "url": "https://www.semanticscholar.org/paper/6f68e1bb253925d8431588555d3010419f322e04",
+          "title": "Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention",
+          "venue": "International Conference on Machine Learning",
+          "year": 2020,
+          "citationCount": 2679
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "925ad2897d1b5decbea320d07e99afa9110e09b2",
+          "externalIds": {
+            "DBLP": "journals/corr/abs-2004-05150",
+            "MAG": "3015468748",
+            "ArXiv": "2004.05150",
+            "CorpusId": 215737171
+          },
+          "url": "https://www.semanticscholar.org/paper/925ad2897d1b5decbea320d07e99afa9110e09b2",
+          "title": "Longformer: The Long-Document Transformer",
+          "venue": "arXiv.org",
+          "year": 2020,
+          "citationCount": 5378
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "4ae52766028e69186052ea8f33a137fbbbdb986a",
+          "externalIds": {
+            "MAG": "3035252911",
+            "ArXiv": "2004.04696",
+            "DBLP": "conf/acl/SellamDP20",
+            "ACL": "2020.acl-main.704",
+            "DOI": "10.18653/v1/2020.acl-main.704",
+            "CorpusId": 215548699
+          },
+          "url": "https://www.semanticscholar.org/paper/4ae52766028e69186052ea8f33a137fbbbdb986a",
+          "title": "BLEURT: Learning Robust Metrics for Text Generation",
+          "venue": "Annual Meeting of the Association for Computational Linguistics",
+          "year": 2020,
+          "citationCount": 1866
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "f9700e31a1d0ae34d4571ab056dfb268c1543349",
+          "externalIds": {
+            "MAG": "2989743967",
+            "ACL": "D19-5409",
+            "DBLP": "journals/corr/abs-1911-12237",
+            "ArXiv": "1911.12237",
+            "DOI": "10.18653/v1/D19-5409",
+            "CorpusId": 208010268
+          },
+          "url": "https://www.semanticscholar.org/paper/f9700e31a1d0ae34d4571ab056dfb268c1543349",
+          "title": "SAMSum Corpus: A Human-annotated Dialogue Dataset for Abstractive Summarization",
+          "venue": "Conference on Empirical Methods in Natural Language Processing",
+          "year": 2019,
+          "citationCount": 801
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "21da617a0f79aabf94272107184606cefe90ab75",
+          "externalIds": {
+            "ArXiv": "1904.10509",
+            "DBLP": "journals/corr/abs-1904-10509",
+            "MAG": "2940744433",
+            "CorpusId": 129945531
+          },
+          "url": "https://www.semanticscholar.org/paper/21da617a0f79aabf94272107184606cefe90ab75",
+          "title": "Generating Long Sequences with Sparse Transformers",
+          "venue": "arXiv.org",
+          "year": 2019,
+          "citationCount": 2454
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "d07284a6811f1b2745d91bdb06b040b57f226882",
+          "externalIds": {
+            "MAG": "2950541952",
+            "DBLP": "conf/iclr/LoshchilovH19",
+            "CorpusId": 53592270
+          },
+          "url": "https://www.semanticscholar.org/paper/d07284a6811f1b2745d91bdb06b040b57f226882",
+          "title": "Decoupled Weight Decay Regularization",
+          "venue": "International Conference on Learning Representations",
+          "year": 2017,
+          "citationCount": 33461
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "204e3073870fae3d05bcbc2f6a8e263d9b72e776",
+          "externalIds": {
+            "MAG": "2963403868",
+            "DBLP": "journals/corr/VaswaniSPUJGKP17",
+            "ArXiv": "1706.03762",
+            "CorpusId": 13756489
+          },
+          "url": "https://www.semanticscholar.org/paper/204e3073870fae3d05bcbc2f6a8e263d9b72e776",
+          "title": "Attention is All you Need",
+          "venue": "Neural Information Processing Systems",
+          "year": 2017,
+          "citationCount": 175574
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "51a55df1f023571a7e07e338ee45a3e3d66ef73e",
+          "externalIds": {
+            "DBLP": "journals/corr/ZhangZL15",
+            "MAG": "2963012544",
+            "ArXiv": "1509.01626",
+            "CorpusId": 368182
+          },
+          "url": "https://www.semanticscholar.org/paper/51a55df1f023571a7e07e338ee45a3e3d66ef73e",
+          "title": "Character-level Convolutional Networks for Text Classification",
+          "venue": "Neural Information Processing Systems",
+          "year": 2015,
+          "citationCount": 6964
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "4ef483f819e11873822416042a4b6dc4652e010c",
+          "externalIds": {
+            "MAG": "1686946872",
+            "ArXiv": "physics/0004057",
+            "DBLP": "journals/corr/physics-0004057",
+            "CorpusId": 8936496
+          },
+          "url": "https://www.semanticscholar.org/paper/4ef483f819e11873822416042a4b6dc4652e010c",
+          "title": "The information bottleneck method",
+          "venue": "arXiv.org",
+          "year": 2000,
+          "citationCount": 4310
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "35f8ab7eac16fca56a33a246fad485c1be732703",
+          "externalIds": {
+            "CorpusId": 31182916
+          },
+          "url": "https://www.semanticscholar.org/paper/35f8ab7eac16fca56a33a246fad485c1be732703",
+          "title": "Predictability , Complexity , and Learning",
+          "venue": "",
+          "year": 2002,
+          "citationCount": 387
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": null,
+          "externalIds": null,
+          "url": null,
+          "title": "Harnessing Causal Synchronization",
+          "venue": "International Conference on Learning Representations",
+          "year": null,
+          "citationCount": null
+        }
+      }
+    ]
+  }
+}

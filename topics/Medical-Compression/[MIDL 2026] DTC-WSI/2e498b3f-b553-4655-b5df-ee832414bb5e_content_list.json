@@ -1,0 +1,2297 @@
+[
+    {
+        "type": "text",
+        "text": "DTC-WSI: Dynamic Token Compression for Whole-Slide Images ",
+        "text_level": 1,
+        "bbox": [
+            168,
+            111,
+            831,
+            155
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Tawsifur Rahman1 $\\bot$ Biomedical Engineering, Johns Hopkins University ",
+        "bbox": [
+            145,
+            179,
+            522,
+            210
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "arahma34@jhu.edu ",
+        "bbox": [
+            696,
+            183,
+            852,
+            195
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Aliasghar Tarkhan2 $^ 2$ Johnson & Johnson, MedTech ",
+        "bbox": [
+            145,
+            218,
+            377,
+            250
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "tarkhan.aliasghar@gmail.com ",
+        "bbox": [
+            599,
+            222,
+            852,
+            234
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Rama Chellappa3 $^ { 3 }$ Johns Hopkins University ",
+        "bbox": [
+            145,
+            257,
+            346,
+            289
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "rchella4@jhu.edu ",
+        "bbox": [
+            700,
+            260,
+            852,
+            273
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Alexander S. Baras4 $^ 4$ School of Medicine, Johns Hopkins University ",
+        "bbox": [
+            145,
+            296,
+            488,
+            328
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "baras@jhmi.edu ",
+        "bbox": [
+            722,
+            299,
+            852,
+            313
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Editors: Accepted for publication at MIDL 2026 ",
+        "bbox": [
+            145,
+            367,
+            500,
+            382
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Abstract ",
+        "text_level": 1,
+        "bbox": [
+            457,
+            412,
+            540,
+            429
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Whole-slide images (WSIs) contain tens of thousands of heterogeneous patches, making transformer-based multiple-instance learning (MIL) computationally expensive due to quadratic attention costs and substantial redundancy in tissue morphology. Existing token-reduction approaches for WSI analysis rely primarily on pruning, which discards information early in training and destabilizes optimization under weak supervision. We propose Dynamic Token Compression for Whole-Slide Images (DTC-WSI), a token-efficient MIL framework that performs progressive, importance-aware WSI compression. DTC-WSI integrates a lightweight saliency network with a multi-stage token compressor that combines bipartite similarity matching and soft differentiable pruning to gradually eliminate redundant or non-diagnostic patches. During training, soft gates enable stable gradient flow, while inference employs deterministic compression for substantial acceleration. This curriculum-style compression preserves discriminative morphology and dramatically reduces computational burden. Across four WSI benchmarks (TCGA-NSCLC, TCGA-BRCA, TCGA-RCC, PANDA), DTC-WSI achieves $\\mathbf { 5 - 1 0 \\times }$ token reduction, up to ${ \\bf 5 . 3 \\times }$ faster inference, and $2 0 { - } 4 0 \\%$ lower memory usage, while improving MIL classification accuracy by $2 { - } 4 \\%$ over state-of-the-art baselines. Our results demonstrate that dynamic token compression is a powerful and scalable alternative to pruning, enabling efficient transformer-based WSI analysis while improving accuracy. ",
+        "bbox": [
+            178,
+            434,
+            821,
+            704
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Keywords: Computational pathology, Token merging, Dynamic token pruning, Weakly supervised learning ",
+        "bbox": [
+            176,
+            707,
+            818,
+            738
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "1. Introduction ",
+        "text_level": 1,
+        "bbox": [
+            147,
+            761,
+            295,
+            779
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Whole-slide images (WSIs) are gigapixel-scale pathology scans that exhibit rich and highly heterogeneous morphological patterns over extremely large spatial extents (El Nahhas et al., 2025; Srinidhi et al., 2021; Cui and Zhang, 2021). Since WSIs cannot be processed at native resolution, modern computational pathology pipelines partition each slide into thousands of fixed-size patches and employ multiple instance learning (MIL) to aggregate patch-level representations into slide-level predictions (Obeid et al., 2025; Gurcan et al., 2009; Bruny´e et al., 2010). Recent attention-based and transformer-based MIL models—including AB-MIL (Ilse et al., 2018), CLAM (Lu et al., 2021), TransMIL (Shao et al., 2021), DSMIL (Li et al., 2021), as well as hierarchical architectures such as HIPT (Chen et al., 2022)—have demonstrated strong performance across tasks such as cancer subtyping, grading, and prognosis. However, these approaches face a fundamental scalability challenge: a single diagnostic WSI can yield tens of thousands of patch tokens, leading to substantial computational and memory overhead in MIL scoring modules and transformer attention layers (Rahman et al., 2025a; Yang et al., 2022; Kapse et al., 2024). ",
+        "bbox": [
+            145,
+            787,
+            852,
+            890
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "$©$ 2026 CC-BY 4.0, T. Rahman, A. Tarkhan, R. Chellappa & A.S. Baras. ",
+        "bbox": [
+            145,
+            915,
+            598,
+            926
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "Proceedings of Machine Learning Research – 315:3846–3865, 2026 ",
+        "bbox": [
+            143,
+            50,
+            547,
+            63
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "Full Paper – MIDL 2026 ",
+        "bbox": [
+            702,
+            50,
+            852,
+            63
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            143,
+            114,
+            854,
+            251
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "This challenge is exacerbated by the structural properties of histopathology images. Large regions contain visually redundant or weakly discriminative tissue—including stroma, adipose, necrosis, and repeated tumor textures (Tang et al., 2024). Treating all patches as independent tokens forces models to process extensive redundancy, increasing computation without adding discriminative signal (Rahman et al., 2025b). Prior attempts to mitigate this include hierarchical MIL (Yue et al., 2025), patch clustering (Sharma et al., 2021), and token pruning (Tang et al., 2023a; Rao et al., 2021). Yet pruning irreversibly discards tokens and risks removing diagnostically relevant regions, a severe limitation under weak supervision where slide-level labels provide no guidance for early-stage pruning decisions (Jiang et al., 2023; Shi et al., 2021; Lyu et al., 2025). ",
+        "bbox": [
+            143,
+            252,
+            854,
+            421
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Meanwhile, the natural-image community has demonstrated that token merging can accelerate Vision Transformers by fusing redundant tokens rather than removing them. Methods such as ToMe (Bolya and Hoffman, 2023) exploit similarity structure to merge tokens without losing information. However, these methods have not been adapted to computational pathology, where redundancy patterns are more complex, token counts are orders of magnitude larger, and merging must be guided by task-driven saliency to avoid collapsing diagnostically meaningful structures (Zhen et al., 2025; Hu et al., 2024; Wu et al., 2025). ",
+        "bbox": [
+            143,
+            424,
+            852,
+            559
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "To address these limitations, we propose Dynamic Token Compression for Whole-Slide Images (DTC-WSI), a unified framework that combines similarity-guided token merging with importance-guided pruning in a progressive multi-stage pipeline. DTC-WSI fuses redundant patches via efficient bipartite matching while learning patch saliency through a differentiable importance network trained with slide-level supervision. Unlike single-step or merge-only approaches, our curriculum-style multi-stage compression gradually reduces tokens, preventing early information collapse and stabilizing saliency estimation. This hybrid design enables efficient gigapixel WSI processing while preserving diagnostically critical regions. Our contributions are summarized as follows: ",
+        "bbox": [
+            145,
+            560,
+            852,
+            712
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "1. A unified multi-stage token compression framework that jointly performs similarity-guided token merging and importance-guided pruning, enabling aggressive token reduction while preserving diagnostic morphology.   \n2. A differentiable importance network that learns patch saliency under weak supervision, guiding compression during training and enabling deterministic, high-efficiency inference.   \n3. Comprehensive evaluation on four major WSI benchmarks (TCGA-NSCLC, TCGA-BRCA, TCGA-RCC, PANDA), demonstrating that DTC-WSI achieves $^ { 5 - }$ $\\mathbf { 1 0 \\times }$ token reduction, up to 5.3 $\\times$ faster inference, 20–40% lower memory ",
+        "bbox": [
+            165,
+            719,
+            854,
+            890
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "discarded",
+        "text": "3847 ",
+        "bbox": [
+            482,
+            914,
+            514,
+            926
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "discarded",
+        "text": "DTC-WSI ",
+        "bbox": [
+            455,
+            47,
+            537,
+            63
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "image",
+        "img_path": "images/beee5a3ac92c81cc2b66fd55c44b065c184808fa1f7d44cff4db482995777f5e.jpg",
+        "image_caption": [
+            "Figure 1: Overview of the proposed Dynamic Token Compression (DTC-WSI) framework. (A) End-to-end pipeline: patch extraction, feature encoding, multi-stage token compression, and MIL prediction. (B) Token merging: similar patches are fused into unified representations via bipartite soft matching. (C) Token pruning: low-importance tokens are removed to produce a compact, discriminative set for classification. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            148,
+            117,
+            852,
+            378
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "usage, and 2–4% accuracy gains over state-of-the-art MIL and token-efficient baselines. ",
+        "bbox": [
+            186,
+            549,
+            852,
+            583
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2. Methods ",
+        "text_level": 1,
+        "bbox": [
+            145,
+            636,
+            258,
+            654
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2.1. Overview ",
+        "text_level": 1,
+        "bbox": [
+            145,
+            674,
+            272,
+            690
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Whole-slide images (WSIs) contain tens of thousands of patches, making conventional MIL and transformer models computationally prohibitive due to quadratic attention and high memory demands. To address this, we propose Dynamic Token Compression for Whole-Slide Images (DTC-WSI), a framework that learns to compress WSI patch embeddings in a task-aware manner. DTC-WSI progressively reduces tokens across multiple stages by combining (1) similarity-guided merging to fuse redundant patches and (2) importance-guided pruning to discard low-saliency regions. Compression is applied softly during training, enabling the importance network to learn reliable saliency estimates, and deterministically at inference for fast, scalable deployment. The final compact token set is aggregated using attention-based MIL to produce slide-level predictions. ",
+        "bbox": [
+            143,
+            709,
+            852,
+            881
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "discarded",
+        "text": "3848 ",
+        "bbox": [
+            482,
+            914,
+            516,
+            926
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "discarded",
+        "text": "Rahman Tarkhan Chellappa Baras ",
+        "bbox": [
+            349,
+            49,
+            642,
+            63
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2.2. Patch Extraction and Feature Encoding ",
+        "text_level": 1,
+        "bbox": [
+            143,
+            114,
+            549,
+            132
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "A whole-slide image (WSI) is denoted by $x$ , which is tiled into $N$ non-overlapping patches $\\{ x _ { 1 } , x _ { 2 } , \\ldots , x _ { N } \\}$ after tissue detection and background removal. Each patch is processed by a pretrained encoder (CONCH (Lu et al., 2024)) to obtain a semantic feature embedding: ",
+        "bbox": [
+            143,
+            141,
+            854,
+            194
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/87a8c377111a64a4b08411e0f8534c6302a57da738e503707df3e21bb8ea64a9.jpg",
+        "text": "$$\nh _ { i } ^ { ( 0 ) } = f _ { \\theta } ( x _ { i } ) \\in \\mathbb { R } ^ { D } , \\qquad i = 1 , \\dots , N .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            354,
+            210,
+            645,
+            233
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "To preserve spatial information, optional positional embeddings $p _ { i }$ concatenated with the visual features: ",
+        "bbox": [
+            142,
+            251,
+            854,
+            284
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/46f88ac29161f715c3de175fa874c22e2e9d03ebf309f91c06e52cbddddbc6b2.jpg",
+        "text": "$$\n\\tilde { h } _ { i } ^ { ( 0 ) } = [ h _ { i } ^ { ( 0 ) } \\parallel p _ { i } ] .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            434,
+            286,
+            562,
+            309
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "forming the initial token matrix $\\begin{array} { r } { { \\cal H } ^ { ( 0 ) } = [ \\tilde { h } _ { 1 } ^ { ( 0 ) } , \\dots , \\tilde { h } _ { N } ^ { ( 0 ) } ] ^ { \\top } \\in \\mathbb { R } ^ { N \\times ( D + 1 ) } . } \\end{array}$ ",
+        "bbox": [
+            169,
+            321,
+            709,
+            344
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "All supervision is provided at the slide level; no patch-level labels are used during training. ",
+        "bbox": [
+            140,
+            345,
+            857,
+            380
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "2.3. Importance Network ",
+        "text_level": 1,
+        "bbox": [
+            145,
+            414,
+            377,
+            430
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "WSIs contain large regions of redundant or clinically irrelevant tissue, making it essential to quantify which patch embeddings contribute meaningfully to the slide prediction. The Importance Network $g _ { \\phi }$ assigns a saliency score to each token at stage t: ",
+        "bbox": [
+            143,
+            440,
+            854,
+            492
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/d4c18f23f890d3b6db4ce2fda0801e88a2b3cf2829b5bda046b07e93a96b3697.jpg",
+        "text": "$$\ns _ { i } ^ { ( t ) } = g _ { \\phi } ( \\tilde { h } _ { i } ^ { ( t - 1 ) } ) ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            433,
+            510,
+            563,
+            532
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where $g _ { \\phi }$ is a two-layer MLP with GELU activation. Scores are normalized into importance weights: ",
+        "bbox": [
+            142,
+            549,
+            857,
+            582
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/4263e59ed7f264912325e1ef44a6fed41792d7b68c1362e61372ad2a04a33e37.jpg",
+        "text": "$$\n\\alpha _ { i } ^ { ( t ) } = \\frac { \\exp ( s _ { i } ^ { ( t ) } ) } { \\sum _ { j = 1 } ^ { N ^ { ( t ) } } \\exp ( s _ { j } ^ { ( t ) } ) } ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            410,
+            587,
+            588,
+            633
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "which induces soft competition among tokens. Early in training, the distribution remains diffuse; as learning progresses, high-saliency tumor regions receive larger weights. ",
+        "bbox": [
+            142,
+            643,
+            856,
+            678
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "2.4. Dynamic Multi-Stage Token Compression ",
+        "text_level": 1,
+        "bbox": [
+            143,
+            710,
+            565,
+            729
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "To prevent catastrophic loss of diagnostic evidence, we adopt a multi-stage compression schedule: ",
+        "bbox": [
+            142,
+            739,
+            852,
+            772
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/8156f814e4ea5765a1c45d95c88a37feeb5c7c3bdda34f78a18a0b64371929bf.jpg",
+        "text": "$$\nN ^ { ( 0 ) } = N  N ^ { ( 1 ) }  N ^ { ( 2 ) }  N ^ { ( 3 ) } ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            349,
+            776,
+            648,
+            792
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where each $N _ { t + 1 }$ is determined by a retention ratio $r : N ^ { ( t + 1 ) } = r \\cdot N ^ { ( t ) }$ ",
+        "bbox": [
+            155,
+            808,
+            709,
+            827
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "The number of token merges required in stage $t$ is: $K ^ { ( t ) } = N ^ { ( t ) } - N ^ { ( t + 1 ) }$ ",
+        "bbox": [
+            163,
+            828,
+            750,
+            844
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Each stage consists of: 1) Bipartite soft matching for token fusion, and 2) Importanceguided pruning. ",
+        "bbox": [
+            143,
+            847,
+            887,
+            881
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "discarded",
+        "text": "3849 ",
+        "bbox": [
+            482,
+            912,
+            516,
+            926
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "discarded",
+        "text": "DTC-WSI ",
+        "bbox": [
+            454,
+            46,
+            537,
+            63
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "2.4.1. Bipartite Soft Matching for Token Fusion ",
+        "text_level": 1,
+        "bbox": [
+            143,
+            113,
+            601,
+            132
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "To avoid the $O ( N ^ { 2 } )$ complexity of full similarity search, tokens in stage $t$ are partitioned into alternating subsets: ",
+        "bbox": [
+            138,
+            138,
+            856,
+            174
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/d779b858eff65a0283489a0fb6d107290e7050206bc1634117a4297065bba334.jpg",
+        "text": "$$\n\\begin{array} { r } { A = [ \\tilde { h } _ { 1 } ^ { ( t - 1 ) } , \\tilde { h } _ { 3 } ^ { ( t - 1 ) } , \\tilde { h } _ { 5 } ^ { ( t - 1 ) } , \\dots ] , \\quad B = [ \\tilde { h } _ { 2 } ^ { ( t - 1 ) } , \\tilde { h } _ { 4 } ^ { ( t - 1 ) } , \\tilde { h } _ { 6 } ^ { ( t - 1 ) } , \\dots ] . } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            253,
+            188,
+            743,
+            208
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "For each aligned pair $( i , j )$ , cosine similarity is computed: ",
+        "bbox": [
+            143,
+            222,
+            596,
+            239
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/b6c72540f20bca7e15243277fba950616735958bead49b5c0735d0d8b27a861b.jpg",
+        "text": "$$\n\\sin ( i , j ) = \\frac { \\langle \\widetilde { h } _ { i } ^ { ( t - 1 ) } , \\widetilde { h } _ { j } ^ { ( t - 1 ) } \\rangle } { \\Vert \\widetilde { h } _ { i } ^ { ( t - 1 ) } \\Vert \\Vert \\widetilde { h } _ { j } ^ { ( t - 1 ) } \\Vert } .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            387,
+            253,
+            611,
+            300
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "A merge utility incorporating importance consistency is defined as: ",
+        "bbox": [
+            140,
+            311,
+            671,
+            329
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/0ffadcc1503250f83d0cf333417b4014deb9e98193c021a9c40bf40b88589467.jpg",
+        "text": "$$\nu _ { i j } ^ { ( t - 1 ) } = \\lambda \\sin ( i , j ) - ( 1 - \\lambda ) | \\alpha _ { i } ^ { ( t ) } - \\alpha _ { j } ^ { ( t ) } | .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            339,
+            342,
+            656,
+            364
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The Top- $K ^ { ( t ) }$ pairs are fused using importance-weighted averaging: ",
+        "bbox": [
+            142,
+            378,
+            671,
+            397
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/566b038039333c27f4e9261c6771f3977c46cb87ad48caeb26bd3a2d8a29e467.jpg",
+        "text": "$$\n\\tilde { h } _ { l } ^ { ( t ) } = \\frac { \\alpha _ { i } ^ { ( t ) } \\tilde { h } _ { i } ^ { ( t - 1 ) } + \\alpha _ { j } ^ { ( t ) } \\tilde { h } _ { j } ^ { ( t - 1 ) } } { \\alpha _ { i } ^ { ( t ) } + \\alpha _ { j } ^ { ( t ) } } .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            383,
+            409,
+            614,
+            458
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "2.4.2. Importance-Guided Token Pruning ",
+        "text_level": 1,
+        "bbox": [
+            143,
+            492,
+            522,
+            510
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "After token merging, low-saliency tokens are suppressed. During training, pruning is differentiable: ",
+        "bbox": [
+            143,
+            517,
+            849,
+            549
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/5ede9e62aa071b8846cb7235fbda82512f1f561c2893b5b553a12a52a5b45d39.jpg",
+        "text": "$$\nm _ { l } ^ { ( t ) } = \\sigma \\Bigl ( \\gamma ( \\alpha _ { l } ^ { ( t ) } - \\tau ) \\Bigr ) , \\quad \\tilde { h } _ { l } ^ { ( t ) } = m _ { l } ^ { ( t ) } \\tilde { h } _ { l } ^ { ( t ) } .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            338,
+            549,
+            658,
+            575
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "During inference, deterministic Top- $N ^ { ( t ) }$ pruning is applied: ",
+        "bbox": [
+            173,
+            583,
+            643,
+            602
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/179e0fc84154be81afd7a0d3b2c1628e45aa6e8e779ef7ea54e75bf640488512.jpg",
+        "text": "$$\nH ^ { ( t ) } = \\mathrm { T o p K } \\Big ( H ^ { ( t - 1 ) } , \\alpha ^ { ( t - 1 ) } , N ^ { ( t - 1 ) } \\Big ) .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            352,
+            616,
+            645,
+            642
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "2.5. MIL Aggregation and Prediction ",
+        "text_level": 1,
+        "bbox": [
+            143,
+            679,
+            486,
+            696
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "After $t$ compression stages, the final tokens $H ^ { ( t ) }$ are passed to an attention-based MIL module. Attention weights: ",
+        "bbox": [
+            143,
+            704,
+            852,
+            739
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/e40eb2f7ccd696aa0a83b0221a1165a4a08ee68bfaba66f3a91094b69ede5c53.jpg",
+        "text": "$$\na _ { i } = \\frac { \\exp ( w ^ { \\top } \\operatorname { t a n h } ( W h _ { i } ^ { ( t ) } ) ) } { \\sum _ { j = 1 } ^ { M } \\exp ( w ^ { \\top } \\operatorname { t a n h } ( W h _ { j } ^ { ( t ) } ) ) } .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            367,
+            752,
+            629,
+            799
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "$\\begin{array} { r } { z = \\sum _ { i = 1 } ^ { N ^ { ( t ) } } a _ { i } \\tilde { h } _ { i } ^ { ( t ) } } \\end{array}$ vel representation is computed as a weighted sum of the compressed tokens,, where the attention weights emphasize diagnostically informative regions. This embedding is then passed through a linear classifier followed by a softmax layer to produce the slide-level prediction, $\\hat { y } = \\mathrm { s o f t m a x } ( W _ { c } z + b _ { c } )$ . ",
+        "bbox": [
+            143,
+            809,
+            854,
+            881
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "discarded",
+        "text": "3850 ",
+        "bbox": [
+            480,
+            912,
+            516,
+            926
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "discarded",
+        "text": "Rahman Tarkhan Chellappa Baras ",
+        "bbox": [
+            349,
+            47,
+            642,
+            63
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "2.6. Loss Function ",
+        "text_level": 1,
+        "bbox": [
+            145,
+            114,
+            313,
+            131
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "We supervise slide-level predictions using cross-entropy, $\\mathcal { L } _ { \\mathrm { c l s } } = \\mathrm { C E } ( y , \\hat { y } )$ , and encourage the importance network to assign sparse, selective saliency through an $\\ell _ { 1 }$ regularizer, $\\mathcal { L } _ { \\mathrm { s p a r s e } } =$ $\\textstyle \\beta \\sum _ { t = 0 } ^ { T ^ { \\prime } } \\| \\alpha ^ { ( t ) } \\| _ { 1 }$ . The full training objective combines both terms to promote discriminative yet compact representations, the composite loss is given as: ",
+        "bbox": [
+            143,
+            138,
+            854,
+            208
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/66ad6a630ea93748a4f2051f1a461fd95ffd3b0e586e9a9949b040eb6ec1441f.jpg",
+        "text": "$$\n\\begin{array} { r } { \\mathcal { L } = \\mathcal { L } _ { \\mathrm { c l s } } + \\mathcal { L } _ { \\mathrm { s p a r s e } } . } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            428,
+            220,
+            570,
+            237
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "A complete step-by-step description of the algorithm is provided in Appendix D. ",
+        "bbox": [
+            142,
+            246,
+            790,
+            263
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "3. Results ",
+        "text_level": 1,
+        "bbox": [
+            145,
+            284,
+            246,
+            301
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "3.1. Datasets ",
+        "text_level": 1,
+        "bbox": [
+            143,
+            311,
+            266,
+            327
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "We evaluated DTC-WSI across four large-scale histopathology classification benchmarks and one cellular-level morphology task to assess both its robustness on diverse cancer subtyping problems and its generalizability beyond WSIs. ",
+        "bbox": [
+            143,
+            335,
+            852,
+            386
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "TCGA-NSCLC. (Tomczak et al., 2015) This dataset comprises 993 whole-slide images (WSIs) from Formalin-Fixed Paraffin-Embedded (FFPE) tissue samples, with 507 slides corresponding to lung adenocarcinoma (LUAD) and 486 to lung squamous cell carcinoma (LUSC). ",
+        "bbox": [
+            145,
+            387,
+            852,
+            454
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "TCGA-BRCA. (Tomczak et al., 2015) The TCGA-BRCA dataset includes 938 FFPE WSIs, of which 772 are diagnosed with Invasive Ductal Carcinoma (IDC) and 166 with Invasive Lobular Carcinoma (ILC). ",
+        "bbox": [
+            145,
+            455,
+            852,
+            506
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "TCGA-RCC. (Tomczak et al., 2015) The TCGA-RCC cohort contains 884 diagnostic WSIs covering three renal cell carcinoma subtypes: Chromophobe (TCGA-KICH), Clear Cell (TCGA-KIRC), and Papillary (TCGA-KIRP). The dataset includes 111 slides from 99 CRCC cases, 489 slides from 483 CCRCC cases, and 284 slides from 264 PRCC cases. On average, each slide contributed approximately 13,900 patches at $\\times 2 0$ magnification. ",
+        "bbox": [
+            143,
+            507,
+            854,
+            592
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "PANDA. (Bulten et al., 2022) The PANDA dataset consists of 12,625 prostate biopsy WSIs collected from six different institutions. The dataset includes 3,628 nontissue/background slides, 3,151 non-epithelium/non-cancerous slides, 1,644 benign slides, and 4,202 cancerous slides. For our classification task, we focused on benign and cancerous slides to ensure a clinically meaningful evaluation. ",
+        "bbox": [
+            145,
+            593,
+            854,
+            678
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "3.2. Experimental Setup and Evaluation Metrics ",
+        "text_level": 1,
+        "bbox": [
+            143,
+            695,
+            584,
+            712
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "All experiments were implemented in PyTorch and executed on a compute server equipped with four NVIDIA Tesla V100 GPUs and 32 CPU cores. Models were trained using a batch size of 256, the Adam optimizer with an initial learning rate of 0.001, and early stopping based on validation performance. We employed 5-fold cross-validation for all datasets to ensure robust performance estimation. The token retention ratio $r$ was used to tune the effective thresholds for both similarity-based merging and importance-guided pruning, with hyperparameters (merge utility weights, pruning ratios, and sparsity coefficient) optimized separately for each dataset. We report classification performance using Accuracy and Area Under the ROC Curve (AUC), where multi-class accuracy is computed as the average perclass accuracy and AUC is macro-averaged across classes. ",
+        "bbox": [
+            143,
+            719,
+            854,
+            890
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "discarded",
+        "text": "3851 ",
+        "bbox": [
+            482,
+            914,
+            514,
+            926
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "discarded",
+        "text": "DTC-WSI ",
+        "bbox": [
+            455,
+            47,
+            537,
+            63
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "table",
+        "img_path": "images/1fe2a29510a7ea9bf5f183f3ef479a4ac54a5dfc18761c0ab39694cdb0458d4b.jpg",
+        "table_caption": [
+            "Table 1: Comparison of DTC-WSI ( $r = 0 . 4$ ) with MIL and token-efficient baselines across four datasets. Results are reported as mean $\\pm$ std over 5 folds. All methods use the same pretrained encoder (CONCH (Lu et al., 2024)) and identical hardware settings. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=2 colspan=1>Model</td><td rowspan=1 colspan=2>TCGA-NSCLC</td><td rowspan=1 colspan=2>TCGA-BRCA</td><td rowspan=1 colspan=2>TCGA-RCC</td><td rowspan=1 colspan=2>PANDA</td></tr><tr><td rowspan=1 colspan=1>Acc</td><td rowspan=1 colspan=1>AUC</td><td rowspan=1 colspan=1>Acc</td><td rowspan=1 colspan=1>AUC</td><td rowspan=1 colspan=1>Acc</td><td rowspan=1 colspan=1>AUC</td><td rowspan=1 colspan=1>Acc</td><td rowspan=1 colspan=1>AUC</td></tr><tr><td rowspan=3 colspan=1>ABMIL (Ilse et al., 2018)CLAM-MB (Lu et al., 2021)DSMIL (Li et al., 2021)</td><td rowspan=1 colspan=1>94.7±0.6</td><td rowspan=1 colspan=1>95.4±0.5</td><td rowspan=1 colspan=1>93.4±0.7</td><td rowspan=1 colspan=1>94.1±0.6</td><td rowspan=1 colspan=1>92.6±0.6</td><td rowspan=1 colspan=1>93.5±0.5</td><td rowspan=1 colspan=1>91.2±0.7</td><td rowspan=1 colspan=1>92.1±0.6</td></tr><tr><td rowspan=1 colspan=1>95.8±0.5</td><td rowspan=1 colspan=1>96.6±0.4</td><td rowspan=1 colspan=1>94.5±0.6</td><td rowspan=1 colspan=1>95.3±0.5</td><td rowspan=1 colspan=1>93.9±0.6</td><td rowspan=1 colspan=1>94.8±0.5</td><td rowspan=1 colspan=1>92.4±0.6</td><td rowspan=1 colspan=1>93.4±0.5</td></tr><tr><td rowspan=1 colspan=1>95.3±0.6</td><td rowspan=1 colspan=1>96.1±0.5</td><td rowspan=1 colspan=1>94.0±0.6</td><td rowspan=1 colspan=1>94.8±0.6</td><td rowspan=1 colspan=1>93.4±0.6</td><td rowspan=1 colspan=1>94.2±0.5</td><td rowspan=1 colspan=1>91.9±0.7</td><td rowspan=1 colspan=1>92.9±0.6</td></tr><tr><td rowspan=6 colspan=1>TransMIL (Shao et al., 2021)HIPT (Chen et al., 2022)PANTHER (Song et al., 2024)SPT (Hou et al., 2024)ToMe (Bolya and Hoffman, 2023)PatchGD (Gupta et al., 2023)</td><td rowspan=1 colspan=1>96.4±0.5</td><td rowspan=1 colspan=1>97.2±0.4</td><td rowspan=1 colspan=1>95.6±0.5</td><td rowspan=1 colspan=1>96.4±0.5</td><td rowspan=1 colspan=1>94.8±0.5</td><td rowspan=1 colspan=1>95.6±0.4</td><td rowspan=1 colspan=1>92.8±0.6</td><td rowspan=1 colspan=1>93.7±0.5</td></tr><tr><td rowspan=1 colspan=1>96.2±0.5</td><td rowspan=1 colspan=1>97.0±0.4</td><td rowspan=1 colspan=1>95.3±0.6</td><td rowspan=1 colspan=1>96.1±0.5</td><td rowspan=1 colspan=1>94.6±0.5</td><td rowspan=1 colspan=1>95.4±0.5</td><td rowspan=1 colspan=1>92.6±0.6</td><td rowspan=1 colspan=1>93.6±0.5</td></tr><tr><td rowspan=1 colspan=1>96.8±0.4</td><td rowspan=1 colspan=1>97.6±0.4</td><td rowspan=1 colspan=1>96.0±0.5</td><td rowspan=1 colspan=1>96.8±0.4</td><td rowspan=1 colspan=1>95.2±0.5</td><td rowspan=1 colspan=1>96.1±0.4</td><td rowspan=1 colspan=1>93.3±0.5</td><td rowspan=1 colspan=1>94.2±0.4</td></tr><tr><td rowspan=1 colspan=1>95.9±0.5</td><td rowspan=1 colspan=1>96.7±0.4</td><td rowspan=1 colspan=1>94.8±0.6</td><td rowspan=1 colspan=1>95.6±0.5</td><td rowspan=1 colspan=1>93.8±0.6</td><td rowspan=1 colspan=1>94.6±0.5</td><td rowspan=1 colspan=1>92.3±0.6</td><td rowspan=1 colspan=1>93.2±0.5</td></tr><tr><td rowspan=1 colspan=1>91.0±0.8</td><td rowspan=1 colspan=1>91.8±0.7</td><td rowspan=1 colspan=1>90.0±0.8</td><td rowspan=1 colspan=1>90.8±0.7</td><td rowspan=1 colspan=1>89.1±0.8</td><td rowspan=1 colspan=1>90.0±0.7</td><td rowspan=1 colspan=1>87.5±0.9</td><td rowspan=1 colspan=1>88.4±0.8</td></tr><tr><td rowspan=1 colspan=1>94.2±0.6</td><td rowspan=1 colspan=1>95.0±0.5</td><td rowspan=1 colspan=1>93.2±0.7</td><td rowspan=1 colspan=1>94.0±0.6</td><td rowspan=1 colspan=1>92.4±0.6</td><td rowspan=1 colspan=1>93.3±0.6</td><td rowspan=1 colspan=1>90.7±0.7</td><td rowspan=1 colspan=1>91.6±0.6</td></tr><tr><td rowspan=1 colspan=1>MHIM-MIL (Tang et al., 2023b)</td><td rowspan=1 colspan=1>93.5±0.7</td><td rowspan=1 colspan=1>94.3±0.6</td><td rowspan=1 colspan=1>92.8±0.7</td><td rowspan=1 colspan=1>93.6±0.6</td><td rowspan=1 colspan=1>91.9±0.7</td><td rowspan=1 colspan=1>92.8±0.6</td><td rowspan=1 colspan=1>90.1±0.8</td><td rowspan=1 colspan=1>91.0±0.7</td></tr><tr><td rowspan=2 colspan=1>Longformer (Zhang et al., 2021)2DMambaMIL (Zhang et al., 2025)</td><td rowspan=1 colspan=1>92.1±0.8</td><td rowspan=1 colspan=1>92.9±0.7</td><td rowspan=1 colspan=1>91.4±0.8</td><td rowspan=1 colspan=1>91.2±0.7</td><td rowspan=1 colspan=1>89.6±0.8</td><td rowspan=1 colspan=1>90.4±0.7</td><td rowspan=1 colspan=1>88.9±0.8</td><td rowspan=1 colspan=1>89.8±0.7</td></tr><tr><td rowspan=1 colspan=1>94.3±0.6</td><td rowspan=1 colspan=1>95.1±0.5</td><td rowspan=1 colspan=1>91.7±0.7</td><td rowspan=1 colspan=1>92.5±0.6</td><td rowspan=1 colspan=1>90.7±0.7</td><td rowspan=1 colspan=1>91.6±0.6</td><td rowspan=1 colspan=1>89.0±0.8</td><td rowspan=1 colspan=1>90.9±0.7</td></tr><tr><td rowspan=1 colspan=1>Random Sampling</td><td rowspan=1 colspan=1>78.5±1.1</td><td rowspan=1 colspan=1>79.1±1.0</td><td rowspan=1 colspan=1>72.2±1.2</td><td rowspan=1 colspan=1>73.4±1.1</td><td rowspan=1 colspan=1>81.4±1.0</td><td rowspan=1 colspan=1>81.7±0.9</td><td rowspan=1 colspan=1>71.6±1.3</td><td rowspan=1 colspan=1>72.1±1.2</td></tr><tr><td rowspan=1 colspan=1>DTC-WSI (Ours)</td><td rowspan=1 colspan=1>98.3±0.3</td><td rowspan=1 colspan=1>98.9±0.2</td><td rowspan=1 colspan=1>97.4±0.3</td><td rowspan=1 colspan=1>97.9±0.3</td><td rowspan=1 colspan=1>96.8±0.4</td><td rowspan=1 colspan=1>97.5±0.3</td><td rowspan=1 colspan=1>94.8±0.4</td><td rowspan=1 colspan=1>95.6±0.3</td></tr></table>",
+        "bbox": [
+            147,
+            205,
+            854,
+            390
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "3.3. Performance Comparison ",
+        "text_level": 1,
+        "bbox": [
+            147,
+            435,
+            415,
+            452
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "We evaluated DTC-WSI on four benchmark WSI datasets—TCGA-NSCLC, TCGA-BRCA, TCGA-RCC, and PANDA—and compared it against a comprehensive set of state-of-the-art MIL and token-efficient approaches. These include classical MIL models (ABMIL, CLAM-MB, DSMIL), transformer-based and hierarchical methods (TransMIL, HIPT, PANTHER, SPT), as well as recent efficiency-oriented baselines such as ToMe, PatchGD, MHIM-MIL, Longformer, and 2DMambaMIL. For fair comparison, all methods use the same pretrained feature encoder ( CONCH (Lu et al., 2024)). In addition, we include a random sampling baseline that retains the same fraction of tokens ( $r = 0 . 4$ ) as DTC-WSI to isolate the effect of dynamic compression from simple token reduction. The results are summarized in Table 1. ",
+        "bbox": [
+            143,
+            477,
+            854,
+            648
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "DTC-WSI consistently achieves the best performance across all datasets, reaching $\\mathbf { 9 8 . 3 \\% }$ accuracy on TCGA-NSCLC, 97.4% on TCGA-BRCA, $\\mathbf { 9 6 . 8 \\% }$ on TCGA-RCC, and $\\mathbf { 9 4 . 8 \\% }$ on PANDA. Compared to strong MIL and token-efficient baselines, DTC-WSI improves accuracy by approximately $1 . 8 { - } 3 . 6 \\%$ and AUC by 1.6–3.5% across datasets, while retaining only $4 0 \\%$ of the original tokens. ",
+        "bbox": [
+            145,
+            659,
+            854,
+            743
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Importantly, random sampling—despite using the same token budget—exhibits a substantial performance drop across all datasets, indicating that efficiency gains alone do not account for the improvements. This underscores the importance of saliency-aware dynamic compression: DTC-WSI preserves diagnostically informative regions via importance-guided pruning and similarity-aware merging, rather than indiscriminate token removal. We find that $r = 0 . 4$ provides the best accuracy–efficiency trade-off (Appendix B). Overall, DTC-WSI achieves a superior balance compared to static sampling and existing token-efficient methods. ",
+        "bbox": [
+            145,
+            753,
+            854,
+            890
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "discarded",
+        "text": "3852 ",
+        "bbox": [
+            482,
+            914,
+            516,
+            926
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "discarded",
+        "text": "Rahman Tarkhan Chellappa Baras ",
+        "bbox": [
+            349,
+            47,
+            642,
+            63
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "table",
+        "img_path": "images/5de5ba7c97ef2149e695f742b4ece087b61e0d34e26b2b76f4022fb0268c8498.jpg",
+        "table_caption": [
+            "Table 2: Computational efficiency and accuracy of DTC-WSI under different token retention ratios. All rows correspond to the same DTC-WSI framework with different final token budgets. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=2 colspan=1>Final Retention</td><td rowspan=2 colspan=1>Acc (%)</td><td rowspan=2 colspan=1>FLOPs (G)</td><td rowspan=1 colspan=1>MIL Aggregation Only</td><td rowspan=1 colspan=1>Full Pipeline</td><td rowspan=2 colspan=1>Speedup</td></tr><tr><td rowspan=1 colspan=1>GPU Mem (GB)Time (ms)</td><td rowspan=1 colspan=1>GPU Mem (GB)Time (ms)</td></tr><tr><td rowspan=1 colspan=1>r = 1.0 (no compression)</td><td rowspan=1 colspan=1>94.6</td><td rowspan=1 colspan=1>118.4</td><td rowspan=1 colspan=1>3.1          420</td><td rowspan=1 colspan=1>14.2         2150</td><td rowspan=1 colspan=1>1.0×</td></tr><tr><td rowspan=1 colspan=1>r = 0.7 (Light Compression)</td><td rowspan=1 colspan=1>96.1</td><td rowspan=1 colspan=1>62.7</td><td rowspan=1 colspan=1>2.2          260</td><td rowspan=1 colspan=1>10.3         1190</td><td rowspan=1 colspan=1>1.8×</td></tr><tr><td rowspan=1 colspan=1>r = 0.5 (Moderate Compression)</td><td rowspan=1 colspan=1>97.1</td><td rowspan=1 colspan=1>38.4</td><td rowspan=1 colspan=1>1.6          170</td><td rowspan=1 colspan=1>8.1          720</td><td rowspan=1 colspan=1>3.0×</td></tr><tr><td rowspan=1 colspan=1>r = 0.4 (Best)</td><td rowspan=1 colspan=1>98.3</td><td rowspan=1 colspan=1>24.3</td><td rowspan=1 colspan=1>1.1          95</td><td rowspan=1 colspan=1>6.4         410</td><td rowspan=1 colspan=1>5.3×</td></tr></table>",
+        "bbox": [
+            148,
+            186,
+            849,
+            252
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/3b2e9b63a7ec0ed20430003f3c912a6efaa479648f86ed71bd5a82a92faac814.jpg",
+        "table_caption": [
+            "Table 3: Training, Inference Efficiency, and Accuracy Comparison (TCGA-NSCLC). All methods use the same pretrained encoder ( CONCH (Lu et al., 2024)) and identical hardware settings. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Method</td><td>Acc (%)</td><td>Train Time / Epoch (s)</td><td>Peak GPU Memory (GB)</td><td>Inference Time / WSI (ms)</td></tr><tr><td>ABMIL</td><td>94.7</td><td>312</td><td>14.2</td><td>1860</td></tr><tr><td>TransMIL</td><td>96.4</td><td>428</td><td>18.9</td><td>2740</td></tr><tr><td>ToMe</td><td>91.0</td><td>228</td><td>9.4</td><td>870</td></tr><tr><td>MHIM-MIL</td><td>93.5</td><td>214</td><td>8.9</td><td>890</td></tr><tr><td>Random Sampling (r=0.4)</td><td>78.5</td><td>205</td><td>8.6</td><td>330</td></tr><tr><td>DTC-WSI (Ours, r=0.4)</td><td>98.3</td><td>236</td><td>9.1</td><td>410</td></tr></table>",
+        "bbox": [
+            148,
+            347,
+            852,
+            429
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "3.4. Computational Efficiency of Token Compression ",
+        "text_level": 1,
+        "bbox": [
+            145,
+            460,
+            620,
+            478
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Beyond accuracy improvements, DTC-WSI provides substantial computational savings through progressive multi-stage token compression. Table 2 reports the impact of different token retention ratios within the same DTC-WSI framework on both efficiency and accuracy. As the retention ratio decreases, FLOPs, GPU memory usage, and inference latency consistently decline, while classification accuracy steadily improves. Using the full token set ( $r = 1 . 0$ ), DTC-WSI requires 118.4 G FLOPs, 14.2 GB GPU memory, and 2150 ms per WSI. Light compression ( $r = 0 . 7$ ) nearly halves computation and yields a 1.8 $\\times$ speedup, while moderate compression ( $r = 0 . 5$ ) further reduces inference time to 720 ms. ",
+        "bbox": [
+            143,
+            491,
+            872,
+            627
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "The best trade-off is achieved at $r = 0 . 4$ , where DTC-WSI retains only $4 0 \\%$ of the original tokens yet attains the highest accuracy (98.3% on TCGA-NSCLC). At this setting, FLOPs are reduced to 24.3 G, peak GPU memory drops to 6.4 GB, and end-to-end inference time decreases to 410 ms, corresponding to a ${ \\bf 5 . 3 \\times }$ speedup over the uncompressed setting. Importantly, these efficiency gains are accompanied by improved predictive performance, indicating that dynamic compression removes redundant and low-saliency tokens while preserving diagnostically relevant regions. ",
+        "bbox": [
+            143,
+            631,
+            852,
+            751
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "To contextualize these gains, Table 3 also reports training and inference efficiency comparisons against standard MIL and token-efficient baselines. We include a random sampling baseline that retains the same $4 0 \\%$ token budget as DTC-WSI. Although random sampling achieves low inference latency due to aggressive token reduction, it leads to severe accuracy degradation (Table 1), highlighting that computational savings alone are insufficient. In contrast, DTC-WSI maintains competitive training cost and memory usage while significantly outperforming random and static selection strategies in accuracy, demonstrating the necessity of saliency-aware, dynamic token allocation. Overall, these results confirm that DTC-WSI delivers a superior accuracy–efficiency trade-off compared to both na¨ıve sampling and existing token-efficient MIL approaches. ",
+        "bbox": [
+            143,
+            753,
+            854,
+            890
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "discarded",
+        "text": "3853 ",
+        "bbox": [
+            482,
+            914,
+            516,
+            926
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "discarded",
+        "text": "DTC-WSI ",
+        "bbox": [
+            454,
+            47,
+            537,
+            63
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            145,
+            114,
+            852,
+            148
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "table",
+        "img_path": "images/c9fc743e34181cb7a3b44dcd15d33a0386000124e2f2fca300ce067fb969a3be.jpg",
+        "table_caption": [
+            "Table 4: Ablation study comparing merging and pruning strategies (r=0.4) across four datasets. Metrics reported as Accuracy (Acc) and AUC ( $\\%$ ). "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=2 colspan=1>Model Variant</td><td rowspan=1 colspan=2>TCGA-NSCLC</td><td rowspan=1 colspan=2>TCGA-BRCA</td><td rowspan=1 colspan=2>TCGA-RCC</td><td rowspan=1 colspan=2>PANDA</td></tr><tr><td rowspan=1 colspan=1>Acc</td><td rowspan=1 colspan=1>AUC</td><td rowspan=1 colspan=1>Acc</td><td rowspan=1 colspan=1>AUC</td><td rowspan=1 colspan=1>Acc</td><td rowspan=1 colspan=1>AUC</td><td rowspan=1 colspan=1>Acc</td><td rowspan=1 colspan=1>AUC</td></tr><tr><td rowspan=1 colspan=1>Random Merging</td><td rowspan=1 colspan=1>95.0</td><td rowspan=1 colspan=1>96.1</td><td rowspan=1 colspan=1>94.0</td><td rowspan=1 colspan=1>95.1</td><td rowspan=1 colspan=1>93.1</td><td rowspan=1 colspan=1>94.3</td><td rowspan=1 colspan=1>91.6</td><td rowspan=1 colspan=1>92.8</td></tr><tr><td rowspan=1 colspan=1>Random Pruning</td><td rowspan=1 colspan=1>94.6</td><td rowspan=1 colspan=1>95.7</td><td rowspan=1 colspan=1>93.6</td><td rowspan=1 colspan=1>94.8</td><td rowspan=1 colspan=1>92.9</td><td rowspan=1 colspan=1>94.1</td><td rowspan=1 colspan=1>91.2</td><td rowspan=1 colspan=1>92.4</td></tr><tr><td rowspan=1 colspan=1>Only Merge (Similarity-Guided)</td><td rowspan=1 colspan=1>96.4</td><td rowspan=1 colspan=1>97.6</td><td rowspan=1 colspan=1>95.3</td><td rowspan=1 colspan=1>96.3</td><td rowspan=1 colspan=1>94.5</td><td rowspan=1 colspan=1>95.7</td><td rowspan=1 colspan=1>93.0</td><td rowspan=1 colspan=1>94.2</td></tr><tr><td rowspan=1 colspan=1>Only Prune (Importance-Guided)</td><td rowspan=1 colspan=1>95.7</td><td rowspan=1 colspan=1>96.9</td><td rowspan=1 colspan=1>94.7</td><td rowspan=1 colspan=1>95.8</td><td rowspan=1 colspan=1>93.9</td><td rowspan=1 colspan=1>95.1</td><td rowspan=1 colspan=1>92.4</td><td rowspan=1 colspan=1>93.5</td></tr><tr><td rowspan=1 colspan=1>Ours (Dynamic Merge + Prune)</td><td rowspan=1 colspan=1>98.3</td><td rowspan=1 colspan=1>98.9</td><td rowspan=1 colspan=1>97.4</td><td rowspan=1 colspan=1>97.9</td><td rowspan=1 colspan=1>96.8</td><td rowspan=1 colspan=1>97.5</td><td rowspan=1 colspan=1>94.8</td><td rowspan=1 colspan=1>95.6</td></tr></table>",
+        "bbox": [
+            148,
+            222,
+            852,
+            324
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Table 5: Sensitivity analysis of DTC-WSI to multi-stage retention schedules. Final token budget is fixed to ${ \\sim } 4 0 \\%$ across all settings. ",
+        "bbox": [
+            140,
+            363,
+            852,
+            397
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "table",
+        "img_path": "images/fbc0df7a8c9635533cc22cd0dc475514082fd7553f523d5081a9ef25942d7141.jpg",
+        "table_caption": [],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"2\">Schedule</td><td rowspan=\"2\">Stage 1 (r1)</td><td rowspan=\"2\">Stage 2 (r2)</td><td rowspan=\"2\">Stage 3 (r3)</td><td colspan=\"2\">TCGA-NSCLC</td><td colspan=\"2\">TCGA-BRCA</td><td colspan=\"2\">TCGA-RCC</td><td colspan=\"2\">PANDA</td></tr><tr><td>Acc</td><td>AUC</td><td>Acc</td><td>AUC</td><td>Acc</td><td>AUC</td><td>Acc</td><td>AUC</td></tr><tr><td>Uniform (default)</td><td>0.74</td><td>0.74</td><td>0.74</td><td>98.3</td><td>98.9</td><td>97.4</td><td>97.9</td><td>96.8</td><td>97.5</td><td>94.8</td><td>95.6</td></tr><tr><td>Balanced</td><td>0.70</td><td>0.70</td><td>0.82</td><td>98.2</td><td>98.8</td><td>97.3</td><td>97.8</td><td>96.7</td><td>97.4</td><td>94.6</td><td>95.4</td></tr><tr><td>Early-aggressive</td><td>0.55</td><td>0.80</td><td>0.91</td><td>97.6</td><td>98.1</td><td>96.8</td><td>97.2</td><td>96.1</td><td>96.8</td><td>94.0</td><td>94.7</td></tr><tr><td>Late-aggressive</td><td>0.85</td><td>0.70</td><td>0.67</td><td>98.0</td><td>98.6</td><td>97.1</td><td>97.6</td><td>96.5</td><td>97.2</td><td>94.4</td><td>95.1</td></tr><tr><td>2-stage only</td><td>0.63</td><td>0.63</td><td>−</td><td>97.8</td><td>98.4</td><td>96.9</td><td>97.4</td><td>96.3</td><td>97.0</td><td>94.2</td><td>94.9</td></tr></table>",
+        "bbox": [
+            148,
+            410,
+            852,
+            493
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "3.5. Ablation Studies ",
+        "text_level": 1,
+        "bbox": [
+            145,
+            530,
+            339,
+            546
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Ablation on Merging and Pruning Strategies. Table 4 presents an ablation study isolating the effects of token merging and pruning strategies under a fixed token budget of $r = 0 . 4$ for all variants. Random merging and random pruning result in noticeable performance degradation across all datasets, indicating that indiscriminate compression disrupts discriminative slide-level signals. Using similarity-guided merging alone consistently outperforms random merging by preserving redundant yet morphologically coherent regions, while importance-guided pruning alone yields moderate gains by suppressing low-saliency tokens. However, neither strategy alone matches the full DTC-WSI framework. Combining similarity-guided merging with importance-guided pruning achieves the best performance across all benchmarks, improving accuracy by $2 { - } 4 \\%$ over single-strategy variants. These results demonstrate that dynamic, saliency-aware merging and pruning are both necessary and complementary, and that performance gains cannot be attributed to token reduction alone, but to the proposed joint dynamic compression mechanism. ",
+        "bbox": [
+            143,
+            556,
+            852,
+            776
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Sensitivity to Multi-Stage Retention Schedules. Table 5 analyzes the sensitivity of DTC-WSI to different multi-stage token retention schedules, while fixing the final token budget to approximately $4 0 \\%$ across all settings. We observe that performance remains consistently strong across a wide range of stage-wise retention ratios, indicating that DTC-WSI is not overly sensitive to precise hyperparameter choices. The uniform schedule ( $r _ { 1 } =$ $r _ { 2 } = r _ { 3 } = 0 . 7 4$ ) yields the best overall performance and is used as the default configuration. ",
+        "bbox": [
+            145,
+            787,
+            852,
+            890
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "discarded",
+        "text": "3854 ",
+        "bbox": [
+            482,
+            914,
+            516,
+            926
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "discarded",
+        "text": "Rahman Tarkhan Chellappa Baras ",
+        "bbox": [
+            349,
+            47,
+            642,
+            63
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "More aggressive early or late compression leads to a modest accuracy drop, suggesting that progressively reducing tokens helps preserve diagnostically relevant regions under weak supervision. Overall, these results demonstrate that the proposed multi-stage compression strategy is stable, robust, and does not require fine-tuning of stage-wise retention ratios to achieve strong performance. ",
+        "bbox": [
+            143,
+            114,
+            852,
+            199
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Encoder and backbone ablation. Table 6 analyzes the impact of encoder choice and MIL backbone on predictive performance and computational efficiency. Across both encoders (CONCH and Virchow2) and MIL backbones (ABMIL and TransMIL), DTC-WSI consistently improves accuracy while substantially reducing GPU memory usage and inference time. For instance, with the CONCH encoder, DTC-ABMIL improves accuracy from $9 4 . 7 \\%$ to $9 8 . 3 \\%$ while reducing GPU memory by more than 2 $\\times$ and inference time by over 5 $\\times$ . Similar trends are observed for transformer-based aggregation, where DTC-TransMIL outperforms vanilla TransMIL while reducing memory consumption and runtime by approximately 3–5 $\\times$ . Importantly, these gains are consistent across encoders of different strengths, indicating that the improvements stem from the proposed dynamic token compression rather than the upstream feature extractor. Overall, the results demonstrate that DTC-WSI is both encoder-agnostic and backbone-agnostic, providing a favorable accuracy– efficiency trade-off for both lightweight and transformer-based MIL pipelines. ",
+        "bbox": [
+            145,
+            210,
+            852,
+            431
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "table",
+        "img_path": "images/27b557924bc611bdfa5c0ad275b83f74999be41f774c517756669132a23f77cf.jpg",
+        "table_caption": [
+            "Table 6: Ablation of encoder choice and MIL backbone. All models are evaluated under identical data splits and training protocols. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=1 colspan=1>Model</td><td rowspan=1 colspan=1>Encoder</td><td rowspan=1 colspan=1>Tokens Retained</td><td rowspan=1 colspan=1>Acc (%)</td><td rowspan=1 colspan=1>GPUMem(GB)</td><td rowspan=1 colspan=1>InferenceTime(ms/WSI)</td></tr><tr><td rowspan=1 colspan=1>ABMIL</td><td rowspan=1 colspan=1>CONCH</td><td rowspan=1 colspan=1>1.0</td><td rowspan=1 colspan=1>94.7</td><td rowspan=1 colspan=1>14.2</td><td rowspan=1 colspan=1>2150</td></tr><tr><td rowspan=1 colspan=1>DTC-ABMIL</td><td rowspan=1 colspan=1>CONCH</td><td rowspan=1 colspan=1>0.4</td><td rowspan=1 colspan=1>98.3</td><td rowspan=1 colspan=1>6.4</td><td rowspan=1 colspan=1>410</td></tr><tr><td rowspan=1 colspan=1>TransMIL</td><td rowspan=1 colspan=1>CONCH</td><td rowspan=1 colspan=1>1.0</td><td rowspan=1 colspan=1>95.2</td><td rowspan=1 colspan=1>18.9</td><td rowspan=1 colspan=1>2740</td></tr><tr><td rowspan=1 colspan=1>DTC-TransMIL</td><td rowspan=1 colspan=1>CONCH</td><td rowspan=1 colspan=1>0.4</td><td rowspan=1 colspan=1>98.9</td><td rowspan=1 colspan=1>7.8</td><td rowspan=1 colspan=1>480</td></tr><tr><td rowspan=1 colspan=1>ABMIL</td><td rowspan=1 colspan=1>Virchow2</td><td rowspan=1 colspan=1>1.0</td><td rowspan=1 colspan=1>92.1</td><td rowspan=1 colspan=1>14.5</td><td rowspan=1 colspan=1>1810</td></tr><tr><td rowspan=1 colspan=1>DTC-ABMIL</td><td rowspan=1 colspan=1>Virchow2</td><td rowspan=1 colspan=1>0.4</td><td rowspan=1 colspan=1>96.0</td><td rowspan=1 colspan=1>6.6</td><td rowspan=1 colspan=1>350</td></tr><tr><td rowspan=1 colspan=1>TransMIL</td><td rowspan=1 colspan=1>Virchow2</td><td rowspan=1 colspan=1>1.0</td><td rowspan=1 colspan=1>94.3</td><td rowspan=1 colspan=1>19.1</td><td rowspan=1 colspan=1>2210</td></tr><tr><td rowspan=1 colspan=1>DTC-TransMIL</td><td rowspan=1 colspan=1>Virchow2</td><td rowspan=1 colspan=1>0.4</td><td rowspan=1 colspan=1>97.3</td><td rowspan=1 colspan=1>8.1</td><td rowspan=1 colspan=1>430</td></tr></table>",
+        "bbox": [
+            148,
+            502,
+            849,
+            626
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Ablation on Sparsity Regularization. We analyze the effect of the sparsity regularizer $\\mathcal { L } _ { \\mathrm { s p a r s e } }$ applied to the importance scores by training DTC-WSI with and without the $\\ell _ { 1 }$ penalty. Removing $\\mathcal { L } _ { \\mathrm { s p a r s e } }$ results in denser importance distributions, which weakens the pruning behavior and leads to higher token retention and increased inference cost. This also causes a consistent degradation in classification performance. In contrast, incorporating the sparsity term encourages selective saliency assignment, stabilizes multi-stage token compression, and yields both improved accuracy and computational efficiency. These results demonstrate that $\\mathcal { L } _ { \\mathrm { s p a r s e } }$ is a critical component for learning compact yet discriminative representations under weak slide-level supervision. ",
+        "bbox": [
+            143,
+            651,
+            854,
+            805
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "4. Visualization of Token Compression ",
+        "text_level": 1,
+        "bbox": [
+            147,
+            829,
+            519,
+            847
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Figure 2 illustrates the full multi-stage compression process performed by DTC-WSI. Panel (A) shows the original WSI along with overlaid heatmaps depicting the model output after similarity-guided token merging and after importance-guided pruning. Panels (B) and (C) present examples of visually similar patches that are merged into unified representations; these merged groups are highlighted with green borders, demonstrating how redundant regions—such as uniform stromal areas or repeated tumor patterns—are effectively consolidated. Panel (D) displays patches removed through importance-guided pruning, marked with red borders, revealing low-saliency regions that contribute minimally to the slidelevel prediction. Overall, these visualizations show that DTC-WSI performs structured, interpretable compression: reducing redundancy through merging while selectively pruning non-informative regions, ultimately preserving the most diagnostically meaningful tissue patterns. ",
+        "bbox": [
+            142,
+            857,
+            854,
+            890
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "discarded",
+        "text": "3855 ",
+        "bbox": [
+            482,
+            914,
+            516,
+            926
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "discarded",
+        "text": "DTC-WSI ",
+        "bbox": [
+            455,
+            47,
+            537,
+            63
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "image",
+        "img_path": "images/5307c3a9e68cdcc2323131d5bc9469f1385d9d909c942eca256d69b6f9dd5abe.jpg",
+        "image_caption": [
+            "Figure 2: Visualization of multi-stage token compression in DTC-WSI: (A) Original WSI with post-merging and post-pruning heatmaps. (B–C) Similar patches merged into unified tokens (green), and (D) low-saliency patches removed by pruning (red). "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            256,
+            113,
+            745,
+            391
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "image",
+        "img_path": "images/531cd9e12c9dfe04fa1f75b0c3fda09c087ecce45b2fa2b88d5006c336917c24.jpg",
+        "image_caption": [
+            "Figure 3: Visualization of multi-stage token compression in DTC-WSI across retention ratios $r \\in { 1 . 0 , 0 . 7 , 0 . 5 , 0 . 4 }$ . Example merged patches (e.g., adipose or stroma) are shown in blue boxes, pruned patches (e.g., background or slide borders) in red boxes, and high-importance patches retained for final prediction (e.g., tumor regions) in green boxes, highlighting diagnostically relevant tissue patterns. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            251,
+            503,
+            746,
+            765
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "discarded",
+        "text": "3856 ",
+        "bbox": [
+            482,
+            914,
+            516,
+            926
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "discarded",
+        "text": "Rahman Tarkhan Chellappa Baras ",
+        "bbox": [
+            349,
+            49,
+            642,
+            63
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "table",
+        "img_path": "images/a76e014b937395d5fe75543d0403124907cd1afff07cd843f37279b10aead17b.jpg",
+        "table_caption": [
+            "Table 7: Ablation study on sparsity regularization. Effect of removing the $\\ell _ { 1 }$ sparsity loss $\\mathcal { L } _ { \\mathrm { s p a r s e } }$ on performance and compression behavior (TCGA-NSCLC). "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Setting</td><td>Acc (%)</td><td>AUC (%)</td><td>Tokens Retained −</td><td>Inference Time (ms)</td></tr><tr><td>DTC-WSI w/o Lsparse</td><td>96.9</td><td>97.6</td><td>0.52</td><td>610</td></tr><tr><td>DTC-WSI (full, Ours)</td><td>98.3</td><td>98.9</td><td>0.40</td><td>410</td></tr></table>",
+        "bbox": [
+            183,
+            171,
+            820,
+            218
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            145,
+            243,
+            854,
+            412
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Figure 3 illustrates how DTC-WSI progressively compresses a whole-slide image as the token retention ratio decreases from $r = 1 . 0$ (no compression) to $r = 0 . 7$ , $r = 0 . 5$ , and $r = 0 . 4$ . For each retention level, we visualize the WSI after applying similarity-guided token merging and importance-guided pruning. Each panel illustrates the effect of these operations as the token budget decreases. Example merged patches (blue boxes) correspond to visually homogeneous and redundant regions (e.g., adipose or stromal tissue), which are fused to reduce redundancy. Pruned patches (red boxes) highlight low-saliency or non-informative regions (e.g., slide borders or artifacts) that are removed during compression. In contrast, high-importance patches retained for final prediction (green boxes) capture diagnostically relevant tumor tissue patterns. At $r = 1 . 0$ , all extracted patches are preserved, resulting in a dense and highly redundant representation, whereas by $r = 0 . 4$ the representation becomes substantially more compact while preserving salient tissue structures. These visualizations demonstrate that DTC-WSI performs semantically meaningful compression by preserving informative regions while aggressively removing redundancy, thereby concentrating model capacity on morphologically relevant content and enabling both computational efficiency and improved predictive performance. ",
+        "bbox": [
+            145,
+            415,
+            854,
+            688
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "5. Conclusion ",
+        "text_level": 1,
+        "bbox": [
+            145,
+            710,
+            279,
+            727
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "We presented DTC-WSI, a scalable framework for token-efficient whole-slide image analysis. By combining similarity-guided merging with importance-guided pruning in a progressive multi-stage pipeline, DTC-WSI removes redundancy while preserving diagnostically essential information. The method supports differentiable compression during training and deterministic reduction at inference, achieving $\\bf { 5 - 1 0 \\times }$ token reduction, $\\mathbf { 5 . 3 \\times }$ faster inference, and $4 0 \\%$ lower memory usage without sacrificing accuracy. Across four benchmark datasets, DTC-WSI improves classification performance by $\\mathbf { 2 - 4 \\% }$ , demonstrating that compression can enhance representation quality rather than degrade it. ",
+        "bbox": [
+            143,
+            737,
+            854,
+            873
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "discarded",
+        "text": "3857 ",
+        "bbox": [
+            482,
+            914,
+            514,
+            926
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "discarded",
+        "text": "DTC-WSI ",
+        "bbox": [
+            455,
+            47,
+            537,
+            63
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "References ",
+        "text_level": 1,
+        "bbox": [
+            145,
+            114,
+            250,
+            131
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Daniel Bolya and Judy Hoffman. Token merging for fast stable diffusion. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 4599– 4603, 2023. ",
+        "bbox": [
+            143,
+            141,
+            856,
+            193
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Tad T. Bruny´e, Ezgi Mercan, Donald L. Weaver, and Joann G. Elmore. Accuracy is in the eyes of the pathologist: the visual interpretive process and diagnostic accuracy with digital whole slide images. Journal of Biomedical Informatics, 66:171–179, 2010. ",
+        "bbox": [
+            145,
+            208,
+            854,
+            260
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Wouter Bulten, Kimmo Kartasalo, Robert Vink, and Christina Hulsbergen-van de Kaa. Artificial intelligence for diagnosis and Gleason grading of prostate cancer: the PANDA challenge. Nature Medicine, 28(1):154–163, 2022. ",
+        "bbox": [
+            143,
+            273,
+            852,
+            327
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Richard J. Chen, Chengkuan Chen, Yiman Li, Tiffany Y. Chen, Andrew D. Trister, Rahul G. Krishnan, and Faisal Mahmood. Scaling vision transformers to gigapixel images via hierarchical self-supervised learning. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 16144–16155, 2022. ",
+        "bbox": [
+            143,
+            339,
+            854,
+            410
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Miao Cui and David Y. Zhang. Artificial intelligence and computational pathology. Laboratory Investigation, 101:412–422, 2021. ",
+        "bbox": [
+            140,
+            424,
+            852,
+            458
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Omar SM El Nahhas, Marko van Treeck, Georg W¨olflein, Michaela Unger, Marta Ligero, Tim Lenz, Sophia J. Wagner, et al. From whole-slide image to biomarker prediction: endto-end weakly supervised deep learning in computational pathology. Nature Protocols, 20 (1):293–316, 2025. ",
+        "bbox": [
+            143,
+            472,
+            854,
+            541
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Deepak K. Gupta, Geetesh Mago, Arnav Chavan, and Dilip K. Prasad. Patch gradient descent: Training neural networks on very large images. arXiv preprint arXiv:2301.13817, 2023. ",
+        "bbox": [
+            143,
+            556,
+            854,
+            607
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Metin N. Gurcan, Laura E. Boucheron, Ali Can, Anant Madabhushi, Nasir M. Rajpoot, and B¨ulent Yener. Histopathological image analysis: a review. IEEE Reviews in Biomedical Engineering, 2:147–171, 2009. ",
+        "bbox": [
+            143,
+            622,
+            854,
+            675
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Xinhai Hou, Cheng Jiang, Akhil Kondepudi, Yiwei Lyu, Asadur Zaman Chowdury, Honglak Lee, and Todd C. Hollon. A self-supervised framework for learning whole slide representations. arXiv preprint arXiv:2402.06188, 2024. ",
+        "bbox": [
+            143,
+            689,
+            854,
+            741
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Teng Hu, Liang Li, Joost van de Weijer, Hongsheng Gao, Fahad Shahbaz Khan, Jian Yang, Ming-Ming Cheng, Kai Wang, and Yaowei Wang. Token merging for trainingfree semantic binding in text-to-image synthesis. In Advances in Neural Information Processing Systems, volume 37, pages 137646–137672, 2024. ",
+        "bbox": [
+            145,
+            756,
+            854,
+            824
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Maximilian Ilse, Jakub Tomczak, and Max Welling. Attention-based deep multiple instance learning. In International Conference on Machine Learning, pages 2127–2136. PMLR, 2018. ",
+        "bbox": [
+            145,
+            839,
+            854,
+            890
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "discarded",
+        "text": "3858 ",
+        "bbox": [
+            482,
+            914,
+            516,
+            926
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "discarded",
+        "text": "Rahman Tarkhan Chellappa Baras ",
+        "bbox": [
+            349,
+            47,
+            642,
+            63
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Peng Jiang, Xiaojin Li, Hui Shen, Yanlu Chen, Liangli Wang, Hao Chen, Jianjiang Feng, and Jie Liu. A systematic review of deep learning-based cervical cytology screening: from cell identification to whole slide image analysis. Artificial Intelligence Review, 56(Suppl 2):2687–2758, 2023. ",
+        "bbox": [
+            143,
+            114,
+            854,
+            183
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Saarthak Kapse, Pushpak Pati, Srijan Das, Jingwei Zhang, Chao Chen, Maria Vakalopoulou, Joel Saltz, Dimitris Samaras, Rajarsi R. Gupta, and Prateek Prasanna. SI-MIL: Taming deep MIL for self-interpretability in gigapixel histopathology. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 11226–11237, 2024. ",
+        "bbox": [
+            143,
+            193,
+            854,
+            280
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Bin Li, Yin Li, and Kevin W. Eliceiri. Dual-stream multiple instance learning network for whole slide image classification with self-supervised contrastive learning. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 14318– 14328, 2021. ",
+        "bbox": [
+            143,
+            290,
+            854,
+            358
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Ming Y. Lu, Drew F. K. Williamson, and Faisal Mahmood. Data-efficient and weakly supervised computational pathology on whole-slide images. Nature Biomedical Engineering, 5(6):555–570, 2021. ",
+        "bbox": [
+            143,
+            369,
+            854,
+            420
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Ming Y. Lu, Bowen Chen, Drew F. K. Williamson, Richard J. Chen, Ivy Liang, Tong Ding, Guillaume Jaume, Igor Odintsov, Long Phi Le, Georg Gerber, and Anil V. Parwani. A visual-language foundation model for computational pathology. Nature Medicine, 30(3): 863–874, 2024. ",
+        "bbox": [
+            143,
+            431,
+            854,
+            501
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Wenbo Lyu, Qiyuan Hu, Kehan Qi, Zhen Shi, Wenbin Huang, Sachin Gupta, and Chao Chen. Efficient whole slide pathology VQA via token compression. arXiv preprint arXiv:2507.14497, 2025. ",
+        "bbox": [
+            145,
+            510,
+            854,
+            563
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "A. Obeid, A. Sohail, S. Boumaraf, X. Liu, S. Javed, H. Almarzouqi, J. Dias, M. Bennamoun, N. Werghi, and I. A. Elfadel. PMIL: A topology module to improve MIL-based WSI classification. In 2025 IEEE International Symposium on Circuits and Systems (ISCAS), pages 1–5. IEEE, 2025. ",
+        "bbox": [
+            143,
+            571,
+            854,
+            642
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Tawsifur Rahman, Alexander S. Baras, and Rama Chellappa. Evaluation of a task-specific self-supervised learning framework in digital pathology relative to transfer learning approaches and existing foundation models. Modern Pathology, 38(1):100636, 2025a. ",
+        "bbox": [
+            145,
+            652,
+            854,
+            704
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Tawsifur Rahman, Alexander S. Baras, and Rama Chellappa. CEMIL: Contextual attention based efficient weakly supervised approach for histopathology image classification. In 2025 IEEE/CVF Winter Conference on Applications of Computer Vision (WACV), pages 4248–4257, 2025b. ",
+        "bbox": [
+            145,
+            713,
+            854,
+            782
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Yongming Rao, Wenliang Zhao, Benlin Liu, Jiwen Lu, Jie Zhou, and Cho-Jui Hsieh. DynamicViT: Efficient vision transformers with dynamic token sparsification. In Advances in Neural Information Processing Systems, volume 34, pages 13937–13949, 2021. ",
+        "bbox": [
+            143,
+            794,
+            854,
+            845
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Zhuchen Shao, Hao Bian, Yang Chen, Yifeng Wang, Jian Zhang, Xiangyang Ji, et al. TransMIL: Transformer based correlated multiple instance learning for whole slide image classification. In Advances in Neural Information Processing Systems, volume 34, pages 2136–2147, 2021. ",
+        "bbox": [
+            150,
+            856,
+            852,
+            890
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "discarded",
+        "text": "3859 ",
+        "bbox": [
+            482,
+            914,
+            516,
+            926
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "discarded",
+        "text": "DTC-WSI ",
+        "bbox": [
+            455,
+            47,
+            537,
+            63
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            156,
+            114,
+            854,
+            147
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Yash Sharma, Aman Shrivastava, Lubaina Ehsan, Christopher A. Moskaluk, Sana Syed, and Donald Brown. Cluster-to-conquer: A framework for end-to-end multi-instance learning for whole slide image classification. In Medical Imaging with Deep Learning, pages 682– 698. PMLR, 2021. ",
+        "bbox": [
+            145,
+            159,
+            854,
+            227
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Jie-Yi Shi, Xi Wang, Guang-Yu Ding, Zhe Dong, Jing Han, Zheng Guan, Lan-Juan Ma, Yun Zheng, Lei Zhang, Gui-Zhen Yu, and Xiao-Ying Wang. Exploring prognostic indicators in the pathological images of hepatocellular carcinoma based on deep learning. Gut, 70 (5):951–961, 2021. ",
+        "bbox": [
+            143,
+            236,
+            854,
+            305
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Andrew H. Song, Richard J. Chen, Tong Ding, Drew F. K. Williamson, Guillaume Jaume, and Faisal Mahmood. Morphological prototyping for unsupervised slide representation learning in computational pathology. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 11566–11578, 2024. ",
+        "bbox": [
+            145,
+            314,
+            854,
+            383
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Chetan L. Srinidhi, Ozan Ciga, and Anne L. Martel. Deep neural network models for computational histopathology: A survey. Medical Image Analysis, 67:101813, 2021. ",
+        "bbox": [
+            140,
+            393,
+            849,
+            428
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Quan Tang, Bowen Zhang, Jiajun Liu, Fagui Liu, and Yifan Liu. Dynamic token pruning in plain vision transformers for semantic segmentation. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 777–786, 2023a. ",
+        "bbox": [
+            143,
+            438,
+            854,
+            489
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Wenhao Tang, Sheng Huang, Xiaoxian Zhang, Fengtao Zhou, Yi Zhang, and Bo Liu. Multiple instance learning framework with masked hard instance mining for whole slide image classification. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 4078–4087, 2023b. ",
+        "bbox": [
+            143,
+            498,
+            854,
+            568
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Wenhao Tang, Fengtao Zhou, Sheng Huang, Xiang Zhu, Yi Zhang, and Bo Liu. Feature reembedding: Towards foundation model-level performance in computational pathology. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 11343–11352, 2024. ",
+        "bbox": [
+            145,
+            577,
+            854,
+            645
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Katarzyna Tomczak, Patrycja Czerwi´nska, and Maciej Wiznerowicz. Review The Cancer Genome Atlas (TCGA): an immeasurable source of knowledge. Contemporary Oncology/Wsp´o lczesna Onkologia, 2015(1):68–77, 2015. ",
+        "bbox": [
+            143,
+            655,
+            856,
+            707
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Haoyu Wu, Jiayi Xu, Hieu Le, and Dimitris Samaras. Importance-based token merging for efficient image and video generation. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 4983–4995, 2025. ",
+        "bbox": [
+            143,
+            717,
+            854,
+            768
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Xingchen Yang et al. Virtual stain transfer in histology via cascaded deep neural networks. ACS Photonics, 9(9):3134–3143, 2022. ",
+        "bbox": [
+            140,
+            777,
+            849,
+            813
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Longzhe Yue, Haixing Li, and Wanying Huang. Hierarchical cross-scale attention-based multi-instance learning for whole slide image classification. In 2025 8th International Conference on Computer Information Science and Application Technology (CISAT), pages 493–497. IEEE, 2025. ",
+        "bbox": [
+            143,
+            821,
+            854,
+            890
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "discarded",
+        "text": "3860 ",
+        "bbox": [
+            482,
+            914,
+            516,
+            926
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "discarded",
+        "text": "Rahman Tarkhan Chellappa Baras ",
+        "bbox": [
+            349,
+            47,
+            642,
+            63
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Jingwei Zhang, Anh Tien Nguyen, Xingyu Han, Vo Quoc Hung Trinh, Hongbin Qin, Dimitris Samaras, and Mahdi S. Hosseini. 2DMamba: Efficient state space model for image representation with applications on giga-pixel whole slide image classification. In Proceedings of the Computer Vision and Pattern Recognition Conference, pages 3583–3592, 2025. ",
+        "bbox": [
+            143,
+            114,
+            854,
+            199
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Pengchuan Zhang, Xiyang Dai, Jianwei Yang, Bin Xiao, Lu Yuan, Lei Zhang, and Jianfeng Gao. Multi-scale vision longformer: A new vision transformer for high-resolution image encoding. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 2998–3008, 2021. ",
+        "bbox": [
+            145,
+            210,
+            854,
+            279
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Tong Zhen, Jianzhong Cao, Xianfang Sun, Jiahao Pan, Zhong Ji, and Yanwei Pang. Tokenaware and step-aware acceleration for stable diffusion. Pattern Recognition, 164:111479, 2025. ",
+        "bbox": [
+            147,
+            290,
+            852,
+            340
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Appendix A. ",
+        "text_level": 1,
+        "bbox": [
+            147,
+            377,
+            269,
+            396
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Whole Slide Image Preprocessing ",
+        "text_level": 1,
+        "bbox": [
+            145,
+            405,
+            468,
+            422
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Whole slide image (WSI) preprocessing begins with automated tissue segmentation. Each WSI is first loaded into memory at a downsampled resolution, such as 20 $\\times$ , and converted from RGB to HSV colorspace. Tissue regions (foreground) are identified by thresholding the saturation channel after applying median blurring to smooth edges. A binary mask is then generated and refined using morphological closing to eliminate small gaps and holes. The contours of detected tissue regions are filtered based on an area threshold, ensuring only relevant regions are retained for further processing. The segmentation mask for each slide is also available for optional visual inspection. To facilitate manual adjustments, a human-readable text file is generated, listing processed files along with editable segmentation parameters. Once segmentation is complete, 256 $\\times$ 256 patches are extracted from within the segmented contours at the specified magnification. These patches, along with their coordinates and slide metadata, are stored in the HDF5 hierarchical data format. The number of extracted patches per slide varies significantly—ranging from hundreds in biopsy slides at $2 0 \\times$ magnification to hundreds of thousands in large resection slides at 40 $\\times$ magnification. ",
+        "bbox": [
+            145,
+            433,
+            852,
+            688
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Appendix B. Ablation study ",
+        "text_level": 1,
+        "bbox": [
+            148,
+            710,
+            424,
+            728
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Comparison of Different Threshold Values ",
+        "text_level": 1,
+        "bbox": [
+            145,
+            737,
+            526,
+            753
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "The extended ablation in Table 8 evaluates DTC-WSI under a wide range of token retention ratios $r \\in [ 0 . 3 , 0 . 8 ]$ ) across four benchmark datasets. Performance improves consistently as redundant tokens are removed, with accuracy rising steadily from $r = 0 . 8$ to $r = 0 . 5$ on all cohorts. The model achieves its best results at $r = 0 . 4$ , reaching $\\mathbf { 9 8 . 3 \\% }$ (NSCLC), $\\mathbf { 9 7 . 4 \\% }$ (BRCA), $\\mathbf { 9 6 . 8 \\% }$ (RCC), and $\\mathbf { 9 4 . 8 \\% }$ (PANDA), demonstrating that moderate compression enhances discriminative focus while preserving essential morphology. When compression becomes too aggressive ( $r = 0 . 3$ ), performance drops sharply—e.g., NSCLC declines from $\\mathbf { 9 8 . 3 \\% }$ to $\\mathbf { 9 0 . 4 \\% }$ —indicating loss of critical diagnostic tokens. These results highlight a clear U-shaped trend: light compression reduces redundancy, moderate compression maximizes accuracy, and over-compression degrades performance. Overall, the study confirms that DTC-WSI benefits most from token retention around $r = 0 . 4$ , where efficiency and predictive power are jointly optimized. ",
+        "bbox": [
+            143,
+            755,
+            852,
+            890
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "discarded",
+        "text": "3861 ",
+        "bbox": [
+            482,
+            914,
+            514,
+            926
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "discarded",
+        "text": "DTC-WSI ",
+        "bbox": [
+            455,
+            47,
+            537,
+            63
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            143,
+            114,
+            854,
+            183
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "table",
+        "img_path": "images/0cb039c5066e97201da7d5fc7d8e5bc97f05eba0afe4474ddf02c490d0a04839.jpg",
+        "table_caption": [
+            "Table 8: Extended ablation study evaluating token retention ratios across four datasets. Metrics reported as Accuracy (Acc) and AUC ( $\\%$ ). "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=2 colspan=1>Retention Ratio(r)</td><td rowspan=1 colspan=2>TCGA-NSCLC</td><td rowspan=1 colspan=2>TCGA-BRCA</td><td rowspan=1 colspan=2>TCGA-RCC</td><td rowspan=1 colspan=2>PANDA</td></tr><tr><td rowspan=1 colspan=1>Acc</td><td rowspan=1 colspan=1>AUC</td><td rowspan=1 colspan=1>Acc</td><td rowspan=1 colspan=1>AUC</td><td rowspan=1 colspan=1>Acc</td><td rowspan=1 colspan=1>AUC</td><td rowspan=1 colspan=1>Acc</td><td rowspan=1 colspan=1>AUC</td></tr><tr><td rowspan=1 colspan=1>r = 0.8</td><td rowspan=1 colspan=1>95.6</td><td rowspan=1 colspan=1>96.6</td><td rowspan=1 colspan=1>94.6</td><td rowspan=1 colspan=1>95.6</td><td rowspan=1 colspan=1>93.6</td><td rowspan=1 colspan=1>94.7</td><td rowspan=1 colspan=1>92.0</td><td rowspan=1 colspan=1>93.3</td></tr><tr><td rowspan=1 colspan=1>r = 0.7</td><td rowspan=1 colspan=1>96.1</td><td rowspan=1 colspan=1>97.2</td><td rowspan=1 colspan=1>95.1</td><td rowspan=1 colspan=1>96.1</td><td rowspan=1 colspan=1>94.3</td><td rowspan=1 colspan=1>95.4</td><td rowspan=1 colspan=1>92.8</td><td rowspan=1 colspan=1>93.9</td></tr><tr><td rowspan=1 colspan=1>r =0.6</td><td rowspan=1 colspan=1>96.6</td><td rowspan=1 colspan=1>97.5</td><td rowspan=1 colspan=1>95.6</td><td rowspan=1 colspan=1>96.6</td><td rowspan=1 colspan=1>95.0</td><td rowspan=1 colspan=1>95.9</td><td rowspan=1 colspan=1>93.3</td><td rowspan=1 colspan=1>94.4</td></tr><tr><td rowspan=1 colspan=1>r = 0.5</td><td rowspan=1 colspan=1>97.1</td><td rowspan=1 colspan=1>98.0</td><td rowspan=1 colspan=1>96.2</td><td rowspan=1 colspan=1>97.0</td><td rowspan=1 colspan=1>95.4</td><td rowspan=1 colspan=1>96.4</td><td rowspan=1 colspan=1>93.8</td><td rowspan=1 colspan=1>94.9</td></tr><tr><td rowspan=1 colspan=1>r = 0.4(Best)</td><td rowspan=1 colspan=1>98.3</td><td rowspan=1 colspan=1>98.9</td><td rowspan=1 colspan=1>97.4</td><td rowspan=1 colspan=1>97.9</td><td rowspan=1 colspan=1>96.8</td><td rowspan=1 colspan=1>97.5</td><td rowspan=1 colspan=1>94.8</td><td rowspan=1 colspan=1>95.6</td></tr><tr><td rowspan=1 colspan=1>r = 0.3</td><td rowspan=1 colspan=1>90.4</td><td rowspan=1 colspan=1>92.2</td><td rowspan=1 colspan=1>93.5</td><td rowspan=1 colspan=1>94.2</td><td rowspan=1 colspan=1>88.8</td><td rowspan=1 colspan=1>89.8</td><td rowspan=1 colspan=1>85.9</td><td rowspan=1 colspan=1>86.8</td></tr></table>",
+        "bbox": [
+            150,
+            253,
+            852,
+            390
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "Appendix C. Visualization of Token Compression ",
+        "text_level": 1,
+        "bbox": [
+            147,
+            425,
+            625,
+            444
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "We provide visualizations to illustrate how DTC-WSI compresses WSIs while preserving diagnostically important tissue. In Figure. 2, which shows the original WSI of lung adenocarcinoma, the second panel visualizes similarity-guided merging by assigning identical interior and boundary colors to patches that are merged into a single token. This reveals how homogeneous tissue regions—such as smooth stroma or repeated tumor textures—are consolidated into compact groups, while heterogeneous or diagnostically subtle regions remain unmerged. The third panel displays the result of importance-guided pruning, where tokens with low saliency scores are removed entirely, leaving a focused set of highly informative patches concentrated around tumor-rich or otherwise relevant regions. Together, these visualizations demonstrate that DTC-WSI performs structured and interpretable compression, reducing redundancy while retaining the critical morphological patterns needed for accurate WSI classification. ",
+        "bbox": [
+            145,
+            453,
+            852,
+            657
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "Appendix D. Algorithm of DTC-WSI ",
+        "bbox": [
+            145,
+            679,
+            513,
+            699
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "discarded",
+        "text": "3862 ",
+        "bbox": [
+            482,
+            914,
+            516,
+            926
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "discarded",
+        "text": "Rahman Tarkhan Chellappa Baras ",
+        "bbox": [
+            349,
+            47,
+            642,
+            63
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "image",
+        "img_path": "images/57142facd3ed6eb8d1e4156726982e26160686c6cbf61c288355683cc749678e.jpg",
+        "image_caption": [
+            "Figure 4: Visualization of the multi-stage token compression in DTC-WSI. (Left) Original WSI thumbnail. (Middle) Similarity-guided merging groups redundant patches into shared representations(Patches with the same inner and border color are merged together.) (Right) Importance-guided pruning removes low-saliency tokens. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            215,
+            329,
+            781,
+            559
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "discarded",
+        "text": "3863 ",
+        "bbox": [
+            482,
+            914,
+            516,
+            926
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "discarded",
+        "text": "DTC-WSI ",
+        "bbox": [
+            455,
+            47,
+            537,
+            63
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "Algorithm 1: Dynamic Token Compression for Whole-Slide Images (DTC-WSI) ",
+        "bbox": [
+            153,
+            111,
+            797,
+            127
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "Input: Patch features $H ^ { ( 0 ) } = \\{ h _ { i } ^ { ( 0 ) } \\} _ { i = 1 } ^ { N ^ { ( 0 ) } }$ , # stages $T$ , target token counts $\\{ N ^ { ( t ) } \\} _ { t = 1 } ^ { T }$ , mode $\\in \\{ \\mathrm { t r a i n } , \\mathrm { i n f e r } \\}$   \nOutput: Compressed token set $H ^ { ( T ) }$   \nfor $t = 0$ to $T - 1$ do $N ^ { ( t ) } \\gets | H ^ { ( t ) } |$ ; // current #tokens $^ { \\mathbf { \\nabla } / * \\mathbf { \\nabla } 1 }$ . Importance estimation \\*/ for $i = 1$ to $N ^ { ( t ) }$ do b $s _ { i } ^ { ( t ) } \\gets g _ { \\phi } ( h _ { i } ^ { ( t ) } )$ ; // importance score end $\\alpha ^ { ( t ) } \\gets \\mathrm { s o f t m a x } ( s ^ { ( t ) } ) $ ; // normalized importance $^ { \\prime * 2 }$ . Bipartite soft matching for token fusion \\*/ $/ /$ Interleaved partition: odd indices $ A$ , even indices $ B$ $A  [ 1 , 3 , 5 , \\dots ]$ , $B  [ 2 , 4 , 6 , . . . ]$ Let $L = \\operatorname* { m i n } ( | A | , | B | )$ for $k = 1$ to $L$ do $i \\gets A _ { k } , \\quad j \\gets B _ { k } \\ \\sin _ { i j } \\gets \\frac { \\langle h _ { i } ^ { ( t ) } , h _ { j } ^ { ( t ) } \\rangle } { \\| h _ { i } ^ { ( t ) } \\| \\| h _ { j } ^ { ( t ) } \\| } \\ u _ { i j } ^ { ( t ) } \\gets \\lambda \\sin _ { i j } - ( 1 - \\lambda ) | \\alpha _ { i } ^ { ( t ) } - \\alpha _ { j } ^ { ( t ) } |$ end // Number of pairs to merge K(t) ← max \u00000, N (t) − N (t+1)\u0001 Select top-N (t) pairs P (t) sorted by u(t)ij $\\times ~ 3$ . Merge selected pairs \\*/ Initialize $H _ { \\mathrm { m e r g e } } ^ { ( t + 1 ) }  \\emptyset$ , mark all indices as “unassigned” foreach $( i , j ) \\in \\mathcal { P } ^ { ( t ) }$ with both $i , j$ unassigned do b $\\tilde { h } _ { i } ^ { ( t ) } \\gets \\frac { \\alpha _ { i } ^ { ( t ) } h _ { i } ^ { ( t ) } + \\alpha _ { j } ^ { ( t ) } h _ { j } ^ { ( t ) } } { \\alpha _ { i } ^ { ( t ) } + \\alpha _ { j } ^ { ( t ) } }$ Add $\\tilde { h } _ { i } ^ { ( t ) }$ to $H _ { \\mathrm { m e r g e } } ^ { ( t + 1 ) }$ Mark $i$ and $j$ as “assigned” end $\\times \\ 4$ . Carry over unmerged tokens \\*/ $H _ { \\mathrm { c a r r y } } ^ { ( t + 1 ) }  \\{ h _ { k } ^ { ( t ) } \\mid k \\mathrm { ~ u n a s s i g n e d } \\} ~ H _ { \\mathrm { r a w } } ^ { ( t + 1 ) }  H _ { \\mathrm { m e r g e } } ^ { ( t + 1 ) } \\cup H _ { \\mathrm { c a r r y } } ^ { ( t + 1 ) }$ $\\mathord { / } * 5$ . Importance-guided pruning \\*/ if mode $=$ train then // soft, differentiable pruning foreach (t) $h _ { k } ^ { ( t + 1 ) } \\in H _ { r a w } ^ { ( t + 1 ) }$ do (t $m _ { k } ^ { ( t ) } \\stackrel { \\cdot \\cdot } {  } \\sigma ( \\gamma ( \\alpha _ { k } ^ { ( t ) } - \\tau ) ) h _ { k } ^ { ( t + 1 ) }  m _ { k } ^ { ( t ) } h _ { k } ^ { ( t + 1 ) }$ end $H ^ { ( t + 1 ) } \\gets H _ { \\mathrm { r a w } } ^ { ( t + 1 ) }$ end else // hard top-N(t+1) pruning at inference Rank all $h _ { k } ^ { ( t + 1 ) } \\in H _ { \\operatorname { r a w } } ^ { ( t + 1 ) }$ by $\\alpha _ { k } ^ { ( t ) }$ $\\mathrm {  ~ \\Lambda ~ } ^ { ( ) } \\ : \\hat { H } ^ { ( t + 1 ) } \\gets \\mathrm { T o p K } ( H _ { \\mathrm { r a w } } ^ { ( t + 1 ) } , \\alpha ^ { ( t ) } , N ^ { ( t + 1 ) } )$ end   \nend   \nreturn H(T) ",
+        "bbox": [
+            150,
+            128,
+            859,
+            897
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "discarded",
+        "text": "3864 ",
+        "bbox": [
+            482,
+            914,
+            516,
+            926
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "discarded",
+        "text": "Rahman Tarkhan Chellappa Baras ",
+        "bbox": [
+            349,
+            47,
+            642,
+            63
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "discarded",
+        "text": "3865 ",
+        "bbox": [
+            482,
+            914,
+            516,
+            926
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "discarded",
+        "text": "DTC-WSI ",
+        "bbox": [
+            454,
+            47,
+            537,
+            63
+        ],
+        "page_idx": 19
+    }
+]

@@ -1,0 +1,387 @@
+{
+  "status_code": 200,
+  "data": {
+    "offset": 0,
+    "citingPaperInfo": {
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2602.09719, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "title": "Unsupervised Layer-Wise Dynamic Test Time Adaptation for LLMs",
+      "authors": [
+        {
+          "authorId": "2400351925",
+          "name": "Longhuan Xu"
+        },
+        {
+          "authorId": "2400127408",
+          "name": "Cunjian Chen"
+        },
+        {
+          "authorId": "2400142926",
+          "name": "Feng Yin"
+        }
+      ]
+    },
+    "data": [
+      {
+        "citedPaper": {
+          "paperId": "696bd92b545c14edd156b63669fe32a0cee93aa7",
+          "externalIds": {
+            "DBLP": "journals/corr/abs-2505-20633",
+            "ArXiv": "2505.20633",
+            "DOI": "10.48550/arXiv.2505.20633",
+            "CorpusId": 278910679
+          },
+          "url": "https://www.semanticscholar.org/paper/696bd92b545c14edd156b63669fe32a0cee93aa7",
+          "title": "Test-Time Learning for Large Language Models",
+          "venue": "International Conference on Machine Learning",
+          "year": 2025,
+          "citationCount": 33
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "79b222fa4085c5ad44d386cb57e4721886d60ebf",
+          "externalIds": {
+            "ArXiv": "2505.12392",
+            "DBLP": "journals/corr/abs-2505-12392",
+            "DOI": "10.48550/arXiv.2505.12392",
+            "CorpusId": 278739711
+          },
+          "url": "https://www.semanticscholar.org/paper/79b222fa4085c5ad44d386cb57e4721886d60ebf",
+          "title": "SLOT: Sample-specific Language Model Optimization at Test-time",
+          "venue": "arXiv.org",
+          "year": 2025,
+          "citationCount": 15
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "acf24131433fabf6304b27f2466445199d91a418",
+          "externalIds": {
+            "DBLP": "journals/corr/abs-2502-12215",
+            "ArXiv": "2502.12215",
+            "DOI": "10.48550/arXiv.2502.12215",
+            "CorpusId": 276421903
+          },
+          "url": "https://www.semanticscholar.org/paper/acf24131433fabf6304b27f2466445199d91a418",
+          "title": "Revisiting the Test-Time Scaling of o1-like Models: Do they Truly Possess Test-Time Scaling Capabilities?",
+          "venue": "Annual Meeting of the Association for Computational Linguistics",
+          "year": 2025,
+          "citationCount": 76
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "ef8a8bd193b1a0a5e2c834a7a28869a2ec85bab7",
+          "externalIds": {
+            "ArXiv": "2501.19393",
+            "DBLP": "conf/emnlp/MuennighoffYSLFHZLCH25",
+            "DOI": "10.48550/arXiv.2501.19393",
+            "CorpusId": 276079693
+          },
+          "url": "https://www.semanticscholar.org/paper/ef8a8bd193b1a0a5e2c834a7a28869a2ec85bab7",
+          "title": "s1: Simple test-time scaling",
+          "venue": "Conference on Empirical Methods in Natural Language Processing",
+          "year": 2025,
+          "citationCount": 1173
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "6af30523fdf3e09bbedcc3e32f516639e3a381eb",
+          "externalIds": {
+            "DBLP": "journals/corr/abs-2410-10894",
+            "ArXiv": "2410.10894",
+            "DOI": "10.48550/arXiv.2410.10894",
+            "CorpusId": 273350644
+          },
+          "url": "https://www.semanticscholar.org/paper/6af30523fdf3e09bbedcc3e32f516639e3a381eb",
+          "title": "COME: Test-time adaption by Conservatively Minimizing Entropy",
+          "venue": "International Conference on Learning Representations",
+          "year": 2024,
+          "citationCount": 22
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "5ad9290d3de9664a5670b0857aafbaf37487b596",
+          "externalIds": {
+            "ArXiv": "2403.01518",
+            "DBLP": "journals/corr/abs-2403-01518",
+            "DOI": "10.48550/arXiv.2403.01518",
+            "CorpusId": 268247414
+          },
+          "url": "https://www.semanticscholar.org/paper/5ad9290d3de9664a5670b0857aafbaf37487b596",
+          "title": "Revisiting Dynamic Evaluation: Online Adaptation for Large Language Models",
+          "venue": "arXiv.org",
+          "year": 2024,
+          "citationCount": 5
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "d766bffc357127e0dc86dd69561d5aeb520d6f4c",
+          "externalIds": {
+            "ArXiv": "2203.02155",
+            "DBLP": "journals/corr/abs-2203-02155",
+            "DOI": "10.52202/068431-2011",
+            "CorpusId": 246426909
+          },
+          "url": "https://www.semanticscholar.org/paper/d766bffc357127e0dc86dd69561d5aeb520d6f4c",
+          "title": "Training language models to follow instructions with human feedback",
+          "venue": "Neural Information Processing Systems",
+          "year": 2022,
+          "citationCount": 20414
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "1b6e810ce0afd0dd093f789d2b2742d047e316d5",
+          "externalIds": {
+            "DBLP": "conf/nips/Wei0SBIXCLZ22",
+            "ArXiv": "2201.11903",
+            "DOI": "10.52202/068431-1800",
+            "CorpusId": 246411621
+          },
+          "url": "https://www.semanticscholar.org/paper/1b6e810ce0afd0dd093f789d2b2742d047e316d5",
+          "title": "Chain of Thought Prompting Elicits Reasoning in Large Language Models",
+          "venue": "Neural Information Processing Systems",
+          "year": 2022,
+          "citationCount": 17863
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "fdacf2a732f55befdc410ea927091cad3b791f13",
+          "externalIds": {
+            "DBLP": "journals/jmlr/FedusZS22",
+            "ArXiv": "2101.03961",
+            "CorpusId": 231573431
+          },
+          "url": "https://www.semanticscholar.org/paper/fdacf2a732f55befdc410ea927091cad3b791f13",
+          "title": "Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity",
+          "venue": "Journal of machine learning research",
+          "year": 2021,
+          "citationCount": 3800
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "659bf9ce7175e1ec266ff54359e2bd76e0b7ff31",
+          "externalIds": {
+            "DBLP": "conf/nips/LewisPPPKGKLYR020",
+            "MAG": "3027879771",
+            "ArXiv": "2005.11401",
+            "CorpusId": 218869575
+          },
+          "url": "https://www.semanticscholar.org/paper/659bf9ce7175e1ec266ff54359e2bd76e0b7ff31",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "venue": "Neural Information Processing Systems",
+          "year": 2020,
+          "citationCount": 13579
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "00521e876d109fdcf344e027f218a768499060c8",
+          "externalIds": {
+            "DBLP": "journals/corr/abs-1910-07454",
+            "MAG": "2980844465",
+            "ArXiv": "1910.07454",
+            "CorpusId": 204734206
+          },
+          "url": "https://www.semanticscholar.org/paper/00521e876d109fdcf344e027f218a768499060c8",
+          "title": "An Exponential Learning Rate Schedule for Deep Learning",
+          "venue": "International Conference on Learning Representations",
+          "year": 2019,
+          "citationCount": 267
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "a436e41141a9d9c5dfc44d16fade67b9a3b76778",
+          "externalIds": {
+            "DBLP": "conf/icml/SunWLMEH20",
+            "MAG": "3038628659",
+            "CorpusId": 220301705
+          },
+          "url": "https://www.semanticscholar.org/paper/a436e41141a9d9c5dfc44d16fade67b9a3b76778",
+          "title": "Test-Time Training with Self-Supervision for Generalization under Distribution Shifts",
+          "venue": "International Conference on Machine Learning",
+          "year": 2019,
+          "citationCount": 1224
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "a81874b4a651a740fffbfc47ef96515e8c7f782f",
+          "externalIds": {
+            "DBLP": "conf/acl/LeeCT19",
+            "ACL": "P19-1612",
+            "ArXiv": "1906.00300",
+            "MAG": "2947497897",
+            "DOI": "10.18653/v1/P19-1612",
+            "CorpusId": 173990818
+          },
+          "url": "https://www.semanticscholar.org/paper/a81874b4a651a740fffbfc47ef96515e8c7f782f",
+          "title": "Latent Retrieval for Weakly Supervised Open Domain Question Answering",
+          "venue": "Annual Meeting of the Association for Computational Linguistics",
+          "year": 2019,
+          "citationCount": 1150
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "cd63025532a62fa245a02ec05e32ac4d23089631",
+          "externalIds": {
+            "MAG": "2936652946",
+            "ArXiv": "1904.08378",
+            "DBLP": "journals/corr/abs-1904-08378",
+            "CorpusId": 119296728
+          },
+          "url": "https://www.semanticscholar.org/paper/cd63025532a62fa245a02ec05e32ac4d23089631",
+          "title": "Dynamic Evaluation of Transformer Language Models",
+          "venue": "arXiv.org",
+          "year": 2019,
+          "citationCount": 46
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "c4744a7c2bb298e4a52289a1e085c71cc3d37bc6",
+          "externalIds": {
+            "ArXiv": "1901.02860",
+            "DBLP": "conf/acl/DaiYYCLS19",
+            "MAG": "2964110616",
+            "ACL": "P19-1285",
+            "DOI": "10.18653/v1/P19-1285",
+            "CorpusId": 57759363
+          },
+          "url": "https://www.semanticscholar.org/paper/c4744a7c2bb298e4a52289a1e085c71cc3d37bc6",
+          "title": "Transformer-XL: Attentive Language Models beyond a Fixed-Length Context",
+          "venue": "Annual Meeting of the Association for Computational Linguistics",
+          "year": 2019,
+          "citationCount": 4297
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "305b2cf37e5dece81e95c92883d5a6e28ac93b22",
+          "externalIds": {
+            "DBLP": "conf/emnlp/NarayanCL18",
+            "MAG": "2888482885",
+            "ArXiv": "1808.08745",
+            "ACL": "D18-1206",
+            "DOI": "10.18653/v1/D18-1206",
+            "CorpusId": 215768182
+          },
+          "url": "https://www.semanticscholar.org/paper/305b2cf37e5dece81e95c92883d5a6e28ac93b22",
+          "title": "Don’t Give Me the Details, Just the Summary! Topic-Aware Convolutional Neural Networks for Extreme Summarization",
+          "venue": "Conference on Empirical Methods in Natural Language Processing",
+          "year": 2018,
+          "citationCount": 2019
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "b022f2a277a4bf5f42382e86e4380b96340b9e86",
+          "externalIds": {
+            "MAG": "2963263347",
+            "ArXiv": "1608.03983",
+            "DBLP": "conf/iclr/LoshchilovH17",
+            "CorpusId": 14337532
+          },
+          "url": "https://www.semanticscholar.org/paper/b022f2a277a4bf5f42382e86e4380b96340b9e86",
+          "title": "SGDR: Stochastic Gradient Descent with Warm Restarts",
+          "venue": "International Conference on Learning Representations",
+          "year": 2016,
+          "citationCount": 10356
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "05dd7254b632376973f3a1b4d39485da17814df5",
+          "externalIds": {
+            "DBLP": "journals/corr/RajpurkarZLL16",
+            "MAG": "2963748441",
+            "ACL": "D16-1264",
+            "ArXiv": "1606.05250",
+            "DOI": "10.18653/v1/D16-1264",
+            "CorpusId": 11816014
+          },
+          "url": "https://www.semanticscholar.org/paper/05dd7254b632376973f3a1b4d39485da17814df5",
+          "title": "SQuAD: 100,000+ Questions for Machine Comprehension of Text",
+          "venue": "Conference on Empirical Methods in Natural Language Processing",
+          "year": 2016,
+          "citationCount": 9305
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "60b05f32c32519a809f21642ef1eb3eaf3848008",
+          "externalIds": {
+            "MAG": "2154652894",
+            "ACL": "W04-1013",
+            "CorpusId": 964287
+          },
+          "url": "https://www.semanticscholar.org/paper/60b05f32c32519a809f21642ef1eb3eaf3848008",
+          "title": "ROUGE: A Package for Automatic Evaluation of Summaries",
+          "venue": "Annual Meeting of the Association for Computational Linguistics",
+          "year": 2004,
+          "citationCount": 20238
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": "180c78b132f6369a384d22a9529551d86c8788d3",
+          "externalIds": {
+            "DBLP": "conf/iclr/WangSLOD21",
+            "CorpusId": 232278031
+          },
+          "url": "https://www.semanticscholar.org/paper/180c78b132f6369a384d22a9529551d86c8788d3",
+          "title": "Tent: Fully Test-Time Adaptation by Entropy Minimization",
+          "venue": "International Conference on Learning Representations",
+          "year": 2021,
+          "citationCount": 1732
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": null,
+          "externalIds": null,
+          "url": null,
+          "title": "Language models are un-supervised multitask learners. Technical report",
+          "venue": "cdn.openai",
+          "year": 2019,
+          "citationCount": null
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": null,
+          "externalIds": null,
+          "url": null,
+          "title": "Open domain question",
+          "venue": "answering",
+          "year": null,
+          "citationCount": null
+        }
+      },
+      {
+        "citedPaper": {
+          "paperId": null,
+          "externalIds": null,
+          "url": null,
+          "title": "On the opportunities and risks of foundation models, 2022",
+          "venue": "",
+          "year": null,
+          "citationCount": null
+        }
+      }
+    ]
+  }
+}

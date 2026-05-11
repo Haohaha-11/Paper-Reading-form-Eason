@@ -1,0 +1,750 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          3,
+          18
+        ]
+      ],
+      "date-time": "2026-03-18T23:46:53Z",
+      "timestamp": 1773877613281,
+      "version": "3.50.1"
+    },
+    "reference-count": 43,
+    "publisher": "Elsevier BV",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [
+              2026,
+              4,
+              1
+            ]
+          ],
+          "date-time": "2026-04-01T00:00:00Z",
+          "timestamp": 1775001600000
+        },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "https://www.elsevier.com/tdm/userlicense/1.0/"
+      },
+      {
+        "start": {
+          "date-parts": [
+            [
+              2026,
+              4,
+              1
+            ]
+          ],
+          "date-time": "2026-04-01T00:00:00Z",
+          "timestamp": 1775001600000
+        },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "https://www.elsevier.com/legal/tdmrep-license"
+      },
+      {
+        "start": {
+          "date-parts": [
+            [
+              2026,
+              4,
+              1
+            ]
+          ],
+          "date-time": "2026-04-01T00:00:00Z",
+          "timestamp": 1775001600000
+        },
+        "content-version": "stm-asf",
+        "delay-in-days": 0,
+        "URL": "https://doi.org/10.15223/policy-017"
+      },
+      {
+        "start": {
+          "date-parts": [
+            [
+              2026,
+              4,
+              1
+            ]
+          ],
+          "date-time": "2026-04-01T00:00:00Z",
+          "timestamp": 1775001600000
+        },
+        "content-version": "stm-asf",
+        "delay-in-days": 0,
+        "URL": "https://doi.org/10.15223/policy-037"
+      },
+      {
+        "start": {
+          "date-parts": [
+            [
+              2026,
+              4,
+              1
+            ]
+          ],
+          "date-time": "2026-04-01T00:00:00Z",
+          "timestamp": 1775001600000
+        },
+        "content-version": "stm-asf",
+        "delay-in-days": 0,
+        "URL": "https://doi.org/10.15223/policy-012"
+      },
+      {
+        "start": {
+          "date-parts": [
+            [
+              2026,
+              4,
+              1
+            ]
+          ],
+          "date-time": "2026-04-01T00:00:00Z",
+          "timestamp": 1775001600000
+        },
+        "content-version": "stm-asf",
+        "delay-in-days": 0,
+        "URL": "https://doi.org/10.15223/policy-029"
+      },
+      {
+        "start": {
+          "date-parts": [
+            [
+              2026,
+              4,
+              1
+            ]
+          ],
+          "date-time": "2026-04-01T00:00:00Z",
+          "timestamp": 1775001600000
+        },
+        "content-version": "stm-asf",
+        "delay-in-days": 0,
+        "URL": "https://doi.org/10.15223/policy-004"
+      }
+    ],
+    "funder": [
+      {
+        "DOI": "10.13039/501100012166",
+        "name": "National Key Research and Development Program of China",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "2024YFA1802800"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "2024YFA1802800"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100012166",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100001809",
+        "name": "National Natural Science Foundation of China",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "623721070"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "623721070"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100001809",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100001809",
+        "name": "National Natural Science Foundation of China",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "32341012"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "32341012"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100001809",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100001809",
+        "name": "National Natural Science Foundation of China",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "62172103"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "62172103"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100001809",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      }
+    ],
+    "content-domain": {
+      "domain": [
+        "elsevier.com",
+        "sciencedirect.com"
+      ],
+      "crossmark-restriction": true
+    },
+    "short-container-title": [
+      "Biomedical Signal Processing and Control"
+    ],
+    "published-print": {
+      "date-parts": [
+        [
+          2026,
+          4
+        ]
+      ]
+    },
+    "DOI": "10.1016/j.bspc.2025.109289",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2025,
+          12,
+          2
+        ]
+      ],
+      "date-time": "2025-12-02T11:04:28Z",
+      "timestamp": 1764673468000
+    },
+    "page": "109289",
+    "update-policy": "https://doi.org/10.1016/elsevier_cm_policy",
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "special_numbering": "C",
+    "title": [
+      "Whole slide image redundancy reduction for efficient pathological diagnosis"
+    ],
+    "prefix": "10.1016",
+    "volume": "114",
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0009-0003-2891-4525",
+        "authenticated-orcid": false,
+        "given": "Shijie",
+        "family": "Li",
+        "sequence": "first",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-1543-6889",
+        "authenticated-orcid": false,
+        "given": "Zhineng",
+        "family": "Chen",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-0041-003X",
+        "authenticated-orcid": false,
+        "given": "Feng-Jung",
+        "family": "Chen",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "given": "Xieping",
+        "family": "Gao",
+        "sequence": "additional",
+        "affiliation": []
+      }
+    ],
+    "member": "78",
+    "reference": [
+      {
+        "issue": "4",
+        "key": "10.1016/j.bspc.2025.109289_b1",
+        "doi-asserted-by": "crossref",
+        "first-page": "412",
+        "DOI": "10.1038/s41374-020-00514-0",
+        "article-title": "Artificial intelligence and computational pathology",
+        "volume": "101",
+        "author": "Cui",
+        "year": "2021",
+        "journal-title": "Lab. Invest."
+      },
+      {
+        "issue": "11",
+        "key": "10.1016/j.bspc.2025.109289_b2",
+        "doi-asserted-by": "crossref",
+        "first-page": "703",
+        "DOI": "10.1038/s41571-019-0252-y",
+        "article-title": "Artificial intelligence in digital pathology—new tools for diagnosis and precision oncology",
+        "volume": "16",
+        "author": "Bera",
+        "year": "2019",
+        "journal-title": "Nat. Rev. Clin. Oncol."
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b3",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1016/j.bspc.2025.107652",
+        "article-title": "GAMMIL: A graph attention-guided multi-scale fusion multiple instance learning model for the WHO grading of meningioma in whole slide images",
+        "volume": "105",
+        "author": "Tu",
+        "year": "2025",
+        "journal-title": "Biomed. Signal Process. Control."
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b4",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1016/j.bspc.2025.107599",
+        "article-title": "Enhancing whole slide image classification through label denoising in a multi-instance learning framework",
+        "volume": "105",
+        "author": "Wang",
+        "year": "2025",
+        "journal-title": "Biomed. Signal Process. Control."
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b5",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1016/j.bspc.2024.107452",
+        "article-title": "CGAM: An end-to-end causality graph attention Mamba network for esophageal pathology grading",
+        "volume": "103",
+        "author": "Qu",
+        "year": "2025",
+        "journal-title": "Biomed. Signal Process. Control."
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b6",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1016/j.bspc.2023.105790",
+        "article-title": "Trusted multi-scale classification framework for whole slide image",
+        "volume": "89",
+        "author": "Feng",
+        "year": "2024",
+        "journal-title": "Biomed. Signal Process. Control."
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b7",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1016/j.media.2020.101813",
+        "article-title": "Deep neural network models for computational histopathology: A survey",
+        "volume": "67",
+        "author": "Srinidhi",
+        "year": "2021",
+        "journal-title": "Med. Image Anal."
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b8",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1088/1361-6560/ac910a",
+        "article-title": "Towards label-efficient automatic diagnosis and analysis: a comprehensive survey of advanced deep learning-based weakly-supervised, semi-supervised and self-supervised techniques in histopathological image analysis",
+        "author": "Qu",
+        "year": "2022",
+        "journal-title": "Phys. Med. Biol."
+      },
+      {
+        "issue": "6",
+        "key": "10.1016/j.bspc.2025.109289_b9",
+        "doi-asserted-by": "crossref",
+        "first-page": "555",
+        "DOI": "10.1038/s41551-020-00682-w",
+        "article-title": "Data-efficient and weakly supervised computational pathology on whole-slide images",
+        "volume": "5",
+        "author": "Lu",
+        "year": "2021",
+        "journal-title": "Nat. Biomed. Eng."
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b10",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1016/j.bspc.2025.107624",
+        "article-title": "Skin whole slide image segmentation using lightweight-pruned transformer",
+        "volume": "106",
+        "author": "Abdul Salam",
+        "year": "2025",
+        "journal-title": "Biomed. Signal Process. Control."
+      },
+      {
+        "issue": "8",
+        "key": "10.1016/j.bspc.2025.109289_b11",
+        "doi-asserted-by": "crossref",
+        "first-page": "1301",
+        "DOI": "10.1038/s41591-019-0508-1",
+        "article-title": "Clinical-grade computational pathology using weakly supervised deep learning on whole slide images",
+        "volume": "25",
+        "author": "Campanella",
+        "year": "2019",
+        "journal-title": "Nature Med."
+      },
+      {
+        "issue": "11",
+        "key": "10.1016/j.bspc.2025.109289_b12",
+        "doi-asserted-by": "crossref",
+        "first-page": "3003",
+        "DOI": "10.1109/TMI.2022.3176598",
+        "article-title": "A Graph-Transformer for Whole Slide Image Classification",
+        "volume": "41",
+        "author": "Zheng",
+        "year": "2022",
+        "journal-title": "IEEE Transactions on Medical Imaging"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b13",
+        "series-title": "ICML",
+        "article-title": "Attention-based deep multiple instance learning",
+        "author": "Ilse",
+        "year": "2018"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b14",
+        "series-title": "MICCAI",
+        "article-title": "DT-MIL: deformable transformer for multi-instance learning on histopathological image",
+        "author": "Li",
+        "year": "2021"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b15",
+        "series-title": "NeurIPS",
+        "article-title": "Transmil: Transformer based correlated multiple instance learning for whole slide image classification",
+        "author": "Shao",
+        "year": "2021"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b16",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1016/j.bspc.2023.105826",
+        "article-title": "Whole slide images classification model based on self-learning sampling",
+        "volume": "90",
+        "author": "Fu",
+        "year": "2024",
+        "journal-title": "Biomed. Signal Process. Control."
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b17",
+        "series-title": "MICCAI",
+        "article-title": "Remix: A general and efficient framework for multiple instance learning based whole slide image classification",
+        "author": "Yang",
+        "year": "2022"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b18",
+        "series-title": "Long-MIL: Scaling long contextual multiple instance learning for histopathology whole slide image analysis",
+        "author": "Li",
+        "year": "2023"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b19",
+        "series-title": "CVPR",
+        "article-title": "DTFD-MIL: Double-tier feature distillation multiple instance learning for histopathology whole slide image classification",
+        "author": "Zhang",
+        "year": "2022"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b20",
+        "series-title": "ICASSP",
+        "article-title": "Deep convolutional activation features for large scale Brain Tumor histopathology image classification and segmentation",
+        "author": "Xu",
+        "year": "2015"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b21",
+        "series-title": "CVPR",
+        "article-title": "Patch-based convolutional neural network for whole slide tissue image classification",
+        "author": "Hou",
+        "year": "2016"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b22",
+        "series-title": "NeurIPS",
+        "article-title": "Attention is all you need",
+        "author": "Vaswani",
+        "year": "2017"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b23",
+        "series-title": "CVPR",
+        "article-title": "Scaling vision transformers to gigapixel images via hierarchical self-supervised learning",
+        "author": "Chen",
+        "year": "2022"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b24",
+        "series-title": "IJCAI",
+        "article-title": "Diagnose like a pathologist: Transformer-enabled hierarchical attention-guided multiple instance learning for whole slide image classification",
+        "author": "Xiong",
+        "year": "2023"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b25",
+        "series-title": "CVPR",
+        "article-title": "Multiple instance learning framework with masked hard instance mining for whole slide image classification",
+        "author": "Tang",
+        "year": "2023"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b26",
+        "series-title": "CVPR",
+        "article-title": "Interventional bag multi-instance learning on whole-slide pathological images",
+        "author": "Lin",
+        "year": "2023"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b27",
+        "series-title": "Sensory Communication",
+        "article-title": "Possible principles underlying the transformations of sensory messages",
+        "author": "Barlow",
+        "year": "2012"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b28",
+        "series-title": "End-to-end optimized image compression",
+        "author": "Ballé",
+        "year": "2016"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b29",
+        "series-title": "A unified theory of early visual representations from retina to cortex through anatomically constrained deep CNNs",
+        "author": "Lindsey",
+        "year": "2019"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b30",
+        "series-title": "ICCV",
+        "article-title": "Diffrate: Differentiable compression rate for efficient vision transformers",
+        "author": "Chen",
+        "year": "2023"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b31",
+        "series-title": "NeurIPS",
+        "article-title": "Learning to compress prompts with gist tokens",
+        "author": "Mu",
+        "year": "2024"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b32",
+        "series-title": "ICML",
+        "article-title": "Barlow twins: Self-supervised learning via redundancy reduction",
+        "author": "Zbontar",
+        "year": "2021"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b33",
+        "series-title": "CVPR",
+        "article-title": "Learning to rank patches for unbiased image redundancy reduction",
+        "author": "Luo",
+        "year": "2024"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b34",
+        "series-title": "R2-trans: Fine-grained visual categorization with redundancy reduction",
+        "author": "Wang",
+        "year": "2022"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b35",
+        "series-title": "NeurIPS",
+        "article-title": "Dynamicvit: Efficient vision transformers with dynamic token sparsification",
+        "author": "Rao",
+        "year": "2021"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b36",
+        "series-title": "CVPR",
+        "article-title": "A-vit: Adaptive tokens for efficient vision transformer",
+        "author": "Yin",
+        "year": "2022"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b37",
+        "series-title": "Not all patches are what you need: Expediting vision transformers via token reorganizations",
+        "author": "Liang",
+        "year": "2022"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b38",
+        "series-title": "Token merging: Your vit but faster",
+        "author": "Bolya",
+        "year": "2022"
+      },
+      {
+        "issue": "22",
+        "key": "10.1016/j.bspc.2025.109289_b39",
+        "doi-asserted-by": "crossref",
+        "first-page": "2199",
+        "DOI": "10.1001/jama.2017.14585",
+        "article-title": "Diagnostic assessment of deep learning algorithms for detection of lymph node metastases in women with breast cancer",
+        "volume": "318",
+        "author": "Bejnordi",
+        "year": "2017",
+        "journal-title": "JAMA"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b40",
+        "series-title": "ICIP",
+        "article-title": "Unitopatho, a labeled histopathological dataset for colorectal polyps classification and adenoma dysplasia grading",
+        "author": "Barbano",
+        "year": "2021"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b41",
+        "series-title": "CVPR",
+        "article-title": "Emerging properties in self-supervised vision transformers",
+        "author": "Caron",
+        "year": "2021"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b42",
+        "series-title": "Fixing weight decay regularization in adam",
+        "author": "Loshchilov",
+        "year": "2018"
+      },
+      {
+        "key": "10.1016/j.bspc.2025.109289_b43",
+        "series-title": "Sgdr: Stochastic gradient descent with warm restarts",
+        "author": "Loshchilov",
+        "year": "2016"
+      }
+    ],
+    "container-title": [
+      "Biomedical Signal Processing and Control"
+    ],
+    "original-title": [],
+    "language": "en",
+    "link": [
+      {
+        "URL": "https://api.elsevier.com/content/article/PII:S1746809425018002?httpAccept=text/xml",
+        "content-type": "text/xml",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://api.elsevier.com/content/article/PII:S1746809425018002?httpAccept=text/plain",
+        "content-type": "text/plain",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2026,
+          3,
+          18
+        ]
+      ],
+      "date-time": "2026-03-18T16:48:56Z",
+      "timestamp": 1773852536000
+    },
+    "score": 1,
+    "resource": {
+      "primary": {
+        "URL": "https://linkinghub.elsevier.com/retrieve/pii/S1746809425018002"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2026,
+          4
+        ]
+      ]
+    },
+    "references-count": 43,
+    "alternative-id": [
+      "S1746809425018002"
+    ],
+    "URL": "https://doi.org/10.1016/j.bspc.2025.109289",
+    "relation": {},
+    "ISSN": [
+      "1746-8094"
+    ],
+    "issn-type": [
+      {
+        "value": "1746-8094",
+        "type": "print"
+      }
+    ],
+    "subject": [],
+    "published": {
+      "date-parts": [
+        [
+          2026,
+          4
+        ]
+      ]
+    },
+    "assertion": [
+      {
+        "value": "Elsevier",
+        "name": "publisher",
+        "label": "This article is maintained by"
+      },
+      {
+        "value": "Whole slide image redundancy reduction for efficient pathological diagnosis",
+        "name": "articletitle",
+        "label": "Article Title"
+      },
+      {
+        "value": "Biomedical Signal Processing and Control",
+        "name": "journaltitle",
+        "label": "Journal Title"
+      },
+      {
+        "value": "https://doi.org/10.1016/j.bspc.2025.109289",
+        "name": "articlelink",
+        "label": "CrossRef DOI link to publisher maintained version"
+      },
+      {
+        "value": "article",
+        "name": "content_type",
+        "label": "Content Type"
+      },
+      {
+        "value": "© 2025 Elsevier Ltd. All rights are reserved, including those for text and data mining, AI training, and similar technologies.",
+        "name": "copyright",
+        "label": "Copyright"
+      }
+    ],
+    "article-number": "109289"
+  }
+}

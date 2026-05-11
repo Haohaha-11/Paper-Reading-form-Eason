@@ -1,0 +1,1206 @@
+{
+  "status_code": 200,
+  "data": {
+    "recommendedPapers": [
+      {
+        "paperId": "82c0b4a4c4e9fd48077f97ece80956ae1e7d97b3",
+        "externalIds": {
+          "ArXiv": "2603.13875",
+          "CorpusId": 286572098
+        },
+        "url": "https://www.semanticscholar.org/paper/82c0b4a4c4e9fd48077f97ece80956ae1e7d97b3",
+        "title": "GradMem: Learning to Write Context into Memory with Test-Time Gradient Descent",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "84e59205e4350c9596e4a03583fdfd114112586b",
+        "externalIds": {
+          "ArXiv": "2604.07894",
+          "CorpusId": 287256116
+        },
+        "url": "https://www.semanticscholar.org/paper/84e59205e4350c9596e4a03583fdfd114112586b",
+        "title": "TSUBASA: Improving Long-Horizon Personalization via Evolving Memory and Self-Learning with Context Distillation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "73d29cd3ad4c69ae4f081f4f9b6c41994ce13fad",
+        "externalIds": {
+          "ArXiv": "2604.06746",
+          "CorpusId": 287248129
+        },
+        "url": "https://www.semanticscholar.org/paper/73d29cd3ad4c69ae4f081f4f9b6c41994ce13fad",
+        "title": "StructKV: Preserving the Structural Skeleton for Scalable Long-Context Inference",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "63646da8eeff97738608636aecde27498b61bb39",
+        "externalIds": {
+          "ArXiv": "2604.22050",
+          "CorpusId": 287773749
+        },
+        "url": "https://www.semanticscholar.org/paper/63646da8eeff97738608636aecde27498b61bb39",
+        "title": "LayerBoost: Layer-Aware Attention Reduction for Efficient LLMs",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "3008be7598614b60f81742bc80a47d63d1c604b7",
+        "externalIds": {
+          "ArXiv": "2604.06169",
+          "CorpusId": 287209501
+        },
+        "url": "https://www.semanticscholar.org/paper/3008be7598614b60f81742bc80a47d63d1c604b7",
+        "title": "In-Place Test-Time Training",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "4a6b991ff5a1cf670925d16b89690c2b22db2f3e",
+        "externalIds": {
+          "ArXiv": "2604.07394",
+          "CorpusId": 287255601
+        },
+        "url": "https://www.semanticscholar.org/paper/4a6b991ff5a1cf670925d16b89690c2b22db2f3e",
+        "title": "Flux Attention: Context-Aware Hybrid Attention for Efficient LLMs Inference",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "3357daa37c5e5b414f57e4ac20699866a7cd0d06",
+        "externalIds": {
+          "ArXiv": "2605.04075",
+          "CorpusId": 287982144
+        },
+        "url": "https://www.semanticscholar.org/paper/3357daa37c5e5b414f57e4ac20699866a7cd0d06",
+        "title": "RetentiveKV: State-Space Memory for Uncertainty-Aware Multimodal KV Cache Eviction",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "3a02142b1d20bd0fe6cb605be4ad8c83e22a7e82",
+        "externalIds": {
+          "ArXiv": "2604.10898",
+          "CorpusId": 287433312
+        },
+        "url": "https://www.semanticscholar.org/paper/3a02142b1d20bd0fe6cb605be4ad8c83e22a7e82",
+        "title": "ZoomR: Memory Efficient Reasoning through Multi-Granularity Key Value Retrieval",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "2c7b83bb9c8d240153ccbd466a87616b9c8d73ce",
+        "externalIds": {
+          "ArXiv": "2605.00292",
+          "CorpusId": 287929694
+        },
+        "url": "https://www.semanticscholar.org/paper/2c7b83bb9c8d240153ccbd466a87616b9c8d73ce",
+        "title": "Caracal: Causal Architecture via Spectral Mixing",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "290e74d22cb4cc7750f746a523e73a7b16e5dfc0",
+        "externalIds": {
+          "ArXiv": "2603.17484",
+          "CorpusId": 286643404
+        },
+        "url": "https://www.semanticscholar.org/paper/290e74d22cb4cc7750f746a523e73a7b16e5dfc0",
+        "title": "Learning When to Attend: Conditional Memory Access for Long-Context LLMs",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 2
+      },
+      {
+        "paperId": "6feff5927221d575a23c338526a84c0ce41e45af",
+        "externalIds": {
+          "ArXiv": "2604.18103",
+          "CorpusId": 287634333
+        },
+        "url": "https://www.semanticscholar.org/paper/6feff5927221d575a23c338526a84c0ce41e45af",
+        "title": "Stability Implies Redundancy: Delta Attention Selective Halting for Efficient Long-Context Prefilling",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "8b76cf474cf37226774ffeb777d14ba545c422bf",
+        "externalIds": {
+          "ArXiv": "2604.12452",
+          "CorpusId": 287435830
+        },
+        "url": "https://www.semanticscholar.org/paper/8b76cf474cf37226774ffeb777d14ba545c422bf",
+        "title": "Latent-Condensed Transformer for Efficient Long Context Modeling",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "73a64fed4d5a0d851e840697b007453876eb9c69",
+        "externalIds": {
+          "ArXiv": "2604.22783",
+          "CorpusId": 287777340
+        },
+        "url": "https://www.semanticscholar.org/paper/73a64fed4d5a0d851e840697b007453876eb9c69",
+        "title": "Parameter Efficiency Is Not Memory Efficiency: Rethinking Fine-Tuning for On-Device LLM Adaptation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "578535084fc0686ad21653fff60385c0bb74c441",
+        "externalIds": {
+          "ArXiv": "2603.22325",
+          "CorpusId": 286770516
+        },
+        "url": "https://www.semanticscholar.org/paper/578535084fc0686ad21653fff60385c0bb74c441",
+        "title": "Hybrid Associative Memories",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "a399d84184e67b21a143bd562e25e0b9edaa76ff",
+        "externalIds": {
+          "ArXiv": "2603.22241",
+          "CorpusId": 286766382
+        },
+        "url": "https://www.semanticscholar.org/paper/a399d84184e67b21a143bd562e25e0b9edaa76ff",
+        "title": "MemDLM: Memory-Enhanced DLM Training",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "56fead1a8cad24340dae325acb5be28654562ea4",
+        "externalIds": {
+          "ArXiv": "2604.16484",
+          "CorpusId": 287618207
+        },
+        "url": "https://www.semanticscholar.org/paper/56fead1a8cad24340dae325acb5be28654562ea4",
+        "title": "DexWorldModel: Causal Latent World Modeling towards Automated Learning of Embodied Tasks",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "38a49095776064e6b8f8efa7f88594f65926bfdd",
+        "externalIds": {
+          "ArXiv": "2603.25340",
+          "CorpusId": 286791471
+        },
+        "url": "https://www.semanticscholar.org/paper/38a49095776064e6b8f8efa7f88594f65926bfdd",
+        "title": "Large Language Model as Token Compressor and Decompressor",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 5
+      },
+      {
+        "paperId": "11a59bc5be3dca14533d936fa32cbd1041f48cbd",
+        "externalIds": {
+          "ArXiv": "2603.18446",
+          "CorpusId": 286669651
+        },
+        "url": "https://www.semanticscholar.org/paper/11a59bc5be3dca14533d936fa32cbd1041f48cbd",
+        "title": "UT-ACA: Uncertainty-Triggered Adaptive Context Allocation for Long-Context Inference",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "83339d80f099644564cd6aabbe54d82c79c6cbb5",
+        "externalIds": {
+          "ArXiv": "2604.15794",
+          "CorpusId": 287607667
+        },
+        "url": "https://www.semanticscholar.org/paper/83339d80f099644564cd6aabbe54d82c79c6cbb5",
+        "title": "Self-Distillation as a Performance Recovery Mechanism for LLMs: Counteracting Compression and Catastrophic Forgetting",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "80146a0fff80df7145b3dea2d3507a1401d10ac0",
+        "externalIds": {
+          "ArXiv": "2604.14922",
+          "CorpusId": 287509985
+        },
+        "url": "https://www.semanticscholar.org/paper/80146a0fff80df7145b3dea2d3507a1401d10ac0",
+        "title": "LongAct: Harnessing Intrinsic Activation Patterns for Long-Context Reinforcement Learning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "160f907ae5929082ad8ff25804162511da295d0c",
+        "externalIds": {
+          "ArXiv": "2604.08558",
+          "CorpusId": 287351710
+        },
+        "url": "https://www.semanticscholar.org/paper/160f907ae5929082ad8ff25804162511da295d0c",
+        "title": "WAND: Windowed Attention and Knowledge Distillation for Efficient Autoregressive Text-to-Speech Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "6d274b6db314462bb622cd402fe8f56e5e392ab9",
+        "externalIds": {
+          "ArXiv": "2603.15590",
+          "CorpusId": 286571987
+        },
+        "url": "https://www.semanticscholar.org/paper/6d274b6db314462bb622cd402fe8f56e5e392ab9",
+        "title": "Effective Distillation to Hybrid xLSTM Architectures",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "80c66d2b868beede25df341ccbeb5a9e83ecd277",
+        "externalIds": {
+          "ArXiv": "2603.27665",
+          "CorpusId": 286974897
+        },
+        "url": "https://www.semanticscholar.org/paper/80c66d2b868beede25df341ccbeb5a9e83ecd277",
+        "title": "Test-Time Instance-Specific Parameter Composition: A New Paradigm for Adaptive Generative Modeling",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "9f11f19ec6ac4eae11c03ec725879566ed120f99",
+        "externalIds": {
+          "ArXiv": "2604.18199",
+          "CorpusId": 287635170
+        },
+        "url": "https://www.semanticscholar.org/paper/9f11f19ec6ac4eae11c03ec725879566ed120f99",
+        "title": "Linear-Time and Constant-Memory Text Embeddings Based on Recurrent Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "908c05adea7fb6e5cdb99b566a6b1b6c1fad2c0e",
+        "externalIds": {
+          "ArXiv": "2605.06221",
+          "CorpusId": 288014581
+        },
+        "url": "https://www.semanticscholar.org/paper/908c05adea7fb6e5cdb99b566a6b1b6c1fad2c0e",
+        "title": "UniPrefill: Universal Long-Context Prefill Acceleration via Block-wise Dynamic Sparsification",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "4e8ea1a101e8967fb037851b96e46aebd716627d",
+        "externalIds": {
+          "ArXiv": "2604.07737",
+          "CorpusId": 287256135
+        },
+        "url": "https://www.semanticscholar.org/paper/4e8ea1a101e8967fb037851b96e46aebd716627d",
+        "title": "SepSeq: A Training-Free Framework for Long Numerical Sequence Processing in LLMs",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "c008912e095eb4f5369c591399e3dacffa0d829c",
+        "externalIds": {
+          "ArXiv": "2604.05688",
+          "CorpusId": 287209494
+        },
+        "url": "https://www.semanticscholar.org/paper/c008912e095eb4f5369c591399e3dacffa0d829c",
+        "title": "Attention Editing: A Versatile Framework for Cross-Architecture Attention Conversion",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "71eeef8624ee7b429749a27032fbebf3a8573792",
+        "externalIds": {
+          "ArXiv": "2604.20920",
+          "CorpusId": 287702072
+        },
+        "url": "https://www.semanticscholar.org/paper/71eeef8624ee7b429749a27032fbebf3a8573792",
+        "title": "Forget, Then Recall: Learnable Compression and Selective Unfolding via Gist Sparse Attention",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "08bef870440ad5323a79e178df04255d9ef56912",
+        "externalIds": {
+          "ArXiv": "2604.04972",
+          "CorpusId": 287208333
+        },
+        "url": "https://www.semanticscholar.org/paper/08bef870440ad5323a79e178df04255d9ef56912",
+        "title": "RCP: Representation Consistency Pruner for Mitigating Distribution Shift in Large Vision-Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "3c65be4c1e17350aba5e80145df39c38a0a8b520",
+        "externalIds": {
+          "ArXiv": "2603.19635",
+          "CorpusId": 286751277
+        },
+        "url": "https://www.semanticscholar.org/paper/3c65be4c1e17350aba5e80145df39c38a0a8b520",
+        "title": "BEAVER: A Training-Free Hierarchical Prompt Compression Method via Structure-Aware Page Selection",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "ba90095a6e3220f1bd31142b61241b5237cf7b8e",
+        "externalIds": {
+          "ArXiv": "2605.02772",
+          "CorpusId": 287950655
+        },
+        "url": "https://www.semanticscholar.org/paper/ba90095a6e3220f1bd31142b61241b5237cf7b8e",
+        "title": "Linearizing Vision Transformer with Test-Time Training",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "22be224e3f8419bec45bb8abe4d753ed6ad83712",
+        "externalIds": {
+          "ArXiv": "2604.10027",
+          "CorpusId": 287425287
+        },
+        "url": "https://www.semanticscholar.org/paper/22be224e3f8419bec45bb8abe4d753ed6ad83712",
+        "title": "SinkTrack: Attention Sink based Context Anchoring for Large Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "24847e87bc2ed82df306cff094c90540d2013717",
+        "externalIds": {
+          "ArXiv": "2603.26380",
+          "CorpusId": 286944271
+        },
+        "url": "https://www.semanticscholar.org/paper/24847e87bc2ed82df306cff094c90540d2013717",
+        "title": "Switch Attention: Towards Dynamic and Fine-grained Hybrid Transformers",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "768d45e915c3de59ea780d61c9612ba4aa106635",
+        "externalIds": {
+          "ArXiv": "2603.21096",
+          "CorpusId": 286765746
+        },
+        "url": "https://www.semanticscholar.org/paper/768d45e915c3de59ea780d61c9612ba4aa106635",
+        "title": "Mixture of Chapters: Scaling Learnt Memory in Transformers",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "09e2745f472ad37fbe8b53b71b4098815fdcab08",
+        "externalIds": {
+          "ArXiv": "2603.20843",
+          "CorpusId": 286762683
+        },
+        "url": "https://www.semanticscholar.org/paper/09e2745f472ad37fbe8b53b71b4098815fdcab08",
+        "title": "HiCI: Hierarchical Construction-Integration for Long-Context Attention",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "ff0efb95637bd139c2971d57df060fa75dd020b8",
+        "externalIds": {
+          "ArXiv": "2603.29193",
+          "CorpusId": 286977226
+        },
+        "url": "https://www.semanticscholar.org/paper/ff0efb95637bd139c2971d57df060fa75dd020b8",
+        "title": "Developing Adaptive Context Compression Techniques for Large Language Models (LLMs) in Long-Running Interactions",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "349fec5324e5ceb6079693652553ef8b71afb966",
+        "externalIds": {
+          "ArXiv": "2604.24647",
+          "CorpusId": 287782850
+        },
+        "url": "https://www.semanticscholar.org/paper/349fec5324e5ceb6079693652553ef8b71afb966",
+        "title": "DepthKV: Layer-Dependent KV Cache Pruning for Long-Context LLM Inference",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "be392f306275311ef833ed0716a5ec1057173cae",
+        "externalIds": {
+          "ArXiv": "2604.12247",
+          "CorpusId": 287436345
+        },
+        "url": "https://www.semanticscholar.org/paper/be392f306275311ef833ed0716a5ec1057173cae",
+        "title": "SpecBound: Adaptive Bounded Self-Speculation with Layer-wise Confidence Calibration",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "dc20a03f1faf77f47e833cf6870669803b379c76",
+        "externalIds": {
+          "ArXiv": "2604.11462",
+          "CorpusId": 287432965
+        },
+        "url": "https://www.semanticscholar.org/paper/dc20a03f1faf77f47e833cf6870669803b379c76",
+        "title": "Escaping the Context Bottleneck: Active Context Curation for LLM Agents via Reinforcement Learning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "7dd8b7c9ac7b3cde8af97dc466d834d233f6487d",
+        "externalIds": {
+          "ArXiv": "2604.06627",
+          "CorpusId": 287248221
+        },
+        "url": "https://www.semanticscholar.org/paper/7dd8b7c9ac7b3cde8af97dc466d834d233f6487d",
+        "title": "DiffuMask: Diffusion Language Model for Token-level Prompt Pruning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "1062a4a19c61a159644d3546dd0621fecb5f03cf",
+        "externalIds": {
+          "ArXiv": "2604.19550",
+          "CorpusId": 287636894
+        },
+        "url": "https://www.semanticscholar.org/paper/1062a4a19c61a159644d3546dd0621fecb5f03cf",
+        "title": "LoopCTR: Unlocking the Loop Scaling Power for Click-Through Rate Prediction",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "1bb6703e03c66fc8591d05cf1d2797a0b01757b7",
+        "externalIds": {
+          "DOI": "10.1109/TASLPRO.2026.3675784",
+          "CorpusId": 286721739
+        },
+        "url": "https://www.semanticscholar.org/paper/1bb6703e03c66fc8591d05cf1d2797a0b01757b7",
+        "title": "Alleviating Contextual Misguidance: Response-Aware Prompt Compression for Long-Context Question Answering",
+        "venue": "IEEE Transactions on Audio, Speech, and Language Processing",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "1427454a24da2dcd1ced9dd59b3aed86b3a7e4bc",
+        "externalIds": {
+          "ArXiv": "2604.13552",
+          "CorpusId": 287479460
+        },
+        "url": "https://www.semanticscholar.org/paper/1427454a24da2dcd1ced9dd59b3aed86b3a7e4bc",
+        "title": "Training-Free Test-Time Contrastive Learning for Large Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "468862ca1a9254795aef7820fbdec3d4c6698310",
+        "externalIds": {
+          "ArXiv": "2605.01372",
+          "CorpusId": 287948001
+        },
+        "url": "https://www.semanticscholar.org/paper/468862ca1a9254795aef7820fbdec3d4c6698310",
+        "title": "Embedding-based In-Context Prompt Training for Enhancing LLMs as Text Encoders",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "943432b7edb0d246bdead5aba4dcc4c1bbe8645e",
+        "externalIds": {
+          "ArXiv": "2604.05248",
+          "CorpusId": 287208084
+        },
+        "url": "https://www.semanticscholar.org/paper/943432b7edb0d246bdead5aba4dcc4c1bbe8645e",
+        "title": "Improving Sparse Memory Finetuning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "5e27c71af270804ebc681d5d336ab354f0e3e316",
+        "externalIds": {
+          "ArXiv": "2604.09852",
+          "CorpusId": 287425560
+        },
+        "url": "https://www.semanticscholar.org/paper/5e27c71af270804ebc681d5d336ab354f0e3e316",
+        "title": "MEMENTO: Teaching LLMs to Manage Their Own Context",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "be2b65c49713eef3501846e51ac4d680a391af76",
+        "externalIds": {
+          "ArXiv": "2604.17535",
+          "CorpusId": 287635294
+        },
+        "url": "https://www.semanticscholar.org/paper/be2b65c49713eef3501846e51ac4d680a391af76",
+        "title": "OPSDL: On-Policy Self-Distillation for Long-Context Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 2
+      },
+      {
+        "paperId": "8f00ffce9ea4464b25dd1f2700d975ab1314ef6f",
+        "externalIds": {
+          "ArXiv": "2604.08584",
+          "CorpusId": 287351743
+        },
+        "url": "https://www.semanticscholar.org/paper/8f00ffce9ea4464b25dd1f2700d975ab1314ef6f",
+        "title": "CSAttention: Centroid-Scoring Attention for Accelerating LLM Inference",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "8b6e0c1553449c9d5191ab4c3cf1252a77cd4653",
+        "externalIds": {
+          "ArXiv": "2604.16734",
+          "CorpusId": 287618187
+        },
+        "url": "https://www.semanticscholar.org/paper/8b6e0c1553449c9d5191ab4c3cf1252a77cd4653",
+        "title": "Reducing Peak Memory Usage for Modern Multimodal Large Language Model Pipelines",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "773eaad8149fa93df7a0c411f131980d69efdf57",
+        "externalIds": {
+          "ArXiv": "2603.22329",
+          "CorpusId": 286770580
+        },
+        "url": "https://www.semanticscholar.org/paper/773eaad8149fa93df7a0c411f131980d69efdf57",
+        "title": "Trained Persistent Memory for Frozen Decoder-Only LLMs",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "6154a42935b73a57eaa46d6077296105dfa22f6d",
+        "externalIds": {
+          "ArXiv": "2604.14010",
+          "CorpusId": 287480782
+        },
+        "url": "https://www.semanticscholar.org/paper/6154a42935b73a57eaa46d6077296105dfa22f6d",
+        "title": "Parameter Importance is Not Static: Evolving Parameter Isolation for Supervised Fine-Tuning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "83ae15c5160caaafb8751416b6ad576c63baf9a9",
+        "externalIds": {
+          "ArXiv": "2604.24432",
+          "CorpusId": 287782496
+        },
+        "url": "https://www.semanticscholar.org/paper/83ae15c5160caaafb8751416b6ad576c63baf9a9",
+        "title": "Kwai Summary Attention Technical Report",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "8b20dbc0457afc6685fa592cff89fbde6e66aac9",
+        "externalIds": {
+          "ArXiv": "2604.05887",
+          "CorpusId": 287209523
+        },
+        "url": "https://www.semanticscholar.org/paper/8b20dbc0457afc6685fa592cff89fbde6e66aac9",
+        "title": "HybridKV: Hybrid KV Cache Compression for Efficient Multimodal Large Language Model Inference",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 2
+      },
+      {
+        "paperId": "0e273fc7a51e893d72102d6ecefdca5ee868af55",
+        "externalIds": {
+          "ArXiv": "2603.14549",
+          "CorpusId": 286573173
+        },
+        "url": "https://www.semanticscholar.org/paper/0e273fc7a51e893d72102d6ecefdca5ee868af55",
+        "title": "ASAP: Attention-Shift-Aware Pruning for Efficient LVLM Inference",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "bab615dc945d1170e100635b3f74df25707629c8",
+        "externalIds": {
+          "ArXiv": "2604.22565",
+          "CorpusId": 287773974
+        },
+        "url": "https://www.semanticscholar.org/paper/bab615dc945d1170e100635b3f74df25707629c8",
+        "title": "Learning Evidence Highlighting for Frozen LLMs",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "f54013bccbbdcd195ab405beaeb052fba0b58044",
+        "externalIds": {
+          "ArXiv": "2603.23571",
+          "CorpusId": 286776056
+        },
+        "url": "https://www.semanticscholar.org/paper/f54013bccbbdcd195ab405beaeb052fba0b58044",
+        "title": "StateLinFormer: Stateful Training Enhancing Long-term Memory in Navigation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "ed8a97ae1948c8d2e00184a3c8cc86b6cdab81d3",
+        "externalIds": {
+          "DOI": "10.1109/ICCV51701.2025.01904",
+          "CorpusId": 286515411
+        },
+        "url": "https://www.semanticscholar.org/paper/ed8a97ae1948c8d2e00184a3c8cc86b6cdab81d3",
+        "title": "ZipVL: Accelerating Vision-Language Models Through Dynamic Token Sparsity",
+        "venue": "IEEE International Conference on Computer Vision",
+        "year": 2025,
+        "citationCount": 1
+      },
+      {
+        "paperId": "68093c13be0af5df9c3f1d207a0dba412d2b6ce3",
+        "externalIds": {
+          "ArXiv": "2604.08181",
+          "CorpusId": 287256657
+        },
+        "url": "https://www.semanticscholar.org/paper/68093c13be0af5df9c3f1d207a0dba412d2b6ce3",
+        "title": "Long-Term Embeddings for Balanced Personalization",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "a4444d5937c57c3fb577b591956a5211b85c07ec",
+        "externalIds": {
+          "ArXiv": "2604.14339",
+          "CorpusId": 287508395
+        },
+        "url": "https://www.semanticscholar.org/paper/a4444d5937c57c3fb577b591956a5211b85c07ec",
+        "title": "Shuffle the Context: RoPE-Perturbed Self-Distillation for Long-Context Adaptation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "a2c665d8f944802c58b7eddc06432185fc168e0a",
+        "externalIds": {
+          "ArXiv": "2603.22016",
+          "CorpusId": 286765497
+        },
+        "url": "https://www.semanticscholar.org/paper/a2c665d8f944802c58b7eddc06432185fc168e0a",
+        "title": "ROM: Real-time Overthinking Mitigation via Streaming Detection and Intervention",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "94afa42d9246c23cd3467184ffad969c03cab71f",
+        "externalIds": {
+          "ArXiv": "2605.05971",
+          "CorpusId": 288014559
+        },
+        "url": "https://www.semanticscholar.org/paper/94afa42d9246c23cd3467184ffad969c03cab71f",
+        "title": "Training Transformers for KV Cache Compressibility",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "af82339cbe3d55faec52eda387a6822d1802fcfb",
+        "externalIds": {
+          "CorpusId": 287775303
+        },
+        "url": "https://www.semanticscholar.org/paper/af82339cbe3d55faec52eda387a6822d1802fcfb",
+        "title": "Accelerated Inference with Long-Sequence Transformers on CPUs",
+        "venue": "",
+        "year": null,
+        "citationCount": 0
+      },
+      {
+        "paperId": "1cd60553588441b17c0dd411683ad2ff3c77b774",
+        "externalIds": {
+          "ArXiv": "2605.06105",
+          "CorpusId": 288014453
+        },
+        "url": "https://www.semanticscholar.org/paper/1cd60553588441b17c0dd411683ad2ff3c77b774",
+        "title": "Shallow Prefill, Deep Decoding: Efficient Long-Context Inference via Layer-Asymmetric KV Visibility",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "0aa6700778100664bc3c8f052bc388da53901840",
+        "externalIds": {
+          "ArXiv": "2604.14191",
+          "CorpusId": 287508574
+        },
+        "url": "https://www.semanticscholar.org/paper/0aa6700778100664bc3c8f052bc388da53901840",
+        "title": "Attention to Mamba: A Recipe for Cross-Architecture Distillation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "c8622bc29d975a12d6740d31527be602984f5e3d",
+        "externalIds": {
+          "ArXiv": "2604.26412",
+          "CorpusId": 287874303
+        },
+        "url": "https://www.semanticscholar.org/paper/c8622bc29d975a12d6740d31527be602984f5e3d",
+        "title": "When Hidden States Drift: Can KV Caches Rescue Long-Range Speculative Decoding?",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "3b7bf5bc19cc6d11df6a29494a005d22189e5406",
+        "externalIds": {
+          "ArXiv": "2604.02045",
+          "CorpusId": 287074254
+        },
+        "url": "https://www.semanticscholar.org/paper/3b7bf5bc19cc6d11df6a29494a005d22189e5406",
+        "title": "BidirLM: From Text to Omnimodal Bidirectional Encoders by Adapting and Composing Causal LLMs",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "e46802f7ac53d2b47741efd6d04e9ca8b473fecb",
+        "externalIds": {
+          "ArXiv": "2603.29194",
+          "CorpusId": 286976987
+        },
+        "url": "https://www.semanticscholar.org/paper/e46802f7ac53d2b47741efd6d04e9ca8b473fecb",
+        "title": "Multi-Layered Memory Architectures for LLM Agents: An Experimental Evaluation of Long-Term Context Retention",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "fb4015991b9b737d9d3d4f69e221ce3ee2a6a640",
+        "externalIds": {
+          "DOI": "10.1109/TKDE.2026.3669558",
+          "CorpusId": 286687129
+        },
+        "url": "https://www.semanticscholar.org/paper/fb4015991b9b737d9d3d4f69e221ce3ee2a6a640",
+        "title": "Dynamic Prompt Compression for Efficient Inference of Large Language Models",
+        "venue": "IEEE Transactions on Knowledge and Data Engineering",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "88761096f076be123e5a0e43c5b000e020924c73",
+        "externalIds": {
+          "ArXiv": "2605.04308",
+          "CorpusId": 287981909
+        },
+        "url": "https://www.semanticscholar.org/paper/88761096f076be123e5a0e43c5b000e020924c73",
+        "title": "Memory as a Markov Matrix: Sample Efficient Knowledge Expansion via Token-to-Dictionary Mapping",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "c6a1a44954b13965c06246d74f6e898ede52ffba",
+        "externalIds": {
+          "ArXiv": "2605.01374",
+          "CorpusId": 287948015
+        },
+        "url": "https://www.semanticscholar.org/paper/c6a1a44954b13965c06246d74f6e898ede52ffba",
+        "title": "MTA: Multi-Granular Trajectory Alignment for Large Language Model Distillation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "101549ed507f18e10044d127c99a495bb176956f",
+        "externalIds": {
+          "ArXiv": "2603.15031",
+          "CorpusId": 286571690
+        },
+        "url": "https://www.semanticscholar.org/paper/101549ed507f18e10044d127c99a495bb176956f",
+        "title": "Attention Residuals",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 13
+      },
+      {
+        "paperId": "4bfc3d96025d50a405d7b1ab132d6067bbc7c4b9",
+        "externalIds": {
+          "ArXiv": "2603.18494",
+          "CorpusId": 286670200
+        },
+        "url": "https://www.semanticscholar.org/paper/4bfc3d96025d50a405d7b1ab132d6067bbc7c4b9",
+        "title": "MemoAct: Atkinson-Shiffrin-Inspired Memory-Augmented Visuomotor Policy for Robotic Manipulation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "1b13f0aabe25dff91c382ccf98c49faeac4a17f8",
+        "externalIds": {
+          "ArXiv": "2605.01732",
+          "CorpusId": 287950366
+        },
+        "url": "https://www.semanticscholar.org/paper/1b13f0aabe25dff91c382ccf98c49faeac4a17f8",
+        "title": "EGAD: Entropy-Guided Adaptive Distillation for Token-Level Knowledge Transfer",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "4ae666c6601d80470259eb03a7babe201af5228c",
+        "externalIds": {
+          "ArXiv": "2604.12056",
+          "CorpusId": 287436371
+        },
+        "url": "https://www.semanticscholar.org/paper/4ae666c6601d80470259eb03a7babe201af5228c",
+        "title": "LoSA: Locality Aware Sparse Attention for Block-Wise Diffusion Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "eb9128e5bf86fcf67cff77ac8b79fc396dfce0ea",
+        "externalIds": {
+          "ArXiv": "2605.04651",
+          "CorpusId": 287981927
+        },
+        "url": "https://www.semanticscholar.org/paper/eb9128e5bf86fcf67cff77ac8b79fc396dfce0ea",
+        "title": "FAAST: Forward-Only Associative Learning via Closed-Form Fast Weights for Test-Time Supervised Adaptation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "bcf48507691b81e502ccc1afb2a9f1333704d961",
+        "externalIds": {
+          "ArXiv": "2604.07716",
+          "CorpusId": 287256035
+        },
+        "url": "https://www.semanticscholar.org/paper/bcf48507691b81e502ccc1afb2a9f1333704d961",
+        "title": "Breaking the KV Cache Bottleneck: Fan Duality Model Achieves O(1) Decode Memory with Superior Associative Recall",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "145b00d2fde81cf1f8a7f0a8789b1b3e5b3baa9e",
+        "externalIds": {
+          "ArXiv": "2604.19021",
+          "CorpusId": 287636244
+        },
+        "url": "https://www.semanticscholar.org/paper/145b00d2fde81cf1f8a7f0a8789b1b3e5b3baa9e",
+        "title": "FG$^2$-GDN: Enhancing Long-Context Gated Delta Networks with Doubly Fine-Grained Control",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "18dfd1ffaf7c3d3d1296b75980874747720b676b",
+        "externalIds": {
+          "ArXiv": "2604.02280",
+          "CorpusId": 287074137
+        },
+        "url": "https://www.semanticscholar.org/paper/18dfd1ffaf7c3d3d1296b75980874747720b676b",
+        "title": "Novel Memory Forgetting Techniques for Autonomous AI Agents: Balancing Relevance and Efficiency",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "8bb9b5311624766457ad8aed2ff8215609686d23",
+        "externalIds": {
+          "ArXiv": "2603.14360",
+          "CorpusId": 286572414
+        },
+        "url": "https://www.semanticscholar.org/paper/8bb9b5311624766457ad8aed2ff8215609686d23",
+        "title": "M$^2$RNN: Non-Linear RNNs with Matrix-Valued States for Scalable Language Modeling",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "2a19422a988e1b6f8250d6246f7eda8a74b6d9b1",
+        "externalIds": {
+          "ArXiv": "2603.14517",
+          "CorpusId": 286576272
+        },
+        "url": "https://www.semanticscholar.org/paper/2a19422a988e1b6f8250d6246f7eda8a74b6d9b1",
+        "title": "Learning to Forget: Sleep-Inspired Memory Consolidation for Resolving Proactive Interference in Large Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 3
+      },
+      {
+        "paperId": "474dc01aeafd1d1927a0d181986dca019fb9b36a",
+        "externalIds": {
+          "CorpusId": 287979629
+        },
+        "url": "https://www.semanticscholar.org/paper/474dc01aeafd1d1927a0d181986dca019fb9b36a",
+        "title": "SparseVILA: Decoupling Visual Sparsity for Efﬁcient VLM Inference",
+        "venue": "",
+        "year": null,
+        "citationCount": 0
+      },
+      {
+        "paperId": "570d6e0f032d53bb2ddd5c9eeb703ddd63e041e0",
+        "externalIds": {
+          "DBLP": "conf/eacl/ZehleA26",
+          "DOI": "10.18653/v1/2026.findings-eacl.120",
+          "CorpusId": 286794481
+        },
+        "url": "https://www.semanticscholar.org/paper/570d6e0f032d53bb2ddd5c9eeb703ddd63e041e0",
+        "title": "Can Calibration of Positional Encodings Enhance Long Context Utilization?",
+        "venue": "Conference of the European Chapter of the Association for Computational Linguistics",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "fbcb22032e36f83b07b1e30e4617cb7c1458e2fe",
+        "externalIds": {
+          "ArXiv": "2603.22333",
+          "CorpusId": 286770553
+        },
+        "url": "https://www.semanticscholar.org/paper/fbcb22032e36f83b07b1e30e4617cb7c1458e2fe",
+        "title": "Graph Signal Processing Meets Mamba2: Adaptive Filter Bank via Delta Modulation",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "659aae419078eb81bb3515fd4da27470a7bf10e5",
+        "externalIds": {
+          "ArXiv": "2604.11838",
+          "CorpusId": 287436049
+        },
+        "url": "https://www.semanticscholar.org/paper/659aae419078eb81bb3515fd4da27470a7bf10e5",
+        "title": "A Layer-wise Analysis of Supervised Fine-Tuning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "803c1ff2e8179cf0d7b6a39583c534e58aa5c8f4",
+        "externalIds": {
+          "ArXiv": "2604.16171",
+          "CorpusId": 287607898
+        },
+        "url": "https://www.semanticscholar.org/paper/803c1ff2e8179cf0d7b6a39583c534e58aa5c8f4",
+        "title": "JumpLoRA: Sparse Adapters for Continual Learning in Large Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "e9f4c2c1426c2c471fc519e4837bc0d2bcca907f",
+        "externalIds": {
+          "ArXiv": "2605.06216",
+          "CorpusId": 288014850
+        },
+        "url": "https://www.semanticscholar.org/paper/e9f4c2c1426c2c471fc519e4837bc0d2bcca907f",
+        "title": "TIDE: Every Layer Knows the Token Beneath the Context",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "60bdf3020f392103d00c7a69a0d45b6a126bc7f6",
+        "externalIds": {
+          "ArXiv": "2604.19147",
+          "CorpusId": 287636399
+        },
+        "url": "https://www.semanticscholar.org/paper/60bdf3020f392103d00c7a69a0d45b6a126bc7f6",
+        "title": "Nexusformer: Nonlinear Attention Expansion for Stable and Inheritable Transformer Scaling",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "350eda83d5c5e1f59a3abefae88af7994509e7f0",
+        "externalIds": {
+          "ArXiv": "2604.14808",
+          "CorpusId": 287508350
+        },
+        "url": "https://www.semanticscholar.org/paper/350eda83d5c5e1f59a3abefae88af7994509e7f0",
+        "title": "Modeling LLM Unlearning as an Asymmetric Two-Task Learning Problem",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "d523074ef7571166eedfd5d003862930bfbd4b4f",
+        "externalIds": {
+          "ArXiv": "2604.19398",
+          "CorpusId": 287636676
+        },
+        "url": "https://www.semanticscholar.org/paper/d523074ef7571166eedfd5d003862930bfbd4b4f",
+        "title": "GRASPrune: Global Gating for Budgeted Structured Pruning of Large Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "07dbacb0de020d22426f37d7aaf0ce06c16051e9",
+        "externalIds": {
+          "ArXiv": "2604.01168",
+          "CorpusId": 287023714
+        },
+        "url": "https://www.semanticscholar.org/paper/07dbacb0de020d22426f37d7aaf0ce06c16051e9",
+        "title": "S0 Tuning: Zero-Overhead Adaptation of Hybrid Recurrent-Attention Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 1
+      },
+      {
+        "paperId": "42112b1c0cd2727294a1a935c17d6cc8f1b6a082",
+        "externalIds": {
+          "ArXiv": "2604.07853",
+          "CorpusId": 287255816
+        },
+        "url": "https://www.semanticscholar.org/paper/42112b1c0cd2727294a1a935c17d6cc8f1b6a082",
+        "title": "QaRL: Rollout-Aligned Quantization-Aware RL for Fast and Stable Training under Training--Inference Mismatch",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "3cab2ea821acd49e7eeb94105ba426d04795e48a",
+        "externalIds": {
+          "ArXiv": "2604.02650",
+          "CorpusId": 287121655
+        },
+        "url": "https://www.semanticscholar.org/paper/3cab2ea821acd49e7eeb94105ba426d04795e48a",
+        "title": "Revealing the Learning Dynamics of Long-Context Continual Pre-training",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "aa5fabbc5664f935dd5abfdcc1a31ee52a68f732",
+        "externalIds": {
+          "ArXiv": "2604.13737",
+          "CorpusId": 287480569
+        },
+        "url": "https://www.semanticscholar.org/paper/aa5fabbc5664f935dd5abfdcc1a31ee52a68f732",
+        "title": "TokenFormer: Unify the Multi-Field and Sequential Recommendation Worlds",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "b21fc0582a24f29054ce95c68a328005004c05b1",
+        "externalIds": {
+          "ArXiv": "2604.17215",
+          "CorpusId": 287634352
+        },
+        "url": "https://www.semanticscholar.org/paper/b21fc0582a24f29054ce95c68a328005004c05b1",
+        "title": "Continual Safety Alignment via Gradient-Based Sample Selection",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "9f161d4dd64525a06f7a36b702193ddacee1b705",
+        "externalIds": {
+          "ArXiv": "2603.16413",
+          "CorpusId": 286584186
+        },
+        "url": "https://www.semanticscholar.org/paper/9f161d4dd64525a06f7a36b702193ddacee1b705",
+        "title": "Trained Persistent Memory for Frozen Encoder--Decoder LLMs: Six Architectural Methods",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 2
+      },
+      {
+        "paperId": "71c6d07a9dfb872c4460c8e5c097bdc7aebbad60",
+        "externalIds": {
+          "ArXiv": "2604.03199",
+          "CorpusId": 287122035
+        },
+        "url": "https://www.semanticscholar.org/paper/71c6d07a9dfb872c4460c8e5c097bdc7aebbad60",
+        "title": "Learning the Signature of Memorization in Autoregressive Language Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "b5480cb0f0d58cd9439415a25538361dd0f59084",
+        "externalIds": {
+          "ArXiv": "2604.05942",
+          "CorpusId": 287209653
+        },
+        "url": "https://www.semanticscholar.org/paper/b5480cb0f0d58cd9439415a25538361dd0f59084",
+        "title": "BOSCH: Black-Box Binary Optimization for Short-Context Attention-Head Selection in LLMs",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "9dd12831efa82ff9e33e2a40df01498d86336e86",
+        "externalIds": {
+          "ArXiv": "2603.17198",
+          "CorpusId": 286638675
+        },
+        "url": "https://www.semanticscholar.org/paper/9dd12831efa82ff9e33e2a40df01498d86336e86",
+        "title": "Abstraction as a Memory-Efficient Inductive Bias for Continual Learning",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "1a9e67010c62f094ee73cb1fb873dbddd7f23255",
+        "externalIds": {
+          "ArXiv": "2604.04475",
+          "CorpusId": 287201315
+        },
+        "url": "https://www.semanticscholar.org/paper/1a9e67010c62f094ee73cb1fb873dbddd7f23255",
+        "title": "Discrete Prototypical Memories for Federated Time Series Foundation Models",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      },
+      {
+        "paperId": "08ab3273ab7fceb8128e93a334391be5738ee965",
+        "externalIds": {
+          "ArXiv": "2604.17237",
+          "CorpusId": 287635313
+        },
+        "url": "https://www.semanticscholar.org/paper/08ab3273ab7fceb8128e93a334391be5738ee965",
+        "title": "HeadRank: Decoding-Free Passage Reranking via Preference-Aligned Attention Heads",
+        "venue": "",
+        "year": 2026,
+        "citationCount": 0
+      }
+    ]
+  }
+}
