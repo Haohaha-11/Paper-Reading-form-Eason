@@ -1,0 +1,2932 @@
+[
+    {
+        "type": "text",
+        "text": "TECHNICAL REPORT OF ATTENTION RESIDUALS",
+        "text_level": 1,
+        "bbox": [
+            330,
+            176,
+            668,
+            191
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Kimi Team ",
+        "text_level": 1,
+        "bbox": [
+            460,
+            218,
+            540,
+            231
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": " https://github.com/MoonshotAI/Attention-Residuals ",
+        "bbox": [
+            277,
+            233,
+            717,
+            246
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "ABSTRACT ",
+        "text_level": 1,
+        "bbox": [
+            450,
+            277,
+            545,
+            292
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Residual connections [12] with PreNorm [60] are standard in modern LLMs, yet they accumulate all layer outputs with fixed unit weights. This uniform aggregation causes uncontrolled hidden-state growth with depth, progressively diluting each layer’s contribution [27]. We propose Attention Residuals (AttnRes), which replaces this fixed accumulation with softmax attention over preceding layer outputs, allowing each layer to selectively aggregate earlier representations with learned, inputdependent weights. To address the memory and communication overhead of attending over all preceding layer outputs for large-scale model training, we introduce Block AttnRes, which partitions layers into blocks and attends over block-level representations, reducing the memory footprint while preserving most of the gains of full AttnRes. Combined with cache-based pipeline communication and a two-phase computation strategy, Block AttnRes becomes a practical drop-in replacement for standard residual connections with minimal overhead. ",
+        "bbox": [
+            173,
+            299,
+            825,
+            452
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Scaling law experiments confirm that the improvement is consistent across model sizes, and ablations validate the benefit of content-dependent depth-wise selection. We further integrate AttnRes into the Kimi Linear architecture [69] (48B total / 3B activated parameters) and pre-train on 1.4T tokens, where AttnRes mitigates PreNorm dilution, yielding more uniform output magnitudes and gradient distribution across depth, and improves downstream performance across all evaluated tasks. ",
+        "bbox": [
+            173,
+            454,
+            826,
+            523
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "image",
+        "img_path": "images/e81850dc0ae25b9ff97ae4a60c1a84b1511d9d11108783db88d37bf588d69281.jpg",
+        "image_caption": [
+            "Figure 1: Overview of Attention Residuals. (a) Standard Residuals: standard residual connections with uniform additive accumulation. (b) Full AttnRes: each layer selectively aggregates all previous layer outputs via learned attention weights. (c) Block AttnRes: layers are grouped into blocks, reducing memory from $O ( L d )$ to $O ( N d )$ . "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            147,
+            546,
+            854,
+            861
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "arXiv:2603.15031v1 [cs.CL] 16 Mar 2026 ",
+        "bbox": [
+            22,
+            275,
+            62,
+            726
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "discarded",
+        "text": "ATTENTION RESIDUALS ",
+        "bbox": [
+            114,
+            97,
+            883,
+            166
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "1 Introduction ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            89,
+            253,
+            106
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Standard residual connections [12] are the de facto building block of modern LLMs [35, 51, 9]. The update $h _ { l } =$ $h _ { l - 1 } + f _ { l - 1 } ( h _ { l - 1 } )$ is widely understood as a gradient highway that lets gradients bypass transformations via identity mappings, enabling stable training at depth. Yet residuals also play a second role that has received less attention. Unrolling the recurrence shows that every layer receives the same uniformly-weighted sum of all prior layer outputs; residuals define how information aggregates across depth. Unlike sequence mixing and expert routing, which now employ learnable input-dependent weighting [53, 20, 9], this depth-wise aggregation remains governed by fixed unit weights, with no mechanism to selectively emphasize or suppress individual layer contributions. ",
+        "bbox": [
+            114,
+            119,
+            883,
+            218
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "In practice, PreNorm [60] has become the dominant paradigm, yet its unweighted accumulation causes hidden-state magnitudes to grow as $O ( L )$ with depth, progressively diluting each layer’s relative contribution [27]. Early-layer information is buried and cannot be selectively retrieved; empirically, a significant fraction of layers can be pruned with minimal loss [11]. Recent efforts such as scaled residual paths [54] and multi-stream recurrences [72] remain bound to the additive recurrence, while methods that do introduce cross-layer access [36, 56] are difficult to scale. The situation parallels the challenges that recurrent neural networks (RNNs) faced over the sequence dimension before attention mechanism provided an alternative. ",
+        "bbox": [
+            114,
+            223,
+            882,
+            320
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "We observe a formal duality between depth-wise accumulation and the sequential recurrence in RNNs. Building on this duality, we propose Attention Residuals (AttnRes), which replaces the fixed accumulation $\\begin{array} { r } { \\mathbf {  { h } } _ { l } = \\sum _ { i } \\mathbf { \\bar { v } } _ { i } } \\end{array}$ with $\\begin{array} { r } { \\pmb { h } _ { l } = \\sum _ { i } \\alpha _ { i  l } \\mathbf { \\bar { \\alpha } } \\pmb { \\cdot v } _ { i } } \\end{array}$ , where $\\alpha _ { i \\to l }$ are softmax attention weights computed from a single learned pseudo-query $\\boldsymbol { w } _ { l } \\in \\mathbb { R } ^ { d }$ per layer. This lightweight mechanism enables selective, content-aware retrieval across depth with only one $d$ -dimensional vector per layer. Indeed, standard residual connections and prior recurrence-based variants can all be shown to perform depth-wise linear attention; AttnRes generalizes them to depth-wise softmax attention, completing for depth the same linear-to-softmax transition that proved transformative over sequences (§6.2, §6.1). ",
+        "bbox": [
+            114,
+            327,
+            882,
+            426
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "In standard training, Full AttnRes adds negligible overhead, since the layer outputs it requires are already retained for backpropagation. At scale, however, activation recomputation and pipeline parallelism are routinely employed, and these activations must now be explicitly preserved and communicated across pipeline stages. We introduce Block AttnRes to maintain efficiency in this regime: layers are partitioned into $N$ blocks, each reduced to a single representation via standard residuals, with cross-block attention applied only over the $N$ block-level summaries. This brings both memory and communication down to $O ( N d )$ , and together with infrastructure optimizations (§4), Block AttnRes serves as a drop-in replacement for standard residual connections with marginal training cost and negligible inference latency overhead. ",
+        "bbox": [
+            114,
+            431,
+            882,
+            542
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Scaling law experiments confirm that AttnRes consistently outperforms the baseline across compute budgets, with Block AttnRes matching the loss of a baseline trained with $1 . 2 5 \\times$ more compute. We further integrate AttnRes into the Kimi Linear architecture [69] (48B total / 3B activated parameters) and pre-train on $1 . 4 \\mathrm { T }$ tokens. Analysis of the resulting training dynamics reveals that AttnRes mitigates PreNorm dilution, with output magnitudes remaining bounded across depth and gradient norms distributing more uniformly across layers. On downstream benchmarks, our final model improves over the baseline across all evaluated tasks. ",
+        "bbox": [
+            116,
+            549,
+            882,
+            632
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Contributions ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            638,
+            215,
+            654
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "• Attention Residuals. We propose AttnRes, which replaces fixed residual accumulation with learned softmax attention over depth, and its scalable variant Block AttnRes that reduces memory and communication from $O ( L d )$ to $O ( N d )$ . Through a unified structured-matrix analysis, we show that standard residuals and prior recurrence-based variants correspond to depth-wise linear attention, while AttnRes performs depth-wise softmax attention. ",
+        "bbox": [
+            116,
+            666,
+            883,
+            722
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "• Infrastructure for scale. We develop system optimizations that make Block AttnRes practical and efficient at scale, including cross-stage caching that eliminates redundant transfers under pipeline parallelism and a two-phase inference strategy that amortizes cross-block attention via online softmax [31]. The resulting training overhead is marginal, and the inference latency overhead is less than $2 \\%$ on typical inference workloads. ",
+        "bbox": [
+            116,
+            726,
+            888,
+            781
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "• Comprehensive evaluation and analysis. We validate AttnRes through scaling law experiments, component ablations, and downstream benchmarks on a 48B-parameter model pre-trained on 1.4T tokens, demonstrating consistent improvements over standard residual connections. Training dynamics analysis further reveals that AttnRes mitigates PreNorm dilution, yielding bounded hidden-state magnitudes and more uniform gradient distribution across depth. ",
+        "bbox": [
+            114,
+            786,
+            885,
+            856
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            753,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "discarded",
+        "text": "2 ",
+        "bbox": [
+            493,
+            935,
+            504,
+            946
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2 Motivation ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            88,
+            238,
+            106
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Notation. Consider a batch of input sequences with shape $B \\times T \\times d$ , where $B$ is the batch size, $T$ is the sequence length, and $d$ is the hidden dimension. For clarity, we write formulas for a single token: $\\boldsymbol { h } _ { l } \\in \\mathbb { R } ^ { d }$ denotes the hidden state entering layer $l$ , where $l \\in \\{ 1 , \\ldots , L \\}$ is the layer index and $L$ is the total number of layers. The token embedding is $\\pmb { h } _ { 1 }$ The function $f _ { l }$ represents the transformation applied by layer $l$ . In Transformer models, we treat each self-attention or MLP as an individual layer. ",
+        "bbox": [
+            114,
+            119,
+            883,
+            190
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2.1 Training Deep Networks via Residuals ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            205,
+            421,
+            222
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Residual Learning. Residual learning [12] proves to be a critical technique in training deep networks as it allows gradients to bypass transformations. Specifically, each layer updates the hidden state as: ",
+        "bbox": [
+            117,
+            231,
+            882,
+            260
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/b099507de7b868d56660708ceae2da6e71a2f788bce44d85cae79fff37726286.jpg",
+        "text": "$$\n\\pmb { h } _ { l } = \\pmb { h } _ { l - 1 } + f _ { l - 1 } ( \\pmb { h } _ { l - 1 } )\n$$",
+        "text_format": "latex",
+        "bbox": [
+            413,
+            266,
+            583,
+            284
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Expanding this recurrence, the hidden state at layer $l$ is the sum of the embedding and all preceding layer outputs: $\\begin{array} { r } { \\pmb { h } _ { l } = \\pmb { h } _ { 1 } + \\sum _ { i = 1 } ^ { l - 1 } f _ { i } ( \\pmb { h } _ { i } ) } \\end{array}$ . The key insight behind residual connections is identity mapping: each layer preserves a direct path for both information and gradients to flow unchanged. During back-propagation, the gradient with respect to an intermediate hidden state is: ",
+        "bbox": [
+            114,
+            287,
+            883,
+            347
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/091b3453ac560e72b5bd55c721568cfd30b2b87d82886a81386157210d183dca.jpg",
+        "text": "$$\n{ \\frac { \\partial { \\mathcal { L } } } { \\partial \\pmb { h } _ { l } } } = { \\frac { \\partial { \\mathcal { L } } } { \\partial \\pmb { h } _ { L } } } \\cdot \\prod _ { j = l } ^ { L - 1 } \\left( \\mathbf { I } + { \\frac { \\partial f _ { j } } { \\partial \\pmb { h } _ { j } } } \\right)\n$$",
+        "text_format": "latex",
+        "bbox": [
+            393,
+            343,
+            604,
+            387
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Expanding this product yields I plus higher-order terms involving the layer Jacobians $\\partial f _ { j } / \\partial h _ { j }$ . The identity term is always preserved, providing a direct gradient path from the loss to any layer regardless of depth. ",
+        "bbox": [
+            119,
+            390,
+            885,
+            420
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Generalizing Residuals. While effective, the fixed unit coefficients in the residual update treat every layer’s contribution uniformly, offering no mechanism to adapt the mixing across depth. Highway networks [45] relax this by introducing learned element-wise gates: ",
+        "bbox": [
+            114,
+            433,
+            883,
+            476
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/1db8e7c668fa1f4a0b3e9b57823f6cf4e4a943e89970bdd10da00381188b1455.jpg",
+        "text": "$$\n\\pmb { h } _ { l } = ( 1 - \\pmb { g } _ { l } ) \\odot \\pmb { h } _ { l - 1 } + \\pmb { g } _ { l } \\odot f _ { l - 1 } ( \\pmb { h } _ { l - 1 } )\n$$",
+        "text_format": "latex",
+        "bbox": [
+            359,
+            482,
+            637,
+            500
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "where $\\mathbf {  { g } } _ { l } \\in [ 0 , 1 ] ^ { d }$ interpolates between the transformation and the identity path. More generally, both are instances of a weighted recurrence $\\pmb { h } _ { l } = \\alpha _ { l } \\cdot \\pmb { h } _ { l - 1 } + \\beta _ { l } \\cdot \\pmb { f } _ { l - 1 } ( \\pmb { h } _ { l - 1 } )$ , with residual setting $\\alpha _ { l } = \\beta _ { l } = 1$ and Highway setting $\\alpha _ { l } { = } 1 { - } g _ { l }$ , $\\beta _ { l } { = } g _ { l }$ . ",
+        "bbox": [
+            114,
+            506,
+            883,
+            549
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Limitations. Whether fixed or gated, both approaches share a fundamental constraint: each layer can only access its immediate input $\\boldsymbol { h } _ { l - 1 }$ , a single compressed state that conflates all earlier layer outputs, rather than the individual outputs themselves. This entails several limitations: (1) no selective access: different layer types (e.g., attention vs. MLP) receive the same aggregated state, despite potentially benefiting from different weightings; (2) irreversible loss: information lost through aggregation cannot be selectively recovered in deeper layers; and (3) output growth: later layers learn increasingly larger outputs to gain influence over the accumulated residual, which can destabilize training. These limitations motivate a mechanism that lets each layer selectively aggregate information from all preceding layers. ",
+        "bbox": [
+            114,
+            563,
+            883,
+            661
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3 Attention Residuals: A Unified View of Time and Depth ",
+        "text_level": 1,
+        "bbox": [
+            117,
+            678,
+            612,
+            696
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "The limitations discussed above are reminiscent of similar bottlenecks in sequence modeling, suggesting that we seek similar solutions for the depth dimension. ",
+        "bbox": [
+            116,
+            710,
+            882,
+            738
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "The Duality of Time and Depth. Like RNNs over time, residual connections compress all prior information into a single state $\\boldsymbol { h } _ { l }$ over depth. For sequence modeling, the Transformer improved upon RNNs by replacing recurrence with attention [3, 52], allowing each position to selectively access all previous positions with data-dependent weights. We propose the same methodology for depth: ",
+        "bbox": [
+            114,
+            752,
+            883,
+            809
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/de90cb7987d3b3c0cf0fd21f76176cb0b381080ec76927399c1c6b13bd01db15.jpg",
+        "text": "$$\n\\pmb { h } _ { l } = \\alpha _ { 0  l } \\cdot \\pmb { h } _ { 1 } + \\sum _ { i = 1 } ^ { l - 1 } \\alpha _ { i  l } \\cdot f _ { i } ( \\pmb { h } _ { i } )\n$$",
+        "text_format": "latex",
+        "bbox": [
+            379,
+            815,
+            619,
+            858
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "where $\\alpha _ { i \\to l }$ are layer-specific attention weights satisfying $\\begin{array} { r } { \\sum _ { i = 0 } ^ { l - 1 } \\alpha _ { i \\to l } = 1 } \\end{array}$ . Unlike sequence length (which can reach millions of tokens), network depth is typically modest $L < 1 0 0 0 \\AA$ ), making $O ( L ^ { 2 } )$ attention over depth computationally feasible. We call this approach Attention Residuals, abbreviated as AttnRes. ",
+        "bbox": [
+            114,
+            864,
+            883,
+            911
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            751,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "discarded",
+        "text": "3 ",
+        "bbox": [
+            493,
+            935,
+            504,
+            946
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3.1 Full Attention Residuals ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            90,
+            325,
+            106
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "The attention weights can be written as $\\alpha _ { i \\to l } = \\phi ( { \\pmb q } _ { l } , { \\pmb k } _ { i } )$ for a kernel function $\\phi \\colon \\mathbb { R } ^ { d } \\times \\mathbb { R } ^ { d } \\to \\mathbb { R } _ { \\geq 0 } .$ , where $\\pmb q _ { l }$ and $k _ { i }$ are query and key vectors [23, 70]. Different choices of $\\phi$ recover different residual variants (§6.2); we adopt $\\dot { \\phi ( \\mathbf { q } , \\pmb { k } ) } \\dot { = } \\dot { \\mathrm { e x p } } \\left( \\pmb { q } ^ { \\top } \\dot { \\mathrm { R M S N o r m } ( \\pmb { k } ) } \\right)$ [66] with normalization, yielding softmax attention over depth: ",
+        "bbox": [
+            114,
+            117,
+            883,
+            160
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/c945511c9be8b1be5f59c8ca68725b45112e6e6cc51f4abcfca33df60e9c2cd8.jpg",
+        "text": "$$\n\\alpha _ { i  l } = \\frac { \\phi ( \\pmb q _ { l } , \\pmb k _ { i } ) } { \\sum _ { j = 0 } ^ { l - 1 } \\phi ( \\pmb q _ { l } , \\pmb k _ { j } ) }\n$$",
+        "text_format": "latex",
+        "bbox": [
+            413,
+            170,
+            583,
+            209
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "For each layer $l$ , we define: ",
+        "bbox": [
+            114,
+            224,
+            295,
+            239
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/d5de4ec6faa1902418d406db985759aa6ae6408799247429b665f240721efb5b.jpg",
+        "text": "$$\n\\begin{array} { r } { \\pmb { q } _ { l } = \\pmb { w } _ { l } , \\qquad \\pmb { k } _ { i } = \\pmb { v } _ { i } = \\pmb { \\{ { h } _ { 1 } } \\atop { f _ { i } ( \\pmb { h } _ { i } ) }  } \\quad i = 0  \\\\ { \\qquad \\pmb { k } _ { i } = \\pmb { v } _ { i } = \\pmb { \\{ { h } _ { 1 } } \\atop { f _ { i } ( \\pmb { h } _ { i } ) }  } \\quad i \\leq i \\leq l - 1  \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            330,
+            241,
+            665,
+            276
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where the query $q _ { l } = w _ { l }$ is a layer-specific learnable vector in $\\mathbb { R } ^ { d }$ . The RMSNorm inside $\\phi$ prevents layers with large-magnitude outputs from dominating the attention weights. The input to layer $l$ is then: ",
+        "bbox": [
+            116,
+            285,
+            888,
+            314
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/23a0d5da95fd1c2008b7e88d224fa0e66011e982fca22a6b3bb1edda08beb6e4.jpg",
+        "text": "$$\nh _ { l } = \\sum _ { i = 0 } ^ { l - 1 } \\alpha _ { i  l } \\cdot v _ { i }\n$$",
+        "text_format": "latex",
+        "bbox": [
+            434,
+            321,
+            563,
+            366
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "We call this form full attention residuals. For each token, Full AttnRes requires $O ( L ^ { 2 } d )$ arithmetic and $O ( L d )$ memory to store layer outputs. Since depth is far smaller than sequence length, the arithmetic cost is modest. ",
+        "bbox": [
+            114,
+            382,
+            880,
+            411
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Overhead. The $O ( L d )$ memory overlaps entirely with the activations already retained for backpropagation, so Full AttnRes introduces no additional memory overhead in vanilla training. At scale, however, activation recomputation and pipeline parallelism are widely adopted: layer outputs that would otherwise be freed and recomputed must now be kept alive for all subsequent layers, and under pipeline parallelism each must further be transmitted across stage boundaries. Both the memory and communication overhead then grow as $O ( L d )$ . ",
+        "bbox": [
+            114,
+            428,
+            883,
+            498
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Blockwise optimization. A deliberate design choice in Full AttnRes is that the pseudo-query ${ \\pmb w } _ { l }$ is a learned parameter decoupled from the layer’s forward computation. This independence means that attention weights for any group of layers can be computed in parallel without waiting for their sequential outputs, and in particular permits grouping the $L$ layers into $N$ blocks of $S$ layers each and batching the attention computation within each block, reducing per-layer memory I/O from $O ( L d )$ to $\\operatorname { \\dot { O } } ( ( S + N ) d )$ (we defer the detailed two-phase strategy to $\\ S 4$ ). Under current distributed training regimes, however, the dominant cost is not local memory bandwidth but cross-stage communication under pipeline parallelism: every layer output must still be transmitted between stages, and this $O ( L d )$ communication overhead cannot be alleviated by local batching. This motivates the Block AttnRes variant introduced below, which reduces the number of cross-stage representations from $L$ to $N$ . We anticipate that future interconnect improvements will make the full $O ( L d )$ communication practical, fully realizing the potential of Full AttnRes. ",
+        "bbox": [
+            114,
+            513,
+            883,
+            655
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "3.2 Block Attention Residuals ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            672,
+            334,
+            688
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "We propose Block Attention Residuals, which partitions the $L$ layers into $N$ blocks: within each block, the layer outputs are reduced to a single representation via summation, and across blocks, we apply full attention over only $N$ block-level representations and the token embedding. This reduces both memory and communication overhead from $O ( L d )$ to $\\bar { O ( N d ) }$ . ",
+        "bbox": [
+            114,
+            699,
+            882,
+            756
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Intra-Block Accumulation. Specifically, we divide the $L$ layers into $N$ blocks of $S = L / N$ layers each, assuming $L$ is divisible by $N$ ; otherwise, the last block contains the remaining $L$ mod $N$ layers. Let $B _ { n }$ denote the set of layer indices in block $n$ $( n = 1 , \\ldots , N )$ . To form a block, we sum all of its layer outputs: ",
+        "bbox": [
+            116,
+            771,
+            883,
+            815
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/ba0db810f40cf6333b3452e12812f8faf31b9559534c5e7bebe07b8a9e69c98c.jpg",
+        "text": "$$\nb _ { n } = \\sum _ { j \\in B _ { n } } f _ { j } ( h _ { j } )\n$$",
+        "text_format": "latex",
+        "bbox": [
+            437,
+            823,
+            560,
+            858
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "We further denote $b _ { n } ^ { i }$ as the partial sum over the first $i$ layers in $B _ { n }$ , so that $\\boldsymbol { b _ { n } } = \\boldsymbol { b } _ { n } ^ { S }$ . When $L$ is not divisible by $N$ , the final partial sum is taken as the last block’s representation. As in Full AttnRes, the RMSNorm inside $\\phi$ prevents magnitude differences between complete blocks and partial sums from biasing the attention weights. ",
+        "bbox": [
+            114,
+            868,
+            885,
+            911
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            751,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "discarded",
+        "text": "4 ",
+        "bbox": [
+            493,
+            935,
+            503,
+            946
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "image",
+        "img_path": "images/4729ed55ba34c63cdbfc00943cad784d4b3eeb25ecda90b5a75796e184269570.jpg",
+        "image_caption": [
+            "Figure 2: PyTorch-style pseudo code for Block Attention Residuals. block_attn_res computes softmax attention over block representations using a learned pseudo-query ${ \\pmb w } _ { l }$ ; forward is a single-layer pass that maintains partial_block ${ \\mathbf B } _ { n } ^ { i }$ , intra-block residual) and blocks $( [ b _ { 0 } , \\ldots , b _ { n - 1 } ]$ , inter-block history). "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            117,
+            88,
+            714,
+            460
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Inter-Block Attention. In Full AttnRes, the input to layer $l$ is computed by attending over all outputs up to $f _ { l - 1 } ( h _ { l - 1 } )$ . The block-wise variant replaces these individual outputs with block representations, defining $\\pmb { b } _ { 0 } = \\pmb { h } _ { 1 }$ so that the token embedding is always included as a source. For the $i$ -th layer in block $n$ , the value matrix is: ",
+        "bbox": [
+            114,
+            537,
+            885,
+            580
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/931b606d9d96a754a4204de936c847caf7482775a986b07b49c0c1a131c4e582.jpg",
+        "text": "$$\n\\mathbf { V } = \\left\\{ { \\begin{array} { l l } { [ b _ { 0 } , b _ { 1 } , \\dots , b _ { n - 1 } ] ^ { \\top } } & { { \\mathrm { i f ~ } } i = 1 { \\mathrm { ~ ( f i r s t ~ l a y e r ~ o f ~ b l o c k ~ } } n { ) } } \\\\ { [ b _ { 0 } , b _ { 1 } , \\dots , b _ { n - 1 } , b _ { n } ^ { i - 1 } ] ^ { \\top } } & { { \\mathrm { i f ~ } } i \\geq 2 { \\mathrm { ~ ( s u b s e q u e n t ~ l a y e r s ) } } } \\end{array} } \\right.\n$$",
+        "text_format": "latex",
+        "bbox": [
+            279,
+            587,
+            715,
+            622
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Keys and attention weights follow Eq. 3 and Eq. 2. The input of the very first layer of the network is the token embeddings, i.e. $\\pmb { b } _ { 0 } = \\pmb { h } _ { 1 }$ . In each block, the first layer receives the previous block representations and the token embeddings, and the subsequent layers additionally attend to the partial sum $b _ { n } ^ { i - 1 }$ . The final output layer aggregates all $N$ block representations. Fig. 2 provides PyTorch-style pseudocode for Block AttnRes. ",
+        "bbox": [
+            114,
+            628,
+            883,
+            686
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Efficiency. Since each layer now attends over $N$ block representations rather than $L$ individual outputs, memory reduces from $O ( L )$ to $O ( N )$ and computation from $O ( L ^ { 2 } )$ to $O ( N ^ { 2 } )$ . The block count $N$ interpolates between two extremes: $N = L$ recovers Full AttnRes, while $N = 1$ reduces to standard residual connections with the embedding isolated as $b _ { 0 }$ . Empirically, we find that $N \\approx { 8 }$ recovers most of the benefit across model scales, requiring only eight stored hidden states per token (see $\\ S 5$ ). ",
+        "bbox": [
+            114,
+            699,
+            882,
+            771
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Beyond memory and computation, the block structure also benefits inference latency: block boundaries define the dispatch granularity for the blockwise optimization described in $\\ S 3$ , and the fixed block count $N$ bounds the KV cache size. The parallel inter-block results are merged with the sequential intra-block partial sums via online softmax [31], preserving exact equivalence (§4). ",
+        "bbox": [
+            116,
+            776,
+            883,
+            833
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "4 Infrastructure Design ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            852,
+            328,
+            869
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Block AttnRes introduces additional system challenges compared to standard residual connections. For large-scale model training, block representations must be propagated across pipeline stages, causing heavy communication in a naïve implementation. During inference, repeated access to accumulated block representations increases latency, while long-context prefilling amplifies the memory cost of caching block representations. We address these challenges with cross-stage caching in training, and with a two-phase computation strategy together with a memory-efficient prefilling scheme in inference. ",
+        "bbox": [
+            112,
+            882,
+            882,
+            912
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            751,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            493,
+            935,
+            503,
+            946
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "image",
+        "img_path": "images/1c4b7b713d314876d9ba253dc620320690c7eb7ffaf7950361a0ca28cb64dcbb.jpg",
+        "image_caption": [
+            "Figure 3: Cache-based pipeline communication example with 4 physical ranks and 2 virtual stages per rank, where hatched boxes denote end of AttnRes blocks. Numbers indicate micro-batch indices. Each rank caches previously received blocks; stage transitions only transmit incremental blocks $( + [ b _ { 1 } , b _ { 2 } ] )$ instead of the full history. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            119,
+            114,
+            882,
+            251
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            114,
+            327,
+            882,
+            383
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "4.1 Training ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            398,
+            215,
+            414
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "For small-scale training, AttnRes adds a tiny computation overhead and no extra memory usage, as the activations need to be saved for backpropagation regardless. Under large-scale distributed training, pipeline parallelism poses the primary infrastructure challenge for AttnRes. Full AttnRes requires all $L$ layer outputs to be transmitted across stages; Block AttnRes reduces this to $N$ block representations, and the optimizations below further minimize the remaining overhead. ",
+        "bbox": [
+            114,
+            424,
+            883,
+            494
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Pipeline communication. With standard residual connections, pipeline parallelism [18] transfers a fixed-size hidden state between adjacent stages, independent of pipeline depth. Block AttnRes requires all accumulated block representations at each stage for inter-block attention, and naïvely transmitting the full history at every transition incurs redundant communication. ",
+        "bbox": [
+            114,
+            508,
+            883,
+            565
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Consider an interleaved pipeline schedule [33] with $P$ physical stages and $V$ virtual stages per physical stage. For simplicity, assume each physical stage produces on average $N _ { p }$ block representations of dimension $d$ per token.1 With $C = P V$ total chunks (each physical stage in each virtual stage), the $j$ -th chunk accumulates $j N _ { p }$ blocks. Naïvely transmitting all accumulated blocks at every transition incurs per-token communication cost: ",
+        "bbox": [
+            114,
+            570,
+            882,
+            627
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/9309ee24d97c8d4b8529c38cbc2a34e57a6ba450c202f48211d0f1969e723411.jpg",
+        "text": "$$\n{ \\mathrm { C o m m } } _ { \\mathrm { n a i v e } } = \\sum _ { j = 1 } ^ { C - 1 } j N _ { p } \\cdot d = { \\frac { C ( C - 1 ) } { 2 } } N _ { p } d .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            349,
+            633,
+            648,
+            679
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Cross-stage caching. Since each physical stage processes multiple virtual stages in succession, we can eliminate this redundancy by caching blocks locally: blocks received during earlier virtual stages remain in local memory and need not be re-transmitted. The first virtual stage $v = 1$ ) has no cache and accumulates normally; for $v \\geq 2$ , each transition conveys only the ${ \\sim } P N _ { p }$ incremental blocks accumulated since the receiver’s corresponding chunk in the previous virtual stage. Total communication reduces to: ",
+        "bbox": [
+            116,
+            691,
+            883,
+            762
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/4cefe29d4b1a3df132f51a5937ce019d23698910be96ed58e5d270618ca23922.jpg",
+        "text": "$$\n\\mathrm { C o m m } _ { \\mathrm { c a c h e d } } = \\underbrace { \\frac { P ( P - 1 ) } { 2 } N _ { p } d } _ { \\mathrm { f i r s t ~ v i r t u a l ~ s t a g e } } + \\underbrace { ( V - 1 ) P ^ { 2 } N _ { p } d } _ { \\mathrm { s u b s e q u e n t ~ v i r t u a l ~ s t a g e s } } .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            328,
+            767,
+            668,
+            818
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Caching reduces peak per-transition cost from $O ( C )$ to $O ( P )$ , a $V \\times$ improvement that enables full overlap with computation during steady-state 1F1B. The backward pass benefits from the same scheme. Fig. 3 illustrates this optimization with $P { = } 4$ and $V { = } 2$ : for the second virtual stage, caching eliminates 6 redundant block transmissions. ",
+        "bbox": [
+            114,
+            832,
+            885,
+            876
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "discarded",
+        "text": "1In practice, block boundaries need not align with physical stage boundaries. For example, in Fig. 3, each block spans two physical stages, so only every other transition involves a newly completed block. ",
+        "bbox": [
+            116,
+            885,
+            882,
+            912
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            751,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "discarded",
+        "text": "VIRTUAL STAGE 1 ",
+        "bbox": [
+            681,
+            90,
+            767,
+            101
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "discarded",
+        "text": "VIRTUAL STAGE 0 ",
+        "bbox": [
+            305,
+            90,
+            392,
+            101
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "discarded",
+        "text": "6 ",
+        "bbox": [
+            493,
+            935,
+            504,
+            946
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "table",
+        "img_path": "images/b58c5916e8462bac99e89937e311951dbc76d23a602d59954fb804094a67697f.jpg",
+        "table_caption": [
+            "Algorithm 1: Two-phase computation for block $n$ "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Input: Pseudo queries {wl}lBn , block representations {b0, . . . , bn−1}</td></tr><tr><td>/* Phase 1: Parallel inter-block attention</td></tr><tr><td>*/ 1 Q ← [wl]Bn 1/ [S, d]</td></tr><tr><td>2 K, V ← [b0; . . .; bn−1] // [n, d] 3 {0(1), m(1), e(1)}lBn ← ATTNWITHSTATs(Q, K, V)</td></tr><tr><td>// Return LSE 4</td></tr><tr><td>/* Phase 2: Sequential intra-block attention + Online softmax merge */</td></tr><tr><td>5 i←0 6 for l  Bn do</td></tr><tr><td>7 if i = 0 then</td></tr><tr><td>hl ← o(1)/e(1) // Inter-block only 8</td></tr><tr><td>9 else o(2), m(2), (2) ← ATTNWITHSTATS(wl, bn, bi) 10 // Intra-block</td></tr><tr><td>ml ← max(m(1, m(2) 11</td></tr><tr><td>em(1) +em{2 hl ← // Online softmax merge</td></tr><tr><td>12 eml1)−ml e(1) ) + em(2)−ml (2)</td></tr><tr><td>13 i ← i + 1</td></tr><tr><td>bn ← bi−1 + ft(hl) 14 // Update partial sum; b0 :=0</td></tr></table>",
+        "bbox": [
+            122,
+            107,
+            870,
+            426
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Memory overhead. With cross-stage caching, each block is stored exactly once across all $V$ virtual stages, which becomes negligible relative to standard per-layer activation cache. Crucially, the per-layer activation footprint remains identical to standard architectures, as activation checkpointing eliminates all inter-block attention intermediates, and the checkpointed input ${ \\mathbf { } } p _ { l }$ matches the memory size of the hidden state $h _ { l }$ it replaces. ",
+        "bbox": [
+            114,
+            455,
+            882,
+            511
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "In terms of wall-clock time, Block AttnRes adds negligible training overhead when pipeline parallelism is not enabled;   \nunder pipeline parallelism, the measured end-to-end overhead is less than $4 \\%$ . ",
+        "bbox": [
+            114,
+            516,
+            883,
+            545
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "4.2 Inference ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            560,
+            220,
+            575
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "The two-phase computation strategy described below applies to both Full and Block AttnRes: in either case, layers are grouped into blocks of size $S$ , with Phase 1 batching the inter-block queries and Phase 2 handling sequential intra-block lookback. For Full AttnRes, this reduces per-layer I/O from $O ( L d )$ to $O ( ( S { + } N ) d )$ (detailed derivation shown in Appendix B); Block AttnRes further reduces the stored representations from $L$ to $N$ , since each block is compressed into a single vector. In what follows, we focus on Block AttnRes and detail the two-phase computation strategy together with a sequence-sharded prefilling scheme for long-context inputs. ",
+        "bbox": [
+            116,
+            585,
+            883,
+            670
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Two-phase computation strategy. The layer-wise attention computation of Block AttnRes resembles autoregressive decoding, where block representations serve as a shared KV cache reused across layers. A naïve implementation computes the attention residual at every layer, each requiring a full pass over all preceding blocks, resulting in $O ( L \\cdot N )$ memory accesses. Since the pseudo-query vectors are decoupled from the forward computation (§3), all $S = L / N$ queries within a block can be batched into a single matrix multiplication, amortizing memory access from $S$ reads to 1. ",
+        "bbox": [
+            114,
+            684,
+            883,
+            753
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Algorithm 1 instantiates a two-phase computation strategy exploiting this property. ",
+        "bbox": [
+            119,
+            760,
+            656,
+            775
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "• Phase 1 computes inter-block attention for all $S$ layers simultaneously via a single batched query against the cached block representations, returning both outputs and softmax statistics (max and log-sum-exp). This amortizes the memory access cost, reducing reads from $S$ times to just once per block.   \n• Phase 2 computes intra-block attention sequentially for each layer using the evolving partial sum, then merges with Phase 1 outputs through online softmax [31]. Because the online-softmax merge is elementwise, this phase naturally admits kernel fusion with surrounding operations, further reducing I/O overhead. ",
+        "bbox": [
+            114,
+            784,
+            883,
+            873
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "With the two-phase design, Phase 2 preserves an I/O footprint similar to that of standard residual connections, whereas the main additional cost arises from Phase 1 inter-block attention. Because these inter-block reads are amortized across all layers in a block through batching, the total per-layer memory access cost remains only $( \\frac { N } { S } + 3 ) d$ reads and $2 d$ writes (Table 1). This is substantially lower than the residual-stream I/O of prior residual generalizations such as $( \\mathrm { m } ) \\mathrm { H C }$ under typical settings. In practice, Phase 1 can also partially overlap with the computation of the first layer in the block, further reducing its wall-clock impact. As a result, the end-to-end inference latency overhead is less than $2 \\%$ on typical inference workloads. ",
+        "bbox": [
+            112,
+            882,
+            882,
+            911
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            751,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "discarded",
+        "text": "7 ",
+        "bbox": [
+            493,
+            935,
+            503,
+            946
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            114,
+            90,
+            883,
+            160
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/2e5c5a8b75156b430dc83fbc79188eb7590a7f368c3720f0542b9a2ccca22639.jpg",
+        "table_caption": [
+            "Table 1: Memory access cost per token per layer incurred by the residual mechanism under each scheme. The internal $_ { \\mathrm { I / O } }$ of the layer function $f _ { l }$ is excluded. For AttnRes, both Full and Block variants use the two-phase inference schedule described in Appendix B; amortized costs are averaged over $N$ layers within a block. Typical values: $L { = } 1 2 8$ , $N { = } 8 .$ , $S { = } L / N { = } 1 6$ , $m { = } 4$ . "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"2\"></td><td rowspan=\"2\">Operation</td><td rowspan=\"2\">Read</td><td rowspan=\"2\">Write</td><td colspan=\"2\">Total I/O</td></tr><tr><td>Symbolic</td><td>Typical</td></tr><tr><td>Standard Residuals</td><td>Residual Merge</td><td>2d</td><td>d</td><td>3d</td><td>3d</td></tr><tr><td rowspan=\"5\">mHC (m streams)</td><td>Compute αl, βl, Al</td><td>md</td><td>m2+2m</td><td></td><td></td></tr><tr><td>Apply α</td><td>md+m</td><td>d</td><td rowspan=\"3\">(8m+2)d+2m2+4m</td><td rowspan=\"3\">34d</td></tr><tr><td>Apply β</td><td>d+m</td><td>md</td></tr><tr><td>Apply Al</td><td>md+m2</td><td>md</td></tr><tr><td>Residual Merge</td><td>2md</td><td>md</td><td></td></tr><tr><td rowspan=\"4\">AttnRes</td><td>Full</td><td>Phase 1 (amortized)</td><td>(N −1)d</td><td>d</td><td rowspan=\"2\">(S+N)d 24d</td></tr><tr><td rowspan=\"2\"></td><td>Phase 2</td><td>(S−1)d</td><td>d</td></tr><tr><td>Phase 1 (amortized)</td><td></td><td>d</td><td rowspan=\"2\">(N +5) d 5.5d</td></tr><tr><td>Block</td><td>Phase 2</td><td>$\\rac$</td><td>d</td></tr></table>",
+        "bbox": [
+            114,
+            219,
+            882,
+            428
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Memory-efficient prefilling. Storing block representations during prefilling requires $N \\cdot T \\cdot d$ elements, which incurs $1 5 \\mathrm { G B }$ of memory for a 128K-token sequence with 8 blocks. We mitigate this by sharding these representations along the sequence dimension across $P$ tensor-parallel devices, allowing Phase 1 to execute independently on local sequence shards. The Phase 2 online-softmax merge then integrates into the standard TP all-reduce communication path: the output is reduce-scattered, merged locally, and reconstructed via all-gather, naturally admitting kernel fusion with operations like RMSNorm. This reduces the per-device memory footprint to $N \\cdot ( T / P ) \\cdot d$ —lowering the 128K-context example from 15 GB to roughly $1 . 9 \\mathrm { G B }$ per device. Combined with chunked prefill (e.g., 16K chunk size), the overhead further reduces to under $0 . 3 \\mathrm { G B }$ per device. ",
+        "bbox": [
+            114,
+            454,
+            882,
+            565
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "5 Experiments ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            585,
+            253,
+            602
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Architecture Details. Our architecture is identical to Kimi Linear [69], a Mixture-of-Experts (MoE) Transformer following the Moonlight [28] / DeepSeek-V3 [9] design, which interleaves Kimi Delta Attention (KDA) and Multi-Head Latent Attention (MLA) layers in a 3:1 ratio, each followed by an MoE feed-forward layer. The only modification is the addition of AttnRes to the residual connections; all other components (model depth, hidden dimensions, expert routing, and MLP structure) remain unchanged. AttnRes introduces only one RMSNorm and one pseudo-query vector ${ \\pmb w } _ { l } \\in \\mathbb { R } ^ { d }$ per layer, amounting to a negligible fraction of the total parameter count. Crucially, all pseudo-query vectors must be initialized to zero. This ensures that the initial attention weights $\\alpha _ { i \\to l }$ are uniform across source layers, which reduces AttnRes to an equal-weight average at the start of training and prevents training volatility, as we validated empirically. ",
+        "bbox": [
+            116,
+            616,
+            883,
+            728
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "5.1 Scaling Laws ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            744,
+            246,
+            760
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "We sweep five model sizes (Table 2) and train three variants per size: a PreNorm baseline, Full AttnRes, and Block AttnRes with $\\approx 8$ blocks. They are trained with an 8192-token context window and a cosine learning rate schedule. Within each scaling law size group, all variants share identical hyperparameters selected under the baseline to ensure fair comparison; this setup intentionally favors the baseline and thus makes the comparison conservative. Following standard practice, we fit power-law curves of the form ${ \\mathcal { L } } = A \\times C ^ { - \\alpha }$ [22, 15], where $\\mathcal { L }$ is validation loss and $C$ is compute measured in PFLOP/s-days. ",
+        "bbox": [
+            116,
+            770,
+            882,
+            853
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Scaling Behavior. Fig. 4 presents the fitted scaling curves. The Baseline follows $\\mathcal { L } = 1 . 8 9 1 \\times C ^ { - 0 . 0 5 7 }$ , while Block AttnRes fits $\\mathcal { L } = 1 . 8 7 \\bar { 0 } \\times \\bar { C } ^ { - 0 . 0 5 8 }$ , and Full AttnRes fits $\\mathcal { L } = 1 . 8 6 5 \\times C ^ { - 0 . 0 5 7 }$ . All three variants exhibit a similar slope, but AttnRes consistently achieves lower loss across the entire compute range. Based on the fitted curves, at 5.6 ",
+        "bbox": [
+            116,
+            868,
+            882,
+            911
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            753,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "discarded",
+        "text": "8 ",
+        "bbox": [
+            493,
+            936,
+            503,
+            946
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/5f2ec0d0617d85c50069ad20d8ed8117786f43f13950526474ee456f5b104d95.jpg",
+        "table_caption": [
+            "Table 2: Baseline vs Block AttnRes $N = 8$ ) vs Full AttnRes vs mHC(-lite) [64]: Model configurations, Hyperparameters, and Validation Loss. "
+        ],
+        "table_footnote": [
+            "† Denotes the number of activated parameters in our MoE models, excluding embeddings. ‡ All models were trained with a context length of 8192. ⋆ $L _ { b } = L / 2$ denotes the number of Transformer blocks. "
+        ],
+        "table_body": "<table><tr><td rowspan=\"2\"># Act. Params†</td><td rowspan=\"2\">Tokens</td><td rowspan=\"2\">Lb</td><td rowspan=\"2\">H</td><td rowspan=\"2\">dmodel</td><td rowspan=\"2\">dff</td><td rowspan=\"2\">br</td><td rowspan=\"2\">batch size‡</td><td colspan=\"4\">Val. Loss</td></tr><tr><td>Baseline</td><td>Block AttnRes</td><td>Full AttnRes</td><td>mHC(-lite)</td></tr><tr><td>194M</td><td>38.7B</td><td>12</td><td>12</td><td>896</td><td>400</td><td>2.99 × 10−3</td><td>192</td><td>1.931</td><td>1.909</td><td>1.899</td><td>1.906</td></tr><tr><td>241M</td><td>45.4B</td><td>13</td><td>13</td><td>960</td><td>432</td><td>2.80 × 10−3</td><td>256</td><td>1.895</td><td>1.875</td><td>1.874</td><td>1.869</td></tr><tr><td>296M</td><td>62.1B</td><td>14</td><td>14</td><td>1024</td><td>464</td><td>2.50 × 10-3</td><td>320</td><td>1.829</td><td>1.809</td><td>1.804</td><td>1.807</td></tr><tr><td>436M</td><td>87.9B</td><td>16</td><td>16</td><td>1168</td><td>528</td><td>2.20 × 10-3</td><td>384</td><td>1.766</td><td>1.746</td><td>1.737</td><td>1.747</td></tr><tr><td>528M</td><td>119.0B</td><td>17</td><td>17</td><td>1264</td><td>560</td><td>2.02 × 10−3</td><td>432</td><td>1.719</td><td>1.693</td><td>1.692</td><td>1.694</td></tr></table>",
+        "bbox": [
+            114,
+            122,
+            882,
+            228
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/31dc3e3bdeadab2b184fd452acb6854d4e99f92828016b319b260a66245424ea.jpg",
+        "image_caption": [
+            "Figure 4: Scaling law curves for Attention Residuals. Both Full and Block AttnRes consistently outperform the baseline across all scales. Block AttnRes closely tracks Full AttnRes, recovering most of the gain at the largest scale. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            325,
+            294,
+            676,
+            549
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "PFLOP/s-days, Block AttnRes reaches 1.692 versus the Baseline’s 1.714, equivalent to a $1 . 2 5 \\times$ compute advantage. The gap between Full and Block AttnRes narrows with scale, shrinking to just 0.001 at the largest size. We also list mHC(-lite) [64] in Table 2 for reference. Full AttnRes outperforms mHC, while Block AttnRes matches it at lower memory I/O per layer: $5 . 5 d$ versus $3 4 d$ for mHC with $m { = } 4$ streams (Table 1). ",
+        "bbox": [
+            116,
+            621,
+            882,
+            676
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "5.2 Main Results ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            702,
+            246,
+            717
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Training recipe. The largest models we study are based on the full Kimi Linear 48B configuration: 27 Transformer blocks (54 layers) with 8 out of 256 routed experts plus 1 shared expert, yielding 48B total and 3B activated parameters. This model applies Block AttnRes with 6 layers per block, producing 9 blocks plus the token embedding for a total of 10 depth-wise sources. ",
+        "bbox": [
+            116,
+            731,
+            883,
+            786
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "We follow the same data and training recipe as the Kimi Linear 1.4T-token runs [69]: all models are pre-trained with a 4096-token context window, the Muon optimizer [28], and a WSD (Warmup–Stable–Decay) learning rate schedule [16], with a global batch size of 8M tokens. Training of the final model proceeds in two stages: (i) a WSD pre-training phase on 1T tokens, followed by (ii) a mid-training phase on $\\approx 4 0 0 \\mathrm { B }$ high-quality tokens, following the annealing recipe of Moonlight [28]. ",
+        "bbox": [
+            114,
+            792,
+            883,
+            863
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "After mid-training, we continue training with progressively longer sequence length of 32K tokens. Since our architecture uses hybrid KDA/MLA attention [69], where MLA operates without positional encodings (NoPE) [61], context extension requires no modifications such as YaRN [37] or attention temperature rescaling. ",
+        "bbox": [
+            116,
+            869,
+            882,
+            911
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            751,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "discarded",
+        "text": "9 ",
+        "bbox": [
+            493,
+            935,
+            503,
+            946
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/0eb19ef2bed04b434d606496dfd725082d2099b8a13c2b59da42bfb76a2eea39.jpg",
+        "image_caption": [
+            "Figure 5: Training dynamics of Baseline and Block AttnRes. (a) Validation loss during training. (b) Each transformer block’s output magnitude at the end of training. (c) Each transformer block’s gradient magnitude. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            117,
+            92,
+            864,
+            297
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Training dynamics. We compare the training dynamics of our final Baseline and Block AttnRes models over 1T tokens in Fig. 5. ",
+        "bbox": [
+            117,
+            362,
+            879,
+            391
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "• Validation loss: AttnRes achieves consistently lower validation loss throughout training, with the gap widening during the decay phase and resulting in a notably lower final loss.   \n• Output magnitude: The Baseline suffers from the PreNorm dilution problem [60, 27]: as hidden-state magnitudes grow monotonically with depth, deeper layers are compelled to learn increasingly large outputs from fixed-scale normalized inputs to remain influential. Block AttnRes confines this growth within each block, as selective aggregation at block boundaries resets the accumulation, yielding a bounded periodic pattern.   \n• Gradient magnitude: With all residual weights fixed to 1, the Baseline provides no means of regulating gradient flow across depth, leading to disproportionately large gradients in the earliest layers. The learnable softmax weights in Block AttnRes (Fig. 8) introduce competition among sources for probability mass, resulting in a substantially more uniform gradient distribution. ",
+        "bbox": [
+            112,
+            400,
+            885,
+            553
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "table",
+        "img_path": "images/4a4ebeffa5e24f8c69c549a4a1d95db3d65b04d399eed38951b5522567d72039.jpg",
+        "table_caption": [
+            "Table 3: Performance comparison of AttnRes with the baseline, both after the same pre-training recipe. Best per-row results are bolded. "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td colspan=\"2\"></td><td>Baseline</td><td>AttnRes</td></tr><tr><td rowspan=\"7\">General</td><td>MMLU</td><td>73.5</td><td>74.6</td></tr><tr><td>MMLU-Pro</td><td>52.2</td><td>52.2</td></tr><tr><td>GPQA-Diamond</td><td>36.9</td><td>44.4</td></tr><tr><td>BBH</td><td>76.3</td><td>78.0</td></tr><tr><td>ARC-Challenge</td><td>64.6</td><td>65.7</td></tr><tr><td>HellaSwag</td><td>83.2</td><td>83.4</td></tr><tr><td>TriviaQA</td><td>69.9</td><td>71.8</td></tr><tr><td rowspan=\"6\">Math &amp; Code</td><td>GSM8K</td><td>81.7</td><td>82.4</td></tr><tr><td>MGSM</td><td>64.9</td><td>66.1</td></tr><tr><td>Math</td><td>53.5</td><td>57.1</td></tr><tr><td>CMath</td><td>84.7</td><td>85.1</td></tr><tr><td>HumanEval</td><td>59.1</td><td>62.2</td></tr><tr><td>MBPP</td><td>72.0</td><td>73.9</td></tr><tr><td rowspan=\"2\">Chinese</td><td>CMMLU</td><td>82.0</td><td>82.9</td></tr><tr><td>C-Eval</td><td>79.6</td><td>82.5</td></tr></table>",
+        "bbox": [
+            287,
+            607,
+            707,
+            858
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Downstream performance. Following the evaluation protocol of Kimi Linear [69], we assess both models across three areas (Table 3): ",
+        "bbox": [
+            111,
+            882,
+            879,
+            911
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            753,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            44,
+            573,
+            56
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "discarded",
+        "text": "10 ",
+        "bbox": [
+            490,
+            935,
+            508,
+            946
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "table",
+        "img_path": "images/4f34d10c8293fa7f106efad9f6b9e8564feb295921526cf6dc03eaa739742ba6.jpg",
+        "table_caption": [
+            "Table 4: Ablation on key components of AttnRes (16-layer model). "
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Variant</td><td>Loss</td></tr><tr><td>Baseline (PreNorm)</td><td>1.766</td></tr><tr><td>DenseFormer [36]</td><td>1.767</td></tr><tr><td>mHC [59]</td><td>1.747</td></tr><tr><td>AttnRes Full</td><td>1.737</td></tr><tr><td>w/ input-dependent query</td><td>1.731</td></tr><tr><td>w/ input-independent mixing</td><td>1.749</td></tr><tr><td>w/ sigmoid</td><td>1.741</td></tr><tr><td>w/o RMSNorm</td><td>1.743</td></tr><tr><td>SWA (W = 1 + 8)</td><td>1.764</td></tr><tr><td>Block (S = 4)</td><td>1.746</td></tr><tr><td>w/ multihead (H = 16)</td><td>1.752</td></tr><tr><td>w/o RMSNorm</td><td>1.750</td></tr></table>",
+        "bbox": [
+            114,
+            122,
+            480,
+            345
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "image",
+        "img_path": "images/dcd6e8772b010f09566be8b24dd1eea253c31c487879856f7afe3e1dddd5de17.jpg",
+        "image_caption": [
+            "Figure 6: Effect of block size on validation loss (16-layer model). "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            503,
+            90,
+            879,
+            325
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "• Language understanding and reasoning: MMLU [13], MMLU-Pro Hard [55], GPQA-Diamond [41], BBH [48], ARC-Challenge [6], HellaSwag [65], and TriviaQA [21]. ",
+        "bbox": [
+            117,
+            377,
+            882,
+            406
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "• Reasoning (Code and Math): GSM8K [7], MGSM [44], Math [25], CMath [14], HumanEval [5], and MBPP [1]. ",
+        "bbox": [
+            114,
+            412,
+            872,
+            429
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "• Chinese language understanding: CMMLU [26] and C-Eval [19]. ",
+        "bbox": [
+            117,
+            434,
+            573,
+            450
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "As shown in Table 3, Block AttnRes matches or outperforms the baseline on all benchmarks. The improvements are particularly pronounced on multi-step reasoning tasks such as GPQA-Diamond $( + 7 . 5 )$ and Minerva Math $( + 3 . 6 )$ , as well as code generation such as HumanEval $( + 3 . 1 )$ , while knowledge-oriented benchmarks such as MMLU $( + 1 . 1 )$ and TriviaQA $( + 1 . 9 )$ also show solid gains. This pattern is consistent with the hypothesis that improved depth-wise information flow benefits compositional tasks, where later layers can selectively retrieve and build upon earlier representations. ",
+        "bbox": [
+            114,
+            462,
+            883,
+            545
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "5.3 Ablation Study ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            564,
+            259,
+            579
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "We conduct ablation studies on the 16-head model from Table 2 to validate key design choices in AttnRes (Table 4). All models share identical hyperparameters and compute budget. ",
+        "bbox": [
+            120,
+            590,
+            882,
+            619
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Comparison with prior methods. We compare AttnRes against the PreNorm baseline (loss 1.766) and two representative methods that generalize residual connections. DenseFormer [36] grants each layer access to all previous outputs but combines them with fixed, input-independent scalar coefficients; it shows no gain over the baseline (1.767), highlighting the importance of input-dependent weighting. mHC [59] introduces input dependence through $m$ parallel streams with learned mixing matrices, improving to 1.747. AttnRes takes this further with explicit content-dependent selection via softmax attention: Full AttnRes achieves 1.737 and Block AttnRes 1.746, outperforming both methods with only a single query vector per layer. ",
+        "bbox": [
+            116,
+            637,
+            883,
+            734
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Cross-layer access. We compare three granularities of cross-layer access. Full AttnRes follows directly from the time–depth duality $( \\ S 3 )$ , applying attention over all previous layers, and achieves the lowest loss (1.737). A simple way to reduce its memory cost is sliding-window aggregation (SWA), which retains only the most recent $W { = } 8$ layer outputs plus the token embedding; it improves over baseline (1.764) but falls well short of both Full and Block AttnRes, suggesting that selectively accessing distant layers matters more than attending to many nearby ones. ",
+        "bbox": [
+            116,
+            752,
+            882,
+            821
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Block AttnRes offers a better trade-off: with block size $S { = } 4$ it reaches 1.746 while keeping memory overhead constant per layer. Fig. 6 sweeps $S$ across the full spectrum from $S { = } 1$ (i.e. Full AttnRes) to increasingly coarse groupings. Loss degrades gracefully as $S$ grows, with $S { = } 2 , 4 , 8$ all landing near 1.746 while larger blocks $S { = } 1 6 , 3 2$ ) move toward baseline. In practice, we fix the number of blocks to $\\approx 8$ for infrastructure efficiency $( \\ S 4 )$ . As future hardware alleviates memory capacity constraints, adopting finer-grained block sizes or Full AttnRes represents a natural pathway to further improve performance. ",
+        "bbox": [
+            116,
+            827,
+            882,
+            911
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            753,
+            45,
+            882,
+            55
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            490,
+            935,
+            504,
+            946
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "image",
+        "img_path": "images/590c9db6b08b2f35c3aba7c8618fd2f190c6f55e4b9058f5a0a4ae059fe64fb2.jpg",
+        "image_caption": [
+            "Figure 7: Architecture sweep under fixed compute $( \\approx 6 . 5 \\times 1 0 ^ { 1 9 } \\ \\mathrm { F L O P s , \\approx 2 . 3 \\times 1 0 ^ { 8 } }$ active parameters). Each cell reports validation loss for a $( d _ { \\mathrm { m o d e l } } / L _ { b }$ , $H / L _ { b } )$ configuration, where $L _ { b } = L / 2$ is the number of Transformer blocks; the star marks the optimum. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            124,
+            87,
+            883,
+            333
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Component design. We further ablate individual components of the attention mechanism: ",
+        "bbox": [
+            117,
+            406,
+            717,
+            421
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "• Input-dependent query. A natural extension is to make the query input-dependent by projecting it from the current hidden state. This further lowers loss to 1.731, but introduces a $d \\times d$ projection per layer and requires sequential memory access during decoding, so we default to the learned query. ",
+        "bbox": [
+            114,
+            433,
+            883,
+            474
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "• Input-independent mixing. We removed the query and key and replaced them with learnable, input-independent scalars to weigh previous layers, which hurts performance (1.749 vs. 1.737). ",
+        "bbox": [
+            119,
+            478,
+            882,
+            507
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "• softmax vs. sigmoid. Replacing softmax with sigmoid degrades performance (1.741). We attribute this to softmax’s competitive normalization, which forces sharper selection among sources. ",
+        "bbox": [
+            117,
+            511,
+            882,
+            540
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "• Multihead attention. We test per-head depth aggregation $H { = } 1 6$ on Block AttnRes, allowing different channel groups to attend to different source layers. This hurts performance (1.752 vs. 1.746), indicating that the optimal depth-wise mixture is largely uniform across channels: when a layer’s output is relevant, it is relevant as a whole. ",
+        "bbox": [
+            114,
+            544,
+            888,
+            585
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "• RMSNorm on keys. Removing RMSNorm degrades both Full AttnRes (1.743) and Block AttnRes (1.750). For Full AttnRes, it prevents individual layers with naturally larger outputs from dominating the softmax. This becomes even more critical for Block AttnRes, as block-level representations accumulate over more layers and can develop large magnitude differences; RMSNorm prevents these from biasing the attention weights. ",
+        "bbox": [
+            116,
+            590,
+            883,
+            646
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "5.4 Analysis ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            662,
+            214,
+            676
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "5.4.1 Optimal Architecture ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            686,
+            316,
+            702
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "To understand how AttnRes reshapes optimal architectural scaling, we perform a controlled capacity reallocation study under a fixed compute and parameter budget. Our central question is whether AttnRes alters the preferred depth–width–attention trade-off, and in particular, given its potential strength on the depth dimension, whether it favors deeper models compared to conventional Transformer design heuristics. To isolate structural factors directly coupled to depth, we fix the per-expert MLP expansion ratio based on internal empirical observations $( d _ { \\mathrm { f f } } / d _ { \\mathrm { m o d e l } } \\overset { \\cdot } { \\approx } \\overset { \\cdot } { 0 . 4 5 } )$ . We further fix total training compute $( \\mathrm { F L O P s \\approx 6 . 5 \\times 1 0 ^ { 1 9 } } )$ and active parameters $( \\approx 2 . 3 \\times 1 0 ^ { 8 } )$ ), ensuring that any performance variation arises purely from architectural reallocation rather than overall capacity differences. Under this constrained budget, we enumerate 25 configurations on a $5 \\times 5$ grid over $d _ { \\mathrm { m o d e l } } / L _ { b } \\stackrel { \\cdot } { \\in } \\{ 1 5 , 3 0 , 4 5 , 6 0 , 7 5 \\}$ and $H / L _ { b } \\in \\{ 0 . 3 , 0 . 4 , 0 . \\bar { 5 } , 0 . 6 , 0 . 7 \\}$ , where $L _ { b } = L / 2$ is the number of Transformer blocks and $H$ the number of attention heads. The results are shown in Fig. 7. ",
+        "bbox": [
+            114,
+            710,
+            883,
+            849
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Both heatmaps exhibit a shared pattern: loss decreases with growing $d _ { \\mathrm { m o d e l } } / L _ { b }$ and shrinking $H / L _ { b }$ , and both methods reach their optima at $H / L _ { b } \\approx 0 . 3$ . Despite this shared trend, AttnRes achieves a lower loss than the baseline in each of the 25 configurations, by 0.019–0.063. The most apparent difference lies in the location of the optimum: the baseline achieves its lowest loss at $d _ { \\mathrm { m o d e l } } / L _ { b } \\approx 6 0$ (1.847), whereas AttnRes shifts it to $d _ { \\mathrm { m o d e l } } / L _ { b } \\approx 4 5$ (1.802). Under a fixed parameter budget, a lower $d _ { \\mathrm { m o d e l } } / L _ { b }$ corresponds to a deeper, narrower network, suggesting that AttnRes can exploit additional depth more effectively. We note that this preference for depth does not directly translate to a deployment recommendation, as deeper models generally incur higher inference latency due to their sequential computation [39]. Rather, this sweep serves as a diagnostic that reveals where AttnRes benefits most, and this depth preference can be factored into the architecture selection alongside inference cost. ",
+        "bbox": [
+            116,
+            856,
+            883,
+            911
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            753,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "discarded",
+        "text": "12 ",
+        "bbox": [
+            490,
+            935,
+            508,
+            946
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "image",
+        "img_path": "images/1a1a6db1c8b7fbd25e80c21efe466864cb4d505cb97c15841f7d9c3cf838830f.jpg",
+        "image_caption": [
+            "Figure 8: Depth-wise attention weight distributions for a 16-head model with full (top) and block (bottom) Attention Residuals, averaged over tokens. The model has 16 attention and 16 MLP layers. Each row shows how the lth attention (left) or MLP (right) layer distributes weight over previous sources. Diagonal dominance indicates locality remains the primary information pathway, while persistent weights on source 0 (embedding) and occasional off-diagonal concentrations reveal learned skip connections. Block attention $N = 8$ ) recovers the essential structure with sharper, more decisive weight distributions. "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            117,
+            89,
+            885,
+            430
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            116,
+            546,
+            883,
+            616
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "5.4.2 Analyzing Learned AttnRes Patterns ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            648,
+            423,
+            664
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "We visualize the learned weights $\\alpha _ { i \\to l }$ in Fig. 8 for the 16-head model (from Table 2) with both full and block ( $\\scriptstyle \\mathbf { N } = 8 )$ AttnRes. Each heatmap shows how the lth attention or MLP layer (rows) allocates its attention over previous sources (columns), with pre-attention and pre-MLP layers shown separately. We highlight three key observations: ",
+        "bbox": [
+            114,
+            680,
+            883,
+            723
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "• Preserved locality. Each layer attends most strongly to its immediate predecessor, yet selective off-diagonal concentrations emerge (e.g., layer 4 attending to early sources, layers 15–16 reaching back under the block setting), indicating learned skip connections beyond the standard residual path. ",
+        "bbox": [
+            116,
+            742,
+            883,
+            785
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "• Layer specialization. The embedding $h _ { 1 }$ retains non-trivial weight throughout, especially in pre-attention layers. Pre-MLP inputs show sharper diagonal reliance on recent representations, while pre-attention inputs maintain broader receptive fields, consistent with attention routing information across layers and MLPs operating locally. ",
+        "bbox": [
+            116,
+            805,
+            885,
+            848
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "• Block AttnRes preserves structure. Diagonal dominance, embedding persistence, and layer specialization all transfer from the full to the block variant, suggesting that block-wise compression acts as implicit regularization while preserving the essential information pathways. ",
+        "bbox": [
+            117,
+            869,
+            883,
+            911
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            753,
+            45,
+            882,
+            55
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            44,
+            573,
+            56
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            490,
+            935,
+            506,
+            946
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "table",
+        "img_path": "images/f6e6e3853718f23af089ca5ffca8913cd6fe9113c32a0032056c9f38cdfe555f.jpg",
+        "table_caption": [
+            "Table 5: Comparison of residual update mechanisms. Weight: whether the mixing coefficients are architecture-fixed, learned-static (fixed after training), or input-dependent (dynamic). Source: which earlier representations layer $l$ can access. Normalization is omitted from most formulas for clarity. "
+        ],
+        "table_footnote": [
+            "1 ConvPool: pooling operation followed by convolution (channel projection). $^ { 2 } \\phi ( { \\pmb q } , { \\pmb k } ) = \\overset { \\cdot } { \\exp } \\left( { \\pmb q } ^ { \\top } \\mathrm { \\hat { R M S N o r m } } ( { \\pmb k } ) \\right)$ ; $\\mathbf { k } _ { i } = \\mathbf { v } _ { i }$ ; ${ \\pmb v } _ { 0 } = { \\pmb h } _ { 1 }$ , ${ \\pmb v } _ { i \\geq 1 } = f _ { i } ( { \\pmb h } _ { i } )$ . softmax jointly normalized over all sources. 3 Same $\\phi$ and normalization as Full; $\\pmb { v } _ { i } = \\pmb { b } _ { i } , \\ \\pmb { v } _ { n } ^ { j } = \\pmb { b } _ { n } ^ { j }$ . "
+        ],
+        "table_body": "<table><tr><td>Method</td><td>Update rule</td><td>Weight</td><td>Source</td></tr><tr><td colspan=\"4\">Single-state recurrence: layer l receives only hl−1</td></tr><tr><td>Residual [12]</td><td>hl = hl−1 + fl−1(hl−1)</td><td>Fixed</td><td>hl-1</td></tr><tr><td>ReZero [2]</td><td>hl = hl−1 + αl · fl−1(hl−1)</td><td>Static</td><td>hl-1</td></tr><tr><td>LayerScale [50]</td><td>hl = hl−1 + diag(λl) · fl−1(hl−1)</td><td>Static</td><td>hl-1</td></tr><tr><td>Highway [45]</td><td>hl = (1−gl)  hl−1 + gl  fl−1(hl−1)</td><td>Dynamic</td><td>hl-1</td></tr><tr><td>DeepNorm [54]</td><td>hl = Norm(α hl−1 + fl−1(hl−1))</td><td>Fixed</td><td>hl-1</td></tr><tr><td>KEEL [4]</td><td>hl = Norm(α hl−1 + fl−1(Norm(hl−1)))</td><td>Fixed</td><td>hl-1</td></tr><tr><td colspan=\"4\">Multi-state recurrence: layer l receives m streams</td></tr><tr><td>SiameseNorm [27]</td><td>h1=Norm(h1−1+yl−1); h2=h−1+yl−1</td><td>Fixed</td><td>2 streams</td></tr><tr><td>HC/mHC [72, 59]</td><td>Hl = Hl−1Al + fl−1(Hl−1αl−1) βT−1</td><td>Dynamic</td><td>m streams</td></tr><tr><td>DDL [67]</td><td>Hl = (I−βlklkT )Hl−1 + βlklvτ</td><td>Dynamic</td><td>dv streams</td></tr><tr><td colspan=\"4\">Cross-layer access: layer l can access individual earlier-layer outputs</td></tr><tr><td>DenseNet [17]</td><td>hl = ConvPool([h1; f1(h1); . . .; fl−1(hl−1)])</td><td>Static</td><td>[h1, . . . , hhl−1]</td></tr><tr><td>DenseFormer [36]</td><td>hl = α0→l h1 + ∑i=1 αi→ fi(hi)</td><td>Static</td><td>[h1, . . . , hl−1]</td></tr><tr><td>MRLA [10]</td><td>hl = ∑ i=1 σ(ConvPool(f−1(hl−1))T σ(ConvPool(fi(hi)) Conv(fi(hi))</td><td>Dynamic</td><td>[h1, . . . hl−1]</td></tr><tr><td>AttnRes (ours)</td><td>Full2 hl ∝ ∑=0 φ(wl, ki) vi</td><td></td><td>Dynamic</td></tr><tr><td>Block3</td><td>hl ∝ ∑ n−1 φ(wl, ki) vi + φ(ωl, kn) vj</td><td>Dynamic</td><td>[h1,...,hl−1] [bo, . . . , bn−1, bn]</td></tr></table>",
+        "bbox": [
+            112,
+            133,
+            885,
+            426
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "6 Discussions ",
+        "text_level": 1,
+        "bbox": [
+            114,
+            492,
+            243,
+            510
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "6.1 Sequence-Depth Duality ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            523,
+            323,
+            539
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Residual connections propagate information over depth via a fixed recurrence $h _ { l } = h _ { l - 1 } + f _ { l - 1 } ( h _ { l - 1 } )$ , much as RNNs propagate information over time. Test-Time Training (TTT) [46] formalizes the sequence side of this analogy (cf. Fast Weight Programmers [43, 32]), casting each recurrent step as gradient descent on a self-supervised loss: ",
+        "bbox": [
+            114,
+            549,
+            883,
+            592
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "equation",
+        "img_path": "images/b798613cc1323570532e79940ebf416133f6aeb572fbfff8f8ff6766176bc0cf.jpg",
+        "text": "$$\n\\mathbf { W } _ { t } = \\mathbf { W } _ { t - 1 } - \\eta \\nabla \\ell \\big ( \\mathbf { W } _ { t - 1 } ; \\mathbf { \\em x } _ { t } \\big ) ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            383,
+            595,
+            612,
+            613
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "where a slow network parameterizes $\\ell$ and the state W is updated once per token. When $f$ is linear, this reduces to vanilla linear attention $\\begin{array} { r } { \\bar { \\mathbf { S } } _ { t } = \\mathbf { S } _ { t - 1 } + k _ { t } \\pmb { v } _ { t } ^ { \\top } } \\end{array}$ . The standard residual exhibits the same additive form along depth, with $h _ { l }$ serving as the state and each layer $f _ { l }$ acting as one “gradient step.” ",
+        "bbox": [
+            114,
+            617,
+            883,
+            660
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "As noted by [4], this duality extends to richer variants (Table 5). Data-dependent gates on the sequence side [47, 63] correspond to Highway networks [45] on the depth side; the delta rule [42, 62, 69] corresponds to DDL [67]; and MRLA [10] mirrors GLA’s [63] gated linear attention. These methods all refine the recurrent update while remaining within the recurrence paradigm. AttnRes goes a step further and replaces depth-wise recurrence with direct cross-layer attention, just as Transformers replaced temporal recurrence with self-attention. Since the number of layers in current architectures remains well within the practical regime of softmax attention, we adopt vanilla depth-wise attention. Incorporating more expressive yet memory-efficient (e.g. linear-complexity) alternatives is a natural direction for future work. ",
+        "bbox": [
+            114,
+            666,
+            883,
+            776
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "6.2 Residual Connections as Structured Matrices ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            792,
+            468,
+            808
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "The residual variants discussed above can all be viewed as weighted aggregations over previous layer outputs. We formalize this with a depth mixing matrix $\\mathbf { M } \\in \\mathbb { R } ^ { L \\times L }$ , where $\\mathbf { M } _ { i  l }$ is the weight that layer $l$ assigns to the output of layer $i$ . The variants differ in how these weights arise (fixed, learned, or input-dependent) and whether $\\mathbf { M }$ is constrained to low rank or allowed to be dense. The semiseparable rank of $\\mathbf { M }$ [8] offers a unified lens for comparing them. ",
+        "bbox": [
+            114,
+            818,
+            883,
+            875
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Concretely, the input to layer $l$ is $\\begin{array} { r } { \\pmb { h } _ { l } = \\sum _ { i = 0 } ^ { l - 1 } \\mathbf { M } _ { i  l } \\pmb { v } _ { i } } \\end{array}$ , where ${ \\pmb v } _ { 0 } = { \\pmb h } _ { 1 }$ (embedding) and ${ \\pmb v } _ { i } = f _ { i } ( { \\pmb h } _ { i } )$ for $i \\geq 1$ . Fig. 9 visualizes $\\mathbf { M }$ for representative methods; we derive each below. ",
+        "bbox": [
+            116,
+            880,
+            877,
+            911
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            751,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            490,
+            935,
+            506,
+            946
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "(m)HC ",
+        "bbox": [
+            676,
+            90,
+            712,
+            103
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "image",
+        "img_path": "images/420c0487430a40289ccaeac40e07248be4cc77aa1db75549fe948918a3846d0e.jpg",
+        "image_caption": [
+            "Highway "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            120,
+            109,
+            875,
+            170
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Block AttnRes ",
+        "bbox": [
+            658,
+            188,
+            728,
+            199
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "image",
+        "img_path": "images/7cc6cc55cfdfcb714eacd195bf8092ad6138ced45b83b39c173f92a6c0891616.jpg",
+        "image_caption": [
+            "Figure 9: Depth mixing matrices $\\mathbf { M }$ for four residual variants $L { = } 4$ ; Block AttnRes uses block size $S { = } 2$ ). Highway is shown with scalar gates for clarity. AttnRes panels show unnormalized $\\phi$ scores; background colors group entries that share the same source (Full AttnRes) or the same source block (Block AttnRes). "
+        ],
+        "image_footnote": [],
+        "bbox": [
+            117,
+            207,
+            877,
+            266
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "• Standard residual [12], $h _ { l } = h _ { l - 1 } + f _ { l - 1 } ( h _ { l - 1 } )$ . Expanding gives $\\begin{array} { r } { \\pmb { h } _ { l } = \\sum _ { i = 0 } ^ { l - 1 } \\pmb { v } _ { i } } \\end{array}$ , so $\\mathbf { M } _ { i \\to l } = 1$ for all $i < l$ and M is an all-ones lower-triangular matrix: ",
+        "bbox": [
+            116,
+            335,
+            880,
+            367
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "equation",
+        "img_path": "images/30916869e889bebae961a468579e37322b50f587760bf655efa2244a12128387.jpg",
+        "text": "$$\n{ \\left[ \\begin{array} { l } { h _ { 1 } } \\\\ { h _ { 2 } } \\\\ { \\vdots } \\\\ { h _ { L } } \\end{array} \\right] } = { \\left[ \\begin{array} { l l l l } { 1 } & { } & { } & { } \\\\ { 1 } & { 1 } & { } & { } \\\\ { \\vdots } & { \\vdots } & { \\ddots } & { } \\\\ { 1 } & { 1 } & { \\cdots } & { 1 } \\end{array} \\right] } { \\left[ \\begin{array} { l } { v _ { 0 } } \\\\ { v _ { 1 } } \\\\ { \\vdots } \\\\ { v _ { L - 1 } } \\end{array} \\right] }\n$$",
+        "text_format": "latex",
+        "bbox": [
+            383,
+            375,
+            627,
+            444
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "• Highway [45], ${ \\pmb h } _ { l } = ( 1 { - } g _ { l } ) { \\pmb h } _ { l - 1 } + g _ { l } f _ { l - 1 } ( { \\pmb h } _ { l - 1 } )$ (written here with scalar gates for clarity; the element-wise extension is straightforward). Defining the carry product $\\begin{array} { r } { \\gamma _ { i  l } ^ { \\times } : = \\prod _ { j = i + 1 } ^ { l } ( 1 - g _ { j } ) } \\end{array}$ , the weights are $\\mathbf { M } _ { 0  l } = \\gamma _ { 1  l } ^ { \\times }$ for the embedding and $\\mathbf { M } _ { i  l } = g _ { i + 1 } \\gamma _ { i + 1  l } ^ { \\times }$ for $i \\geq 1$ . Since the cumulative products factor through scalar gates, M is 1-semiseparable [8], the same rank as the standard residual but with input-dependent weights. The weights sum to one by construction, making Highway a softmax-free depth-wise instance of stick-breaking attention [49]. ",
+        "bbox": [
+            114,
+            453,
+            883,
+            532
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "• (m)HC [72, 59] maintain $m$ parallel streams $\\mathbf { H } _ { l } \\in \\mathbb { R } ^ { d \\times m }$ , updated via ",
+        "bbox": [
+            114,
+            535,
+            589,
+            551
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "equation",
+        "img_path": "images/be2cc2019b03eec40a76bbb23e4995af58e5b3ab7a9f10368522929c76b9653b.jpg",
+        "text": "$$\n\\mathbf { H } _ { l } = \\mathbf { H } _ { l - 1 } \\mathbf { A } _ { l } + f _ { l - 1 } \\big ( \\mathbf { H } _ { l - 1 } \\pmb { \\alpha } _ { l - 1 } \\big ) \\beta _ { l - 1 } ^ { \\top } ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            369,
+            558,
+            642,
+            579
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "where $\\mathbf { A } _ { l } \\in \\mathbb { R } ^ { m \\times m }$ is a learned transition matrix, $\\pmb { \\alpha } _ { l - 1 } \\in \\mathbb { R } ^ { m }$ mixes streams into a single input for $f _ { l - 1 }$ , and $\\beta _ { l - 1 } \\in \\mathbb { R } ^ { m }$ distributes the output back across streams. Unrolling the recurrence gives the effective weight ",
+        "bbox": [
+            127,
+            587,
+            887,
+            616
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "equation",
+        "img_path": "images/3e244f5f810361518aed04c35864c6be3d8c6f492df76874e7c7afabe1d48ec6.jpg",
+        "text": "$$\n\\mathbf { M } _ { i  l } = \\beta _ { i } ^ { \\top } \\mathbf { A } _ { i + 1  l } ^ { \\times } \\mathbf { \\alpha } \\mathbf { \\alpha } \\mathbf { \\alpha } _ { l } ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            419,
+            622,
+            589,
+            643
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "where $\\begin{array} { r } { \\mathbf { A } _ { i  j } ^ { \\times } : = \\prod _ { k = i + 1 } ^ { j } \\mathbf { A } _ { k } } \\end{array}$ . The $m \\times m$ transitions render ${ \\bf M } m$ -semiseparable [8]. mHC [59, 64] further constrains each ${ \\bf A } _ { l }$ to be doubly stochastic, stabilizing the cumulative products across depth. ",
+        "bbox": [
+            125,
+            654,
+            885,
+            684
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Full AttnRes computes $\\mathbf { M } _ { i  l } = \\alpha _ { i  l }$ via $\\phi ( \\pmb { w } _ { l } , \\pmb { k } _ { i } ) = \\mathrm { e x p } \\left( \\pmb { w } _ { l } ^ { \\top } \\mathrm { R M S N o r m } ( \\pmb { k } _ { i } ) \\right)$ with normalization, where $k _ { i } = v _ { i }$ are input-dependent layer outputs, yielding a dense, rank- $L$ M. ",
+        "bbox": [
+            120,
+            688,
+            883,
+            718
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Block AttnRes partitions layers into $N$ blocks $\\boldsymbol { B } _ { 1 } , \\dots , \\boldsymbol { B } _ { N }$ . For sources $i$ in a completed earlier block $B _ { n }$ , all share the block-level key/value $b _ { n }$ , so $\\mathbf { M } _ { i  l } = \\alpha _ { n  l }$ for every $i \\in \\boldsymbol { B } _ { n }$ . Within the current block, each layer additionally attends over the evolving partial sum $b _ { n } ^ { i - 1 }$ , introducing one extra distinct source per intra-block position. The effective rank of M therefore lies between $N$ and $N + S$ (where $S$ is the block size), interpolating between standard residual ( $N { = } 1 $ ) and Full AttnRes $\\scriptstyle { N = L } )$ ). ",
+        "bbox": [
+            114,
+            722,
+            882,
+            792
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Practicality. The structured-matrix perspective serves two purposes. First, it enables analytical insights that are not apparent from the recurrence form alone. The input-dependent M of AttnRes, for instance, reveals depth-wise attention sinks (§5.4.2), where certain layers consistently attract high weight regardless of input, mirroring the same phenomenon in sequence-wise attention [57]. Second, it informs new designs by exposing which properties of the kernel $\\phi$ matter. For example, when $\\phi$ decomposes as $\\phi ( \\pmb q , \\pmb k ) = \\varphi ( \\pmb q ) ^ { \\top } \\varphi ( \\pmb k )$ for some feature map $\\varphi$ [23], depth-wise attention collapses into a recurrence—precisely the structure underlying the MRLA–GLA and DDL–DeltaNet correspondences noted above. ",
+        "bbox": [
+            114,
+            813,
+            883,
+            911
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            751,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "discarded",
+        "text": "15 ",
+        "bbox": [
+            490,
+            935,
+            508,
+            946
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Prior Residuals as Depth-Wise Linear Attention The structured-matrix perspective further relates to the sequencedepth duality by showing that existing residual variants are, in effect, instances of linear attention over the depth axis. For example, the unrolled $\\mathrm { ( m ) H C }$ weight $\\mathbf { M } _ { i  l } = \\beta _ { i } ^ { \\top } \\mathbf { A } _ { i + 1  l } ^ { \\times } \\pmb { \\alpha } _ { l }$ (Eq. 10) admits a natural attention interpretation in which $\\alpha _ { l }$ plays the role of a query issued by layer $l$ , $\\beta _ { i }$ serves as a key summarizing the contribution of layer $i$ , and the cumulative transition $\\mathbf { A } _ { i + 1  l } ^ { \\times }$ acts as a depth-relative positional operator [69] governing the query–key interaction across intervening layers. Notably, the $m$ parallel streams correspond to state expansion [40, 29] along the depth axis, expandinreplacing Through $\\mathbf { \\bar { A } } _ { i + 1  l } ^ { \\times }$ urrent state fwith the iden methods like $d$ $d \\times m$ and thereby increasing the semiseparable rank of M. [58] show thatyields competitive performance, highlighting the role of state expansion. as depth-wise linear attention with matrix-valued states, while AttnRes $( \\mathrm { m } ) \\mathrm { H C }$   \nacts as depth-wise softmax attention. ",
+        "bbox": [
+            114,
+            90,
+            883,
+            229
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "7 Related Work ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            248,
+            263,
+            265
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Normalization, Scaling, and Depth Stability. The standard residual update $\\pmb { h } _ { l + 1 } = \\pmb { h } _ { l } + f _ { l } ( \\pmb { h } _ { l } )$ [12] presents a fundamental tension between normalization placement and gradient propagation. PostNorm [52] maintains bounded magnitudes but distorts gradients, as repeated normalization on the residual path compounds into gradient vanishing at depth [60]. PreNorm [34, 60] restores a clean identity path yet introduces unbounded magnitude growth: since $\\| \\bar { \\boldsymbol { h } } _ { l } \\|$ grows as $O ( L )$ , each layer’s relative contribution shrinks, compelling deeper layers to produce ever-larger outputs and limiting effective depth [27]. Subsequent work reconciles both desiderata via scaled residual paths [54], hybrid normalization [73], amplified skip connections [4], or learned element-wise gates [45] (see Table 5). AttnRes sidesteps this tension by replacing the additive recurrence with selective aggregation over individual earlier-layer outputs, avoiding both the cumulative magnitude growth of PreNorm and the repeated scale contraction of PostNorm. ",
+        "bbox": [
+            116,
+            279,
+            882,
+            404
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Multi-State Recurrence. All single-state methods above condition layer $l$ only on $\\boldsymbol { h } _ { l - 1 }$ , from which individual earlier-layer contributions cannot be selectively retrieved. Several methods address this by widening the recurrence to multiple parallel streams: Hyper-Connections [72] and its stabilized variant mHC [59] maintain $m$ streams with learned mixing matrices; DDL [67] maintains a matrix state updated via a delta-rule erase-and-write mechanism; SiameseNorm [27] maintains two parameter-shared streams—one PreNorm and one PostNorm—to preserve identity gradients and bounded representations. While these methods alleviate information compression, they still condition on the immediate predecessor’s state; AttnRes is orthogonal, providing selective access to individual earlier-layer outputs while remaining compatible with any normalization or gating scheme. We discuss the formal connection to Hyper-Connections in $\\ S 6 . 2$ . ",
+        "bbox": [
+            116,
+            417,
+            883,
+            542
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Cross-Layer Connectivity. A separate line of work bypasses the single-state bottleneck by giving each layer direct access to individual earlier-layer outputs. The simplest approach uses static weights: DenseNet [17] concatenates all preceding feature maps; ELMo [38] computes a softmax-weighted sum of layer representations with learned scalar weights; DenseFormer [36] and ANCRe [68] assign learned per-layer scalar coefficients fixed after training. For input-dependent aggregation, MUDDFormer [56] generates position-dependent weights via a small MLP across four decoupled streams; MRLA [10] applies element-wise sigmoid gating over all previous layers, though its separable query–key product is closer to linear attention than softmax-based retrieval. Other methods trade full cross-layer access for more targeted designs: Value Residual Learning [71] accesses only a single earlier layer; LAuReL [30] augments the residual with low-rank projections over the previous $k$ activations; Dreamer [24] combines sequence attention with depth attention and sparse experts. AttnRes combines softmax-normalized, input-dependent weights with selective access to all preceding layers through a single $d$ -dimensional pseudo-query per layer, and introduces a block structure reducing cost from $\\check { O (} L ^ { \\frac { 5 } { 2 } } )$ to $O ( L N )$ . Cache-based pipeline communication and a two-phase computation strategy (§ 4) make Block AttnRes practical at scale with negligible overhead. ",
+        "bbox": [
+            114,
+            558,
+            882,
+            737
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Conclusion ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            756,
+            210,
+            772
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Inspired by the duality between sequence and depth, we introduce AttnRes, which replaces fixed, uniform residual accumulation with learned, input-dependent depth-wise attention. We validate the method through ablation studies and scaling law experiments, showing that its gains persist across scales. Because Full AttnRes must access all preceding layer outputs at every layer, the memory footprint of cross-layer aggregation grows as $O ( L d )$ , which is prohibitive for large-scale models on current hardware. We therefore introduce Block AttnRes, which partitions layers into $N$ blocks and attends over block-level representations. Empirically, using about 8 blocks recovers most of the gains of Full AttnRes, while finer-grained blocking remains a promising direction as future hardware constraints relax. Together with cross-stage caching and a two-phase computation strategy, Block AttnRes is practical at scale, incurring only marginal training overhead and minimal inference overhead. ",
+        "bbox": [
+            116,
+            786,
+            882,
+            911
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            753,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            490,
+            936,
+            508,
+            946
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "References ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            89,
+            209,
+            106
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "[1] Jacob Austin et al. Program Synthesis with Large Language Models. 2021. arXiv: 2108.07732 [cs.PL]. URL: https://arxiv.org/abs/2108.07732.   \n[2] Thomas Bachlechner et al. ReZero is All You Need: Fast Convergence at Large Depth. 2020. arXiv: 2003.04887 [cs.LG]. URL: https://arxiv.org/abs/2003.04887.   \n[3] Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. Neural Machine Translation by Jointly Learning to Align and Translate. 2016. arXiv: 1409.0473 [cs.CL]. URL: https://arxiv.org/abs/1409.0473.   \n[4] Chen Chen and Lai Wei. Post-LayerNorm Is Back: Stable, ExpressivE, and Deep. 2026. arXiv: 2601.19895 [cs.LG]. URL: https://arxiv.org/abs/2601.19895.   \n[5] Mark Chen et al. Evaluating Large Language Models Trained on Code. 2021. arXiv: 2107.03374 [cs.LG]. URL: https://arxiv.org/abs/2107.03374.   \n[6] Peter Clark et al. “Think you have Solved Question Answering? Try ARC, the AI2 Reasoning Challenge”. In: arXiv:1803.05457v1 (2018).   \n[7] Karl Cobbe et al. Training Verifiers to Solve Math Word Problems. 2021. arXiv: 2110.14168 [cs.LG]. URL: https://arxiv.org/abs/2110.14168.   \n[8] Tri Dao and Albert Gu. “Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality”. In: CoRR abs/2405.21060 (2024). DOI: 10.48550/ARXIV.2405.21060. arXiv: 2405.21060. URL: https://doi.org/10.48550/arXiv.2405.21060.   \n[9] DeepSeek-AI et al. DeepSeek-V3 Technical Report. 2025. arXiv: 2412.19437 [cs.CL]. URL: https://arxiv. org/abs/2412.19437.   \n[10] Yanwen Fang et al. Cross-Layer Retrospective Retrieving via Layer Attention. 2023. arXiv: 2302 . 03985 [cs.CV]. URL: https://arxiv.org/abs/2302.03985.   \n[11] Andrey Gromov et al. The Unreasonable Ineffectiveness of the Deeper Layers. 2025. arXiv: 2403 . 17887 [cs.CL]. URL: https://arxiv.org/abs/2403.17887.   \n[12] Kaiming He et al. Deep Residual Learning for Image Recognition. 2015. arXiv: 1512.03385 [cs.CV]. URL: https://arxiv.org/abs/1512.03385.   \n[13] Dan Hendrycks et al. Measuring Massive Multitask Language Understanding. 2021. arXiv: 2009 . 03300 [cs.CY]. URL: https://arxiv.org/abs/2009.03300.   \n[14] Dan Hendrycks et al. Measuring Mathematical Problem Solving With the MATH Dataset. 2021. arXiv: 2103. 03874 [cs.LG]. URL: https://arxiv.org/abs/2103.03874.   \n[15] Jordan Hoffmann et al. Training Compute-Optimal Large Language Models. 2022. arXiv: 2203.15556 [cs.CL]. URL: https://arxiv.org/abs/2203.15556.   \n[16] Shengding Hu et al. MiniCPM: Unveiling the Potential of Small Language Models with Scalable Training Strategies. 2024. arXiv: 2404.06395 [cs.CL]. URL: https://arxiv.org/abs/2404.06395.   \n[17] Gao Huang et al. Densely Connected Convolutional Networks. 2018. arXiv: 1608 . 06993 [cs.CV]. URL: https://arxiv.org/abs/1608.06993.   \n[18] Yanping Huang et al. “GPipe: Efficient Training of Giant Neural Networks using Pipeline Parallelism”. In: Advances in NeurIPS. 2019.   \n[19] Yuzhen Huang et al. “C-eval: A multi-level multi-discipline chinese evaluation suite for foundation models”. In: Advances in NeurIPS 36 (2023), pp. 62991–63010.   \n[20] Robert A. Jacobs et al. “Adaptive Mixtures of Local Experts”. In: Neural Computation 3.1 (1991), pp. 79–87. DOI: 10.1162/neco.1991.3.1.79.   \n[21] Mandar Joshi et al. “Triviaqa: A large scale distantly supervised challenge dataset for reading comprehension”. In: arXiv preprint arXiv:1705.03551 (2017).   \n[22] Jared Kaplan et al. Scaling Laws for Neural Language Models. 2020. arXiv: 2001.08361 [cs.LG]. URL: https://arxiv.org/abs/2001.08361.   \n[23] Angelos Katharopoulos et al. “Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention”. In: Proceedings of ICML. Ed. by Hal Daumé III and Aarti Singh. PMLR, 2020, pp. 5156–5165. URL: https: //proceedings.mlr.press/v119/katharopoulos20a.html.   \n[24] Jonas Knupp et al. Depth-Recurrent Attention Mixtures: Giving Latent Reasoning the Attention it Deserves. 2026. arXiv: 2601.21582 [cs.AI]. URL: https://arxiv.org/abs/2601.21582.   \n[25] Aitor Lewkowycz et al. Solving Quantitative Reasoning Problems with Language Models. 2022. arXiv: 2206. 14858 [cs.CL]. URL: https://arxiv.org/abs/2206.14858. of the Association for Computational Linguistics: ACL 2024. Ed. by Lun-Wei Ku, Andre Martins, and Vivek Srikumar. Bangkok, Thailand: Association for Computational Linguistics, Aug. 2024, pp. 11260–11285. DOI: 10 . 18653 / v1 / 2024 . findings - acl . 671. URL: https : / / aclanthology . org / 2024 . findings - acl.671/.   \n[27] Tianyu Li et al. SiameseNorm: Breaking the Barrier to Reconciling Pre/Post-Norm. 2026. arXiv: 2602.08064 [cs.LG]. URL: https://arxiv.org/abs/2602.08064.   \n[28] Jingyuan Liu et al. Muon is Scalable for LLM Training. 2025. arXiv: 2502.16982 [cs.LG]. URL: https: //arxiv.org/abs/2502.16982.   \n[29] Brian Mak and Jeffrey Flanigan. Residual Matrix Transformers: Scaling the Size of the Residual Stream. 2025. arXiv: 2506.22696 [cs.LG]. URL: https://arxiv.org/abs/2506.22696.   \n[30] Gaurav Menghani, Ravi Kumar, and Sanjiv Kumar. LAuReL: Learned Augmented Residual Layer. 2025. arXiv: 2411.07501 [cs.LG]. URL: https://arxiv.org/abs/2411.07501.   \n[31] Maxim Milakov and Natalia Gimelshein. Online normalizer calculation for softmax. 2018. arXiv: 1805.02867 [cs.PF]. URL: https://arxiv.org/abs/1805.02867.   \n[32] Tsendsuren Munkhdalai et al. “Metalearned Neural Memory”. In: ArXiv abs/1907.09720 (2019). URL: https: //api.semanticscholar.org/CorpusID:198179407.   \n[33] Deepak Narayanan et al. Efficient Large-Scale Language Model Training on GPU Clusters Using Megatron-LM. 2021. arXiv: 2104.04473 [cs.CL]. URL: https://arxiv.org/abs/2104.04473.   \n[34] Toan Q. Nguyen and Julian Salazar. “Transformers without Tears: Improving the Normalization of Self-Attention”. In: Proceedings of IWSLT. Ed. by Jan Niehues et al. 2019. URL: https : / / aclanthology . org/2019.iwslt-1.17/.   \n[35] OpenAI et al. GPT-4 Technical Report. 2024. arXiv: 2303.08774 [cs.CL]. URL: https://arxiv.org/abs/ 2303.08774.   \n[36] Matteo Pagliardini et al. DenseFormer: Enhancing Information Flow in Transformers via Depth Weighted Averaging. 2024. arXiv: 2402.02622 [cs.CL]. URL: https://arxiv.org/abs/2402.02622.   \n[37] Bowen Peng et al. “Yarn: Efficient context window extension of large language models”. In: arXiv preprint arXiv:2309.00071 (2023).   \n[38] Matthew E. Peters et al. “Deep Contextualized Word Representations”. In: Proceedings of NAACL. 2018, pp. 2227–2237. URL: https://aclanthology.org/N18-1202/.   \n[39] Reiner Pope et al. Efficiently Scaling Transformer Inference. 2022. arXiv: 2211.05102 [cs.LG].   \n[40] Zhen Qin et al. HGRN2: Gated Linear RNNs with State Expansion. 2024. arXiv: 2404.07904 [cs.CL].   \n[41] David Rein et al. “Gpqa: A graduate-level google-proof q&a benchmark”. In: First Conference on Language Modeling. 2024.   \n[42] Imanol Schlag, Kazuki Irie, and Jürgen Schmidhuber. “Linear Transformers Are Secretly Fast Weight Programmers”. In: Proceedings of ICML. Ed. by Marina Meila and Tong Zhang. PMLR, 2021, pp. 9355–9366. URL: https://proceedings.mlr.press/v139/schlag21a.html.   \n[43] Jürgen Schmidhuber. “Learning to control fast-weight memories: An alternative to dynamic recurrent networks”. In: Neural Computation 4.1 (1992), pp. 131–139.   \n[44] Freda Shi et al. Language Models are Multilingual Chain-of-Thought Reasoners. 2022. arXiv: 2210.03057 [cs.CL]. URL: https://arxiv.org/abs/2210.03057.   \n[45] Rupesh Kumar Srivastava, Klaus Greff, and Jürgen Schmidhuber. Highway Networks. 2015. arXiv: 1505.00387 [cs.LG]. URL: https://arxiv.org/abs/1505.00387.   \n[46] Yu Sun et al. “Learning to (Learn at Test Time): RNNs with Expressive Hidden States”. In: ArXiv abs/2407.04620 (2024). URL: https://api.semanticscholar.org/CorpusID:271039606.   \n[47] Yutao Sun et al. Retentive Network: A Successor to Transformer for Large Language Models. 2023. arXiv: 2307.08621 [cs.CL].   \n[48] Mirac Suzgun et al. “Challenging big-bench tasks and whether chain-of-thought can solve them”. In: arXiv preprint arXiv:2210.09261 (2022).   \n[49] Shawn Tan et al. “Scaling Stick-Breaking Attention: An Efficient Implementation and In-depth Study”. In: Proceedings of ICLR. 2025.   \n[50] Hugo Touvron et al. Going deeper with Image Transformers. 2021. arXiv: 2103.17239 [cs.CV]. URL: https: //arxiv.org/abs/2103.17239.   \n[51] Hugo Touvron et al. LLaMA: Open and Efficient Foundation Language Models. 2023. arXiv: 2302.13971 [cs.CL].   \n[52] Ashish Vaswani et al. “Attention is All you Need”. In: Advances in NeurIPS. Ed. by I. Guyon et al. Curran Associates, Inc., 2017. URL: https://proceedings.neurips.cc/paper_files/paper/2017/file/ 3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf.   \n[53] Ashish Vaswani et al. “Attention is All you Need”. In: Advances in NeurIPS. Ed. by I. Guyon et al. Vol. 30. Curran Associates, Inc., 2017. URL: https://proceedings.neurips.cc/paper_files/paper/2017/ file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf.   \n[54] Hongyu Wang et al. DeepNet: Scaling Transformers to 1,000 Layers. 2022. arXiv: 2203.00555 [cs.CL]. URL: https://arxiv.org/abs/2203.00555.   \n[55] Yubo Wang et al. “Mmlu-pro: A more robust and challenging multi-task language understanding benchmark”. In: Advances in NeurIPS 37 (2024), pp. 95266–95290.   \n[56] Da Xiao et al. “MUDDFormer: Breaking Residual Bottlenecks in Transformers via Multiway Dynamic Dense Connections”. In: Proceedings of ICML. 2025.   \n[57] Guangxuan Xiao et al. “Efficient streaming language models with attention sinks”. In: arXiv preprint arXiv:2309.17453 (2023).   \n[58] Tian Xie. Your DeepSeek mHC Might Not Need the “m”. Zhihu blog post. 2026. URL: https://zhuanlan. zhihu.com/p/2010852389670908320.   \n[59] Zhenda Xie et al. mHC: Manifold-Constrained Hyper-Connections. 2026. arXiv: 2512.24880 [cs.CL]. URL: https://arxiv.org/abs/2512.24880.   \n[60] Ruibin Xiong et al. On Layer Normalization in the Transformer Architecture. 2020. arXiv: 2002.04745 [cs.LG]. URL: https://arxiv.org/abs/2002.04745.   \n[61] Bowen Yang et al. Rope to Nope and Back Again: A New Hybrid Attention Strategy. 2025. arXiv: 2501.18795 [cs.CL]. URL: https://arxiv.org/abs/2501.18795.   \n[62] Songlin Yang, Jan Kautz, and Ali Hatamizadeh. “Gated Delta Networks: Improving Mamba2 with Delta Rule”. In: Proceedings of ICLR. 2025. URL: https://openreview.net/forum?id=r8H7xhYPwz.   \n[63] Songlin Yang et al. “Gated Linear Attention Transformers with Hardware-Efficient Training”. In: Proceedings of ICML. PMLR, 2024.   \n[64] Yongyi Yang and Jianyang Gao. mHC-lite: You Don’t Need 20 Sinkhorn-Knopp Iterations. 2026. arXiv: 2601. 05732 [cs.LG]. URL: https://arxiv.org/abs/2601.05732.   \n[65] Rowan Zellers et al. “HellaSwag: Can a Machine Really Finish Your Sentence?” In: Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics. 2019.   \n[66] Biao Zhang and Rico Sennrich. “Root mean square layer normalization”. In: Advances in NeurIPS 32 (2019).   \n[67] Yifan Zhang et al. Deep Delta Learning. 2026. arXiv: 2601.00417 [cs.LG]. URL: https://arxiv.org/ abs/2601.00417.   \n[68] Yilang Zhang et al. ANCRe: Adaptive Neural Connection Reassignment for Efficient Depth Scaling. 2026. arXiv: 2602.09009 [cs.LG]. URL: https://arxiv.org/abs/2602.09009.   \n[69] Yu Zhang et al. Kimi Linear: An Expressive, Efficient Attention Architecture. 2025. arXiv: 2510.26692 [cs.CL].   \n[70] Shu Zhong et al. Understanding Transformer from the Perspective of Associative Memory. 2025. arXiv: 2505. 19488 [cs.LG]. URL: https://arxiv.org/abs/2505.19488.   \n[71] Zhanchao Zhou et al. “Value Residual Learning”. In: Proceedings of ACL. Ed. by Wanxiang Che et al. Vienna, Austria, 2025, pp. 28341–28356. URL: https://aclanthology.org/2025.acl-long.1375/.   \n[72] Defa Zhu et al. Hyper-Connections. 2025. arXiv: 2409.19606 [cs.LG]. URL: https://arxiv.org/abs/ 2409.19606.   \n[73] Zhijian Zhuo et al. HybridNorm: Towards Stable and Efficient Transformer Training via Hybrid Normalization. 2025. arXiv: 2503.04598 [cs.CL]. URL: https://arxiv.org/abs/2503.04598. ",
+        "bbox": [
+            112,
+            111,
+            888,
+            900
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            751,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "discarded",
+        "text": "17 ",
+        "bbox": [
+            490,
+            935,
+            508,
+            946
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            112,
+            107,
+            888,
+            910
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            751,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "discarded",
+        "text": "18 ",
+        "bbox": [
+            490,
+            935,
+            508,
+            948
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            112,
+            88,
+            888,
+            756
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            751,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "discarded",
+        "text": "19 ",
+        "bbox": [
+            490,
+            935,
+            508,
+            946
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "A Contributions ",
+        "text_level": 1,
+        "bbox": [
+            117,
+            89,
+            267,
+            106
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "The authors are listed in order of the significance of their contributions, with those in project leadership roles appearing last. ",
+        "bbox": [
+            112,
+            121,
+            879,
+            148
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "Guangyu Chen∗   \nYu Zhang∗   \nJianlin $\\boldsymbol { \\mathrm { S u } } ^ { * }$   \nWeixin Xu   \nSiyuan Pan   \nYaoyu Wang   \nYucheng Wang   \nGuanduo Chen   \nBohong Yin   \nYutian Chen   \nJunjie Yan   \nMing Wei   \nY. Zhang   \nFanqing Meng   \nChao Hong   \nXiaotong Xie   \nShaowei Liu   \nEnzhe Lu   \nYunpeng Tai   \nYanru Chen   \nXin Men   \nHaiqing Guo   \nY. Charles   \nHaoyu Lu   \nLin Sui   \nJinguo Zhu   \nZaida Zhou   \nWeiran He   \nWeixiao Huang   \nXinran Xu   \nYuzhi Wang   \nGuokun Lai   \nYulun Du   \nYuxin Wu   \nZhilin Yang   \nXinyu Zhou ",
+        "bbox": [
+            116,
+            162,
+            218,
+            426
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            504,
+            162,
+            607,
+            398
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            753,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            573,
+            56
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            490,
+            936,
+            508,
+            946
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "discarded",
+        "text": "∗ Equal contribution ",
+        "bbox": [
+            116,
+            446,
+            251,
+            462
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "B Optimized Inference I/O for Full Attention Residuals ",
+        "text_level": 1,
+        "bbox": [
+            114,
+            88,
+            593,
+            107
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "A naïve implementation of Full AttnRes scans all preceding layer outputs at every layer, so memory traffic scales linearly with depth. As noted in $\\ S 4 . 2$ , however, the pseudo-query ${ \\pmb w } _ { l }$ is a learned parameter independent of both the input and the hidden state. We can therefore batch inter-block accesses across layers in a two-phase schedule, bringing total I/O well below the naïve bound. ",
+        "bbox": [
+            116,
+            119,
+            882,
+            176
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Note that the block partition introduced below is purely an inference scheduling device. Unlike Block AttnRes, it leaves the model architecture unchanged and does not replace per-layer sources with block summaries; it simply makes the amortization argument concrete. ",
+        "bbox": [
+            114,
+            181,
+            883,
+            224
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Setup Let the model have $L$ layers and hidden dimension $d$ , partitioned into $N$ contiguous blocks of size $S = L / N$ . Inference proceeds one block at a time: Phase 1 jointly computes inter-block attention for all $S$ layers in the block against all preceding blocks, and Phase 2 walks through intra-block dependencies sequentially. ",
+        "bbox": [
+            116,
+            238,
+            883,
+            281
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Phase 1: Batched Inter-block Attention ",
+        "text_level": 1,
+        "bbox": [
+            117,
+            297,
+            392,
+            313
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Consider block $n$ with its $S$ layers. The queries $\\{ w _ { l } \\} _ { l \\in B _ { n } }$ are all known before execution begins, so the $( n { - } 1 ) S$ preceding key–value pairs need only be read once from HBM and reused across all $S$ queries. The read cost for block $n$ is therefore ",
+        "bbox": [
+            114,
+            321,
+            885,
+            363
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "equation",
+        "img_path": "images/9b32ef2aa65472b2db6eff24efed7fff1e2e05239d5d91ce2ad5bdf3c5650065.jpg",
+        "text": "$$\n\\mathrm { R e a d } _ { \\mathrm { i n t e r } } ^ { ( n ) } = 2 ( n - 1 ) S d ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            415,
+            359,
+            581,
+            381
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "where the factor of 2 accounts for both keys and values. Summing over all $N$ blocks and using $S N = L$ : ",
+        "bbox": [
+            112,
+            382,
+            803,
+            398
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "equation",
+        "img_path": "images/336de6b90ddbcf0ab0e96caeb927bf55d0e04340829465d34d697a7dd15c01b0.jpg",
+        "text": "$$\n{ \\mathrm { R e a d } } _ { \\mathrm { i n t e r } } = \\sum _ { n = 1 } ^ { N } 2 ( n - 1 ) S d = 2 S d \\cdot { \\frac { N ( N - 1 ) } { 2 } } = d L ( N - 1 ) .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            284,
+            404,
+            712,
+            446
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Phase 1 also writes one $d$ -dimensional output per layer, giving $\\mathrm { W r i t e } _ { \\mathrm { i n t e r } } ^ { ( n ) } = S d$ per block and ",
+        "bbox": [
+            116,
+            462,
+            722,
+            481
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "equation",
+        "img_path": "images/ebea4b01a9b507613750c760a4f54d13fae4a54963d3099118ba7e87abbb1952.jpg",
+        "text": "$$\n{ \\mathrm { W r i t e } } _ { \\mathrm { i n t e r } } = L d\n$$",
+        "text_format": "latex",
+        "bbox": [
+            444,
+            487,
+            553,
+            502
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "in total. ",
+        "bbox": [
+            114,
+            511,
+            166,
+            525
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Phase 2: Sequential Intra-block Attention ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            540,
+            408,
+            556
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Phase 1 covers all sources before the current block. Within the block, however, each layer depends on those before it, so these must be handled in order. Layer $t$ $1 \\leq t \\leq S$ ) reads $t { - } 1$ intra-block key–value pairs at a cost of $2 ( t { - } 1 ) d$ . Summing over one block: ",
+        "bbox": [
+            114,
+            565,
+            885,
+            607
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "equation",
+        "img_path": "images/cff225fc4f2904069cb63c596b5fc2ac065b70fd59a2ed07d784e016b376498b.jpg",
+        "text": "$$\n{ \\mathrm { R e a d } } _ { \\mathrm { i n t r a } } ^ { ( n ) } = \\sum _ { t = 1 } ^ { S } 2 ( t - 1 ) d = S ( S - 1 ) d .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            362,
+            606,
+            633,
+            650
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "$\\mathrm { W r i t e } _ { \\mathrm { i n t r a } } ^ { ( n ) } = S d$ ",
+        "bbox": [
+            114,
+            654,
+            509,
+            672
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Total Amortized I/O per Layer ",
+        "text_level": 1,
+        "bbox": [
+            116,
+            685,
+            331,
+            702
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Summing both phases over all $N$ blocks: ",
+        "bbox": [
+            116,
+            712,
+            385,
+            727
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "equation",
+        "img_path": "images/981aa20800027064c0c7f165c3d939b526dc8f55cb728ef8ea65ee454a976b8c.jpg",
+        "text": "$$\n\\mathrm { R e a d } _ { \\mathrm { t o t a l } } = d L ( N - 1 ) + N \\cdot S ( S - 1 ) d , \\qquad \\mathrm { W r i t e } _ { \\mathrm { t o t a l } } = 2 L d .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            282,
+            733,
+            715,
+            751
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Dividing by $L$ and using $S N = L$ : ",
+        "bbox": [
+            116,
+            757,
+            346,
+            772
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "equation",
+        "img_path": "images/680965539f586105753ffcaa7bc1a7992788741815016597c1ddccbd29c545fc.jpg",
+        "text": "$$\n\\begin{array} { r l } { \\mathrm { { a r } } = ( N - 1 ) d + ( S - 1 ) d = ( S + N - 2 ) d , } & { \\quad \\mathrm { { W r i t e ~ p e r ~ l a y e r } } = 2 d , } \\\\ { \\quad } & { \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad } \\\\ & { \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad } \\end{array}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            222,
+            777,
+            781,
+            827
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Batching inter-block reads thus brings per-layer I/O from $\\mathcal O ( L )$ down to $\\mathcal { O } ( S { + } N )$ . The schedule follows the same two-phase split as Block AttnRes: inter-block attention accounts for the bulk of the traffic, while sequential computation stays local within each block. ",
+        "bbox": [
+            116,
+            837,
+            882,
+            878
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "discarded",
+        "text": "TECHNICAL REPORT ",
+        "bbox": [
+            751,
+            45,
+            882,
+            56
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "discarded",
+        "text": "Attention Residuals ",
+        "bbox": [
+            423,
+            42,
+            575,
+            56
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "discarded",
+        "text": "",
+        "bbox": [
+            490,
+            935,
+            506,
+            946
+        ],
+        "page_idx": 20
+    }
+]

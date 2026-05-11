@@ -1,0 +1,3569 @@
+{
+  "recommendedPapers": [
+    {
+      "paperId": "b56e962d573de2dc8cb3c46c19423bb352a92d43",
+      "externalIds": {
+        "ArXiv": "2603.15619",
+        "CorpusId": 286572679
+      },
+      "url": "https://www.semanticscholar.org/paper/b56e962d573de2dc8cb3c46c19423bb352a92d43",
+      "title": "Mixture-of-Depths Attention",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2261901203",
+          "name": "Lianghui Zhu"
+        },
+        {
+          "authorId": "2138891987",
+          "name": "Yuxin Fang"
+        },
+        {
+          "authorId": "2060439659",
+          "name": "Bencheng Liao"
+        },
+        {
+          "authorId": "2217429986",
+          "name": "Shijie Wang"
+        },
+        {
+          "authorId": "46806979",
+          "name": "Tianheng Cheng"
+        },
+        {
+          "authorId": "2319390679",
+          "name": "Zilong Huang"
+        },
+        {
+          "authorId": "2344109446",
+          "name": "Chen Chen"
+        },
+        {
+          "authorId": null,
+          "name": "Lai Wei"
+        },
+        {
+          "authorId": "122290781",
+          "name": "Yutao Zeng"
+        },
+        {
+          "authorId": "2342570163",
+          "name": "Ya Wang"
+        },
+        {
+          "authorId": "2416919104",
+          "name": "Yi Lin"
+        },
+        {
+          "authorId": "2116612786",
+          "name": "Yu Li"
+        },
+        {
+          "authorId": "2261738789",
+          "name": "Xinggang Wang"
+        }
+      ]
+    },
+    {
+      "paperId": "813e18bc8e77be99d406ae97a1f5f5bf9854162a",
+      "externalIds": {
+        "ArXiv": "2604.21215",
+        "CorpusId": 287702040
+      },
+      "url": "https://www.semanticscholar.org/paper/813e18bc8e77be99d406ae97a1f5f5bf9854162a",
+      "title": "The Recurrent Transformer: Greater Effective Depth and Efficient Decoding",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2223774692",
+          "name": "Costin-Andrei Oncescu"
+        },
+        {
+          "authorId": "2003598814",
+          "name": "Depen Morwani"
+        },
+        {
+          "authorId": "47009988",
+          "name": "Samy Jelassi"
+        },
+        {
+          "authorId": "2287841955",
+          "name": "Alexandru Meterez"
+        },
+        {
+          "authorId": "2230669066",
+          "name": "Mujin Kwun"
+        },
+        {
+          "authorId": "2390809718",
+          "name": "Sham M. Kakade"
+        }
+      ]
+    },
+    {
+      "paperId": "1b023c6e677971a3dbae5960c8a503dd9d85710e",
+      "externalIds": {
+        "ArXiv": "2605.03953",
+        "CorpusId": 287979951
+      },
+      "url": "https://www.semanticscholar.org/paper/1b023c6e677971a3dbae5960c8a503dd9d85710e",
+      "title": "Transformers with Selective Access to Early Representations",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2313095670",
+          "name": "Skye Gunasekaran"
+        },
+        {
+          "authorId": "2262444698",
+          "name": "Téa Y. Wright"
+        },
+        {
+          "authorId": "2304138759",
+          "name": "Rui-Jie Zhu"
+        },
+        {
+          "authorId": "2313096073",
+          "name": "Jason K. Eshraghian"
+        }
+      ]
+    },
+    {
+      "paperId": "c008912e095eb4f5369c591399e3dacffa0d829c",
+      "externalIds": {
+        "ArXiv": "2604.05688",
+        "CorpusId": 287209494
+      },
+      "url": "https://www.semanticscholar.org/paper/c008912e095eb4f5369c591399e3dacffa0d829c",
+      "title": "Attention Editing: A Versatile Framework for Cross-Architecture Attention Conversion",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2381702134",
+          "name": "Zhenku Cheng"
+        },
+        {
+          "authorId": "2265836915",
+          "name": "Haodong Yang"
+        },
+        {
+          "authorId": "2306129578",
+          "name": "Wanaiu Huang"
+        },
+        {
+          "authorId": "2354284405",
+          "name": "Jinlong Li"
+        }
+      ]
+    },
+    {
+      "paperId": "290e74d22cb4cc7750f746a523e73a7b16e5dfc0",
+      "externalIds": {
+        "ArXiv": "2603.17484",
+        "CorpusId": 286643404
+      },
+      "url": "https://www.semanticscholar.org/paper/290e74d22cb4cc7750f746a523e73a7b16e5dfc0",
+      "title": "Learning When to Attend: Conditional Memory Access for Long-Context LLMs",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 2,
+      "authors": [
+        {
+          "authorId": "2212559688",
+          "name": "Sakshi Choudhary"
+        },
+        {
+          "authorId": "2381987066",
+          "name": "Aditya Chattopadhyay"
+        },
+        {
+          "authorId": "1914913470",
+          "name": "L. Zancato"
+        },
+        {
+          "authorId": "2335858090",
+          "name": "Elvis Nunez"
+        },
+        {
+          "authorId": "2262443898",
+          "name": "Matthew Trager"
+        },
+        {
+          "authorId": "2335860934",
+          "name": "Wei Xia"
+        },
+        {
+          "authorId": "2075295257",
+          "name": "S. Soatto"
+        }
+      ]
+    },
+    {
+      "paperId": "6adfe19e3f849545f606457fa115efe9deac40fa",
+      "externalIds": {
+        "ArXiv": "2603.16039",
+        "CorpusId": 286579516
+      },
+      "url": "https://www.semanticscholar.org/paper/6adfe19e3f849545f606457fa115efe9deac40fa",
+      "title": "Residual Stream Duality in Modern Transformer Architectures",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2333528944",
+          "name": "Yifan Zhang"
+        }
+      ]
+    },
+    {
+      "paperId": "08bef870440ad5323a79e178df04255d9ef56912",
+      "externalIds": {
+        "ArXiv": "2604.04972",
+        "CorpusId": 287208333
+      },
+      "url": "https://www.semanticscholar.org/paper/08bef870440ad5323a79e178df04255d9ef56912",
+      "title": "RCP: Representation Consistency Pruner for Mitigating Distribution Shift in Large Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2258670763",
+          "name": "Jianwei Zhang"
+        },
+        {
+          "authorId": "2289870232",
+          "name": "Chaoning Zhang"
+        },
+        {
+          "authorId": "2395724666",
+          "name": "Sihan Cao"
+        },
+        {
+          "authorId": "2328794358",
+          "name": "Wangkun Liu"
+        },
+        {
+          "authorId": "2406903354",
+          "name": "P. Zheng"
+        },
+        {
+          "authorId": "2300246276",
+          "name": "Jiaxin Huang"
+        },
+        {
+          "authorId": "2394255167",
+          "name": "Caiyan Qin"
+        },
+        {
+          "authorId": "2397570144",
+          "name": "Ya-Qiong Ye"
+        },
+        {
+          "authorId": "2256991111",
+          "name": "Wei Dong"
+        },
+        {
+          "authorId": "2316836009",
+          "name": "Yang Yang"
+        }
+      ]
+    },
+    {
+      "paperId": "c395f63a69f2d2690c15adae75ac10e1ed388d62",
+      "externalIds": {
+        "ArXiv": "2604.03190",
+        "CorpusId": 287122049
+      },
+      "url": "https://www.semanticscholar.org/paper/c395f63a69f2d2690c15adae75ac10e1ed388d62",
+      "title": "Gradient Boosting within a Single Attention Layer",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2215067057",
+          "name": "Saleh Sargolzaei"
+        }
+      ]
+    },
+    {
+      "paperId": "908c05adea7fb6e5cdb99b566a6b1b6c1fad2c0e",
+      "externalIds": {
+        "ArXiv": "2605.06221",
+        "CorpusId": 288014581
+      },
+      "url": "https://www.semanticscholar.org/paper/908c05adea7fb6e5cdb99b566a6b1b6c1fad2c0e",
+      "title": "UniPrefill: Universal Long-Context Prefill Acceleration via Block-wise Dynamic Sparsification",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2218598523",
+          "name": "Qihang Fan"
+        },
+        {
+          "authorId": "32885778",
+          "name": "Huaibo Huang"
+        },
+        {
+          "authorId": "2322981067",
+          "name": "Zhiying Wu"
+        },
+        {
+          "authorId": "2375950209",
+          "name": "Bingning Wang"
+        },
+        {
+          "authorId": "2243338248",
+          "name": "Ran He"
+        }
+      ]
+    },
+    {
+      "paperId": "71eeef8624ee7b429749a27032fbebf3a8573792",
+      "externalIds": {
+        "ArXiv": "2604.20920",
+        "CorpusId": 287702072
+      },
+      "url": "https://www.semanticscholar.org/paper/71eeef8624ee7b429749a27032fbebf3a8573792",
+      "title": "Forget, Then Recall: Learnable Compression and Selective Unfolding via Gist Sparse Attention",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2195055368",
+          "name": "Yuzhen Mao"
+        },
+        {
+          "authorId": "2288065395",
+          "name": "Michael Y. Li"
+        },
+        {
+          "authorId": "2287933421",
+          "name": "Emily B. Fox"
+        }
+      ]
+    },
+    {
+      "paperId": "b252c86b2886390cc2dedecb35bb0c47fa2a18fe",
+      "externalIds": {
+        "ArXiv": "2605.06554",
+        "CorpusId": 288014942
+      },
+      "url": "https://www.semanticscholar.org/paper/b252c86b2886390cc2dedecb35bb0c47fa2a18fe",
+      "title": "Long Context Pre-Training with Lighthouse Attention",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2405641662",
+          "name": "Bo Peng"
+        },
+        {
+          "authorId": "2393381559",
+          "name": "Subhojit Ghosh"
+        },
+        {
+          "authorId": "31964220",
+          "name": "Jeffrey Quesnelle"
+        }
+      ]
+    },
+    {
+      "paperId": "768d45e915c3de59ea780d61c9612ba4aa106635",
+      "externalIds": {
+        "ArXiv": "2603.21096",
+        "CorpusId": 286765746
+      },
+      "url": "https://www.semanticscholar.org/paper/768d45e915c3de59ea780d61c9612ba4aa106635",
+      "title": "Mixture of Chapters: Scaling Learnt Memory in Transformers",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2425368435",
+          "name": "Tasmay Pankaj Tibrewal"
+        },
+        {
+          "authorId": "2402607476",
+          "name": "Pritish Saha"
+        },
+        {
+          "authorId": "2425368432",
+          "name": "Ankit Meda"
+        },
+        {
+          "authorId": "2240152223",
+          "name": "Kunal Singh"
+        },
+        {
+          "authorId": "2219552781",
+          "name": "Pradeep Moturi"
+        }
+      ]
+    },
+    {
+      "paperId": "6feff5927221d575a23c338526a84c0ce41e45af",
+      "externalIds": {
+        "ArXiv": "2604.18103",
+        "CorpusId": 287634333
+      },
+      "url": "https://www.semanticscholar.org/paper/6feff5927221d575a23c338526a84c0ce41e45af",
+      "title": "Stability Implies Redundancy: Delta Attention Selective Halting for Efficient Long-Context Prefilling",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2362317982",
+          "name": "Yujie Chen"
+        },
+        {
+          "authorId": "2428942552",
+          "name": "Tai-You Chen"
+        },
+        {
+          "authorId": "2363449600",
+          "name": "Yifeng Gao"
+        },
+        {
+          "authorId": "2382026398",
+          "name": "Zoe Wanying He"
+        },
+        {
+          "authorId": "2430691194",
+          "name": "Yijue Xu"
+        },
+        {
+          "authorId": "2323926728",
+          "name": "Shaobo Wang"
+        },
+        {
+          "authorId": "2384148747",
+          "name": "Linfeng Zhang"
+        }
+      ]
+    },
+    {
+      "paperId": "fc932d0feac03c3febb1273159cb2d593fc0967c",
+      "externalIds": {
+        "CorpusId": 287916157
+      },
+      "url": "https://www.semanticscholar.org/paper/fc932d0feac03c3febb1273159cb2d593fc0967c",
+      "title": "Why Attend to Everything? Focus is the Key",
+      "venue": "",
+      "year": null,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "40609469",
+          "name": "Hengshuai Yao"
+        },
+        {
+          "authorId": "2327110858",
+          "name": "Xingzhou Chen"
+        },
+        {
+          "authorId": "2159557286",
+          "name": "Ahmed Murtadha"
+        },
+        {
+          "authorId": "2371209134",
+          "name": "Jin Li"
+        },
+        {
+          "authorId": "2372615689",
+          "name": "Shuai Shao"
+        },
+        {
+          "authorId": "2288877744",
+          "name": "Guangdi Wang"
+        },
+        {
+          "authorId": "2394243260",
+          "name": "Mingli Yuan"
+        },
+        {
+          "authorId": "2254719975",
+          "name": "William Chen"
+        },
+        {
+          "authorId": "2432558524",
+          "name": "©. 2. Yao"
+        },
+        {
+          "authorId": "2190791786",
+          "name": "Mu Chen"
+        },
+        {
+          "authorId": "2432558536",
+          "name": "Yadkori"
+        },
+        {
+          "authorId": "2180794653",
+          "name": "Wang"
+        },
+        {
+          "authorId": "2316523439",
+          "name": "Chenhan Yuan"
+        }
+      ]
+    },
+    {
+      "paperId": "8b76cf474cf37226774ffeb777d14ba545c422bf",
+      "externalIds": {
+        "ArXiv": "2604.12452",
+        "CorpusId": 287435830
+      },
+      "url": "https://www.semanticscholar.org/paper/8b76cf474cf37226774ffeb777d14ba545c422bf",
+      "title": "Latent-Condensed Transformer for Efficient Long Context Modeling",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2238559407",
+          "name": "Zeng You"
+        },
+        {
+          "authorId": "1816749481",
+          "name": "Yaofo Chen"
+        },
+        {
+          "authorId": "2303324184",
+          "name": "Qiuwu Chen"
+        },
+        {
+          "authorId": "2145325162",
+          "name": "Ying Sun"
+        },
+        {
+          "authorId": "2154723799",
+          "name": "Shuhai Zhang"
+        },
+        {
+          "authorId": "2397715638",
+          "name": "Yingjian Li"
+        },
+        {
+          "authorId": "2288039852",
+          "name": "Yaowei Wang"
+        },
+        {
+          "authorId": "2287317405",
+          "name": "Mingkui Tan"
+        }
+      ]
+    },
+    {
+      "paperId": "63646da8eeff97738608636aecde27498b61bb39",
+      "externalIds": {
+        "ArXiv": "2604.22050",
+        "CorpusId": 287773749
+      },
+      "url": "https://www.semanticscholar.org/paper/63646da8eeff97738608636aecde27498b61bb39",
+      "title": "LayerBoost: Layer-Aware Attention Reduction for Efficient LLMs",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "1742323071",
+          "name": "Mohamed Ali Souibgui"
+        },
+        {
+          "authorId": "2261753799",
+          "name": "Jan Fostier"
+        },
+        {
+          "authorId": "2298906087",
+          "name": "Rodrigo Abad'ia-Heredia"
+        },
+        {
+          "authorId": "2217755888",
+          "name": "B. Denysenko"
+        },
+        {
+          "authorId": "2081188991",
+          "name": "C. Marschke"
+        },
+        {
+          "authorId": "36098513",
+          "name": "Igor Peric"
+        }
+      ]
+    },
+    {
+      "paperId": "1b0ce347db427a016aa2ee81f56d7c582c7205e2",
+      "externalIds": {
+        "ArXiv": "2604.01178",
+        "CorpusId": 287023421
+      },
+      "url": "https://www.semanticscholar.org/paper/1b0ce347db427a016aa2ee81f56d7c582c7205e2",
+      "title": "Screening Is Enough",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2056444838",
+          "name": "K. Nakanishi"
+        }
+      ]
+    },
+    {
+      "paperId": "e9f4c2c1426c2c471fc519e4837bc0d2bcca907f",
+      "externalIds": {
+        "ArXiv": "2605.06216",
+        "CorpusId": 288014850
+      },
+      "url": "https://www.semanticscholar.org/paper/e9f4c2c1426c2c471fc519e4837bc0d2bcca907f",
+      "title": "TIDE: Every Layer Knows the Token Beneath the Context",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2408468884",
+          "name": "Ajay Jaiswal"
+        },
+        {
+          "authorId": "2381375071",
+          "name": "Lauren Hannah"
+        },
+        {
+          "authorId": "2348290391",
+          "name": "Han-Byul Kim"
+        },
+        {
+          "authorId": "2425715601",
+          "name": "D. Hoang"
+        },
+        {
+          "authorId": "1682124",
+          "name": "Mehrdad Farajtabar"
+        },
+        {
+          "authorId": "2331270411",
+          "name": "Minsik Cho"
+        }
+      ]
+    },
+    {
+      "paperId": "90b9f5c9637a3a2c5a88ea69dced672c9c08f043",
+      "externalIds": {
+        "ArXiv": "2603.23998",
+        "CorpusId": 286775665
+      },
+      "url": "https://www.semanticscholar.org/paper/90b9f5c9637a3a2c5a88ea69dced672c9c08f043",
+      "title": "Sparse Growing Transformer: Training-Time Sparse Depth Allocation via Progressive Attention Looping",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 2,
+      "authors": [
+        {
+          "authorId": "2392295104",
+          "name": "Yao Chen"
+        },
+        {
+          "authorId": "2268796753",
+          "name": "Yilong Chen"
+        },
+        {
+          "authorId": "2257087597",
+          "name": "Yin Yang"
+        },
+        {
+          "authorId": "2257305563",
+          "name": "Junyuan Shang"
+        },
+        {
+          "authorId": "2298925166",
+          "name": "Zhenyu Zhang"
+        },
+        {
+          "authorId": "2344794450",
+          "name": "Zefeng Zhang"
+        },
+        {
+          "authorId": "2321582663",
+          "name": "Shuaiyi Nie"
+        },
+        {
+          "authorId": "104463827",
+          "name": "Shuohuan Wang"
+        },
+        {
+          "authorId": "2390661455",
+          "name": "Yu Sun"
+        },
+        {
+          "authorId": "2190177674",
+          "name": "Hua Wu"
+        },
+        {
+          "authorId": "2238917361",
+          "name": "Haifeng Wang"
+        },
+        {
+          "authorId": "2268772040",
+          "name": "Tingwen Liu"
+        }
+      ]
+    },
+    {
+      "paperId": "2298dfb993fcbea7f252aafd6a5fd6ba6845f66d",
+      "externalIds": {
+        "ArXiv": "2603.17946",
+        "CorpusId": 286643554
+      },
+      "url": "https://www.semanticscholar.org/paper/2298dfb993fcbea7f252aafd6a5fd6ba6845f66d",
+      "title": "CARE: Covariance-Aware and Rank-Enhanced Decomposition for Enabling Multi-Head Latent Attention",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2378890606",
+          "name": "Zhong Zhou"
+        },
+        {
+          "authorId": "2271095802",
+          "name": "Fengxiang Bie"
+        },
+        {
+          "authorId": "2261476634",
+          "name": "Ziyang Chen"
+        },
+        {
+          "authorId": "2401914416",
+          "name": "Zhenyu Zhang"
+        },
+        {
+          "authorId": "2257358976",
+          "name": "Yibo Yang"
+        },
+        {
+          "authorId": "2390557302",
+          "name": "Junxiong Wang"
+        },
+        {
+          "authorId": "2304481349",
+          "name": "Ben Athiwaratkun"
+        },
+        {
+          "authorId": "2393009156",
+          "name": "Xiaoxia Wu"
+        },
+        {
+          "authorId": "2243324798",
+          "name": "S. Song"
+        }
+      ]
+    },
+    {
+      "paperId": "88b7f4b87aba303e14c3cbef03b525f41ddad10b",
+      "externalIds": {
+        "ArXiv": "2604.22583",
+        "CorpusId": 287773575
+      },
+      "url": "https://www.semanticscholar.org/paper/88b7f4b87aba303e14c3cbef03b525f41ddad10b",
+      "title": "Adaptive Head Budgeting for Efficient Multi-Head Attention",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2141629987",
+          "name": "Bilal Faye"
+        },
+        {
+          "authorId": "37439521",
+          "name": "Abdoulaye Mbaye"
+        },
+        {
+          "authorId": "78302818",
+          "name": "Hanane Azzag"
+        },
+        {
+          "authorId": "1802000",
+          "name": "M. Lebbah"
+        }
+      ]
+    },
+    {
+      "paperId": "f565f0e1ab671b205bfbd182138aa98dcbcbc68e",
+      "externalIds": {
+        "ArXiv": "2604.07815",
+        "CorpusId": 287255889
+      },
+      "url": "https://www.semanticscholar.org/paper/f565f0e1ab671b205bfbd182138aa98dcbcbc68e",
+      "title": "AsyncTLS: Efficient Generative LLM Inference with Asynchronous Two-level Sparse Attention",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2236902930",
+          "name": "Yuxuan Hu"
+        },
+        {
+          "authorId": "2326256572",
+          "name": "Jianchao Tan"
+        },
+        {
+          "authorId": "2390434066",
+          "name": "Jiaqi Zhang"
+        },
+        {
+          "authorId": "2378708363",
+          "name": "Wen Zan"
+        },
+        {
+          "authorId": "2378047107",
+          "name": "Pingwei Sun"
+        },
+        {
+          "authorId": "2267032392",
+          "name": "Yifan Lu"
+        },
+        {
+          "authorId": "2235992666",
+          "name": "Yerui Sun"
+        },
+        {
+          "authorId": "2236015688",
+          "name": "Yuchen Xie"
+        },
+        {
+          "authorId": "2326248599",
+          "name": "Xunliang Cai"
+        },
+        {
+          "authorId": "2404854579",
+          "name": "Jing Zhang"
+        }
+      ]
+    },
+    {
+      "paperId": "495212837fd29439787264517b06fb9ef90d25a4",
+      "externalIds": {
+        "ArXiv": "2605.05222",
+        "CorpusId": 288013460
+      },
+      "url": "https://www.semanticscholar.org/paper/495212837fd29439787264517b06fb9ef90d25a4",
+      "title": "Adaptive Computation Depth via Learned Token Routing in Transformers",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2313491237",
+          "name": "Ahmed A. Mohammed"
+        }
+      ]
+    },
+    {
+      "paperId": "370b17621c3fc453150aec8ee4cda9462cb4f340",
+      "externalIds": {
+        "ArXiv": "2604.10791",
+        "CorpusId": 287433476
+      },
+      "url": "https://www.semanticscholar.org/paper/370b17621c3fc453150aec8ee4cda9462cb4f340",
+      "title": "Position-Agnostic Pre-Projection for Transformer Attention: Nonlinear Feature Construction and Content Skip Before Q/K/V",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2274460171",
+          "name": "C.U. Shinde"
+        }
+      ]
+    },
+    {
+      "paperId": "773eaad8149fa93df7a0c411f131980d69efdf57",
+      "externalIds": {
+        "ArXiv": "2603.22329",
+        "CorpusId": 286770580
+      },
+      "url": "https://www.semanticscholar.org/paper/773eaad8149fa93df7a0c411f131980d69efdf57",
+      "title": "Trained Persistent Memory for Frozen Decoder-Only LLMs",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2329725870",
+          "name": "Ho-Bung Jeong"
+        }
+      ]
+    },
+    {
+      "paperId": "4a6b991ff5a1cf670925d16b89690c2b22db2f3e",
+      "externalIds": {
+        "ArXiv": "2604.07394",
+        "CorpusId": 287255601
+      },
+      "url": "https://www.semanticscholar.org/paper/4a6b991ff5a1cf670925d16b89690c2b22db2f3e",
+      "title": "Flux Attention: Context-Aware Hybrid Attention for Efficient LLMs Inference",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2362103644",
+          "name": "Quantong Qiu"
+        },
+        {
+          "authorId": "2335082637",
+          "name": "Zhiyi Hong"
+        },
+        {
+          "authorId": "2261254006",
+          "name": "Yi Yang"
+        },
+        {
+          "authorId": "2372278522",
+          "name": "Haitian Wang"
+        },
+        {
+          "authorId": "2303873564",
+          "name": "Kebin Liu"
+        },
+        {
+          "authorId": "2066154565",
+          "name": "Qingqing Dang"
+        },
+        {
+          "authorId": "2257093356",
+          "name": "Juntao Li"
+        },
+        {
+          "authorId": "2402888855",
+          "name": "Min Zhang"
+        }
+      ]
+    },
+    {
+      "paperId": "32aa57392f6c0574fbd7d5c51ff6dce8fc9d2892",
+      "externalIds": {
+        "ArXiv": "2604.11095",
+        "CorpusId": 287433190
+      },
+      "url": "https://www.semanticscholar.org/paper/32aa57392f6c0574fbd7d5c51ff6dce8fc9d2892",
+      "title": "Bottleneck Tokens for Unified Multimodal Retrieval",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2222413263",
+          "name": "Siyu Sun"
+        },
+        {
+          "authorId": "2357442777",
+          "name": "Jing Ren"
+        },
+        {
+          "authorId": "2309479449",
+          "name": "Zhaohe Liao"
+        },
+        {
+          "authorId": "2187779397",
+          "name": "Dongxia Mao"
+        },
+        {
+          "authorId": "2228515521",
+          "name": "Xiangyuan Ren"
+        },
+        {
+          "authorId": "2303415742",
+          "name": "Yiyi Zhang"
+        },
+        {
+          "authorId": "2984911",
+          "name": "Haohua Zhao"
+        },
+        {
+          "authorId": "2113563334",
+          "name": "Weixiong Lin"
+        },
+        {
+          "authorId": "2262437364",
+          "name": "Shaohua Jiang"
+        },
+        {
+          "authorId": "2289792239",
+          "name": "Liqing Zhang"
+        },
+        {
+          "authorId": "2345068091",
+          "name": "Yuchao Zheng"
+        }
+      ]
+    },
+    {
+      "paperId": "73d29cd3ad4c69ae4f081f4f9b6c41994ce13fad",
+      "externalIds": {
+        "ArXiv": "2604.06746",
+        "CorpusId": 287248129
+      },
+      "url": "https://www.semanticscholar.org/paper/73d29cd3ad4c69ae4f081f4f9b6c41994ce13fad",
+      "title": "StructKV: Preserving the Structural Skeleton for Scalable Long-Context Inference",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2348408183",
+          "name": "Zhirui Chen"
+        },
+        {
+          "authorId": "31349067",
+          "name": "Peiyang Liu"
+        },
+        {
+          "authorId": "2397378799",
+          "name": "Ling Shao"
+        }
+      ]
+    },
+    {
+      "paperId": "8b6e0c1553449c9d5191ab4c3cf1252a77cd4653",
+      "externalIds": {
+        "ArXiv": "2604.16734",
+        "CorpusId": 287618187
+      },
+      "url": "https://www.semanticscholar.org/paper/8b6e0c1553449c9d5191ab4c3cf1252a77cd4653",
+      "title": "Reducing Peak Memory Usage for Modern Multimodal Large Language Model Pipelines",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2297934466",
+          "name": "Junwan Kim"
+        },
+        {
+          "authorId": "2165230479",
+          "name": "Hyunkyung Bae"
+        }
+      ]
+    },
+    {
+      "paperId": "25bba4656f33dcdd6ebd6cc3e98413f1a3d7c226",
+      "externalIds": {
+        "ArXiv": "2604.17320",
+        "CorpusId": 287634881
+      },
+      "url": "https://www.semanticscholar.org/paper/25bba4656f33dcdd6ebd6cc3e98413f1a3d7c226",
+      "title": "Towards Joint Quantization and Token Pruning of Vision-Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2349945935",
+          "name": "Xinqi Li"
+        },
+        {
+          "authorId": "2300811619",
+          "name": "Xin He"
+        },
+        {
+          "authorId": "2135484486",
+          "name": "Xindong Zhang"
+        },
+        {
+          "authorId": "2331127159",
+          "name": "Ming-Ming Cheng"
+        },
+        {
+          "authorId": "2256830888",
+          "name": "Lei Zhang"
+        },
+        {
+          "authorId": "2291454634",
+          "name": "Yun Liu"
+        }
+      ]
+    },
+    {
+      "paperId": "6d370ea175463c01a8964e3598f7bc9b3fbbd284",
+      "externalIds": {
+        "ArXiv": "2604.08971",
+        "CorpusId": 287351705
+      },
+      "url": "https://www.semanticscholar.org/paper/6d370ea175463c01a8964e3598f7bc9b3fbbd284",
+      "title": "Modality-Aware Zero-Shot Pruning and Sparse Attention for Efficient Multimodal Edge Inference",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2299326272",
+          "name": "Yueyuan Sui"
+        },
+        {
+          "authorId": "30868987",
+          "name": "Payal Mohapatra"
+        },
+        {
+          "authorId": "2426564599",
+          "name": "Dougacc Eldenk"
+        },
+        {
+          "authorId": "2257352642",
+          "name": "Hao Yang"
+        },
+        {
+          "authorId": "2359049960",
+          "name": "Yiting Zhang"
+        },
+        {
+          "authorId": "2347450531",
+          "name": "Haoyan Zhang"
+        },
+        {
+          "authorId": "2280674880",
+          "name": "Qinyu Zhu"
+        },
+        {
+          "authorId": "2332091419",
+          "name": "Stephen Xia"
+        }
+      ]
+    },
+    {
+      "paperId": "63b2d615aa3df249a5f72af416c451cc80d7b719",
+      "externalIds": {
+        "ArXiv": "2605.03110",
+        "CorpusId": 287963045
+      },
+      "url": "https://www.semanticscholar.org/paper/63b2d615aa3df249a5f72af416c451cc80d7b719",
+      "title": "Cascade Token Selection for Transformer Attention Acceleration",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2244129434",
+          "name": "Stephen Thomas"
+        }
+      ]
+    },
+    {
+      "paperId": "aabbc2a707af68882a31e168caf45f7be14e385c",
+      "externalIds": {
+        "ArXiv": "2604.13304",
+        "CorpusId": 287479991
+      },
+      "url": "https://www.semanticscholar.org/paper/aabbc2a707af68882a31e168caf45f7be14e385c",
+      "title": "Can Cross-Layer Transcoders Replace Vision Transformer Activations? An Interpretable Perspective on Vision",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2364745059",
+          "name": "Gerasimos Chatzoudis"
+        },
+        {
+          "authorId": "2078502164",
+          "name": "Konstantinos D. Polyzos"
+        },
+        {
+          "authorId": "2338665942",
+          "name": "Zhuowei Li"
+        },
+        {
+          "authorId": "2305621619",
+          "name": "Difei Gu"
+        },
+        {
+          "authorId": "3433248",
+          "name": "Gemma E. Moran"
+        },
+        {
+          "authorId": "2144220190",
+          "name": "Hao Wang"
+        },
+        {
+          "authorId": "2257001837",
+          "name": "Dimitris N. Metaxas"
+        }
+      ]
+    },
+    {
+      "paperId": "81a95fd396080960c74197b25805a289e19cf279",
+      "externalIds": {
+        "ArXiv": "2604.13556",
+        "CorpusId": 287479435
+      },
+      "url": "https://www.semanticscholar.org/paper/81a95fd396080960c74197b25805a289e19cf279",
+      "title": "YOCO++: Enhancing YOCO with KV Residual Connections for Efficient LLM Inference",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2346097883",
+          "name": "You Wu"
+        },
+        {
+          "authorId": "2298635468",
+          "name": "Ziheng Chen"
+        },
+        {
+          "authorId": "2337838677",
+          "name": "Yizhe Zhang"
+        },
+        {
+          "authorId": "2385293004",
+          "name": "Haoyi Wu"
+        },
+        {
+          "authorId": "2385491537",
+          "name": "Chengting Yu"
+        },
+        {
+          "authorId": "2366055407",
+          "name": "Yuchi Xu"
+        },
+        {
+          "authorId": "2279560018",
+          "name": "Wenbo Su"
+        },
+        {
+          "authorId": "2279710589",
+          "name": "Bo Zheng"
+        },
+        {
+          "authorId": "2323782936",
+          "name": "Kewei Tu"
+        }
+      ]
+    },
+    {
+      "paperId": "973fffa2c66a7b41721d901de067d7971a43b634",
+      "externalIds": {
+        "ArXiv": "2605.03109",
+        "CorpusId": 287963002
+      },
+      "url": "https://www.semanticscholar.org/paper/973fffa2c66a7b41721d901de067d7971a43b634",
+      "title": "Gated Subspace Inference for Transformer Acceleration",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2244129434",
+          "name": "Stephen Thomas"
+        }
+      ]
+    },
+    {
+      "paperId": "544d50acc4d5258a69adca89c20dfd8c93ebe206",
+      "externalIds": {
+        "ArXiv": "2605.05683",
+        "CorpusId": 288014008
+      },
+      "url": "https://www.semanticscholar.org/paper/544d50acc4d5258a69adca89c20dfd8c93ebe206",
+      "title": "Spectral Lens: Activation and Gradient Spectra as Diagnostics of LLM Optimization",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2323323524",
+          "name": "A. Liu"
+        },
+        {
+          "authorId": "2306957831",
+          "name": "Elliot Paquette"
+        },
+        {
+          "authorId": "2352793127",
+          "name": "John Sous"
+        }
+      ]
+    },
+    {
+      "paperId": "d523074ef7571166eedfd5d003862930bfbd4b4f",
+      "externalIds": {
+        "ArXiv": "2604.19398",
+        "CorpusId": 287636676
+      },
+      "url": "https://www.semanticscholar.org/paper/d523074ef7571166eedfd5d003862930bfbd4b4f",
+      "title": "GRASPrune: Global Gating for Budgeted Structured Pruning of Large Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2383460144",
+          "name": "Ziyang Wang"
+        },
+        {
+          "authorId": "11842166",
+          "name": "Jiangfeng Xiao"
+        },
+        {
+          "authorId": "2330392877",
+          "name": "Chuan Xiao"
+        },
+        {
+          "authorId": "2430929994",
+          "name": "Ruoxiang Li"
+        },
+        {
+          "authorId": "2266396580",
+          "name": "Rui Mao"
+        },
+        {
+          "authorId": "2325456526",
+          "name": "Jianbin Qin"
+        }
+      ]
+    },
+    {
+      "paperId": "01486b273fe15308811b9cdee6373d4b65d93153",
+      "externalIds": {
+        "ArXiv": "2605.06501",
+        "CorpusId": 288014620
+      },
+      "url": "https://www.semanticscholar.org/paper/01486b273fe15308811b9cdee6373d4b65d93153",
+      "title": "Cubit: Token Mixer with Kernel Ridge Regression",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2294163935",
+          "name": "Chuanyang Zheng"
+        },
+        {
+          "authorId": "2247730541",
+          "name": "Jiankai Sun"
+        },
+        {
+          "authorId": "2302856496",
+          "name": "Yihang Gao"
+        },
+        {
+          "authorId": null,
+          "name": "Yuehao Wang"
+        },
+        {
+          "authorId": "2386088622",
+          "name": "Liang Tan"
+        },
+        {
+          "authorId": "2360172520",
+          "name": "Mac Schwager"
+        },
+        {
+          "authorId": "2375939611",
+          "name": "Anderson Schneider"
+        },
+        {
+          "authorId": "2774914",
+          "name": "Yuriy Nevmyvaka"
+        },
+        {
+          "authorId": "2355562002",
+          "name": "Xiaodong Liu"
+        }
+      ]
+    },
+    {
+      "paperId": "578535084fc0686ad21653fff60385c0bb74c441",
+      "externalIds": {
+        "ArXiv": "2603.22325",
+        "CorpusId": 286770516
+      },
+      "url": "https://www.semanticscholar.org/paper/578535084fc0686ad21653fff60385c0bb74c441",
+      "title": "Hybrid Associative Memories",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2237425780",
+          "name": "Leon Lufkin"
+        },
+        {
+          "authorId": "2304451033",
+          "name": "Tom'as Figliolia"
+        },
+        {
+          "authorId": "150045277",
+          "name": "Beren Millidge"
+        },
+        {
+          "authorId": "2239195784",
+          "name": "Kamesh Krishnamurthy"
+        }
+      ]
+    },
+    {
+      "paperId": "394cde758d116b8eb595b735af37a3f6f871167d",
+      "externalIds": {
+        "ArXiv": "2603.22300",
+        "CorpusId": 286770417
+      },
+      "url": "https://www.semanticscholar.org/paper/394cde758d116b8eb595b735af37a3f6f871167d",
+      "title": "Scaling Attention via Feature Sparsity",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2290136613",
+          "name": "Yan Xie"
+        },
+        {
+          "authorId": "2313483449",
+          "name": "Tiansheng Wen"
+        },
+        {
+          "authorId": "2425417697",
+          "name": "Tangda Huang"
+        },
+        {
+          "authorId": "2348566342",
+          "name": "Bo Chen"
+        },
+        {
+          "authorId": "2348421160",
+          "name": "Chenyu You"
+        },
+        {
+          "authorId": "2242248678",
+          "name": "Stefanie Jegelka"
+        },
+        {
+          "authorId": "2303611770",
+          "name": "Yifei Wang"
+        }
+      ]
+    },
+    {
+      "paperId": "af060c253819adf447ee6299075b8512f3d5f80e",
+      "externalIds": {
+        "ArXiv": "2603.12707",
+        "CorpusId": 286517593
+      },
+      "url": "https://www.semanticscholar.org/paper/af060c253819adf447ee6299075b8512f3d5f80e",
+      "title": "Cost-Efficient Multimodal LLM Inference via Cross-Tier GPU Heterogeneity",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2248182719",
+          "name": "Dongli Yu"
+        }
+      ]
+    },
+    {
+      "paperId": "28ab5cefde5a1e3342917a99a3d75289247d62e7",
+      "externalIds": {
+        "ArXiv": "2604.12767",
+        "CorpusId": 287475129
+      },
+      "url": "https://www.semanticscholar.org/paper/28ab5cefde5a1e3342917a99a3d75289247d62e7",
+      "title": "CLASP: Class-Adaptive Layer Fusion and Dual-Stage Pruning for Multimodal Large Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2399963230",
+          "name": "Yunkai Dang"
+        },
+        {
+          "authorId": "2299164222",
+          "name": "Yi Jiang"
+        },
+        {
+          "authorId": "2347050558",
+          "name": "Yifan Jiang"
+        },
+        {
+          "authorId": "2390450714",
+          "name": "Qiyuan Fan"
+        },
+        {
+          "authorId": "2475959",
+          "name": "Yinghuan Shi"
+        },
+        {
+          "authorId": "2269784954",
+          "name": "Wenbin Li"
+        },
+        {
+          "authorId": "2256636278",
+          "name": "Yang Gao"
+        }
+      ]
+    },
+    {
+      "paperId": "9b162eb6bc718edc2e808d2fc2bf7b1f10e71de3",
+      "externalIds": {
+        "ArXiv": "2604.19254",
+        "CorpusId": 287637029
+      },
+      "url": "https://www.semanticscholar.org/paper/9b162eb6bc718edc2e808d2fc2bf7b1f10e71de3",
+      "title": "ShadowPEFT: Shadow Network for Parameter-Efficient Fine-Tuning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2244698613",
+          "name": "Xianming Li"
+        },
+        {
+          "authorId": "46948092",
+          "name": "Zongxi Li"
+        },
+        {
+          "authorId": "2430927853",
+          "name": "Tsz-fung Andrew Lee"
+        },
+        {
+          "authorId": "2256795636",
+          "name": "Jing Li"
+        },
+        {
+          "authorId": "2199183167",
+          "name": "Haoran Xie"
+        },
+        {
+          "authorId": "2267283852",
+          "name": "Qing Li"
+        }
+      ]
+    },
+    {
+      "paperId": "7da3df85076586e137a432284cb7cbd4f124e0aa",
+      "externalIds": {
+        "ArXiv": "2605.04913",
+        "CorpusId": 287988463
+      },
+      "url": "https://www.semanticscholar.org/paper/7da3df85076586e137a432284cb7cbd4f124e0aa",
+      "title": "Rethinking Local Learning: A Cheaper and Faster Recipe for LLM Post-Training",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2355564304",
+          "name": "Hengyu Shi"
+        },
+        {
+          "authorId": "2374092021",
+          "name": "Tianyang Han"
+        },
+        {
+          "authorId": "2304973472",
+          "name": "Peizhe Wang"
+        },
+        {
+          "authorId": "2343667162",
+          "name": "Zhilin Wang"
+        },
+        {
+          "authorId": "2383532982",
+          "name": "Xu Yang"
+        },
+        {
+          "authorId": "2293668900",
+          "name": "Junhao Su"
+        }
+      ]
+    },
+    {
+      "paperId": "0e273fc7a51e893d72102d6ecefdca5ee868af55",
+      "externalIds": {
+        "ArXiv": "2603.14549",
+        "CorpusId": 286573173
+      },
+      "url": "https://www.semanticscholar.org/paper/0e273fc7a51e893d72102d6ecefdca5ee868af55",
+      "title": "ASAP: Attention-Shift-Aware Pruning for Efficient LVLM Inference",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2072060324",
+          "name": "Surendra Pathak"
+        },
+        {
+          "authorId": "2408409880",
+          "name": "Bo Han"
+        }
+      ]
+    },
+    {
+      "paperId": "82c0b4a4c4e9fd48077f97ece80956ae1e7d97b3",
+      "externalIds": {
+        "ArXiv": "2603.13875",
+        "CorpusId": 286572098
+      },
+      "url": "https://www.semanticscholar.org/paper/82c0b4a4c4e9fd48077f97ece80956ae1e7d97b3",
+      "title": "GradMem: Learning to Write Context into Memory with Test-Time Gradient Descent",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2391594508",
+          "name": "Yuri Kuratov"
+        },
+        {
+          "authorId": "2400321830",
+          "name": "M. Kairov"
+        },
+        {
+          "authorId": "2176183932",
+          "name": "A. Bulatov"
+        },
+        {
+          "authorId": "2306782862",
+          "name": "I. Rodkin"
+        },
+        {
+          "authorId": "2405306450",
+          "name": "M. Burtsev"
+        }
+      ]
+    },
+    {
+      "paperId": "9dd8f3eb36fd10432cec9a45bd21efb3995c5ed3",
+      "externalIds": {
+        "ArXiv": "2605.04346",
+        "CorpusId": 287981830
+      },
+      "url": "https://www.semanticscholar.org/paper/9dd8f3eb36fd10432cec9a45bd21efb3995c5ed3",
+      "title": "Covariance-Aware Goodness for Scalable Forward-Forward Learning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2291196139",
+          "name": "Xiaoyi Jiang"
+        },
+        {
+          "authorId": "2275350794",
+          "name": "Bashir M. Al-Hashimi"
+        },
+        {
+          "authorId": "2301112906",
+          "name": "Kaixin Xu"
+        }
+      ]
+    },
+    {
+      "paperId": "86c389115811a7bd121bf99404fb046da64307c1",
+      "externalIds": {
+        "ArXiv": "2604.08556",
+        "CorpusId": 287351812
+      },
+      "url": "https://www.semanticscholar.org/paper/86c389115811a7bd121bf99404fb046da64307c1",
+      "title": "EMA Is Not All You Need: Mapping the Boundary Between Structure and Content in Recurrent Context",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2388855992",
+          "name": "Arthur Singh"
+        }
+      ]
+    },
+    {
+      "paperId": "60bdf3020f392103d00c7a69a0d45b6a126bc7f6",
+      "externalIds": {
+        "ArXiv": "2604.19147",
+        "CorpusId": 287636399
+      },
+      "url": "https://www.semanticscholar.org/paper/60bdf3020f392103d00c7a69a0d45b6a126bc7f6",
+      "title": "Nexusformer: Nonlinear Attention Expansion for Stable and Inheritable Transformer Scaling",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2302335550",
+          "name": "Weijie Zhao"
+        },
+        {
+          "authorId": "2359863514",
+          "name": "Mingquan Liu"
+        },
+        {
+          "authorId": "2345871311",
+          "name": "Bolun Wang"
+        },
+        {
+          "authorId": "2116377804",
+          "name": "Simon Wu"
+        },
+        {
+          "authorId": "50621301",
+          "name": "Nuobei Xie"
+        },
+        {
+          "authorId": "2396442053",
+          "name": "Rui Zhu"
+        },
+        {
+          "authorId": "2241501101",
+          "name": "Pengyang Zhou"
+        }
+      ]
+    },
+    {
+      "paperId": "18fbd42a2af019014cdeb76acca67bfeec1937b9",
+      "externalIds": {
+        "ArXiv": "2604.25930",
+        "CorpusId": 287874087
+      },
+      "url": "https://www.semanticscholar.org/paper/18fbd42a2af019014cdeb76acca67bfeec1937b9",
+      "title": "Associative-State Universal Transformers: Sparse Retrieval Meets Structured Recurrence",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2343697041",
+          "name": "Liu Xiao"
+        }
+      ]
+    },
+    {
+      "paperId": "d11c202b75cc3cbd4379d41927add01c774a6953",
+      "externalIds": {
+        "ArXiv": "2603.20991",
+        "CorpusId": 286766093
+      },
+      "url": "https://www.semanticscholar.org/paper/d11c202b75cc3cbd4379d41927add01c774a6953",
+      "title": "Structural Sensitivity in Compressed Transformers: Relative Error Propagation and Layer Removal",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2080122521",
+          "name": "Abhinaba Basu"
+        },
+        {
+          "authorId": "2433231614",
+          "name": "Kumkum Basu"
+        },
+        {
+          "authorId": "153918021",
+          "name": "Koushik Deb"
+        }
+      ]
+    },
+    {
+      "paperId": "1cd60553588441b17c0dd411683ad2ff3c77b774",
+      "externalIds": {
+        "ArXiv": "2605.06105",
+        "CorpusId": 288014453
+      },
+      "url": "https://www.semanticscholar.org/paper/1cd60553588441b17c0dd411683ad2ff3c77b774",
+      "title": "Shallow Prefill, Deep Decoding: Efficient Long-Context Inference via Layer-Asymmetric KV Visibility",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2297307430",
+          "name": "Jung-Shim Oh"
+        },
+        {
+          "authorId": "2280528390",
+          "name": "Hye-Jung Jeon"
+        },
+        {
+          "authorId": "2433589559",
+          "name": "Hyunjune Ji"
+        },
+        {
+          "authorId": "2433247843",
+          "name": "Kyongmin Kong"
+        },
+        {
+          "authorId": "2268294614",
+          "name": "Jay-Yoon Lee"
+        }
+      ]
+    },
+    {
+      "paperId": "417187a0dcd50e1ccc93b3e4bcc229850ca0b753",
+      "externalIds": {
+        "ArXiv": "2604.18075",
+        "CorpusId": 287635367
+      },
+      "url": "https://www.semanticscholar.org/paper/417187a0dcd50e1ccc93b3e4bcc229850ca0b753",
+      "title": "Enhancing Continual Learning of Vision-Language Models via Dynamic Prefix Weighting",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2357707892",
+          "name": "H. Jang"
+        },
+        {
+          "authorId": "2304372813",
+          "name": "Hyuk Kwon"
+        },
+        {
+          "authorId": "2304555514",
+          "name": "Kibok Lee"
+        }
+      ]
+    },
+    {
+      "paperId": "da119e09d92c4c0015ee3928c592f2917e3862f7",
+      "externalIds": {
+        "ArXiv": "2604.00235",
+        "CorpusId": 287021881
+      },
+      "url": "https://www.semanticscholar.org/paper/da119e09d92c4c0015ee3928c592f2917e3862f7",
+      "title": "MAC-Attention: a Match-Amend-Complete Scheme for Fast and Accurate Attention Computation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2266686678",
+          "name": "Jinghan Yao"
+        },
+        {
+          "authorId": "2427117001",
+          "name": "Sam Ad'e Jacobs"
+        },
+        {
+          "authorId": "3035222",
+          "name": "Walid Krichene"
+        },
+        {
+          "authorId": "2226706029",
+          "name": "Masahiro Tanaka"
+        },
+        {
+          "authorId": "2222521323",
+          "name": "D. Panda"
+        }
+      ]
+    },
+    {
+      "paperId": "1400241723114c69f37991887536fc5a7d1025cf",
+      "externalIds": {
+        "ArXiv": "2605.01910",
+        "CorpusId": 287949916
+      },
+      "url": "https://www.semanticscholar.org/paper/1400241723114c69f37991887536fc5a7d1025cf",
+      "title": "Stochastic Sparse Attention for Memory-Bound Inference",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2315864793",
+          "name": "Kyle Lee"
+        },
+        {
+          "authorId": "2115013041",
+          "name": "Corentin Delacour"
+        },
+        {
+          "authorId": "2404466332",
+          "name": "Kevin Callahan-Coray"
+        },
+        {
+          "authorId": "2052123033",
+          "name": "Kyle Jiang"
+        },
+        {
+          "authorId": "2185422948",
+          "name": "Can Yaras"
+        },
+        {
+          "authorId": "3103394",
+          "name": "Samet Oymak"
+        },
+        {
+          "authorId": "2283154352",
+          "name": "T. Srimani"
+        },
+        {
+          "authorId": "2346135669",
+          "name": "K. Camsari"
+        }
+      ]
+    },
+    {
+      "paperId": "eaf9ae5b26f10bb8260eced2cbea061b544466bd",
+      "externalIds": {
+        "ArXiv": "2603.17809",
+        "CorpusId": 286643506
+      },
+      "url": "https://www.semanticscholar.org/paper/eaf9ae5b26f10bb8260eced2cbea061b544466bd",
+      "title": "Fine-Grained Post-Training Quantization for Large Vision Language Models with Quantization-Aware Integrated Gradients",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2349848685",
+          "name": "Ziwei Xiang"
+        },
+        {
+          "authorId": "2320314790",
+          "name": "Fanhu Zeng"
+        },
+        {
+          "authorId": "2408595353",
+          "name": "Hongjian Fang"
+        },
+        {
+          "authorId": "2282996326",
+          "name": "Rui-Qi Wang"
+        },
+        {
+          "authorId": "2220802540",
+          "name": "Renxing Chen"
+        },
+        {
+          "authorId": "2266834893",
+          "name": "Yanan Zhu"
+        },
+        {
+          "authorId": "2319413811",
+          "name": "Yi Chen"
+        },
+        {
+          "authorId": "2266222255",
+          "name": "Peipei Yang"
+        },
+        {
+          "authorId": "2373752870",
+          "name": "Xu-Yao Zhang"
+        }
+      ]
+    },
+    {
+      "paperId": "476d6684c69d6a0bd5e38a80671c9149e4756253",
+      "externalIds": {
+        "ArXiv": "2604.08565",
+        "CorpusId": 287351395
+      },
+      "url": "https://www.semanticscholar.org/paper/476d6684c69d6a0bd5e38a80671c9149e4756253",
+      "title": "Dynamic sparsity in tree-structured feed-forward layers at scale",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2355714562",
+          "name": "Reza Sedghi"
+        },
+        {
+          "authorId": "1581658184",
+          "name": "Robin Schiewer"
+        },
+        {
+          "authorId": "2259829",
+          "name": "Anand Subramoney"
+        },
+        {
+          "authorId": "2274101818",
+          "name": "David Kappel"
+        }
+      ]
+    },
+    {
+      "paperId": "7ea9cd9be58aedd48498635e580019ee5dfda6db",
+      "externalIds": {
+        "ArXiv": "2604.02051",
+        "CorpusId": 287074266
+      },
+      "url": "https://www.semanticscholar.org/paper/7ea9cd9be58aedd48498635e580019ee5dfda6db",
+      "title": "Ouroboros: Dynamic Weight Generation for Recursive Transformers via Input-Conditioned LoRA Modulation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2423869519",
+          "name": "Jaber Jaber"
+        },
+        {
+          "authorId": "2333125991",
+          "name": "O. Jaber"
+        }
+      ]
+    },
+    {
+      "paperId": "160f907ae5929082ad8ff25804162511da295d0c",
+      "externalIds": {
+        "ArXiv": "2604.08558",
+        "CorpusId": 287351710
+      },
+      "url": "https://www.semanticscholar.org/paper/160f907ae5929082ad8ff25804162511da295d0c",
+      "title": "WAND: Windowed Attention and Knowledge Distillation for Efficient Autoregressive Text-to-Speech Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2313500645",
+          "name": "Hanna Lee"
+        },
+        {
+          "authorId": "2279861479",
+          "name": "Tan Dat Nguyen"
+        },
+        {
+          "authorId": "2363411976",
+          "name": "Jaehoon Kang"
+        },
+        {
+          "authorId": "2363342527",
+          "name": "Kyuhong Shim"
+        }
+      ]
+    },
+    {
+      "paperId": "d5cafe7aeb7062eda1ef0e1853671f450b1ae5b7",
+      "externalIds": {
+        "ArXiv": "2603.23914",
+        "CorpusId": 286776364
+      },
+      "url": "https://www.semanticscholar.org/paper/d5cafe7aeb7062eda1ef0e1853671f450b1ae5b7",
+      "title": "Attention-aware Inference Optimizations for Large Vision-Language Models with Memory-efficient Decoding",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2046866873",
+          "name": "Fatih Ilhan"
+        },
+        {
+          "authorId": "2296065236",
+          "name": "Gaowen Liu"
+        },
+        {
+          "authorId": "2828296",
+          "name": "R. Kompella"
+        },
+        {
+          "authorId": "2066601176",
+          "name": "S. Tekin"
+        },
+        {
+          "authorId": "2253860508",
+          "name": "Tiansheng Huang"
+        },
+        {
+          "authorId": "2217491250",
+          "name": "Zachary Yahn"
+        },
+        {
+          "authorId": "2348307071",
+          "name": "Yichang Xu"
+        },
+        {
+          "authorId": "2254270304",
+          "name": "Ling Liu"
+        }
+      ]
+    },
+    {
+      "paperId": "ba90095a6e3220f1bd31142b61241b5237cf7b8e",
+      "externalIds": {
+        "ArXiv": "2605.02772",
+        "CorpusId": 287950655
+      },
+      "url": "https://www.semanticscholar.org/paper/ba90095a6e3220f1bd31142b61241b5237cf7b8e",
+      "title": "Linearizing Vision Transformer with Test-Time Training",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2253881032",
+          "name": "Yining Li"
+        },
+        {
+          "authorId": "2273038157",
+          "name": "Dongchen Han"
+        },
+        {
+          "authorId": "2243367696",
+          "name": "Zeyu Liu"
+        },
+        {
+          "authorId": "2256230400",
+          "name": "Han Wang"
+        },
+        {
+          "authorId": "2115664591",
+          "name": "Yulin Wang"
+        },
+        {
+          "authorId": "2395712808",
+          "name": "Gao Huang"
+        }
+      ]
+    },
+    {
+      "paperId": "054725120425ac572b5d07ba9b90c8d3ba9bf136",
+      "externalIds": {
+        "ArXiv": "2603.19567",
+        "CorpusId": 286751070
+      },
+      "url": "https://www.semanticscholar.org/paper/054725120425ac572b5d07ba9b90c8d3ba9bf136",
+      "title": "Efficiency Follows Global-Local Decoupling",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2149233024",
+          "name": "Zhenyu Yang"
+        },
+        {
+          "authorId": "120171258",
+          "name": "Gensheng Pei"
+        },
+        {
+          "authorId": "2364448351",
+          "name": "Tao Chen"
+        },
+        {
+          "authorId": "2275762255",
+          "name": "Yichao Zhou"
+        },
+        {
+          "authorId": "2352894028",
+          "name": "Tianfei Zhou"
+        },
+        {
+          "authorId": "2274981746",
+          "name": "Yazhou Yao"
+        },
+        {
+          "authorId": "2405767477",
+          "name": "Fumin Shen"
+        }
+      ]
+    },
+    {
+      "paperId": "5673c59aeb1290e05a788c865b611d20496ab95f",
+      "externalIds": {
+        "ArXiv": "2604.10103",
+        "CorpusId": 287425069
+      },
+      "url": "https://www.semanticscholar.org/paper/5673c59aeb1290e05a788c865b611d20496ab95f",
+      "title": "Long-Horizon Streaming Video Generation via Hybrid Attention with Decoupled Distillation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2365260930",
+          "name": "Ruibin Li"
+        },
+        {
+          "authorId": "2267786318",
+          "name": "Tao Yang"
+        },
+        {
+          "authorId": "2267246720",
+          "name": "Fangzhou Ai"
+        },
+        {
+          "authorId": "2350393595",
+          "name": "Tianhe Wu"
+        },
+        {
+          "authorId": "2355228751",
+          "name": "Shilei Wen"
+        },
+        {
+          "authorId": "2334868382",
+          "name": "Bingyue Peng"
+        },
+        {
+          "authorId": "2256830888",
+          "name": "Lei Zhang"
+        }
+      ]
+    },
+    {
+      "paperId": "8a8ad9257034bca8c6945f9eea9b4181583fc0d9",
+      "externalIds": {
+        "ArXiv": "2603.25011",
+        "CorpusId": 286790093
+      },
+      "url": "https://www.semanticscholar.org/paper/8a8ad9257034bca8c6945f9eea9b4181583fc0d9",
+      "title": "Sparton: Fast and Memory-Efficient Triton Kernel for Learned Sparse Retrieval",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2281707946",
+          "name": "Thong Nguyen"
+        },
+        {
+          "authorId": "2140042293",
+          "name": "Cosimo Rulli"
+        },
+        {
+          "authorId": "2763561",
+          "name": "F. M. Nardini"
+        },
+        {
+          "authorId": "1797933",
+          "name": "Rossano Venturini"
+        },
+        {
+          "authorId": "2287929110",
+          "name": "Andrew Yates"
+        }
+      ]
+    },
+    {
+      "paperId": "7e3e5d839a3f26983dfd00d1ab89c43a8b4b9b78",
+      "externalIds": {
+        "ArXiv": "2604.18603",
+        "CorpusId": 287636229
+      },
+      "url": "https://www.semanticscholar.org/paper/7e3e5d839a3f26983dfd00d1ab89c43a8b4b9b78",
+      "title": "Dual Triangle Attention: Effective Bidirectional Attention Without Positional Embeddings",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2430728068",
+          "name": "Logan Halle"
+        },
+        {
+          "authorId": "2340571363",
+          "name": "J. Gleghorn"
+        }
+      ]
+    },
+    {
+      "paperId": "27be8eb8f5d8e13b1035232e545f77b1f377a185",
+      "externalIds": {
+        "ArXiv": "2603.18585",
+        "CorpusId": 286669637
+      },
+      "url": "https://www.semanticscholar.org/paper/27be8eb8f5d8e13b1035232e545f77b1f377a185",
+      "title": "HAViT: Historical Attention Vision Transformer",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2424643853",
+          "name": "S. Banik"
+        },
+        {
+          "authorId": "2364434335",
+          "name": "Manish Das"
+        },
+        {
+          "authorId": "34992579",
+          "name": "S. Dubey"
+        },
+        {
+          "authorId": "2355553094",
+          "name": "Satish Kumar Singh"
+        }
+      ]
+    },
+    {
+      "paperId": "d6dd637449f66c7e8774a30bbab206ec90f58eb4",
+      "externalIds": {
+        "DOI": "10.1109/ACCESS.2026.3677560",
+        "CorpusId": 286808406
+      },
+      "url": "https://www.semanticscholar.org/paper/d6dd637449f66c7e8774a30bbab206ec90f58eb4",
+      "title": "SHARP: Structured Hierarchical Attention Rank Projection for Efficient Language Model Distillation",
+      "venue": "IEEE Access",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2264183371",
+          "name": "Jieui Kang"
+        },
+        {
+          "authorId": "2425733528",
+          "name": "Eunjeong Yoo"
+        },
+        {
+          "authorId": "2301748001",
+          "name": "Soeun Choi"
+        },
+        {
+          "authorId": "2353308060",
+          "name": "Yeonhee Kim"
+        },
+        {
+          "authorId": "2370782614",
+          "name": "Jaehyeong Sim"
+        }
+      ]
+    },
+    {
+      "paperId": "06f38455034b8d9a85aafefad96b77620714b3b0",
+      "externalIds": {
+        "ArXiv": "2603.14706",
+        "CorpusId": 286572156
+      },
+      "url": "https://www.semanticscholar.org/paper/06f38455034b8d9a85aafefad96b77620714b3b0",
+      "title": "AdapterTune: Zero-Initialized Low-Rank Adapters for Frozen Vision Transformers",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2402728988",
+          "name": "Salim Khazem"
+        }
+      ]
+    },
+    {
+      "paperId": "76a019ac89413e48864a2b807524510a06bd0f99",
+      "externalIds": {
+        "ArXiv": "2604.22312",
+        "CorpusId": 287774031
+      },
+      "url": "https://www.semanticscholar.org/paper/76a019ac89413e48864a2b807524510a06bd0f99",
+      "title": "Guess-Verify-Refine: Data-Aware Top-K for Sparse-Attention Decoding on Blackwell via Temporal Correlation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2352070802",
+          "name": "Long Cheng"
+        },
+        {
+          "authorId": "2346639970",
+          "name": "Ritchie Zhao"
+        },
+        {
+          "authorId": "2121670386",
+          "name": "Timothy Liu"
+        },
+        {
+          "authorId": "2358406708",
+          "name": "Mindy Li"
+        },
+        {
+          "authorId": "1381696125",
+          "name": "Xianjie Qiao"
+        },
+        {
+          "authorId": "2312037201",
+          "name": "Kefeng Duan"
+        },
+        {
+          "authorId": "2255730929",
+          "name": "Yujie Chen"
+        },
+        {
+          "authorId": "2321670723",
+          "name": "Xiaoming Chen"
+        },
+        {
+          "authorId": "143612303",
+          "name": "B. Rouhani"
+        },
+        {
+          "authorId": "2004057395",
+          "name": "J. Yang"
+        }
+      ]
+    },
+    {
+      "paperId": "b9d109fecf8471cbdef37a438eaf7a89fe60c7a7",
+      "externalIds": {
+        "ArXiv": "2603.17771",
+        "CorpusId": 286643693
+      },
+      "url": "https://www.semanticscholar.org/paper/b9d109fecf8471cbdef37a438eaf7a89fe60c7a7",
+      "title": "Attention Sinks Induce Gradient Sinks: Massive Activations as Gradient Regulators in Transformers",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 2,
+      "authors": [
+        {
+          "authorId": "2308073429",
+          "name": "Yihong Chen"
+        },
+        {
+          "authorId": "2288208635",
+          "name": "Zhouchen Lin"
+        },
+        {
+          "authorId": "2292025554",
+          "name": "Quanming Yao"
+        }
+      ]
+    },
+    {
+      "paperId": "1aa4c60d74b031089ced10a365d974883243ac10",
+      "externalIds": {
+        "ArXiv": "2603.18004",
+        "CorpusId": 286643719
+      },
+      "url": "https://www.semanticscholar.org/paper/1aa4c60d74b031089ced10a365d974883243ac10",
+      "title": "Unified Spatio-Temporal Token Scoring for Efficient Video VLMs",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2284825138",
+          "name": "Jianrui Zhang"
+        },
+        {
+          "authorId": "2294514278",
+          "name": "Yue Yang"
+        },
+        {
+          "authorId": "32483149",
+          "name": "Rohun Tripathi"
+        },
+        {
+          "authorId": "2385480459",
+          "name": "Winson Han"
+        },
+        {
+          "authorId": "2257273968",
+          "name": "Ranjay Krishna"
+        },
+        {
+          "authorId": "2400430629",
+          "name": "Christopher Clark"
+        },
+        {
+          "authorId": "2269751609",
+          "name": "Y. Lee"
+        },
+        {
+          "authorId": "2391841911",
+          "name": "Sangho Lee"
+        }
+      ]
+    },
+    {
+      "paperId": "e16785d649da52bcc2b96871ecb5deed36cd2aad",
+      "externalIds": {
+        "ArXiv": "2603.20275",
+        "CorpusId": 286762176
+      },
+      "url": "https://www.semanticscholar.org/paper/e16785d649da52bcc2b96871ecb5deed36cd2aad",
+      "title": "Understanding Pruning Regimes in Vision-Language Models Through Domain-Aware Layer Selection",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2238206230",
+          "name": "Saeed Khaki"
+        },
+        {
+          "authorId": "2397497396",
+          "name": "N. Safaei"
+        },
+        {
+          "authorId": "2405890782",
+          "name": "Kamal Ginotra"
+        }
+      ]
+    },
+    {
+      "paperId": "b7a76407c50ac51fe240ffbb8f4e764434e544fd",
+      "externalIds": {
+        "ArXiv": "2603.24680",
+        "CorpusId": 286789625
+      },
+      "url": "https://www.semanticscholar.org/paper/b7a76407c50ac51fe240ffbb8f4e764434e544fd",
+      "title": "ReDiPrune: Relevance-Diversity Pre-Projection Token Pruning for Efficient Multimodal LLMs",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2360534241",
+          "name": "An Yu"
+        },
+        {
+          "authorId": "2303471732",
+          "name": "Ting Yu Tsai"
+        },
+        {
+          "authorId": "2244133681",
+          "name": "Zhenfei Zhang"
+        },
+        {
+          "authorId": "2316478695",
+          "name": "Weiheng Lu"
+        },
+        {
+          "authorId": "2392966483",
+          "name": "Felix X.-F. Ye"
+        },
+        {
+          "authorId": "2303626502",
+          "name": "Ming-Ching Chang"
+        }
+      ]
+    },
+    {
+      "paperId": "ed8a97ae1948c8d2e00184a3c8cc86b6cdab81d3",
+      "externalIds": {
+        "DOI": "10.1109/ICCV51701.2025.01904",
+        "CorpusId": 286515411
+      },
+      "url": "https://www.semanticscholar.org/paper/ed8a97ae1948c8d2e00184a3c8cc86b6cdab81d3",
+      "title": "ZipVL: Accelerating Vision-Language Models Through Dynamic Token Sparsity",
+      "venue": "IEEE International Conference on Computer Vision",
+      "year": 2025,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2254280175",
+          "name": "Yefei He"
+        },
+        {
+          "authorId": "2325817823",
+          "name": "Feng Chen"
+        },
+        {
+          "authorId": "2302773646",
+          "name": "Jing Liu"
+        },
+        {
+          "authorId": "2283133523",
+          "name": "Wenqi Shao"
+        },
+        {
+          "authorId": "2326971891",
+          "name": "Hong Zhou"
+        },
+        {
+          "authorId": "2333984491",
+          "name": "Kaipeng Zhang"
+        },
+        {
+          "authorId": "3194022",
+          "name": "Bohan Zhuang"
+        }
+      ]
+    },
+    {
+      "paperId": "3bdc0f817e486e3ff3e9e7c744eeb20dc497b614",
+      "externalIds": {
+        "ArXiv": "2605.06067",
+        "CorpusId": 288014441
+      },
+      "url": "https://www.semanticscholar.org/paper/3bdc0f817e486e3ff3e9e7c744eeb20dc497b614",
+      "title": "Normalized Architectures are Natively 4-Bit",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2151794574",
+          "name": "Maxim Fishman"
+        },
+        {
+          "authorId": "104387774",
+          "name": "Brian Chmiel"
+        },
+        {
+          "authorId": "2607278",
+          "name": "Ron Banner"
+        },
+        {
+          "authorId": "2266392841",
+          "name": "Daniel Soudry"
+        },
+        {
+          "authorId": "2324053822",
+          "name": "Boris Ginsburg"
+        }
+      ]
+    },
+    {
+      "paperId": "8f00ffce9ea4464b25dd1f2700d975ab1314ef6f",
+      "externalIds": {
+        "ArXiv": "2604.08584",
+        "CorpusId": 287351743
+      },
+      "url": "https://www.semanticscholar.org/paper/8f00ffce9ea4464b25dd1f2700d975ab1314ef6f",
+      "title": "CSAttention: Centroid-Scoring Attention for Accelerating LLM Inference",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2313764125",
+          "name": "Chuxu Song"
+        },
+        {
+          "authorId": "2165623189",
+          "name": "Zhencan Peng"
+        },
+        {
+          "authorId": "2226477368",
+          "name": "Jiuqi Wei"
+        },
+        {
+          "authorId": "2154928712",
+          "name": "Chuanhui Yang"
+        }
+      ]
+    },
+    {
+      "paperId": "d905381c9e7214656d0c762b62331dcfee114450",
+      "externalIds": {
+        "ArXiv": "2605.00539",
+        "CorpusId": 287929702
+      },
+      "url": "https://www.semanticscholar.org/paper/d905381c9e7214656d0c762b62331dcfee114450",
+      "title": "AGoQ: Activation and Gradient Quantization for Memory-Efficient Distributed Training of LLMs",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2152327527",
+          "name": "Wen-Jing Lin"
+        },
+        {
+          "authorId": "150148862",
+          "name": "Jun-Jie Huang"
+        },
+        {
+          "authorId": "2201313441",
+          "name": "Lu Zhang"
+        },
+        {
+          "authorId": "2391048556",
+          "name": "Lai Li"
+        },
+        {
+          "authorId": "2432756523",
+          "name": "Xiang Bao"
+        },
+        {
+          "authorId": "2298639158",
+          "name": "Mengyang Zhang"
+        },
+        {
+          "authorId": "2375950209",
+          "name": "Bingning Wang"
+        },
+        {
+          "authorId": "2306750271",
+          "name": "Shaohuai Shi"
+        }
+      ]
+    },
+    {
+      "paperId": "47ea499e134ac76feef14f134814ff6c8190d355",
+      "externalIds": {
+        "ArXiv": "2605.01058",
+        "CorpusId": 287948090
+      },
+      "url": "https://www.semanticscholar.org/paper/47ea499e134ac76feef14f134814ff6c8190d355",
+      "title": "LEAP: Layer-wise Exit-Aware Pretraining for Efficient Transformer Inference",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "134726562",
+          "name": "Shashank Kapadia"
+        },
+        {
+          "authorId": "2426357155",
+          "name": "Dr. Deepanshu Mishra"
+        },
+        {
+          "authorId": "2096532335",
+          "name": "Sujal Reddy Alugubelli"
+        },
+        {
+          "authorId": "22174352",
+          "name": "Haoan Wang"
+        },
+        {
+          "authorId": "2432872293",
+          "name": "Saipraveen Vabbilisetty"
+        },
+        {
+          "authorId": "2217831132",
+          "name": "Rishi Bhatia"
+        },
+        {
+          "authorId": "2427071532",
+          "name": "Anupriya Sharma"
+        }
+      ]
+    },
+    {
+      "paperId": "1ed621665e44ab51fab2c24012f320beccfb3c9d",
+      "externalIds": {
+        "ArXiv": "2603.16063",
+        "CorpusId": 286579456
+      },
+      "url": "https://www.semanticscholar.org/paper/1ed621665e44ab51fab2c24012f320beccfb3c9d",
+      "title": "ViT-AdaLA: Adapting Vision Transformers with Linear Attention",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2337142219",
+          "name": "Yifan Li"
+        },
+        {
+          "authorId": "2110654003",
+          "name": "Seunghyun Yoon"
+        },
+        {
+          "authorId": "1405279380",
+          "name": "Viet Dac Lai"
+        },
+        {
+          "authorId": "2358456470",
+          "name": "Franck Dernoncourt"
+        },
+        {
+          "authorId": "2391723497",
+          "name": "Jason Kuen"
+        },
+        {
+          "authorId": "2267333754",
+          "name": "Yu Kong"
+        },
+        {
+          "authorId": "2265648617",
+          "name": "Trung Bui"
+        }
+      ]
+    },
+    {
+      "paperId": "1b826f0d44d9bd03cf44189e964ed4c290dac2e2",
+      "externalIds": {
+        "ArXiv": "2603.22665",
+        "CorpusId": 286774679
+      },
+      "url": "https://www.semanticscholar.org/paper/1b826f0d44d9bd03cf44189e964ed4c290dac2e2",
+      "title": "Improving LLM Predictions via Inter-Layer Structural Encoders",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2425461142",
+          "name": "Tom Ulanovski"
+        },
+        {
+          "authorId": "2425460927",
+          "name": "Eyal Blyachman"
+        },
+        {
+          "authorId": "2396370574",
+          "name": "Maya Bechler-Speicher"
+        }
+      ]
+    },
+    {
+      "paperId": "39f7a68c96aaf6d8f53773657d5aa6d71b0a23d4",
+      "externalIds": {
+        "ArXiv": "2604.17228",
+        "CorpusId": 287634879
+      },
+      "url": "https://www.semanticscholar.org/paper/39f7a68c96aaf6d8f53773657d5aa6d71b0a23d4",
+      "title": "Revisiting Auxiliary Losses for Conditional Depth Routing: An Empirical Study",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2303522901",
+          "name": "Qingwei Lin"
+        }
+      ]
+    },
+    {
+      "paperId": "6588fdbd2c4e70bbad91c754b0487013b0d67f52",
+      "externalIds": {
+        "ArXiv": "2603.20020",
+        "CorpusId": 286753034
+      },
+      "url": "https://www.semanticscholar.org/paper/6588fdbd2c4e70bbad91c754b0487013b0d67f52",
+      "title": "Detached Skip-Links and $R$-Probe: Decoupling Feature Aggregation from Gradient Propagation for MLLM OCR",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2384335172",
+          "name": "Ziye Yuan"
+        },
+        {
+          "authorId": "2381722049",
+          "name": "Ruchang Yao"
+        },
+        {
+          "authorId": "2325944609",
+          "name": "Chengxin Zheng"
+        },
+        {
+          "authorId": "2124210104",
+          "name": "Yusheng Zhao"
+        },
+        {
+          "authorId": "2336096468",
+          "name": "Daxiang Dong"
+        },
+        {
+          "authorId": "2290594698",
+          "name": "Ming Zhang"
+        }
+      ]
+    },
+    {
+      "paperId": "07dbacb0de020d22426f37d7aaf0ce06c16051e9",
+      "externalIds": {
+        "ArXiv": "2604.01168",
+        "CorpusId": 287023714
+      },
+      "url": "https://www.semanticscholar.org/paper/07dbacb0de020d22426f37d7aaf0ce06c16051e9",
+      "title": "S0 Tuning: Zero-Overhead Adaptation of Hybrid Recurrent-Attention Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "123451672",
+          "name": "Jack Young"
+        }
+      ]
+    },
+    {
+      "paperId": "a50efb7cdaaaaf5e57100599bd017908755d7f0a",
+      "externalIds": {
+        "ArXiv": "2604.06798",
+        "CorpusId": 287248144
+      },
+      "url": "https://www.semanticscholar.org/paper/a50efb7cdaaaaf5e57100599bd017908755d7f0a",
+      "title": "MoBiE: Efficient Inference of Mixture of Binary Experts under Post-Training Quantization",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2391876089",
+          "name": "Zhixiong Zhao"
+        },
+        {
+          "authorId": "2341861315",
+          "name": "Zukang Xu"
+        },
+        {
+          "authorId": "2341715066",
+          "name": "Zhixuan Chen"
+        },
+        {
+          "authorId": "2274968021",
+          "name": "Dawei Yang"
+        }
+      ]
+    },
+    {
+      "paperId": "9bc0cec2870f34a41633c6c6a788c2d9cafd7e3e",
+      "externalIds": {
+        "ArXiv": "2604.08335",
+        "CorpusId": 287256234
+      },
+      "url": "https://www.semanticscholar.org/paper/9bc0cec2870f34a41633c6c6a788c2d9cafd7e3e",
+      "title": "Dead Weights, Live Signals: Feedforward Graphs of Frozen Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2052754349",
+          "name": "M. Armstrong"
+        },
+        {
+          "authorId": "2307467068",
+          "name": "Navid Ayoobi"
+        },
+        {
+          "authorId": "2322430871",
+          "name": "Arjun Mukherjee"
+        }
+      ]
+    },
+    {
+      "paperId": "d1c46c4d8d08fa32a7f35e41a00d173fa0a3fb40",
+      "externalIds": {
+        "ArXiv": "2603.15953",
+        "CorpusId": 286579601
+      },
+      "url": "https://www.semanticscholar.org/paper/d1c46c4d8d08fa32a7f35e41a00d173fa0a3fb40",
+      "title": "A Family of LLMs Liberated from Static Vocabularies",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2424134393",
+          "name": "Aleph Alpha Adnen Abdessaied"
+        },
+        {
+          "authorId": "51416313",
+          "name": "Artur Baranowski"
+        },
+        {
+          "authorId": "8604693",
+          "name": "Lukas Balles"
+        },
+        {
+          "authorId": "2329659130",
+          "name": "Michael Barlow"
+        },
+        {
+          "authorId": "47643489",
+          "name": "Fabien C. Y. Benureau"
+        },
+        {
+          "authorId": "2064772",
+          "name": "Felix Berkenkamp"
+        },
+        {
+          "authorId": "2424134216",
+          "name": "Lukas Bluebaum"
+        },
+        {
+          "authorId": "1947490436",
+          "name": "Bastian Boll"
+        },
+        {
+          "authorId": "2086840189",
+          "name": "Thomas F. Burns"
+        },
+        {
+          "authorId": "2265386214",
+          "name": "Björn Deiseroth"
+        },
+        {
+          "authorId": "102793124",
+          "name": "C. Eichenberg"
+        },
+        {
+          "authorId": "1454206123",
+          "name": "David Friede"
+        },
+        {
+          "authorId": "2424134358",
+          "name": "Pablo Iyu Guerrero"
+        },
+        {
+          "authorId": "2377367050",
+          "name": "A. Hammam"
+        },
+        {
+          "authorId": "1395848600",
+          "name": "Bastian Harren"
+        },
+        {
+          "authorId": "104511933",
+          "name": "J. Higl"
+        },
+        {
+          "authorId": "101022092",
+          "name": "Yasser Jadidi"
+        },
+        {
+          "authorId": "2364747396",
+          "name": "Carina Kauf"
+        },
+        {
+          "authorId": "2074342721",
+          "name": "J. Messner"
+        },
+        {
+          "authorId": "2708564",
+          "name": "J. Metzen"
+        },
+        {
+          "authorId": "2265383910",
+          "name": "Max Meuer"
+        },
+        {
+          "authorId": "17974944",
+          "name": "Vedant Nanda"
+        },
+        {
+          "authorId": "2193555370",
+          "name": "Pit Neitemeier"
+        },
+        {
+          "authorId": "2007776023",
+          "name": "Koen Oostermeijer"
+        },
+        {
+          "authorId": "2398648881",
+          "name": "Letitia Parcalabescu"
+        },
+        {
+          "authorId": "2526773",
+          "name": "M. Pernpointner"
+        },
+        {
+          "authorId": "2424134116",
+          "name": "Felix Reinfurt"
+        },
+        {
+          "authorId": "39246787",
+          "name": "Dylan M. Rodriquez"
+        },
+        {
+          "authorId": "2261085620",
+          "name": "Grégory Schott"
+        },
+        {
+          "authorId": "2329693752",
+          "name": "Philipp Siedler"
+        },
+        {
+          "authorId": "3451689",
+          "name": "Martin Simonovsky"
+        },
+        {
+          "authorId": "2923553",
+          "name": "Till Speicher"
+        },
+        {
+          "authorId": "2358453540",
+          "name": "Volker Stampa"
+        },
+        {
+          "authorId": "2358454922",
+          "name": "Stephan Waldchen"
+        },
+        {
+          "authorId": "2024731554",
+          "name": "Samuel Weinbach"
+        },
+        {
+          "authorId": "2358455095",
+          "name": "Gregor Ziegltrum"
+        }
+      ]
+    },
+    {
+      "paperId": "7cff626c86672c24549624880f045af7b45bc767",
+      "externalIds": {
+        "ArXiv": "2603.20586",
+        "CorpusId": 286762259
+      },
+      "url": "https://www.semanticscholar.org/paper/7cff626c86672c24549624880f045af7b45bc767",
+      "title": "MKA: Memory-Keyed Attention for Efficient Long-Context Reasoning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 6,
+      "authors": [
+        {
+          "authorId": "2376447889",
+          "name": "Dong Liu"
+        },
+        {
+          "authorId": "2334859470",
+          "name": "Yanxuan Yu"
+        },
+        {
+          "authorId": "2334743866",
+          "name": "Benjamin Lengerich"
+        },
+        {
+          "authorId": "2330176371",
+          "name": "Y. Wu"
+        }
+      ]
+    },
+    {
+      "paperId": "986de55cd71fb0f282472d83c173e48b8d0b107b",
+      "externalIds": {
+        "ArXiv": "2604.17177",
+        "CorpusId": 287634820
+      },
+      "url": "https://www.semanticscholar.org/paper/986de55cd71fb0f282472d83c173e48b8d0b107b",
+      "title": "Decomposing the Depth Profile of Fine-Tuning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2410361146",
+          "name": "Jayadev Billa"
+        }
+      ]
+    },
+    {
+      "paperId": "1410ac7519bd361710a8b2ef2dabece2e1be173f",
+      "externalIds": {
+        "ArXiv": "2604.13024",
+        "CorpusId": 287471753
+      },
+      "url": "https://www.semanticscholar.org/paper/1410ac7519bd361710a8b2ef2dabece2e1be173f",
+      "title": "CLAD: Efficient Log Anomaly Detection Directly on Compressed Representations",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2302519431",
+          "name": "Benzhao Tang"
+        },
+        {
+          "authorId": "2302759078",
+          "name": "Shiyu Yang"
+        }
+      ]
+    },
+    {
+      "paperId": "4114b92f67b7fb8911d47ff3cc0d8617873059a2",
+      "externalIds": {
+        "ArXiv": "2604.09425",
+        "CorpusId": 287352245
+      },
+      "url": "https://www.semanticscholar.org/paper/4114b92f67b7fb8911d47ff3cc0d8617873059a2",
+      "title": "Do Vision Language Models Need to Process Image Tokens?",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2277688448",
+          "name": "Sambit Ghosh"
+        },
+        {
+          "authorId": "2289958204",
+          "name": "R. V. Babu"
+        },
+        {
+          "authorId": "2337802297",
+          "name": "Chirag Agarwal"
+        }
+      ]
+    },
+    {
+      "paperId": "a399d84184e67b21a143bd562e25e0b9edaa76ff",
+      "externalIds": {
+        "ArXiv": "2603.22241",
+        "CorpusId": 286766382
+      },
+      "url": "https://www.semanticscholar.org/paper/a399d84184e67b21a143bd562e25e0b9edaa76ff",
+      "title": "MemDLM: Memory-Enhanced DLM Training",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2130133597",
+          "name": "Zehua Pei"
+        },
+        {
+          "authorId": "2363579575",
+          "name": "Huiling Zhen"
+        },
+        {
+          "authorId": "2363456991",
+          "name": "Weizhe Lin"
+        },
+        {
+          "authorId": "2249722081",
+          "name": "S. J. Pan"
+        },
+        {
+          "authorId": "2399111239",
+          "name": "Yunhe Wang"
+        },
+        {
+          "authorId": "2290331022",
+          "name": "Mingxuan Yuan"
+        },
+        {
+          "authorId": "2283428383",
+          "name": "Bei Yu"
+        }
+      ]
+    },
+    {
+      "paperId": "943432b7edb0d246bdead5aba4dcc4c1bbe8645e",
+      "externalIds": {
+        "ArXiv": "2604.05248",
+        "CorpusId": 287208084
+      },
+      "url": "https://www.semanticscholar.org/paper/943432b7edb0d246bdead5aba4dcc4c1bbe8645e",
+      "title": "Improving Sparse Memory Finetuning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 1,
+      "authors": [
+        {
+          "authorId": "2339131618",
+          "name": "Satyam Goyal"
+        },
+        {
+          "authorId": "2357933441",
+          "name": "Anirudh Kanchi"
+        },
+        {
+          "authorId": "2428350200",
+          "name": "Garv Shah"
+        },
+        {
+          "authorId": "1491232062",
+          "name": "Prakhar Gupta"
+        }
+      ]
+    },
+    {
+      "paperId": "5aee6464412cb5a3967a07aa93b655cde66d9383",
+      "externalIds": {
+        "ArXiv": "2604.20915",
+        "CorpusId": 287701750
+      },
+      "url": "https://www.semanticscholar.org/paper/5aee6464412cb5a3967a07aa93b655cde66d9383",
+      "title": "Absorber LLM: Harnessing Causal Synchronization for Test-Time Training",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2362856809",
+          "name": "Zhixin Zhang"
+        },
+        {
+          "authorId": "2431200799",
+          "name": "Shabo Zhang"
+        },
+        {
+          "authorId": "2363201562",
+          "name": "Chengcan Wu"
+        },
+        {
+          "authorId": "2191808925",
+          "name": "Zeming Wei"
+        },
+        {
+          "authorId": "2297768119",
+          "name": "Meng Sun"
+        }
+      ]
+    },
+    {
+      "paperId": "cc9777e6a7880b3407b2117fd4492ffa5b36673d",
+      "externalIds": {
+        "DBLP": "conf/aaai/ZhangWLWC26",
+        "ArXiv": "2605.04058",
+        "DOI": "10.1609/aaai.v40i34.40084",
+        "CorpusId": 286688852
+      },
+      "url": "https://www.semanticscholar.org/paper/cc9777e6a7880b3407b2117fd4492ffa5b36673d",
+      "title": "MP-ISMoE: Mixed-Precision Interactive Side Mixture-of-Experts for Efficient Transfer Learning",
+      "venue": "AAAI Conference on Artificial Intelligence",
+      "year": 2026,
+      "citationCount": 2,
+      "authors": [
+        {
+          "authorId": "2324806308",
+          "name": "Yutong Zhang"
+        },
+        {
+          "authorId": "2279251692",
+          "name": "Zimeng Wu"
+        },
+        {
+          "authorId": "2284223672",
+          "name": "Shengcai Liao"
+        },
+        {
+          "authorId": "2279750327",
+          "name": "Shujiang Wu"
+        },
+        {
+          "authorId": "2258005887",
+          "name": "Jiaxin Chen"
+        }
+      ]
+    },
+    {
+      "paperId": "746e7667dcce18d28ec8e46ecb0abb378b322075",
+      "externalIds": {
+        "ArXiv": "2604.09089",
+        "CorpusId": 287351648
+      },
+      "url": "https://www.semanticscholar.org/paper/746e7667dcce18d28ec8e46ecb0abb378b322075",
+      "title": "DeepGuard: Secure Code Generation via Multi-Layer Semantic Aggregation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2316449025",
+          "name": "Li Huang"
+        },
+        {
+          "authorId": "2314930962",
+          "name": "Zhongxin Liu"
+        },
+        {
+          "authorId": "2382921024",
+          "name": "Yifan Wu"
+        },
+        {
+          "authorId": "2326563402",
+          "name": "Tao Yin"
+        },
+        {
+          "authorId": "2307652306",
+          "name": "Dong Li"
+        },
+        {
+          "authorId": "2323161588",
+          "name": "Jichao Bi"
+        },
+        {
+          "authorId": "2268204830",
+          "name": "Nankun Mu"
+        },
+        {
+          "authorId": "2276446353",
+          "name": "Hongyu Zhang"
+        },
+        {
+          "authorId": "2310865121",
+          "name": "Meng Yan"
+        }
+      ]
+    },
+    {
+      "paperId": "c85dc53a7258caaf5e6b40dc643cdb4b81985452",
+      "externalIds": {
+        "ArXiv": "2604.02816",
+        "CorpusId": 287121745
+      },
+      "url": "https://www.semanticscholar.org/paper/c85dc53a7258caaf5e6b40dc643cdb4b81985452",
+      "title": "QAPruner: Quantization-Aware Vision Token Pruning for Multimodal Large Language Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2293349352",
+          "name": "Xinhao Wang"
+        },
+        {
+          "authorId": "2427861346",
+          "name": "Zhonyu Xia"
+        },
+        {
+          "authorId": "2346634642",
+          "name": "Zhiwei Lin"
+        },
+        {
+          "authorId": "2349544211",
+          "name": "Zhe Li"
+        },
+        {
+          "authorId": "2234000226",
+          "name": "Yongtao Wang"
+        }
+      ]
+    },
+    {
+      "paperId": "92c2b59c4b8763721e90d80421cff2a183c02f3c",
+      "externalIds": {
+        "ArXiv": "2605.04062",
+        "CorpusId": 287981732
+      },
+      "url": "https://www.semanticscholar.org/paper/92c2b59c4b8763721e90d80421cff2a183c02f3c",
+      "title": "EdgeRazor: A Lightweight Framework for Large Language Models via Mixed-Precision Quantization-Aware Distillation",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2341864063",
+          "name": "Shuhao Zhang"
+        },
+        {
+          "authorId": "2265930173",
+          "name": "Lei Huang"
+        },
+        {
+          "authorId": "2356240798",
+          "name": "Xia Deng"
+        },
+        {
+          "authorId": "2316449100",
+          "name": "Xin Zou"
+        },
+        {
+          "authorId": "2336858965",
+          "name": "Chen-Han Wu"
+        },
+        {
+          "authorId": "2332453666",
+          "name": "Nan Li"
+        },
+        {
+          "authorId": "2385500474",
+          "name": "Shaochu Zhang"
+        }
+      ]
+    },
+    {
+      "paperId": "137b25f0643de63e8ce9d8da5f8bb31c93fc228f",
+      "externalIds": {
+        "ArXiv": "2603.25766",
+        "CorpusId": 286942160
+      },
+      "url": "https://www.semanticscholar.org/paper/137b25f0643de63e8ce9d8da5f8bb31c93fc228f",
+      "title": "ETA-VLA: Efficient Token Adaptation via Temporal Fusion and Intra-LLM Sparsification for Vision-Language-Action Models",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2361388143",
+          "name": "Yiru Wang"
+        },
+        {
+          "authorId": "2361189931",
+          "name": "Anqing Jiang"
+        },
+        {
+          "authorId": "2374907025",
+          "name": "Shuo Wang"
+        },
+        {
+          "authorId": "2361259129",
+          "name": "Yuwen Heng"
+        },
+        {
+          "authorId": "2375307144",
+          "name": "Zichong Gu"
+        },
+        {
+          "authorId": "2347420851",
+          "name": "Hao Sun"
+        }
+      ]
+    },
+    {
+      "paperId": "388d798fe51c253d2869471242c020ca336515c5",
+      "externalIds": {
+        "ArXiv": "2603.17433",
+        "CorpusId": 286643207
+      },
+      "url": "https://www.semanticscholar.org/paper/388d798fe51c253d2869471242c020ca336515c5",
+      "title": "The Phasor Transformer: Resolving Attention Bottlenecks on the Unit Circle",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "41130227",
+          "name": "Dibakar Sigdel"
+        }
+      ]
+    },
+    {
+      "paperId": "a3a9d4be4ece5439fb8b12d3d235a9f6aa7bb852",
+      "externalIds": {
+        "ArXiv": "2604.03231",
+        "CorpusId": 287122042
+      },
+      "url": "https://www.semanticscholar.org/paper/a3a9d4be4ece5439fb8b12d3d235a9f6aa7bb852",
+      "title": "CoME-VL: Scaling Complementary Multi-Encoder Vision-Language Learning",
+      "venue": "",
+      "year": 2026,
+      "citationCount": 0,
+      "authors": [
+        {
+          "authorId": "2323044107",
+          "name": "Ankan Deria"
+        },
+        {
+          "authorId": "2348317787",
+          "name": "Komal Kumar"
+        },
+        {
+          "authorId": "2363376493",
+          "name": "Xilin He"
+        },
+        {
+          "authorId": "2405931070",
+          "name": "I. Razzak"
+        },
+        {
+          "authorId": "2951229",
+          "name": "Hisham Cholakkal"
+        },
+        {
+          "authorId": "2279959188",
+          "name": "F. Khan"
+        },
+        {
+          "authorId": "2330988919",
+          "name": "Salman Khan"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "dir": "[Tech Report 2026] Attention-Residuals",
+  "title": "Attention Residuals",
+  "short": "Attention-Residuals",
+  "authors": "Kimi Team; Guangyu Chen; Yu Zhang; Jianlin Su",
+  "venue": "Technical Report / arXiv",
+  "year": "2026",
+  "source": "arXiv",
+  "arxiv": "2603.15031",
+  "url": "https://arxiv.org/pdf/2603.15031",
+  "links": [
+    "https://arxiv.org/abs/2603.15031",
+    "https://arxiv.org/pdf/2603.15031"
+  ],
+  "reading_order": "Tech-repoorts report 2",
+  "one_liner_hint": "Attention Residuals 用跨层 attention 替换 PreNorm 残差的固定累加，让每层按输入自适应选择前面层表示，并用 Block AttnRes 降低大模型训练开销。",
+  "mineru_task": "432343e7-31f8-4727-b6e6-0f1bc4f404c3"
+}

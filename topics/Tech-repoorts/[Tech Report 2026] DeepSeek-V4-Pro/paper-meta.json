@@ -1,0 +1,17 @@
+{
+  "dir": "[Tech Report 2026] DeepSeek-V4-Pro",
+  "title": "DeepSeek-V4 Pro Technical Report",
+  "short": "DeepSeek-V4-Pro",
+  "authors": "DeepSeek-AI",
+  "venue": "Technical Report",
+  "year": "2026",
+  "source": "Hugging Face",
+  "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro/resolve/main/DeepSeek_V4.pdf",
+  "links": [
+    "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro",
+    "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro/resolve/main/DeepSeek_V4.pdf"
+  ],
+  "reading_order": "Tech-repoorts report 1",
+  "one_liner_hint": "DeepSeek-V4 Pro 技术报告聚焦工业级 LLM 架构、训练、推理与评测体系，适合作为工程化大模型技术路线的拆解对象。",
+  "mineru_task": "341a6da6-cdd4-43f1-a50e-db89c737ec53"
+}
