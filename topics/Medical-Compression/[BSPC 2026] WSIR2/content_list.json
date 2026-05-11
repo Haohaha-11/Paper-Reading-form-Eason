@@ -1,0 +1,2221 @@
+[
+  {
+    "type": "text",
+    "text": "Contents lists available at ScienceDirect",
+    "bbox": [
+      227.54400634765625,
+      57.6590690612793,
+      369.2280578613281,
+      71.77613067626953
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "Biomedical Signal Processing and Control",
+    "bbox": [
+      172.68299865722656,
+      85.89710235595703,
+      424.097900390625,
+      100.52213287353516
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "journal homepage: www.elsevier.com/locate/bspc",
+    "bbox": [
+      203.83900451660156,
+      112.54511260986328,
+      490.1965637207031,
+      129.7591552734375
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "Whole slide image redundancy reduction for efficient pathological diagnosis",
+    "bbox": [
+      37.587005615234375,
+      165.61708068847656,
+      482.0511779785156,
+      180.1207733154297
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "Shijie Li a,b\n, Zhineng Chen a\n,∗, Feng-Jung Chen b\n, Xieping Gao c",
+    "bbox": [
+      37.587005615234375,
+      185.3111114501953,
+      350.9588317871094,
+      199.42816162109375
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "a College of Computer Science and Artificial Intelligence, Fudan University, Shanghai 200438, China\nb Shanghai Key Laboratory of Metabolic Remodeling and Health, Institute of Metabolism and Integrative Biology, Department of Endocrinology and Metabolism, \nZhongshan Hospital, Fudan University, Shanghai 200438, China\nc Hunan Provincial Key Laboratory of Intelligent Computing and Language Information Processing, Hunan Normal University, Changsha 410081, China",
+    "bbox": [
+      37.587005615234375,
+      197.8640899658203,
+      481.1965637207031,
+      237.68414306640625
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "A R T I C L E  I N F O",
+    "bbox": [
+      37.587005615234375,
+      251.9110870361328,
+      132.23243713378906,
+      266.02813720703125
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "Keywords:\nComputational pathology\nImage redundancy reduction\nEfficient diagnosis",
+    "bbox": [
+      37.587005615234375,
+      276.97418212890625,
+      118.2723388671875,
+      310.3991394042969
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "A B S T R A C T",
+    "bbox": [
+      170.8159942626953,
+      251.88111877441406,
+      267.74884033203125,
+      271.4481201171875
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "The rapid advancement of Computational Pathology (CP) has revolutionized pathological diagnosis and \ndriven the development of intelligent diagnostic technologies. However, a major challenge in applying these \ntechnologies is processing Whole Slide Images (WSIs) with resolutions that can exceeding tens of millions \nof pixels (e.g., 10,000 × 10,000). While existing methods predominantly focus on WSI representation and \ndiscrimination, they often overlook efficiency—an increasingly critical concern given the growing demand for \nhigh-throughput diagnosis. This highlights the urgent need for efficient solutions. Notably, the recurrence \nof biological features and patterns in pathological images indicates substantial redundancy within WSIs, \noffering an opportunity for optimization. In this paper, we propose WSIR2, a WSI Redundancy Reduction-\nbased diagnostic framework. WSIR2 incorporates a novel token compression module that strategically selects \nthe top-𝑘 most informative patches and merges less informative ones, thereby reducing both the number \nof tokens and their feature dimensions. Additionally, it employs the cross-attention mechanism with (𝑛)\ncomplexity to construct a lightweight classifier for efficient classification. These innovations lead to a dramatic \nreduction in computational cost – achieving up to 24× lower GFLOPs compared to leading MIL methods – while \nmaintaining diagnostic performance on par with state-of-the-art models. Experimental results demonstrate that \nWSIR2 consistently delivers faster training and higher inference throughput, offering a compelling balance \nbetween accuracy and efficiency for large-scale pathological diagnostic tasks.",
+    "bbox": [
+      201.9969940185547,
+      270.9460754394531,
+      559.6455688476562,
+      428.525146484375
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "1. Introduction",
+    "bbox": [
+      37.58700180053711,
+      445.0810852050781,
+      96.78797149658203,
+      459.1981506347656
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "Whole Slide Images (WSIs) scanned by digital slide scanners have \nprofoundly changed the diagnostic paradigm of clinical pathology [1,\n2]. The laborious operation of targeting biological patterns under the \nclassical microscope has been replaced by the ability to access the \npatients’ pathological status via electronic devices, which has greatly \nstreamlined pathologists’ workflow. Concomitantly, the digitalization \nof pathology has introduced the challenge of efficiently and effec-\ntively processing the colossal volumes of ever-increasing WSIs, whose \ngigapixel-level resolution further aggravates the computational burden. \nIn the field of computational pathology, numerous outstanding methods \nhave been proposed to aid pathological diagnosis [3–6]. It is worth not-\ning that although these methods have gained impressive performance \non many general tasks and scenarios [7–10], few of them have explored \nthe efficiency of WSI analysis. In the face of the growing demand \nfor pathological diagnosis, there is still an urgent need to efficiently \nanalyze WSIs to accelerate the associated diagnostic tasks and both \nqualitative and quantitative biological analyses.",
+    "bbox": [
+      37.58700180053711,
+      466.6220703125,
+      291.9885559082031,
+      649.5271606445312
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "∗Corresponding author.",
+    "bbox": [
+      44.4010009765625,
+      666.507080078125,
+      124.60313415527344,
+      680.6241455078125
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "E-mail address: zhinchen@fudan.edu.cn (Z. Chen).",
+    "bbox": [
+      52.53099822998047,
+      676.0010986328125,
+      216.02346801757812,
+      690.1181640625
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "Due to the gigapixels of WSI and scarce pixel-level annotations, \nprevious works have assumed that WSI contains abundant information \nand have developed various effective methods within the framework \nof weakly-supervised learning (WSL) for pathological diagnosis, where \nonly slide-level labels are available, while patch-level labels are not. \nFurthermore, based on multiple instance learning (MIL), which treats \na WSI as a bag and patches from it as instances, numerous methods \nhave constructed promising deep models to capture the relationship \nbetween bags and their labels, achieving impressive accuracy on gen-\neral tasks [11–16]. However, most of these works overlook the practical \ndemand for efficiency in clinical tasks. Although several methods have \nexplored the efficiency of WSI diagnosis [17–19], few focus on opti-\nmizing computational cost and reducing redundant information within \nWSIs. Motivated by the ever-increasing volume of pathological images, \nit is crucial to improve the efficiency of MIL-based models.",
+    "bbox": [
+      306.60400390625,
+      445.0810852050781,
+      561.0055541992188,
+      621.5741577148438
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "On the other hand, compared to natural images, pathological images \ncontain monotonous, similar biological patterns such as cells, tissues,",
+    "bbox": [
+      306.60400390625,
+      619.0550537109375,
+      561.0055541992188,
+      644.7711181640625
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "https://doi.org/10.1016/j.bspc.2025.109289\nReceived 29 March 2025; Received in revised form 22 August 2025; Accepted 29 November 2025",
+    "bbox": [
+      37.58700180053711,
+      698.6199951171875,
+      356.77679443359375,
+      716.4991455078125
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "Biomedical Signal Processing and Control 114 (2026) 109289",
+    "bbox": [
+      199.0500030517578,
+      33.45002365112305,
+      397.5842590332031,
+      45.183204650878906
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "Available online 2 December 2025 \n1746-8094/© 2025 Elsevier Ltd. All rights are reserved, including those for text and data mining, AI training, and similar technologies.",
+    "bbox": [
+      37.52000045776367,
+      714.7000122070312,
+      471.2785339355469,
+      734.5232543945312
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "S. Li et al.",
+    "bbox": [
+      37.58700180053711,
+      29.628124237060547,
+      67.13990020751953,
+      43.745182037353516
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "and sub-organ structures. As Fig. 1 illustrates, patches from patho-\nlogical images exhibit higher similarity with each other than patches \nfrom natural images, which indicates that reducing redundant patches \ncan improve diagnostic efficiency while retaining critical information \nwithin a single image. Additionally, during the diagnostic process, \npathologists focus on disease-related patterns or features against a \nregular background, e.g. a partial tumor region in the tissue landscape. \nThis also suggests that only a few significant patches adequately repre-\nsent the entire status of patients. All these cues provide evidence that \nexcessive redundancy exists in WSI for pathological diagnosis. Thus, \nreducing redundancy in WSI could effectively tackle the limitations of \nefficiently processing gigapixel WSIs and satisfy the increasing demands \nof computer-aided diagnosis.",
+    "bbox": [
+      37.58700180053711,
+      50.16108322143555,
+      291.9885559082031,
+      190.16717529296875
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "Motivated by the observations above, we propose a WSI redundancy\nreduction method, i.e. WSIR2, for efficient WSI analysis and diag-\nnosis. WSIR2 is characterized by two modules: token compression \nand a lightweight classifier. In the token compression module, we \nsimultaneously prune and merge tokens within a single block. Based \non the efficient cross-attention mechanism with (𝑛) computational \ncomplexity and its interpretation of attention values as indicators of \ntoken significance, WSIR2 achieves redundancy reduction of WSIs. It \nsimultaneously reduces features along both the feature dimension and \nthe token dimension by selecting top-k tokens and fusing the non-\nsignificant tokens. Then, a lightweight classifier is proposed to further \nreduce computational costs of features aggregation for WSI classifica-\ntion, which is constructed with several cross-attention blocks. Again, \nbenefiting from the (𝑛) computational complexity of the blocks, its \ncomputational cost is further reduced.",
+    "bbox": [
+      37.58700180053711,
+      186.60011291503906,
+      291.9885559082031,
+      347.588134765625
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "To evaluate the efficiency and effectiveness of WSIR2, we conducted \nextensive experiments on multiple datasets, including Camelyon16, \nTCGA-NSCLC, and UniToPatho. The experimental results demonstrate \nthat WSIR2 significantly reduces FLOPs and model size to 1.02 or 0.29 \nGFLOPs and 225K parameters on these datasets, while maintaining \ncompetitive performance compared to other MIL methods. Further-\nmore, incorporating the token compression module into other MIL \nmethods also significantly accelerates their inference, demonstrating \nits broad applicability. These results also highlight that redundancy \nwithin WSIs has been comprehensively neglected in previous works, \nand the efficiency of WSI tasks should be seriously considered to meet \nthe increasing demands of computer-aided diagnosis. WSIR2 establishes \nan efficient paradigm for efficient WSI diagnosis, which has built the \nfoundation for the further development.",
+    "bbox": [
+      37.58700180053711,
+      344.0220947265625,
+      291.9885559082031,
+      494.5181579589844
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "Our contributions are concluded as follows:",
+    "bbox": [
+      49.542999267578125,
+      490.95208740234375,
+      205.2503204345703,
+      505.06915283203125
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "• We propose WSIR2, an efficient MIL method for pathological \ndiagnosis and analysis. It is composed of a token compression \nmodule and a lightweight classifier.\n• We propose token compression, which utilizes cross-attention to \nselect top-k patches and merge the non-top-k patches, thereby \naccelerating inference efficiency.\n• Extensive experimental results have validated the effectiveness \nand efficiency of WSIR2, demonstrating its potential in resolving \nthe bottleneck of high-throughput diagnoses.",
+    "bbox": [
+      51.13800048828125,
+      509.5330810546875,
+      291.9885559082031,
+      608.1521606445312
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "2. Related work",
+    "bbox": [
+      37.58700180053711,
+      623.4060668945312,
+      99.90480041503906,
+      637.5231323242188
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "2.1. Multiple instance learning for WSI classification",
+    "bbox": [
+      37.58700180053711,
+      644.5670776367188,
+      215.58840942382812,
+      658.6841430664062
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "MIL-based pathological diagnosis utilizes readily available slide-\nlevel diagnostic results as labels for model training and has gained \nwidespread attention in the computational pathology community. Early \nMIL-based methods are rooted in an instance-based approach, in which \na model is first trained for patch-level prediction and then produces \nthe slide-level prediction by aggregating the patch-level predicted log-\nits using mean or max pooling [20,21]. As this scheme introduces",
+    "bbox": [
+      37.58700180053711,
+      665.7590942382812,
+      291.9885559082031,
+      742.8201293945312
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "erroneous pseudo-labels for patches and fails to capture robust rela-\ntionships between contextual information and slide-level predictions, \nit has gradually been superseded by embedding-based methods. The \nembedding-based approach takes patch-level embeddings as input and \ndirectly predicts the slide-level label. Because patch-level embeddings, \nrather than only their labels, are available, this branch of methods gen-\nerally achieves better results. For example, MIL-RNN [11] treats a WSI \nas a sequence of patches and accounts for patch permutation variation. \nCLAM [9] constructs an attention-based model to perform instance-\nlevel clustering over representative regions, which are identified to \nconstrain and refine slide-level features. TransMIL [15] models rela-\ntionships among patches via self-attention (SA) [22]. HIPT [23] builds \na contrastive learning framework with hierarchical features for multi-\nscale fusion of WSIs. HAG-MIL [24] proposes a hierarchical gated at-\ntention mechanism to leverage multi-scale features of WSIs. To address \nthe data deficiency of pathological images, DTFD-MIL [19] generates \nvarious sub-bags from WSIs for data augmentation. Remix [17] gen-\nerates slide-level samples based on clustering prototypes. MHIM [25] \nemploys a siamese structure with a consistency constraint to explore \npotential hard instances. IBMIL [26] achieves de-confounded bag-level \nprediction based on an interventional training framework. In this work, \nwe specifically explore redundancy reduction within these mechanisms \nand introduce cross-attention with learnable queries. This design en-\nhances scalability and generalization, enabling our method to inte-\ngrate seamlessly into a variety of attention-based architectures while \npreserving efficiency.",
+    "bbox": [
+      306.60400390625,
+      50.16108322143555,
+      561.0055541992188,
+      325.3681640625
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "2.2. Redundancy reduction for vision tasks",
+    "bbox": [
+      306.60400390625,
+      332.1040954589844,
+      451.9851379394531,
+      346.2211608886719
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "Redundancy reduction was first proposed in the context of neuro-\nscience [27]. It has been instrumental in explaining the organization of \nthe visual system and has led to numerous algorithms for supervised \nand unsupervised learning [28–31]. In vision tasks, this principle has \nbeen applied to vision model pre-training and efficient model construc-\ntion [32–34]. For example, Rao et al. [35] employ sparse attention \nin vision transformers and retrain a network to dynamically filter to-\nkens; Yin et al. [36] propose an adaptive token reduction mechanism to \nspeed up inference without modifying the network architecture; Liang \net al. [37] leverage cross-attention scores between the class token and \nother tokens to reorganize image tokens; and Bolya et al. [38] propose \na general and lightweight matching algorithm to gradually combine \nsimilar tokens within a ViT. Nevertheless, these studies primarily focus \non subject-specific natural images with fixed sizes. In this paper, apply-\ning redundancy reduction to gigapixel WSIs is rarely explored, and the \nprevalence of monotonous biological patterns within WSIs motivates \nour WSIR2.",
+    "bbox": [
+      306.60400390625,
+      352.97509765625,
+      561.0055541992188,
+      534.190185546875
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "3. Methodology",
+    "bbox": [
+      306.60400390625,
+      540.89111328125,
+      367.59722900390625,
+      555.0081787109375
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "3.1. MIL formulation",
+    "bbox": [
+      306.60400390625,
+      561.779052734375,
+      379.06878662109375,
+      575.8961181640625
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "Firstly, we provide a brief explanation of embedding-based MIL. \nTaking binary classification as an example, to predict a target value \n𝑌𝑖 of the 𝑖th bag, given a bag containing n instances {𝑥𝑖,1, 𝑥𝑖,2, … , 𝑥𝑖,𝑛}\nwhile the instance-level labels {𝑦𝑖,1, 𝑦𝑖,2, … , 𝑦𝑖,𝑛} are unknown, a binary \nclassification can be defined as:",
+    "bbox": [
+      306.60400390625,
+      582.6490478515625,
+      561.0055541992188,
+      638.5401611328125
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "Yi =\n{0\n∀𝑗, 𝑦𝑖,𝑗= 0,\n1\n∃𝑗, 𝑦𝑖,𝑗= 1,\n(1)",
+    "bbox": [
+      306.60400390625,
+      635.6929931640625,
+      557.688720703125,
+      662.77392578125
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "where 𝑦𝑖,𝑗∈{0, 1} and 𝑗= 1, 2, … , 𝑛.",
+    "bbox": [
+      306.60400390625,
+      661.9989624023438,
+      437.1156311035156,
+      678.8519287109375
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "Furthermore, the embedding-based MIL framework adopts a trans-\nformation function f to obtain instance representations and a MIL \nclassifier S to predict the label of the bag based on these features, which \ncan be expressed as:",
+    "bbox": [
+      306.60400390625,
+      674.7840576171875,
+      561.0055541992188,
+      720.232177734375
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "̂Yi = S(𝑓(𝑥𝑖,1), 𝑓(𝑥𝑖,2), … , 𝑓(𝑥𝑖,𝑛)).\n(2)",
+    "bbox": [
+      306.60400390625,
+      720.4189453125,
+      557.688720703125,
+      737.88818359375
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "Biomedical Signal Processing and Control 114 (2026) 109289",
+    "bbox": [
+      390.9800109863281,
+      33.653465270996094,
+      560.1543579101562,
+      44.08295822143555
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "2",
+    "bbox": [
+      296.21002197265625,
+      754.4534301757812,
+      301.6678771972656,
+      764.8829345703125
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "S. Li et al.",
+    "bbox": [
+      37.58700180053711,
+      29.628124237060547,
+      67.13990020751953,
+      43.745182037353516
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "Fig. 1. Cosine-similarity of patches from natural image and pathological image. A general vision encoder (ViT-small, pre-trained with DINO on diverse data \ncontaining pathological images) is used to separately extract features from patches of the natural image and the pathological image as shown. Patches (4 × 4) \nfrom the pathological image have much larger similarity values with each other compared to natural image.",
+    "bbox": [
+      37.58700180053711,
+      260.37109375,
+      561.0055541992188,
+      293.61614990234375
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "Fig. 2. Framework of WSIR2. Patches tiled from 20× magnification of the WSI are used for self-supervised learning. Pre-trained ViT-small is subsequently used to \nextract patch features at optimal magnification and then concatenated as slide-level features. WSIR2 reduces the redundancy at patch-level and dimension-level,\ni.e., reduces numbers and dimensions of patches. The MIL classifier could be any model including ours and others proposed.",
+    "bbox": [
+      37.58700180053711,
+      492.9060974121094,
+      561.0055541992188,
+      526.151123046875
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "3.2. WSI redundancy reduction",
+    "bbox": [
+      37.58700180053711,
+      534.8540649414062,
+      144.36849975585938,
+      548.9711303710938
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "The frequent recurrence of similar biological patterns in WSIs sug-\ngests that disease-related semantics are globally sparse and largely \nredundant. Selecting informative patches for diagnosis offers an effi-\ncient paradigm, allowing MIL aggregation to focus on fewer yet more \ncritical tokens. In this context, token compression is an effective means \nof mitigating WSI redundancy. However, unlike token pruning and \nmerging in ViTs for natural images [30,38], token compression in WSIs \ncannot be performed progressively across multiple self-attention blocks, \nas the enormous number of tokens renders the direct application of a \nvanilla ViT impractical.",
+    "bbox": [
+      37.58700180053711,
+      557.6270751953125,
+      291.9885559082031,
+      667.7431640625
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "To overcome the limitations, we proposed WSIR2 to achieve  a \nbalance between efficiency and accuracy. As illustrated in Fig. 2, \nthe extracted patch-level features are concatenated into a slide-level \nfeature, 𝐗∈R𝑛×𝑑, where 𝑛 represents the number of patches and 𝑑\nis feature dimension. WSIR2 performs features compression at the two \ndimensions: token pruning and merging to reduce the patch number \n𝑛, and dimensionality reduction to reduce the feature dimension 𝑑.",
+    "bbox": [
+      37.58700180053711,
+      664.7041015625,
+      291.9885559082031,
+      742.8201293945312
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "Concretely, patch-level features are first transformed to 𝐊∈R𝑛×𝑑′, \nwhich represents the compressed features that retain the most critical \ninformation for each patch. To reduce the number of patches that need \nto be aggregated, a learnable parameter 𝐪∗∈R𝑑′ is introduced to \nselect the informative patches and merge these non-significant patches \nsimultaneously via cross-attention mechanism. Specifically, 𝐪∗ not only \nassigns attention weights 𝑎𝑖 to each token in 𝐊 but also compresses \nredundant tokens into a single representative token. The computation \nof attention values is formulated as follows:",
+    "bbox": [
+      306.60400390625,
+      534.8540649414062,
+      561.0055541992188,
+      637.1011352539062
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "𝐊= 𝐖𝑘𝐗= {𝐤𝑖∣𝑖= 0, 1 … , 𝑛}\n(3)",
+    "bbox": [
+      306.60400390625,
+      644.4423217773438,
+      557.688720703125,
+      655.6009521484375
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "𝐀= softmax( 𝐪∗𝐊⊤",
+    "bbox": [
+      306.60400390625,
+      657.7503662109375,
+      371.48162841796875,
+      672.605224609375
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "√",
+    "bbox": [
+      355.23199462890625,
+      664.4019775390625,
+      362.6282653808594,
+      675.6876831054688
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "𝑑′\n) = {𝑎𝑖∣𝑖= 1, 2, … , 𝑛}\n(4)",
+    "bbox": [
+      362.6289978027344,
+      664.4491577148438,
+      557.688720703125,
+      680.9912719726562
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "where 𝐖𝑘 is a learnable projection, and 𝑑′ is the shared dimensionality \nof 𝐪∗ and 𝐤𝑖.",
+    "bbox": [
+      306.60400390625,
+      683.527099609375,
+      561.0055541992188,
+      709.054931640625
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "Then, the top-𝑘 tokens with the highest attention values are selected \nfrom 𝐊 according to a predefined ratio 𝑟 (i.e., the top-𝑘 ratio). The top-𝑘\ntokens are concatenated as the informative tokens 𝐊𝑡∈R𝑘×𝑑′, while",
+    "bbox": [
+      306.60400390625,
+      706.6710815429688,
+      561.0055541992188,
+      742.8201293945312
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "Biomedical Signal Processing and Control 114 (2026) 109289",
+    "bbox": [
+      390.9800109863281,
+      33.653465270996094,
+      560.1543579101562,
+      44.08295822143555
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "3",
+    "bbox": [
+      296.21002197265625,
+      754.4534301757812,
+      301.6678771972656,
+      764.8829345703125
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "S. Li et al.",
+    "bbox": [
+      37.58700180053711,
+      29.628124237060547,
+      67.13990020751953,
+      43.745182037353516
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "other tokens are less informative tokens, 𝐊𝑟∈R(𝑛−𝑘)×𝑑′:",
+    "bbox": [
+      37.58700180053711,
+      50.16108322143555,
+      236.31362915039062,
+      64.27814483642578
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "𝑘= max(1, ⌈𝑛⋅𝑟⌉),\n(5)",
+    "bbox": [
+      37.58700180053711,
+      71.90797424316406,
+      288.6717224121094,
+      83.19364929199219
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "𝐊𝑡= {𝐤𝑖∣𝑖∈TopK(𝑎𝑖, 𝑘)},\n(6)",
+    "bbox": [
+      37.58700180053711,
+      86.3233642578125,
+      288.6717224121094,
+      97.4819107055664
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "𝐊𝑟= {𝐤𝑖∣𝑖∉TopK(𝑎𝑖, 𝑘)}\n(7)",
+    "bbox": [
+      37.58700180053711,
+      101.4173583984375,
+      288.6717224121094,
+      112.5749282836914
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "where ⌈⋅⌉ denotes the ceiling function and 𝑘 is the number of retained \ntokens.",
+    "bbox": [
+      37.58700180053711,
+      115.78009796142578,
+      291.9885559082031,
+      139.835205078125
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "For the less informative tokens, we compress them into a single \nredundant token 𝐱𝑟∈R𝑑′, which aims to preserve some background \ninformation of the WSI:",
+    "bbox": [
+      37.58700180053711,
+      138.4051055908203,
+      291.9885559082031,
+      174.295166015625
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "𝐕𝑟= 𝐖𝑣𝐊𝑟,\n(8)",
+    "bbox": [
+      37.58700180053711,
+      181.247314453125,
+      288.6717224121094,
+      191.063232421875
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "𝐀𝑟= {𝑎𝑖∣𝑖∉TopK(𝑎𝑖, 𝑘)},\n(9)",
+    "bbox": [
+      37.58700180053711,
+      196.34136962890625,
+      288.6717224121094,
+      207.4989471435547
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "𝐱𝑟= 𝐀𝑟𝐕𝑟,\n(10)",
+    "bbox": [
+      37.58700180053711,
+      211.434326171875,
+      288.6719055175781,
+      221.25018310546875
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "where 𝐕𝑟∈R(𝑛−𝑘)×𝑑′ is the linearly projected representation of 𝐊𝑟, \nsharing the same dimensionality 𝑑′. To minimize computational cost, \nwe reuse the attention scores of 𝐪∗ to 𝐊𝑟 (i.e., 𝐀𝑟) in Eq. (4). And \na linear mapping is directly applied to 𝐊𝑟 to obtain 𝐕𝑟, where 𝐖𝑣∈\nR𝑑′×𝑑′ introduces significantly less computational burden compared to \napplying it to the raw features 𝐊. This simple yet effective operation \nserves as an approximation and is further optimized during training.",
+    "bbox": [
+      37.58700180053711,
+      225.67311096191406,
+      291.9885559082031,
+      305.1101379394531
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "Subsequently, the pruned tokens (𝐊𝑡) and the merged token (𝐱𝑟) are \nconcatenated and fed into a lightweight classifier for prediction. Again, \nwe employ the cross-attention mechanism as the basic building block \nof the classifier. Concretely, a class token 𝐐 is initialized as the query, \nwhich attends to the input features and compresses them into a single \nglobal representation 𝐗𝑔. The predicted label ̂𝑌 is then obtained from \nthis representation as follows:",
+    "bbox": [
+      37.58700180053711,
+      302.7310791015625,
+      291.9885559082031,
+      382.16815185546875
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "𝐗𝑘= concat(𝐊𝑡, 𝐱𝑟),\n(11)",
+    "bbox": [
+      37.58700180053711,
+      388.93634033203125,
+      288.6719055175781,
+      398.752197265625
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "𝐗𝑔= softmax",
+    "bbox": [
+      37.58700180053711,
+      409.3093566894531,
+      83.93585968017578,
+      419.0912170410156
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "(\n𝐐(𝐖𝑘′𝐗𝑘)⊤",
+    "bbox": [
+      85.2699966430664,
+      396.2669677734375,
+      131.90164184570312,
+      413.8312072753906
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "√",
+    "bbox": [
+      105.33000183105469,
+      410.8879699707031,
+      112.72626495361328,
+      422.17364501953125
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "𝑑′",
+    "bbox": [
+      112.72599792480469,
+      419.016845703125,
+      119.47737884521484,
+      427.47723388671875
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": ")",
+    "bbox": [
+      133.59500122070312,
+      396.2669677734375,
+      140.03485107421875,
+      407.5526428222656
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "(𝐖𝑣′𝐗𝑘),\n(12)",
+    "bbox": [
+      141.36300659179688,
+      408.11468505859375,
+      288.6719055175781,
+      419.1252136230469
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "̂𝐘= S(𝐗𝑔)\n(13)",
+    "bbox": [
+      37.58700180053711,
+      431.235107421875,
+      288.6719055175781,
+      441.34222412109375
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "where S(⋅) is a scoring function that maps the global representation \nto the final prediction, and 𝐖𝑘′ and 𝐖𝑣′ are learnable projection \nmatrices applied to 𝐗𝑘. In summary, WSIR2 leverages token compres-\nsion in conjunction with a lightweight classifier, substantially reducing \ncomputational cost and thereby enabling efficient diagnosis.",
+    "bbox": [
+      37.58700180053711,
+      445.8890686035156,
+      291.9885559082031,
+      503.55316162109375
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "4. Experiments",
+    "bbox": [
+      37.58700180053711,
+      516.320068359375,
+      95.98297882080078,
+      530.4371337890625
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "4.1. Datasets",
+    "bbox": [
+      37.58700180053711,
+      540.6490478515625,
+      82.68878173828125,
+      554.76611328125
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "WSIR2 is extensively evaluated on three public datasets: Came-\nlyon16 [39], TCGA-NSCLC, and UniToPatho [40]. Camelyon16 is col-\nlected for metastasis detection in breast cancer and contains two classes \n(Normal/Tumor). It officially provides 270 training samples and 129 \ntesting samples, which can be tiled into roughly 57.18 million patches \nat 20× magnification. TCGA-NSCLC includes two subtypes of lung can-\ncer: Lung Adenocarcinoma (LUAD) and Lung Squamous Cell Carcinoma \n(LUSC). We obtained 1042 slides from https://www.cancer.gov/ccg/\naccess-data. All slides of TCGA can be tiled into 145.63 million patches \nat 20× magnification. We further split this dataset into a training set and \na test set using an 8:2 ratio, and evaluate all methods on the test set. \nUniToPatho is a public dataset comprising 292 WSIs, of which we uti-\nlized 243 from https://ieee-dataport.org/open-access/unitopatho. All \nslides of UniToPatho can be tiled into 9.87 million patches at 20×\nmagnification. This dataset includes four disease subtypes (NORM, HP, \nHG, LG), and we follow the official train/test split.",
+    "bbox": [
+      37.58700180053711,
+      565.403076171875,
+      291.9885559082031,
+      742.8201293945312
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "Table 1\nClassification accuracy and AUC comparison on Camelyon16, TCGA-NSCLC, \nand UniToPatho datasets. Results are averaged over five independent runs. \nThe highest performance is shown in bold, and the second best is underlined. \n𝑟 denotes the top-k ratio used in WSIR2.\n Datasets\nCamelyon16\nTCGA-NSCLC\nUniToPatho\n Methods\nAcc.\nAUC\nAcc.\nAUC\nAcc.\nAUC  \n Mean\n0.6279\n0.5904\n0.8804\n0.9460\n0.6847\n0.8353 \n Max\n0.8992\n0.9491\n0.9398\n0.9830\n0.6937\n0.8390 \n ABMIL\n0.9302\n0.9656\n0.9450\n0.9812\n0.7849\n0.8968 \n DSMIL\n0.9205\n0.9526\n0.9408\n0.9808\n0.7685\n0.9009 \n TransMIL\n0.9238\n0.9542\n0.9450\n0.9830\n0.6904\n0.8215 \n CLAM-SB\n0.9256\n0.9545\n0.9453\n0.9831\n0.7838\n0.9156 \n CLAM-MB\n0.9302\n0.9536\n0.9458\n0.9832\n0.7827\n0.9071 \n DTFD-MIL\n0.9390\n0.9643\n0.9446\n0.9736\n0.7973\n0.9239 \n MHIM-MIL\n0.9264\n0.9570\n0.9366\n0.9785\n0.7854\n0.8996",
+    "bbox": [
+      306.60400390625,
+      49.36408615112305,
+      561.0055541992188,
+      216.8541259765625
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "WSIR2",
+    "bbox": [
+      311.1369934082031,
+      221.1897735595703,
+      328.86962890625,
+      228.3699951171875
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "𝑟= 1.00\n0.9349\n0.9674\n0.9466\n0.9810\n0.8108\n0.9273 \n \n𝑟= 0.50\n0.9315\n0.9654\n0.9446\n0.9813\n0.8074\n0.9243 \n \n𝑟= 0.10\n0.9202\n0.9429\n0.9394\n0.9819\n0.7854\n0.9132 \n \n𝑟= 0.01\n0.8815\n0.9132\n0.9387\n0.9825\n0.7838\n0.9072",
+    "bbox": [
+      306.60400390625,
+      202.73707580566406,
+      556.4725952148438,
+      242.55816650390625
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "4.2. Implementation details",
+    "bbox": [
+      306.60400390625,
+      257.9560546875,
+      399.3168640136719,
+      272.0731201171875
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "We construct the datasets by tiling the WSIs into non-overlapping \n224 × 224 patches at a magnification of 20×, discarding background \npatches. We then conduct self-supervised pre-training with DINO [41] \non the datasets. In the pre-training step, the backbone is ViT-small/16 \n(12 transformer blocks with a hidden dimension of 384, patch size of \n16 × 16). For the pre-training setup, we follow the original training \nsettings and only adjust the batch size due to limited hardware re-\nsources. After pre-training, features extracted by ViT-small are used in \nsubsequent WSI classification. For a fair comparison of multiple MIL \nmethods, the averaged accuracy and AUC over 8 random repetitions \nare reported. In the classification training step, cross-entropy loss is \nadopted. The AdamW [42] optimizer with an initial learning rate of \n2 × 10−4, and a cosine annealing scheme without warm restarts [43] \nfor learning rate scheduling, is used to update the model weights. The \nmain hyperparameter of WSIR2 is 𝑡𝑜𝑝𝑘_𝑟𝑎𝑡𝑖𝑜, abbreviated as 𝑟, which is \nseparately set to [0.01, 0.1, 0.5, 1.0] to evaluate the redundancy in WSIs. \nTo evaluate model efficiency, we report the model parameter counts \nand FLOPs. The FLOPs differ across datasets, and we report the counts \nfor processing 14,000 and 4000 patches separately—14,000 being the \naverage number of patches per WSI from Camelyon16 and TCGA-\nNSCLC, and 4000 from UniToPatho. All experiments are conducted \nwith 8× NVIDIA GeForce RTX 3090 GPUs. The unit of model parameter \ncounts is K.",
+    "bbox": [
+      306.60400390625,
+      278.87908935546875,
+      561.0055541992188,
+      523.1371459960938
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "4.3. Main results",
+    "bbox": [
+      306.60400390625,
+      529.943115234375,
+      364.9761047363281,
+      544.0601806640625
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "We summarize the main comparison of classification performance \nand computational efficiency in Tables 1–3. WSIR2 consistently demon-\nstrates a favorable balance between diagnostic accuracy and efficiency \nacross three benchmark datasets (Camelyon16, TCGA-NSCLC, and Uni-\nToPatho).",
+    "bbox": [
+      306.60400390625,
+      550.8670654296875,
+      561.0055541992188,
+      605.8792114257812
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "Classification Performance. As shown in Table 1, WSIR2 achieves \ncompetitive accuracy and AUC on all datasets. With a lightweight \nclassifier and token dimension 𝑑′ = 96, and without pruning (𝑟=\n1.00), WSIR2 attains the competitive accuracy on Camelyon16 (0.9349), \nTCGA-NSCLC (0.9466), and UniToPatho (0.8108). These results indi-\ncate that WSIR2 can preserve critical diagnostic information while using \nsubstantially fewer model parameters.",
+    "bbox": [
+      306.60400390625,
+      603.172119140625,
+      561.0055541992188,
+      680.0541381835938
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "Efficiency and Trade-off Analysis. Table 2 compares WSIR2 with \nrepresentative MIL methods in terms of model size, computational \ncost, and inference speed. WSIR2 maintains the lowest parameter count \n(225K) among all methods. In terms of GFLOPs, even without pruning \n(𝑟= 1.00), WSIR2 requires only 1.36 G for 14,000 patches, which \nis 3–25× lower than other MIL methods. Correspondingly, inference",
+    "bbox": [
+      306.60400390625,
+      676.3991088867188,
+      561.0055541992188,
+      742.8201293945312
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "Biomedical Signal Processing and Control 114 (2026) 109289",
+    "bbox": [
+      390.9800109863281,
+      33.653465270996094,
+      560.1543579101562,
+      44.08295822143555
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "4",
+    "bbox": [
+      296.21002197265625,
+      754.4534301757812,
+      301.6678771972656,
+      764.8829345703125
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "S. Li et al.",
+    "bbox": [
+      37.58700180053711,
+      29.628124237060547,
+      67.13990020751953,
+      43.745182037353516
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "Table 2\nEfficiency comparison of WSIR2 and other mainstream MIL methods. Model parameters (Params) and floating-point operations \n(GFLOPs) are reported in thousands (K) and billions (G), respectively. The left and right GFLOPs correspond to processing 14,000 \npatches (average in Camelyon16 and TCGA-NSCLC) and 4000 patches (UniToPatho), respectively. Inference speed (Infer. Speed), \ntraining time per epoch (Train Time), and memory usage (Mem. Usage) are measured on TCGA-NSCLC.\n Methods\nParams\nGFLOPs\nInfer. Speed\nTrain time\nMem. Usage \n ABMIL\n300\n4.24, 1.20\n965 WSIs/s\n0.75 s/epoch\n0.50 GB\n \n DSMIL\n298\n4.24, 1.21\n342 WSIs/s\n1.04 s/epoch\n0.49 GB\n \n TransMIL\n2344\n34.61, 10.27\n62 WSIs/s\n10.60 s/epoch\n2.3 GB\n \n CLAM-MB\n461\n6.58, 1.86\n574 WSIs/s\n1.10 s/epoch\n0.57 GB\n \n DTFD-MIL\n459\n4.69, 1.30\n419 WSIs/s\n2.50 s/epoch\n1.04 GB\n \n MHIM-MIL\n526\n15.01, 4.25\n173 WSIs/s\n1.76 s/epoch\n0.57 GB",
+    "bbox": [
+      89.59700012207031,
+      49.36408615112305,
+      508.9965515136719,
+      179.28717041015625
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "WSIR2",
+    "bbox": [
+      94.12999725341797,
+      183.62281799316406,
+      111.86260986328125,
+      190.802978515625
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "r = 1.00\n225\n1.36, 0.39\n985 WSIs/s\n1.06 s/epoch\n0.43 GB\n \n \nr = 0.50\n225\n1.02, 0.29\n1001 WSIs/s\n1.04 s/epoch\n0.43 GB\n \n \nr = 0.10\n225\n0.75, 0.21\n1046 WSIs/s\n0.98 s/epoch\n0.43 GB\n \n \nr = 0.01\n225\n0.69, 0.20\n1096 WSIs/s\n0.95 s/epoch\n0.43 GB",
+    "bbox": [
+      89.59700012207031,
+      165.1701202392578,
+      504.46356201171875,
+      204.99114990234375
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "Table 3\nEfficiency and performance comparison when integrating WSIR2 into other MIL methods. The results are evaluated on TCGA-NSCLC. The units of model parameters \nand FLOPs are in thousands (K) and billions (G), respectively. 𝑟 denotes the top-k ratio. Accuracy (ACC.) and area under the ROC curve (AUC) reflect diagnostic \nperformance, while GFLOPs, inference speed, training time, and memory usage assess computational efficiency.\n Methods\ntop-k ratio\nACC.\nAUC\nParam.\nGFLOPs\nInfer. Speed\nTrain time\nMem. Usage",
+    "bbox": [
+      37.58700180053711,
+      216.33607482910156,
+      561.0055541992188,
+      281.97314453125
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "ABMIL",
+    "bbox": [
+      42.119998931884766,
+      287.11285400390625,
+      61.350257873535156,
+      293.48895263671875
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "w/o WSIR2\n0.9450\n0.9812\n300\n4.24\n965 WSIs/s\n0.75 s/epoch\n0.50 GB\n \n \n𝑟= 0.50\n0.9402\n0.9743\n75\n0.75\n1257 WSIs/s\n0.92 s/epoch\n0.43 GB\n \n \n𝑟= 0.10\n0.9366\n0.9700\n75\n0.70\n1372 WSIs/s\n0.85 s/epoch\n0.43 GB\n \n \n𝑟= 0.01\n0.9091\n0.9584\n75\n0.68\n1451 WSIs/s\n0.84 s/epoch\n0.43 GB",
+    "bbox": [
+      37.58700180053711,
+      267.8560791015625,
+      556.4725952148438,
+      319.5601501464844
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "DSMIL",
+    "bbox": [
+      42.119998931884766,
+      324.6998596191406,
+      60.95494079589844,
+      331.0759582519531
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "w/o WSIR2\n0.9408\n0.9808\n298\n4.24\n342 WSIs/s\n1.04 s/epoch\n0.49 GB\n \n \n𝑟= 0.50\n0.9386\n0.9746\n75\n0.75\n406 WSIs/s\n1.13 s/epoch\n0.44 GB\n \n \n𝑟= 0.10\n0.9322\n0.9738\n75\n0.69\n426 WSIs/s\n1.08 s/epoch\n0.44 GB\n \n \n𝑟= 0.01\n0.9234\n0.9674\n75\n0.68\n450 WSIs/s\n1.02 s/epoch\n0.43 GB",
+    "bbox": [
+      37.58700180053711,
+      305.4430847167969,
+      556.4725952148438,
+      357.14715576171875
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "TransMIL",
+    "bbox": [
+      42.119998931884766,
+      362.2858581542969,
+      68.9059066772461,
+      368.6619567871094
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "w/o WSIR2\n0.9450\n0.9830\n2344\n34.61\n62 WSIs/s\n10.60 s/epoch\n2.30 GB\n \n \n𝑟= 0.50\n0.9372\n0.9795\n2252\n17.14\n136 WSIs/s\n8.71 s/epoch\n1.38 GB\n \n \n𝑟= 0.10\n0.9221\n0.9695\n2252\n4.08\n153 WSIs/s\n8.19 s/epoch\n0.69 GB\n \n \n𝑟= 0.01\n0.9091\n0.9627\n2252\n1.24\n163 WSIs/s\n8.02 s/epoch\n0.57 GB",
+    "bbox": [
+      37.58700180053711,
+      343.03009033203125,
+      556.4725952148438,
+      382.85015869140625
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "Table 4\nEfficiency of WSIR2 under varying token dimensions (𝑑′) and top-k ratios (𝑟). 𝑑′",
+    "bbox": [
+      37.58700180053711,
+      393.4670715332031,
+      288.1731872558594,
+      417.1481628417969
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "controls the local feature dimension, and 𝑟 controls the proportion of preserved \ntokens.\n Hyperparamter\nParam ↓\nFLOPs ↓ \n 𝑑′\n𝑟\n[K]\n[G]",
+    "bbox": [
+      37.58700180053711,
+      412.5950927734375,
+      291.9885559082031,
+      470.9171447753906
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "96",
+    "bbox": [
+      42.119998931884766,
+      476.0568542480469,
+      49.29946517944336,
+      482.4329528808594
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "1.00",
+    "bbox": [
+      136.17799377441406,
+      463.2048645019531,
+      148.73251342773438,
+      469.5809631347656
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "225",
+    "bbox": [
+      195.36700439453125,
+      476.0568542480469,
+      206.13621520996094,
+      482.4329528808594
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "1.36,0.39  \n \n0.50\n1.02,0.29  \n \n0.10\n0.75,0.21  \n \n0.01\n0.69,0.20",
+    "bbox": [
+      37.58700180053711,
+      456.8000793457031,
+      287.45556640625,
+      508.504150390625
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "192",
+    "bbox": [
+      42.119998931884766,
+      513.6438598632812,
+      52.889198303222656,
+      520.0199584960938
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "1.00",
+    "bbox": [
+      136.17799377441406,
+      500.7918701171875,
+      148.73251342773438,
+      507.16796875
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "818",
+    "bbox": [
+      195.36700439453125,
+      513.6438598632812,
+      206.13621520996094,
+      520.0199584960938
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "4.25,1.21  \n \n0.50\n2.94,0.83  \n \n0.10\n1.87,0.53  \n \n0.01\n1.63,0.46",
+    "bbox": [
+      37.58700180053711,
+      494.3870849609375,
+      287.45556640625,
+      546.0911865234375
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "384",
+    "bbox": [
+      42.119998931884766,
+      551.2308349609375,
+      52.889198303222656,
+      557.60693359375
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "1.00",
+    "bbox": [
+      136.17799377441406,
+      538.37890625,
+      148.73251342773438,
+      544.7550048828125
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "3110",
+    "bbox": [
+      195.36700439453125,
+      551.2308349609375,
+      209.7259521484375,
+      557.60693359375
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "14.78,4.19 \n \n0.50\n9.57,2.71  \n \n0.10\n5.31,1.51  \n \n0.01\n4.36,1.23",
+    "bbox": [
+      37.58700180053711,
+      531.97412109375,
+      287.45556640625,
+      571.7941284179688
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "speed reaches 985 WSIs/s, significantly higher than other MIL methods. \nMemory usage is also reduced (0.43 GB vs. 0.49–2.3 GB for other mod-\nels), demonstrating the lightweight nature of WSIR2. When applying \ntoken pruning (𝑟= 0.50, 0.10, 0.01), GFLOPs decrease further to 1.02 G, \n0.75 G, and 0.69 G, respectively, while inference speed increases \nto 1001–1096 WSIs/s. Accuracy remains competitive across datasets \n(Table 1). These results indicate that WSIR2 can achieve substantial \ncomputational savings and faster inference than existing MIL models, \nwhile offering flexible trade-offs between efficiency and performance.",
+    "bbox": [
+      37.58700180053711,
+      587.193115234375,
+      291.9885559082031,
+      682.1731567382812
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "Integration with Existing MIL Models. We further evaluated \nWSIR2 as a slide-level feature compression module for representa-\ntive MIL models, including ABMIL, DSMIL, and TransMIL (Table 3). \nIncorporating WSIR2 substantially reduces computational cost and ac-\ncelerates inference across all architectures. For instance, with ABMIL at \n𝑟= 0.50, GFLOPs drop from 4.24 G to 0.75 G and throughput increases",
+    "bbox": [
+      37.58700180053711,
+      678.1640625,
+      291.9885559082031,
+      742.8201293945312
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "from 965 to 1257 WSIs/s, while accuracy only slightly decreases \n(0.9450 → 0.9402). TransMIL achieves similar gains, with throughput \nmore than doubling at 𝑟= 0.50. These results highlight the gener-\nalizability of WSIR2 for reducing redundancy in WSIs and improving \nthe efficiency of diverse MIL methods without severely compromising \npredictive performance.",
+    "bbox": [
+      306.60400390625,
+      394.2630920410156,
+      561.0055541992188,
+      461.6241455078125
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "Overall, WSIR2 provides a practical solution for high-throughput \nWSI analysis. It maintains competitive accuracy, drastically reduces \ncomputational cost and memory usage, and accelerates inference. These \nadvantages make it particularly suitable for clinical deployment, where \nefficiency and speed are critical for timely diagnosis.",
+    "bbox": [
+      306.60400390625,
+      458.5320739746094,
+      561.0055541992188,
+      515.2451171875
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "4.4. Ablation",
+    "bbox": [
+      306.60400390625,
+      524.68212890625,
+      352.2318115234375,
+      538.7991943359375
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "We further investigate the effects of varying token dimensions on \ntoken pruning and merging. We report the performance of WSIR2",
+    "bbox": [
+      306.60400390625,
+      547.297119140625,
+      561.0055541992188,
+      572.0631713867188
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "with 𝑑′ = 96 in Table 1, and compare it to 𝑑′ = 196 and 𝑑′ =\n384 in Fig. 3. The efficiency metric is also reported in Table 4. For \nWSIs with abundant tokens, such as TCGA-NSCLC, employing higher \ntoken dimensions requires a greater number of tokens to construct \ncomplete WSI representations for effective classification. Conversely, \nfewer feature dimensions (𝑑′ = 96) exhibit stable robustness as tokens \nare pruned.",
+    "bbox": [
+      306.60400390625,
+      568.5941162109375,
+      561.0055541992188,
+      646.6051635742188
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "In UniToPatho, which contains fewer tokens on average (approx-\nimately 4000) and sparse biological tissue-structure information, de-\nploying a larger model with more hidden dimensions introduces noise \nto the MIL model. This often leads to severe overfitting and degraded \naccuracy on the test set—a trend also observed in TransMIL (see \nTable 1). In contrast, WSIR2 with 𝑑′ = 96 effectively suppresses noise \nand achieves optimal performance. These observations validate the \npresence of redundancy within WSIs and emphasize the robustness of \nWSIR2 under varying token dimensionalities.",
+    "bbox": [
+      306.60400390625,
+      643.5130615234375,
+      561.0055541992188,
+      742.8201293945312
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "Biomedical Signal Processing and Control 114 (2026) 109289",
+    "bbox": [
+      390.9800109863281,
+      33.653465270996094,
+      560.1543579101562,
+      44.08295822143555
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "5",
+    "bbox": [
+      296.21002197265625,
+      754.4534301757812,
+      301.6678771972656,
+      764.8829345703125
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "text",
+    "text": "S. Li et al.",
+    "bbox": [
+      37.58700180053711,
+      29.628124237060547,
+      67.13990020751953,
+      43.745182037353516
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "Fig. 3. Effect of token dimension (𝑑′) and top-k ratio (𝑟) on WSIR2 performance. Accuracy and AUC are evaluated on TCGA-NSCLC and UniToPatho \ndatasets to illustrate the trade-off between computational efficiency and predictive performance. Experiments are conducted with 𝑑′ ∈{96, 192, 384} and \n𝑟∈{0.01, 0.10, 0.50, 1.00}.",
+    "bbox": [
+      37.58700180053711,
+      160.7230987548828,
+      561.0055541992188,
+      192.82608032226562
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "Fig. 4. Visualization of pruned and merged patches in WSIs using WSIR2. Two representative Camelyon16 test samples are shown, illustrating the effect of WSIR2",
+    "bbox": [
+      37.58700180053711,
+      413.8390808105469,
+      557.1905517578125,
+      427.9561462402344
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "under varying top-k ratios.",
+    "bbox": [
+      37.58700180053711,
+      423.403076171875,
+      122.1584701538086,
+      437.5201416015625
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "4.5. Visualization",
+    "bbox": [
+      37.58700180053711,
+      446.22308349609375,
+      98.14281463623047,
+      460.34014892578125
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "To examine the behavior of pruned and merged patches in WSIR2, \nwe visualize two Camelyon16 WSIs using top-k ratios of {0.01, 0.10, \n0.50}. As shown in Fig. 4, patches with highly similar biological \nmorphology, such as parenchymal cells (background information), are \nmerged. WSIR2 consequently focuses more on indispensable diagnostic \nregions, such as fat cells and tumor cells within the tissue.",
+    "bbox": [
+      37.58700180053711,
+      468.96209716796875,
+      291.9885559082031,
+      536.3921508789062
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "5. Discussion",
+    "bbox": [
+      37.58700180053711,
+      546.0240478515625,
+      89.08087921142578,
+      560.14111328125
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "WSIR2 effectively addresses redundancy in WSIs by leveraging to-\nken pruning and merging alongside a lightweight classifier, achieving \nsubstantial reductions in computational cost and model size while pre-\nserving critical diagnostic information. Its plug-and-play design enables \nacceleration of various MIL models, demonstrating strong generaliz-\nability, and the visualization results confirm its focus on diagnosti-\ncally relevant regions. However, WSIR2 relies on a fixed top-k ratio, \nwhich may be suboptimal for highly heterogeneous WSIs, and extreme \npruning can slightly degrade accuracy. Additionally, it depends on \npre-extracted patch-level features and does not explicitly capture lo-\ncal spatial context, which may limit performance for tasks requiring \nfine-grained detail. Future improvements could include adaptive token \nselection, multi-scale or hierarchical attention to better model local \nand global context, integration with end-to-end trainable backbones \nto reduce preprocessing overhead, and extension to other pathological \ntasks, thereby enhancing both efficiency and clinical applicability.",
+    "bbox": [
+      37.58700180053711,
+      568.7630615234375,
+      291.9885559082031,
+      742.8201293945312
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "6. Conclusion",
+    "bbox": [
+      306.60400390625,
+      446.22308349609375,
+      359.93798828125,
+      460.34014892578125
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "In this paper, we propose WSIR2, an efficient framework for WSI \ndiagnosis. WSIR2 introduces a token compression module leveraging \nthe cross-attention mechanism and a lightweight classifier. The concept \nof diagnostic acceleration is incorporated throughout the design of \nWSIR2. Extensive experiments on multiple datasets demonstrate that \nWSIR2 achieves highly competitive classification performance while \nmaintaining remarkable efficiency. Extending WSIR2 to a broader range \nof WSI analysis tasks warrants further investigation. Therefore, our \nfuture work will focus on whole end-to-end pipeline of WSI diagnosis \nand facilitating additional downstream tasks.",
+    "bbox": [
+      306.60400390625,
+      467.1490783691406,
+      561.0055541992188,
+      575.4181518554688
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "CRediT authorship contribution statement",
+    "bbox": [
+      306.60400390625,
+      582.2310791015625,
+      468.5291748046875,
+      596.34814453125
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "Shijie Li: Writing – review & editing, Writing – original draft, \nVisualization, Validation, Supervision, Software, Resources, Project ad-\nministration, Methodology, Formal analysis, Data curation, Concep-\ntualization. Zhineng Chen: Writing – review & editing, Supervision, \nFunding acquisition, Conceptualization. Feng-Jung Chen: Supervision, \nResources, Formal analysis, Data curation. Xieping Gao: Supervision, \nProject administration, Investigation, Conceptualization.",
+    "bbox": [
+      306.60400390625,
+      603.1571044921875,
+      561.0055541992188,
+      680.0421752929688
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "Declaration of competing interest",
+    "bbox": [
+      306.60400390625,
+      686.8540649414062,
+      435.16412353515625,
+      700.9711303710938
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "The authors declare that they have no known competing finan-\ncial interests or personal relationships that could have appeared to \ninfluence the work reported in this paper.",
+    "bbox": [
+      306.60400390625,
+      707.7810668945312,
+      561.0055541992188,
+      742.8201293945312
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "Biomedical Signal Processing and Control 114 (2026) 109289",
+    "bbox": [
+      390.9800109863281,
+      33.653465270996094,
+      560.1543579101562,
+      44.08295822143555
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "6",
+    "bbox": [
+      296.21002197265625,
+      754.4534301757812,
+      301.6678771972656,
+      764.8829345703125
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "S. Li et al.",
+    "bbox": [
+      37.58700180053711,
+      29.628124237060547,
+      67.13990020751953,
+      43.745182037353516
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "Acknowledgments",
+    "bbox": [
+      37.58700180053711,
+      55.37956619262695,
+      107.21387481689453,
+      63.349674224853516
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "This work was supported by the National Natural Science Founda-\ntion of China NO.(62372170, 32341012, 62172103) and National Key \nR&D Program of China NO.2024YFA1802800.",
+    "bbox": [
+      37.58700180053711,
+      71.08209991455078,
+      291.9885559082031,
+      106.12116241455078
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "Data availability",
+    "bbox": [
+      37.58700180053711,
+      112.92511749267578,
+      101.09272766113281,
+      127.04218292236328
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "Data will be made available on request.",
+    "bbox": [
+      49.542999267578125,
+      133.8471221923828,
+      191.46817016601562,
+      147.96417236328125
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "References",
+    "bbox": [
+      37.58700180053711,
+      167.3685760498047,
+      78.8004379272461,
+      175.33868408203125
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "[1] M. Cui, D.Y. Zhang, Artificial intelligence and computational pathology, Lab.",
+    "bbox": [
+      42.58399963378906,
+      181.17909240722656,
+      291.9885559082031,
+      195.296142578125
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "Invest. 101 (4) (2021) 412–422.\n[2] K. Bera, et al., Artificial intelligence in digital pathology—new tools for diagnosis",
+    "bbox": [
+      42.58399963378906,
+      189.74610900878906,
+      291.9885559082031,
+      212.43115234375
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "and precision oncology, Nat. Rev. Clin. Oncol. 16 (11) (2019) 703–715.\n[3] G. Tu, et al., GAMMIL: A graph attention-guided multi-scale fusion multiple",
+    "bbox": [
+      42.58399963378906,
+      206.88209533691406,
+      291.9885559082031,
+      229.567138671875
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "instance learning model for the WHO grading of meningioma in whole slide \nimages, Biomed. Signal Process. Control. 105 (2025) 107652.\n[4] R. Wang, Y. Gu, J. Yang, Enhancing whole slide image classification through",
+    "bbox": [
+      42.58399963378906,
+      224.01808166503906,
+      291.9885559082031,
+      255.27117919921875
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "label denoising in a multi-instance learning framework, Biomed. Signal Process. \nControl. 105 (2025) 107599.\n[5] Y. Qu, X. Zhou, P. Huang, Y. Liu, F. Mercaldo, A. Santone, P. Feng, CGAM: An",
+    "bbox": [
+      42.58399963378906,
+      249.7221221923828,
+      291.9885559082031,
+      280.97412109375
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "end-to-end causality graph attention Mamba network for esophageal pathology \ngrading, Biomed. Signal Process. Control. 103 (2025) 107452.\n[6] M. Feng, K. Xu, N. Wu, W. Huang, Y. Bai, Y. Wang, C. Wang, H. Wang,",
+    "bbox": [
+      42.58399963378906,
+      275.4250793457031,
+      291.9885559082031,
+      306.67816162109375
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "Trusted multi-scale classification framework for whole slide image, Biomed. \nSignal Process. Control. 89 (2024) 105790.\n[7] C.L. Srinidhi, O. Ciga, A.L. Martel, Deep neural network models for",
+    "bbox": [
+      42.58399963378906,
+      301.12908935546875,
+      291.9885559082031,
+      332.38214111328125
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "computational histopathology: A survey, Med. Image Anal. 67 (2021) 101813.\n[8] L. Qu, et al., Towards label-efficient automatic diagnosis and analysis: a",
+    "bbox": [
+      42.58399963378906,
+      326.83209228515625,
+      291.9885559082031,
+      349.51715087890625
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "comprehensive survey of advanced deep learning-based weakly-supervised, semi-\nsupervised and self-supervised techniques in histopathological image analysis, \nPhys. Med. Biol. (2022).\n[9] M.Y. Lu, et al., Data-efficient and weakly supervised computational pathology",
+    "bbox": [
+      42.58399963378906,
+      343.96807861328125,
+      291.9885559082031,
+      383.7891540527344
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "on whole-slide images, Nat. Biomed. Eng. 5 (6) (2021) 555–570.\n[10] A. Abdul Salam, et al., Skin whole slide image segmentation using",
+    "bbox": [
+      38.994998931884766,
+      378.2400817871094,
+      291.9885559082031,
+      400.9251403808594
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "lightweight-pruned transformer, Biomed. Signal Process. Control. 106 (2025) \n107624.\n[11] G. Campanella, et al., Clinical-grade computational pathology using weakly",
+    "bbox": [
+      38.994998931884766,
+      395.3750915527344,
+      291.9885559082031,
+      426.6281433105469
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "supervised deep learning on whole slide images, Nature Med. 25 (8) (2019) \n1301–1309.\n[12] Y. Zheng, et al., A Graph-Transformer for Whole Slide Image Classification, IEEE",
+    "bbox": [
+      38.994998931884766,
+      421.0790710449219,
+      291.9885559082031,
+      452.3321533203125
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "Transactions on Medical Imaging 41 (11) (2022) 3003–3015.\n[13] M. Ilse, J. Tomczak, M. Welling, Attention-based deep multiple instance learning,",
+    "bbox": [
+      38.994998931884766,
+      446.7830810546875,
+      291.9885559082031,
+      469.4681396484375
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "in: ICML, 2018.\n[14] H. Li, et al., DT-MIL: deformable transformer for multi-instance learning on",
+    "bbox": [
+      38.994998931884766,
+      463.9180908203125,
+      291.9885559082031,
+      486.6031494140625
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "histopathological image, in: MICCAI, 2021.\n[15] Z. Shao, et al., Transmil: Transformer based correlated multiple instance learning",
+    "bbox": [
+      38.994998931884766,
+      481.0540771484375,
+      291.9885559082031,
+      503.7391357421875
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "for whole slide image classification, in: NeurIPS, 2021.\n[16] Z. Fu, Q. Chen, M. Wang, C. Huang, Whole slide images classification model",
+    "bbox": [
+      38.994998931884766,
+      498.1900939941406,
+      291.9885559082031,
+      520.8751220703125
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "based on self-learning sampling, Biomed. Signal Process. Control. 90 (2024) \n105826.\n[17] J. Yang, et al., Remix: A general and efficient framework for multiple instance",
+    "bbox": [
+      38.994998931884766,
+      515.3260498046875,
+      291.9885559082031,
+      546.5791625976562
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "learning based whole slide image classification, in: MICCAI, 2022.",
+    "bbox": [
+      56.547000885009766,
+      541.029052734375,
+      250.062255859375,
+      555.1461181640625
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "[18] H. Li, et al., Long-MIL: Scaling long contextual multiple instance learning for",
+    "bbox": [
+      308.010986328125,
+      50.16108322143555,
+      561.0055541992188,
+      64.27814483642578
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "histopathology whole slide image analysis, 2023, arXiv preprint arXiv:2311.\n12885.\n[19] H. Zhang, et al., DTFD-MIL: Double-tier feature distillation multiple instance",
+    "bbox": [
+      308.010986328125,
+      58.72907638549805,
+      561.0055541992188,
+      89.98114776611328
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "learning for histopathology whole slide image classification, in: CVPR, 2022.\n[20] Y. Xu, et al., Deep convolutional activation features for large scale Brain Tumor",
+    "bbox": [
+      308.010986328125,
+      84.43207550048828,
+      561.0055541992188,
+      107.11713409423828
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "histopathology image classification and segmentation, in: ICASSP, 2015.\n[21] L. Hou, et al., Patch-based convolutional neural network for whole slide tissue",
+    "bbox": [
+      308.010986328125,
+      101.56806182861328,
+      561.0055541992188,
+      124.25318145751953
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "image classification, in: CVPR, 2016.\n[22] A. Vaswani, et al., Attention is all you need, in: NeurIPS, 2017.\n[23] R.J. Chen, et al., Scaling vision transformers to gigapixel images via hierarchical",
+    "bbox": [
+      308.010986328125,
+      118.70410919189453,
+      561.0055541992188,
+      149.9561767578125
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "self-supervised learning, in: CVPR, 2022.\n[24] C. Xiong, et al., Diagnose like a pathologist: Transformer-enabled hierarchical",
+    "bbox": [
+      308.010986328125,
+      144.40711975097656,
+      561.0055541992188,
+      167.0921630859375
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "attention-guided multiple instance learning for whole slide image classification, \nin: IJCAI, 2023.\n[25] W. Tang, et al., Multiple instance learning framework with masked hard instance",
+    "bbox": [
+      308.010986328125,
+      161.54310607910156,
+      561.0055541992188,
+      192.796142578125
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "mining for whole slide image classification, in: CVPR, 2023.\n[26] T. Lin, et al., Interventional bag multi-instance learning on whole-slide",
+    "bbox": [
+      308.010986328125,
+      187.24708557128906,
+      561.0055541992188,
+      209.93212890625
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "pathological images, in: CVPR, 2023.\n[27] H.B. Barlow, Possible principles underlying the transformations of sensory",
+    "bbox": [
+      308.010986328125,
+      204.38209533691406,
+      561.0055541992188,
+      227.067138671875
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "messages, in: Sensory Communication, 2012.\n[28] J. Ballé, V. Laparra, E.P. Simoncelli, End-to-end optimized image compression,",
+    "bbox": [
+      308.010986328125,
+      221.51808166503906,
+      561.0055541992188,
+      244.203125
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "2016, arXiv preprint arXiv:1611.01704.\n[29] J. Lindsey, et al., A unified theory of early visual representations from retina",
+    "bbox": [
+      308.010986328125,
+      238.6541290283203,
+      561.0055541992188,
+      261.33917236328125
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "to cortex through anatomically constrained deep CNNs, 2019, arXiv preprint \narXiv:1901.00945.\n[30] M. Chen, et al., Diffrate: Differentiable compression rate for efficient vision",
+    "bbox": [
+      308.010986328125,
+      255.7901153564453,
+      561.0055541992188,
+      287.0421447753906
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "transformers, in: ICCV, 2023.\n[31] J. Mu, X. Li, N. Goodman, Learning to compress prompts with gist tokens, in:",
+    "bbox": [
+      308.010986328125,
+      281.4930725097656,
+      561.0055541992188,
+      304.17816162109375
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "NeurIPS, 2024.\n[32] J. Zbontar, et al., Barlow twins: Self-supervised learning via redundancy",
+    "bbox": [
+      308.010986328125,
+      298.62908935546875,
+      561.0055541992188,
+      321.31414794921875
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "reduction, in: ICML, 2021.\n[33] Y. Luo, et al., Learning to rank patches for unbiased image redundancy reduction,",
+    "bbox": [
+      308.010986328125,
+      315.76507568359375,
+      561.0055541992188,
+      338.45013427734375
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "in: CVPR, 2024.\n[34] Y. Wang, et al., R2-trans: Fine-grained visual categorization with redundancy",
+    "bbox": [
+      308.010986328125,
+      332.9010925292969,
+      561.0055541992188,
+      355.58514404296875
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "reduction, 2022, arXiv preprint arXiv:2204.10095.\n[35] Y. Rao, et al., Dynamicvit: Efficient vision transformers with dynamic token",
+    "bbox": [
+      308.010986328125,
+      350.03607177734375,
+      561.0055541992188,
+      372.7211608886719
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "sparsification, in: NeurIPS, 2021.\n[36] H. Yin, et al., A-vit: Adaptive tokens for efficient vision transformer, in: CVPR,",
+    "bbox": [
+      308.010986328125,
+      367.1720886230469,
+      561.0055541992188,
+      389.8571472167969
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "2022.\n[37] Y. Liang, et al., Not all patches are what you need: Expediting vision transformers",
+    "bbox": [
+      308.010986328125,
+      390.7128601074219,
+      561.0055541992188,
+      406.9931640625
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "via token reorganizations, 2022, arXiv preprint arXiv:2202.07800.\n[38] D. Bolya, et al., Token merging: Your vit but faster, 2022, arXiv preprint",
+    "bbox": [
+      308.010986328125,
+      401.444091796875,
+      561.0055541992188,
+      424.1281433105469
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "arXiv:2210.09461.\n[39] B.E. Bejnordi, et al., Diagnostic assessment of deep learning algorithms for",
+    "bbox": [
+      308.010986328125,
+      424.9838562011719,
+      561.0055541992188,
+      441.26416015625
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "detection of lymph node metastases in women with breast cancer, JAMA 318 \n(22) (2017) 2199–2210.\n[40] C.A. Barbano, et al., Unitopatho, a labeled histopathological dataset for colorectal",
+    "bbox": [
+      308.010986328125,
+      435.715087890625,
+      561.0055541992188,
+      466.9681396484375
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "polyps classification and adenoma dysplasia grading, in: ICIP, 2021.\n[41] M. Caron, et al., Emerging properties in self-supervised vision transformers, in:",
+    "bbox": [
+      308.010986328125,
+      461.4190979003906,
+      561.0055541992188,
+      484.1041564941406
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "CVPR, 2021.\n[42] I. Loshchilov, F. Hutter, Fixing weight decay regularization in adam, 2018, arXiv",
+    "bbox": [
+      308.010986328125,
+      478.5540771484375,
+      561.0055541992188,
+      501.2391357421875
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "preprint arXiv:1711.05101.\n[43] I. Loshchilov, F. Hutter, Sgdr: Stochastic gradient descent with warm restarts,",
+    "bbox": [
+      308.010986328125,
+      495.6900939941406,
+      561.0055541992188,
+      518.3751220703125
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "2016, arXiv preprint arXiv:1608.03983.",
+    "bbox": [
+      325.5639953613281,
+      512.8260498046875,
+      440.4623107910156,
+      526.943115234375
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "Biomedical Signal Processing and Control 114 (2026) 109289",
+    "bbox": [
+      390.9800109863281,
+      33.653465270996094,
+      560.1543579101562,
+      44.08295822143555
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "text",
+    "text": "7",
+    "bbox": [
+      296.21002197265625,
+      754.4534301757812,
+      301.6678771972656,
+      764.8829345703125
+    ],
+    "page_idx": 6
+  },
+  {
+    "type": "image",
+    "img_path": "images/figure1.png",
+    "caption": "Figure 1: Cosine-similarity of patches from natural image and pathological image.",
+    "page_idx": 2,
+    "bbox": [
+      35,
+      55,
+      565,
+      255
+    ]
+  },
+  {
+    "type": "image",
+    "img_path": "images/figure2.png",
+    "caption": "Figure 2: Framework of WSIR2.",
+    "page_idx": 2,
+    "bbox": [
+      35,
+      300,
+      565,
+      490
+    ]
+  },
+  {
+    "type": "table",
+    "img_path": "images/table1.png",
+    "caption": "Table 1: Classification accuracy and AUC comparison on Camelyon16, TCGA-NSCLC, and UniToPatho.",
+    "page_idx": 3,
+    "bbox": [
+      300,
+      45,
+      565,
+      250
+    ]
+  },
+  {
+    "type": "table",
+    "img_path": "images/table2.png",
+    "caption": "Table 2: Efficiency comparison of WSIR2 and mainstream MIL methods.",
+    "page_idx": 4,
+    "bbox": [
+      85,
+      45,
+      515,
+      205
+    ]
+  },
+  {
+    "type": "table",
+    "img_path": "images/table3.png",
+    "caption": "Table 3: Efficiency and performance when integrating WSIR2 into other MIL methods.",
+    "page_idx": 4,
+    "bbox": [
+      35,
+      212,
+      565,
+      385
+    ]
+  },
+  {
+    "type": "table",
+    "img_path": "images/table4.png",
+    "caption": "Table 4: Efficiency under varying token dimensions and top-k ratios.",
+    "page_idx": 4,
+    "bbox": [
+      35,
+      390,
+      295,
+      575
+    ]
+  },
+  {
+    "type": "image",
+    "img_path": "images/figure3.png",
+    "caption": "Figure 3: Effect of token dimension and top-k ratio on WSIR2 performance.",
+    "page_idx": 5,
+    "bbox": [
+      135,
+      55,
+      485,
+      155
+    ]
+  },
+  {
+    "type": "image",
+    "img_path": "images/figure4.png",
+    "caption": "Figure 4: Visualization of pruned and merged patches in WSIs using WSIR2.",
+    "page_idx": 5,
+    "bbox": [
+      135,
+      260,
+      490,
+      405
+    ]
+  }
+]

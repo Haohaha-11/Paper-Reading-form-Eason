@@ -1,5 +1,7 @@
 {
   "source_url": "https://www.sciencedirect.com/science/article/abs/pii/S1746809425018002",
   "doi": "https://doi.org/10.1016/j.bspc.2025.109289",
-  "pdf_status": "not_downloaded_short_lived_signed_url_expired_or_unavailable"
+  "pdf_status": "local_pdf_provided",
+  "local_pdf_source": "/data/share/hxd/haojiang/main.pdf",
+  "local_pdf_copied_to": "paper.pdf"
 }

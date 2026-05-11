@@ -13,5 +13,5 @@
   "doi": "10.1016/j.bspc.2025.109289",
   "pii": "S1746809425018002",
   "topic": "Medical-Compression",
-  "source_note": "ScienceDirect full PDF was supplied as a short-lived signed URL in chat, but that exact URL was unavailable after context compaction/expiry. This directory uses the stable ScienceDirect abstract page and Crossref/Elsevier metadata until a fresh PDF is provided."
+  "source_note": "Full local PDF was provided by the user at /data/share/hxd/haojiang/main.pdf on 2026-05-11 and copied into this directory as paper.pdf. Text and figure/table assets were extracted locally with PyMuPDF because MinerU credentials were not available in this shell."
 }

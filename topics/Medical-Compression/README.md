@@ -8,7 +8,7 @@
 |------|------|----------|
 | [AdaSlide](./%5BNat%20Commun%202026%5D%20AdaSlide/) | Nature Communications 2026 | AdaSlide 用 RL Compression Decision Agent 按 patch 临床信息量选择保留或压缩，再用 Foundational Image Enhancer 复原，在 WSI 存储成本与诊断完整性之间做自适应权衡。 |
 | [DTC-WSI](./%5BMIDL%202026%5D%20DTC-WSI/) | MIDL 2026 | DTC-WSI 用 importance network 和动态多阶段 token compression，把 bipartite soft matching token fusion 与 importance-guided pruning 结合，降低 WSI MIL 的 token aggregation 开销。 |
-| [WSIR2](./%5BBSPC%202026%5D%20WSIR2/) | Biomedical Signal Processing and Control 2026 | WSIR2 用 cross-attention 重要性选择 top-k patches、合并非关键 token 并配轻量 classifier，面向 WSI MIL 诊断加速；当前为 ScienceDirect 受限来源初读。 |
+| [WSIR2](./%5BBSPC%202026%5D%20WSIR2/) | Biomedical Signal Processing and Control 2026 | WSIR2 用 cross-attention 重要性选择 top-k patches、合并非关键 token 并配轻量 classifier，面向 WSI MIL 诊断加速；已基于本地 PDF 补齐全文批读和图表。 |
 | [WISE](./%5BArxiv%202025%5D%20WISE/) | arXiv 2025 | WISE 面向 WSI 无损压缩，利用空白区编码、层次投影、bitmap 重排和字典编码处理高频且不规则的病理图像信息。 |
 | [FOCUS](./%5BCVPR%202025%5D%20FOCUS/) | CVPR 2025 | FOCUS 用 pathology foundation model 与语言先验做三阶段 visual token compression，在 few-shot WSI 分类中保留诊断相关 patch 并过滤冗余视觉 token。 |
 | [Pathology-AE](./%5BArxiv%202025%5D%20Pathology-AE/) | arXiv 2025 | Pathology-AE 将 latent diffusion autoencoder 复用于病理压缩，用 pathology foundation model 感知指标微调，并用 K-means latent quantization 提升存储效率。 |
