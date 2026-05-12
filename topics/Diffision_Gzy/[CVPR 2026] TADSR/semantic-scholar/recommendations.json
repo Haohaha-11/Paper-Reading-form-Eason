@@ -1,0 +1,7 @@
+{
+  "source": "Semantic Scholar Recommendations API",
+  "query": "ArXiv:2508.16557",
+  "status": "rate_limited",
+  "http_code": 429,
+  "note": "Recommendations unavailable in this session because Semantic Scholar returned rate limit."
+}

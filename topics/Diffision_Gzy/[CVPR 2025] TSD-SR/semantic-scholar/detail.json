@@ -1,0 +1,20 @@
+{
+  "paperId": "7265655eb9f5dc7a00857fad3aaf86659c9ffcc3",
+  "source": "Semantic Scholar API",
+  "externalIds": {
+    "DBLP": "conf/cvpr/DongFGWZCLZ25",
+    "ArXiv": "2411.18263",
+    "DOI": "10.1109/CVPR52734.2025.02158",
+    "CorpusId": 274305965
+  },
+  "title": "TSD-SR: One-Step Diffusion with Target Score Distillation for Real-World Image Super-Resolution",
+  "venue": "Computer Vision and Pattern Recognition",
+  "year": 2024,
+  "referenceCount": 70,
+  "citationCount": 72,
+  "influentialCitationCount": 14,
+  "tldr": {
+    "model": "tldr@v2.0.0",
+    "text": "The TSD-SR is proposed, a novel distillation framework specifically designed for real-world image super-resolution, aiming to construct an efficient and effective one-step model."
+  }
+}

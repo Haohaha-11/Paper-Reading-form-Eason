@@ -1,0 +1,7 @@
+{
+  "source": "Semantic Scholar API",
+  "query": "ArXiv:2508.16557",
+  "status": "rate_limited",
+  "http_code": 429,
+  "note": "References endpoint was not queried further after detail endpoint rate limit."
+}

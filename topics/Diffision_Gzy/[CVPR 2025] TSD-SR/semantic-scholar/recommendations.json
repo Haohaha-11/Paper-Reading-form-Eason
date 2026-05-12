@@ -1,0 +1,34 @@
+{
+  "source": "Semantic Scholar Recommendations API",
+  "query": "ArXiv:2411.18263",
+  "recommendedPapers": [
+    {
+      "title": "MFSR: MeanFlow Distillation for One Step Real-World Image Super Resolution",
+      "year": 2026,
+      "citationCount": 0,
+      "arxiv": "2603.20690"
+    },
+    {
+      "title": "Bridging Restoration and Generation Manifolds in One-Step Diffusion for Real-World Super-Resolution",
+      "year": 2026,
+      "citationCount": 0,
+      "arxiv": "2604.24136"
+    },
+    {
+      "title": "GramSR: Visual Feature Conditioning for Diffusion-Based Super-Resolution",
+      "year": 2026,
+      "citationCount": 0,
+      "arxiv": "2604.25457"
+    },
+    {
+      "title": "One Step Diffusion-Based Super-Resolution With Time-Aware Distillation",
+      "year": 2026,
+      "citationCount": 0
+    },
+    {
+      "title": "Realism Control One-step Diffusion for Real-world Image Super Resolution",
+      "year": 2026,
+      "citationCount": 0
+    }
+  ]
+}

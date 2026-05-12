@@ -1,0 +1,14 @@
+{
+  "arxiv_id": "2411.18263",
+  "version": "v4",
+  "pdf_url": "https://arxiv.org/pdf/2411.18263",
+  "abs_url": "https://arxiv.org/abs/2411.18263",
+  "title": "TSD-SR: One-Step Diffusion with Target Score Distillation for Real-World Image Super-Resolution",
+  "short": "TSD-SR",
+  "venue": "CVPR",
+  "year": "2025",
+  "authors": "Linwei Dong; Qingnan Fan; Yihong Guo; Zhonghao Wang; Qi Zhang; Jinwei Chen; Yawei Luo; Changqing Zou",
+  "code": "https://github.com/Doooccer/TSD-SR",
+  "mineru_task": "7a1870f9-a831-42b5-b584-5ae633c9f694",
+  "full_zip_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-05-12/7a1870f9-a831-42b5-b584-5ae633c9f694.zip"
+}

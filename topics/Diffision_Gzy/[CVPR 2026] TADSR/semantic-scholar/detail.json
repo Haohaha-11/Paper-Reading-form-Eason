@@ -1,0 +1,7 @@
+{
+  "source": "Semantic Scholar API",
+  "query": "ArXiv:2508.16557",
+  "status": "rate_limited",
+  "http_code": 429,
+  "note": "Semantic Scholar detail endpoint returned Too Many Requests during this reading session. README uses a graceful fallback and does not invent citation counts."
+}

@@ -1,0 +1,38 @@
+{
+  "source": "Semantic Scholar API",
+  "note": "Full references were queried successfully during the reading session; README uses a curated top-citation grouping rather than pasting the entire API payload.",
+  "query": "ArXiv:2411.18263",
+  "referenceCount": 70,
+  "top_references": [
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "year": 2021,
+      "citationCount": 24197,
+      "arxiv": "2112.10752"
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "year": 2020,
+      "citationCount": 30139,
+      "arxiv": "2006.11239"
+    },
+    {
+      "title": "One-Step Effective Diffusion Network for Real-World Image Super-Resolution",
+      "year": 2024,
+      "citationCount": 234,
+      "arxiv": "2406.08177"
+    },
+    {
+      "title": "One-Step Diffusion with Distribution Matching Distillation",
+      "year": 2023,
+      "citationCount": 727,
+      "arxiv": "2311.18828"
+    },
+    {
+      "title": "SeeSR: Towards Semantics-Aware Real-World Image Super-Resolution",
+      "year": 2023,
+      "citationCount": 336,
+      "arxiv": "2311.16518"
+    }
+  ]
+}
