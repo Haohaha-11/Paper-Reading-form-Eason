@@ -45,6 +45,8 @@ latent vision memory / latent reasoning / medical image VLM：让医学影像模
 | [Latent-Space-Survey](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20Latent-Space-Survey/) | Arxiv 2026 | 这篇综述系统梳理 latent space 的基础、演进、机制、能力和展望，是理解 latent memory/reasoning 的概念地图。 |
 | [MedSynapse-V](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20MedSynapse-V/) | Arxiv 2026 | MedSynapse-V 面向医学 VLM，提出 latent diagnostic memory evolution，模拟临床专家在诊断时调用和演化隐式经验。 |
 | [Visual-Enhanced-Depth-Scaling](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20Visual-Enhanced-Depth-Scaling/) | Arxiv 2026 | Visual Enhanced Depth Scaling 针对 multimodal latent reasoning 中视觉 token 梯度不稳定与语言偏置，提出视觉重放和动态深度扩展。 |
+| [DMLR](./topics/VisMem-for-Med-Image/%5BArxiv%202025%5D%20DMLR/) | Arxiv 2025 | DMLR 提出 training-free 测试时动态潜空间推理：置信度引导的策略梯度优化 + 动态视觉注入，实现推理-感知自适应交错。 |
+| [MedVLThinker](./topics/VisMem-for-Med-Image/%5BArxiv%202025%5D%20MedVLThinker/) | Arxiv 2025 | MedVLThinker 是首个全开源医学多模态推理配方，揭示 RLVR > SFT 且 text-only > image-text 的反直觉发现，32B 匹配 GPT-4o。 |
 
 📖 [VisMem for Med Image 详细总结](./topics/VisMem-for-Med-Image/README.md)
 
