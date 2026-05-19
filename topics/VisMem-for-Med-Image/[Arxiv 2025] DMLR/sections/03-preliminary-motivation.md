@@ -35,6 +35,7 @@ where pi_theta(*) denotes the token-level conditional probability distribution o
 *Figure 2: Analysis of visual dependency in reasoning. (A) Token-level distribution shows visual sensitivity is concentrated in a few tokens. (B) Chain-level distribution reveals large variation in visual reliance across reasoning trajectories.*
 
 > 💡 **Figure 2 批读**: (A) Token-level：在单条推理链中，视觉依赖高度集中在少数 token 上，大部分 token 对视觉信息不敏感。(B) Chain-level：不同推理链之间视觉依赖的分布差异很大。这直接回答了 RQ1——**推理并不是每一步都需要视觉感知，而是只有少数关键步骤需要**。
+> 注：这里不再看单个 token，而是看一整条 reasoning chain 的视觉依赖程度。作者把一条推理链中多个 token 的视觉依赖分数聚合起来，得到这条链整体的 Reasoning Chains Visual Dependency。柱状图表示不同视觉依赖程度的推理链数量；红色折线表示这些推理链对应的准确率。可以看到一个趋势：视觉依赖越高，准确率整体越高。右侧红框里虽然样本数量少，但准确率更高。
 
 scores across full reasoning trajectories to obtain chain-level visual dependency, which reveals how different reasoning paths vary in their reliance on visual perception. These results reveal that:
 
