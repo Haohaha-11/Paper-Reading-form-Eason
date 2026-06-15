@@ -11,6 +11,7 @@ Test-Time Training / Test-Time Learning / long-context continual adaptation：�
 | [In-Place-TTT](./%5BICLR%202026%5D%20In-Place-TTT/) | ICLR 2026 Oral | In-Place TTT 把 LLM MLP block 的 final projection matrix 当作 fast weights，用 LM-aligned objective 和 chunk-wise update 做可插拔 test-time training。 |
 | [TTT-E2E](./%5BArxiv%202025%5D%20TTT-E2E/) | arXiv 2025 | TTT-E2E 将 long-context LM 视作 continual learning，用测试时 next-token prediction 更新权重，并用训练时 meta-learning 学适合测试时学习的初始化。 |
 | [TLM](./%5BICML%202025%5D%20TLM/) | ICML 2025 | TLM 把 LLM test-time learning 表述为无标签测试数据的 input perplexity minimization，用高困惑度样本选择和 LoRA 更新做域适应。 |
+| [TTT4LC](./%5BArxiv%202025%5D%20TTT4LC/) | arXiv 2025 | TTT4LC 揭示长上下文 attention 的 score dilution 导致 thinking tokens 失效，提出 Query-Only TTT：对 query 做少量梯度更新即可恢复长上下文信号。 |
 
 ## 课题主线
 
@@ -18,7 +19,8 @@ Test-Time Training / Test-Time Learning / long-context continual adaptation：�
 2. **训练/测试耦合方式不同**：In-Place TTT 强调 drop-in 与从头预训练两种使用方式；TTT-E2E 在训练时 meta-learn 初始化、测试时 next-token 更新；Absorber LLM 用有上下文 teacher 与无上下文 updated model 做 causal synchronization；TLM 和 Layer-Wise Dynamic TTA 更像无标签目标域/样本级适应。
 3. **目标函数不同**：In-Place TTT 用 next-token-prediction aligned value target 替代 generic reconstruction；TTT-E2E 直接以内层 next-token loss 更新；Absorber LLM 同步未来生成所需的内部行为；TLM 最小化 input perplexity；Layer-Wise Dynamic TTA 关注 prompt-only TTA 的动态更新强度。
 4. **稳定性机制不同**：Layer-Wise Dynamic TTA 用 hypernetwork 控制分层更新强度，避免固定学习率在单 prompt 上过拟合；Absorber LLM 用 teacher-student causal effect preservation 约束“写入上下文”不要退化成 token projection memorization。
-5. **应用压力不同**：In-Place TTT、TTT-E2E 和 Absorber LLM 主要服务长上下文利用与低/常数记忆推理；TLM 和 Layer-Wise Dynamic TTA 主要服务 domain shift、语言变体、任务分布变化和 sample-specific prompt adaptation。
+5. **应用压力不同**：In-Place TTT、TTT-E2E 和 Absorber LLM 主要服务长上下文利用与低/常数记忆推理；TLM 和 Layer-Wise Dynamic TTA 主要服务 domain shift、语言变体、任务分布变化和 sample-specific prompt adaptation；TTT4LC 直接面向 long-context QA/检索，用 TTT 替代 thinking tokens 作为推理时 compute 的最佳使用方式。
+6. **TTT vs Thinking Tokens 之争**：TTT4LC 从理论和实验两条线证明，在长上下文场景下 static attention 的 score dilution 使 thinking tokens 失效，而 query-only TTT 通过梯度更新打破 attention 的静态限制，以相同或更少 FLOPs 获得大幅提升。
 
 ## 关键问题
 
