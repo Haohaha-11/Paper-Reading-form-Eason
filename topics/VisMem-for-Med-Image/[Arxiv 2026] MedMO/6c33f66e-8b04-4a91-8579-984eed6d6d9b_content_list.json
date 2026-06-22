@@ -1,0 +1,3212 @@
+[
+    {
+        "type": "text",
+        "text": "MedMO: Grounding and Understanding Multimodal Large Language Model for Medical Images",
+        "text_level": 1,
+        "bbox": [
+            186,
+            138,
+            895,
+            198
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Ankan Deria\\*, Komal Kumar\\*, Adinath Madhavrao Dukre, Eran Segal, Salman Khan, Imran Razzak Mohamed bin Zayed University of Artificial Intelligence",
+        "bbox": [
+            99,
+            238,
+            898,
+            273
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "{ankan.deria, komal.kumar}@mbzuai.ac.ae",
+        "bbox": [
+            325,
+            276,
+            673,
+            290
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Models: huggingface.co/collections/MBZUAI/medmo",
+        "bbox": [
+            287,
+            299,
+            707,
+            313
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "§ GitHub: github.com/genmilab/MedMO",
+        "bbox": [
+            343,
+            318,
+            648,
+            333
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "<sup></sup> Project Page: genmilab.github.io/MedMO-Page",
+        "bbox": [
+            312,
+            338,
+            681,
+            353
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "chart",
+        "img_path": "images/becf87b940f2f5214fce2180a63e9ad795bfaef52fbaa87f2b5549773dc28c73.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 1. Benchmark performance of MedMO-4B and MedMO-8B variants (base and Next) across medical VQA, QA, grounding, and report generation. MedMO-8B-Next consistently leads all comparisons, outperforming Fleming-VL-8B by +6.0% on MMMU-Med (69.3% vs. 63.3%), +9.8% on PMC-VQA (74.1% vs. 64.3%), +8.4% on MMLU-Med (80.2% vs. 71.8%), +17.7% on MedQA (83.8% vs. 66.1%), +15.8% on MIMIC-CXR (71.3% vs. 55.5%), and +47.0 IoU on Bacteria grounding (56.1 vs. 9.1). MedMO-4B-Next remains competitive despite its smaller scale, surpassing Fleming-VL-8B on most benchmarks. Overall, MedMO-8B-Next achieves the best average scores (VQA: 72.7%, QA: 60.1%) against Fleming-VL-8B (VQA: 66.1%, QA: 45.7%), while even the compact MedMO-4B-Next (VQA: 68.5%, QA: 55.0%) outperforms Fleming across both categories, and MedMO-8B (VQA: 63.2%, QA: 61.3%) demonstrates strong QA reasoning despite a lower VQA average"
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            98,
+            409,
+            901,
+            598
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Abstract",
+        "text_level": 2,
+        "bbox": [
+            246,
+            736,
+            328,
+            752
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Multimodal large language models (MLLMs) have rapidly advanced, yet their adoption in medicine remains limited by gaps in domain coverage, modality alignment, and grounded reasoning. In this work, we introduce MedMO, a medical foundation model built upon a generalized MLLM architecture and trained exclusively on large-scale, domainspecific data. MedMO follows a multi-stage training recipe: (i) cross-modal pretraining to align heterogeneous visual encoders with a medical language backbone; (ii) instruction tuning on multi-task supervision that spans captioning, VQA, report generation, retrieval, and grounded disease localization with bounding boxes; and (iii) reinforcement learning with verifiable rewards that combine factuality checks with a box-level GIoU reward to strengthen spatial grounding and step-by-step reasoning in complex clinical scenarios. MedMO consistently outperforms strong open-source medical MLLMs across multiple modalities and tasks. MedMO-8B-Next leads all comparisons: on VQA benchmarks, it achieves an average improvement of +6.6% over Fleming-VL-8B, with gains of +6.0% on MMMU-Med, +9.8% on PMC-VQA, and +21.3% on MedXpertQA. For text-based QA, it attains +14.4% over Fleming-VL-8B, driven by +8.4% on MMLU-Med and +30.1% on MedQA. In medical report generation, MedMO-8B-Next delivers +6.7% on MIMIC-CXR. Moreover, it exhibits strong grounding capability with a Bacteria IoU of 56.1, representing a +47.8 IoU gain over Fleming-VL-8B, underscoring its robust spatial reasoning and localization performance. MedMO-4B-Next remains highly competitive at its smaller scale, surpassing Fleming-VL-8B across VQA, QA, and report generation benchmarks. Evaluations across radiology, ophthalmology, and pathology microscopy confirm MedMO’s broad cross-modality generalization.",
+        "bbox": [
+            88,
+            780,
+            486,
+            901
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            509,
+            738,
+            908,
+            890
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "aside_text",
+        "text": "arXiv:2602.06965v2 [cs.CV] 11 Mar 2026",
+        "bbox": [
+            22,
+            272,
+            58,
+            720
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "header",
+        "text": "蘭",
+        "bbox": [
+            114,
+            130,
+            161,
+            166
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "page_number",
+        "text": "1",
+        "bbox": [
+            493,
+            924,
+            504,
+            936
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            88,
+            92,
+            486,
+            319
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "1. Introduction",
+        "text_level": 2,
+        "bbox": [
+            91,
+            347,
+            222,
+            363
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Recent advancements in Multimodal Large Language Models (MLLMs) have significantly accelerated progress across multimodal reasoning and understanding tasks [16, 21, 39, 62, 112]. These models unify vision and language comprehension, achieving near-human performance on tasks such as image captioning, visual question answering (VQA), and multimodal reasoning. Despite their remarkable capabilities in general domains, their application to the medical domain remains substantially limited [43, 61, 99]. Biomedical data fundamentally differ from web-scale vision–language pairs: medical images demand precise, domain-specific interpretation, often requiring expert contextualization and robust grounding to textual clinical knowledge [46]. As a result, general-purpose models frequently produce uncertain or hallucinated outputs when applied to medical tasks [14, 45].",
+        "bbox": [
+            89,
+            372,
+            486,
+            598
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "To overcome these challenges, recent efforts have sought to adapt general-domain MLLMs into specialized medical multimodal models by incorporating domain-specific data and supervision [32, 76, 93, 107, 110]. Early models such as LLaVA-Med[45] leveraged PubMed-derived datasets for aligning medical images with textual knowledge, achieving foundational progress but limited by noisy data and narrow modality coverage. Subsequent works such as HuatuoGPT-Vision [14], GMAI-VL [46], and HealthGPT [47] introduced high-quality datasets, refined post-training strategies, and scaling recipes that improved alignment and reasoning. Parallel advancements in reasoning-based models, such as OpenAI’s o-series [63, 65] and DeepSeek-R1 [23], as well as reinforcement learning with verifiable rewards (RLVR)[77, 104], have inspired recent medical research efforts[40, 68] toward enhancing reasoning reliability and factual grounding in clinical scenarios.",
+        "bbox": [
+            89,
+            599,
+            486,
+            856
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Nevertheless, three key limitations persist in existing medical MLLMs. (1) The majority rely on distilled data from advanced proprietary models [21, 22, 62–65], which, while scalable, often lack accurate domain grounding, particularly for fine-grained clinical reasoning. (2) Distillation pipelines frequently depend solely on generative outputs without structured supervision, amplifying hallucination risks and inconsistencies. (3) Current models focus on individual tasks or narrow modality subsets (e.g., radiology or pathology) rather than achieving unified, cross-modal generalization across the diverse imaging modalities prevalent in real-world healthcare.",
+        "bbox": [
+            89,
+            854,
+            485,
+            901
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            511,
+            92,
+            908,
+            228
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "To bridge these gaps, we introduce MedMO, a powerful open-source post-trained multimodal large vision–language model (VLM) purpose-built for comprehensive medical image understanding and grounding (See Figure 1). MedMO is developed through a scalable and modular post-training pipeline, emphasizing progressive multimodal alignment, domain-specific reasoning, and cross-modal robustness. We curate and harmonize a 26M+ with 45 open-source multimodal dataset, combining diverse medical imaging modal ities (radiology, pathology, ophthalmology, dermatology, CT, MRI, ultrasound, and surgical videos) with carefully aligned text sources from open biomedical corpora and general-domain visual data. Through multi-stage posttraining, MedMO progressively enhances its capacity for visual grounding, clinical reasoning, and textual alignment, establishing a scalable pipeline toward a generalist foundation multimodal model for medical AI.",
+        "bbox": [
+            511,
+            239,
+            908,
+            498
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "We further conduct comprehensive experiments and analyses on data curation, training, and alignment strategies, providing a transparent and reproducible framework for future medical MLLM development. Extensive evaluations demonstrate that MedMO achieves state-of-the-art (SOTA) performance across diverse benchmarks, surpassing prior open and proprietary systems on tasks including medical VQA, report generation, and diagnostic reasoning.",
+        "bbox": [
+            511,
+            510,
+            908,
+            632
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Our main contributions are summarized as follows:",
+        "text_level": 2,
+        "bbox": [
+            532,
+            643,
+            880,
+            659
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "• We develop a powerful open-source post-trained multimodal large VLM, MedMO, designed for comprehensive medical image understanding and grounding.",
+        "bbox": [
+            513,
+            671,
+            908,
+            717
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "• We curate over 26M multimodal medical and biomedical samples from 45 datasets and establish a multi-stage posttraining that progressively enhances cross-modal alignment and reasoning. This provides a scalable roadmap toward a generalist foundation model for medical.",
+        "bbox": [
+            513,
+            717,
+            908,
+            792
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "• To evaluate VLM performance on detection tasks, we construct a dedicated Cell dataset from opensource microscopy images with varying sizes, shapes, and densities.",
+        "bbox": [
+            513,
+            792,
+            908,
+            838
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "• We conduct extensive experiments and analyses across data and methodology dimensions, providing an open benchmark for future multimodal medical LLM research and training recipes.",
+        "bbox": [
+            513,
+            838,
+            908,
+            898
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "page_number",
+        "text": "2",
+        "bbox": [
+            493,
+            924,
+            504,
+            936
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2. Related Works",
+        "text_level": 2,
+        "bbox": [
+            89,
+            89,
+            241,
+            106
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2.1. Medical Language Multi-model Models",
+        "text_level": 2,
+        "bbox": [
+            89,
+            114,
+            431,
+            132
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "The rapid progress of LLMs has catalyzed remarkable advances in medical images. Building upon the success of general-domain LLMs, researchers have developed domainadapted medical MLLMs that integrate visual and textual reasoning for clinical understanding [4, 84]. Early efforts such as LLaVA-Med [45], Med-Flamingo [58], Qilin-MedVL [50], and BioMedGPT [107] established the first medical vision–language models by aligning specialized visual encoders with pre-trained LLMs via linear projection layers, enabling foundational multimodal reasoning. However, these early systems were constrained by limited data diversity and suboptimal modality alignment, leading to hallucinations and factual inconsistencies [14, 45]. Subsequent studies expanded this paradigm through richer datasets [30, 33, 46], improved training strategies [60, 91], efficient finetuning [47], and reinforcement learning [40, 68]. Proprietary systems such as Med-Gemini[20] and Med-PaLM [80, 81] have further integrated multimodal and structured data for advanced reasoning, achieving strong performance across diagnostic and question-answering tasks [5, 6, 73, 95, 101]. Concurrently, specialized MLLMs targeting specific clinical contexts such as pathology [53, 76, 92, 111], radiology [19, 32, 66, 79, 83, 106], and ophthalmology [25] have emerged, highlighting the growing demand for fine-grained, modality-aware intelligence in medical. Recent SOTA frameworks, such as Lingshu [97] and Fleming-vl [78], have improved the integration of medical and natural VLM tasks. However, their capabilities remain limited to selective tasks. Building on these foundations, our work emphasizes largescale open-source post-training and progressive multimodal alignment. MedMO adopts a multi-stage design leveraging over 26M diverse multimodal samples, unifying heterogeneous medical modalities and textual data to achieve substantial gains across diverse clinical tasks.",
+        "bbox": [
+            88,
+            138,
+            486,
+            655
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2.2. Grounding using multi-model models",
+        "text_level": 2,
+        "bbox": [
+            89,
+            665,
+            415,
+            681
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Unlike detection objective-based approaches such as grounding-DINO [51], recent flagship VLMs have moved beyond captioning/VQA to explicit visual grounding [18, 21, 51] as well as point grounding [24], i.e., returning spatial evidence such as bounding boxes or points aligned to textual queries. The Qwen2.5-VL [8] report highlights grounding as a built-in capability, emphasizing precise object localization and event localization in long videos through native dynamicresolution processing and absolute time encoding. Qwen2.5- VL generates grounded outputs in JSON with absolute coordinates, supporting both boxes and point clicks [24]. Although the technical report is general-domain, these grounding primitives transfer to clinical data. For instance, MedSG-Bench [105] evaluates sequential medical grounding (difference/consistency grounding across image series) and explicitly benchmarks Qwen2.5-VL alongside medical-domain MLLMs (e.g., HuatuoGPT-Vision [15]), finding that even advanced VLMs still face challenges on fine-grained, clinically realistic localization tasks-underscoring the need for domain-aligned post-training.",
+        "bbox": [
+            88,
+            689,
+            486,
+            902
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            511,
+            92,
+            908,
+            184
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3. Methodology-MedMO",
+        "text_level": 2,
+        "bbox": [
+            511,
+            195,
+            728,
+            213
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "The overall methodology and multi-stage training pipeline are provided in Figure 2. Starting from the Qwen3-VL-8B-Instruct model<sup>1</sup>, our approach consists of four sequential post-training stages: (1) General SFT aimed to train on large-scale instruction data to build foundational medical understanding; (2) High-quality medical image supervised fine-tuning, focused on expert-curated data to enhance visual grounding; (3) Instruction tuning and grounding fine-tuning, which align the model with clinical answering and spatial localization tasks; and (4) Reinforcement learning, designed to further improve instruction-following behavior and grounding accuracy. The following subsections provide an overview of the supervised fine-tuning strategy, followed by detailed descriptions of each stage.",
+        "bbox": [
+            511,
+            222,
+            908,
+            435
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3.1. Overview of Supervised Fine-tuning",
+        "text_level": 2,
+        "bbox": [
+            513,
+            444,
+            828,
+            460
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Our supervised fine-tuning (SFT) approach follows the standard next-token prediction paradigm for vision-language models. Given a multimodal input consisting of an image v and text sequence $\\mathbf { x } = \\{ x _ { 1 } , x _ { 2 } , \\ldots , x _ { n } \\}$ , the model learns to predict the target response $\\mathbf { y } = \\{ y _ { 1 } , y _ { 2 } , \\dots , y _ { m } \\}$ by maximizing the conditional likelihood:",
+        "bbox": [
+            511,
+            465,
+            908,
+            559
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/49d9e1f8b4febd279766f5c223206477ad25124263c376294b03731ea07f46a7.jpg",
+        "text": "$$\n\\mathcal { L } _ { \\mathrm { S F T } } = - \\sum _ { i = 1 } ^ { m } \\log p _ { \\theta } ( y _ { i } \\mid \\mathbf { v } , \\mathbf { x } , y _ { < i } ) ,\\tag{1}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            588,
+            569,
+            831,
+            608
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "where θ represents the model parameters, and $y _ { < i }$ denotes all previously generated tokens. MedMO builds upon the Qwen3-VL architecture, which consists of three primary components: (1) a vision encoder ${ \\mathcal { E } } _ { v }$ that processes input images into visual representations; (2) a vision–language adapter A that projects multi-level ViT features into the language model’s embedding space through a DeepStack fusion mechanism, capturing fine-grained visual details and enhancing image–text alignment; and (3) a large language model decoder D that generates textual responses.",
+        "bbox": [
+            511,
+            616,
+            908,
+            767
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3.2. Stage 1: General Medical SFT",
+        "text_level": 2,
+        "bbox": [
+            513,
+            776,
+            784,
+            792
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "The first stage aims to establish foundational medical knowledge across diverse modalities and clinical scenarios. We utilize the publicly available MedTrinity dataset [96], comprising 18.5M large-scale instruction-following samples. This dataset $\\mathcal { D } _ { \\mathrm { g e n e r a l } }$ spans multiple imaging modalities (X-ray,",
+        "bbox": [
+            511,
+            799,
+            910,
+            877
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "page_footnote",
+        "text": "<sup>1</sup>Qwen/Qwen3-VL-8B-Instruct",
+        "bbox": [
+            531,
+            886,
+            702,
+            900
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "page_number",
+        "text": "3",
+        "bbox": [
+            493,
+            924,
+            504,
+            936
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "image",
+        "img_path": "images/c3647d22b3d9236873c776a0e202bcac170045dc53936694fe31662cd9f80920.jpg",
+        "image_caption": [
+            "Figure 2. Overview of the multi-stage training pipeline for medical image analysis. The workflow consists of three main capabilities: (Top row) VQA/QA for identifying abnormalities in medical images, Grounding for spatial localization of detected features with bounding box coordinates, and Report generation for producing detailed medical reports. (Bottom) The training pipeline progresses through four sequential stages: (1) Large-scale training on 18.5M image-text pairs at 768×768 resolution for global image-text alignment, (2) High-resolution training on 3M samples at 1280×1280 resolution to enhance spatial localization and fine-grained visual grounding, (3) Instruction tuning on 4.3M samples covering captioning, diagnosis, and report summarization tasks to align responses with human-style medical instruction following, and (4) Medical-oriented reinforcement learning on 300K samples optimized using four reward signals: label accuracy, bounding box IoU, tag count, and soft overlap punishment. The complete pipeline for the MedMO-8B."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            112,
+            92,
+            885,
+            372
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "CT, MRI, ultrasound, pathology, etc.) and includes captioning, visual question answering (VQA), and general-domain multimodal tasks, as illustrated in Figure 4.",
+        "bbox": [
+            89,
+            525,
+            485,
+            570
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "The Stage 1 dataset consists of:",
+        "bbox": [
+            91,
+            571,
+            302,
+            587
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "• Medical image captioning: $\\mathcal { D } _ { \\mathrm { c a p t i o n } }$ with detailed textual descriptions of medical images.",
+        "bbox": [
+            99,
+            589,
+            485,
+            619
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "• Medical VQA: $\\mathcal { D } _ { \\mathrm { v q a } }$ covering disease identification, anatomical recognition, and reasoning tasks.",
+        "bbox": [
+            101,
+            619,
+            483,
+            650
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "• General multimodal data: $\\mathcal { D } _ { \\mathrm { g } }$ <sub>eneral-mm</sub> for maintaining broad visual–language alignment.",
+        "bbox": [
+            101,
+            650,
+            482,
+            679
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "The combined dataset is defined as:",
+        "bbox": [
+            89,
+            684,
+            328,
+            699
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/de2af8320039de033778b9c32d4c5433fafdd09cadf34a8a48a47c5cce742c21.jpg",
+        "text": "$$\n\\mathcal { D } _ { \\mathrm { s t a g e } 1 } = \\mathcal { D } _ { \\mathrm { c a p t i o n } } \\cup \\mathcal { D } _ { \\mathrm { v q a } } \\cup \\mathcal { D } _ { \\mathrm { g e n e r a l - m m } } .\\tag{2}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            158,
+            712,
+            415,
+            729
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "3.3. Stage 2: Quality Medical Image and Grounding",
+        "text_level": 2,
+        "bbox": [
+            89,
+            742,
+            483,
+            758
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "The second stage of SFT focuses on high-quality, expertannotated medical image–text pairs to strengthen visual understanding and introduce grounding capability. We curate a refined dataset ${ \\mathcal { D } } _ { \\mathrm { h q } }$ that includes both standard image–text supervision and medical grounding datasets containing bounding-box annotations (e.g., Chest X-ray, Wrist X-ray, Cell Microscopy, and CT). This stage extends the model’s visual encoder to predict localized features and bounding box coordinates, enabling spatial awareness while preserving global image–text alignment. Training objectives remain consistent with Stage 3.2, combining captioning and VQA with supervised grounding signals.",
+        "bbox": [
+            89,
+            765,
+            486,
+            901
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            511,
+            525,
+            906,
+            570
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Grounding Dataset. The grounding dataset $\\mathcal { D } _ { \\mathrm { g r o u n d } }$ includes: (1) Object detection annotations for anatomical structures and lesions, (2) Referring expression comprehension, and (3) Visual grounding QA pairsfor spatial localization.",
+        "bbox": [
+            511,
+            570,
+            908,
+            632
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "3.4. Stage 3: Instruction Tuning",
+        "text_level": 2,
+        "bbox": [
+            513,
+            637,
+            764,
+            654
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "The third stage aligns MedMO’s responses with humanstyle medical reasoning through instruction tuning. Using a dataset $\\mathcal { D } _ { \\mathrm { i n s t } }$ of 4.3M multimodal instruction–response pairs, this phase covers captioning, diagnostic question answering, report summarization, and retrieval-based reasoning tasks. Instruction tuning improves task generalization and factual consistency, integrating clinical context understanding into both text- and vision-guided reasoning.",
+        "bbox": [
+            511,
+            660,
+            908,
+            782
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "3.5. Stage 4: Reinforcement Learning",
+        "text_level": 2,
+        "bbox": [
+            513,
+            787,
+            807,
+            804
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "The final stage employs GRPO [77] to enhance instructionfollowing capabilities through preference learning.",
+        "bbox": [
+            511,
+            809,
+            906,
+            840
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "GRPO Objective. It optimizes the model by comparing multiple sampled responses for the same input. For each input $\\displaystyle ( \\mathbf { v } , \\mathbf { x } )$ , we sample G responses $\\{ \\mathbf { y } ^ { ( 1 ) } , \\ldots , \\mathbf { y } ^ { ( G ) } \\}$ from the current policy $\\pi _ { \\theta }$ . Each response is evaluated using a reward function $r ( \\mathbf { v } , \\mathbf { x } , \\mathbf { y } )$ that measures quality.",
+        "bbox": [
+            511,
+            840,
+            906,
+            901
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "page_number",
+        "text": "4",
+        "bbox": [
+            493,
+            924,
+            504,
+            935
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            89,
+            92,
+            415,
+            106
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "We follow the same objective as in GRPO [23, 77] with clip-higher and token level loss motivated from from DAPO [104]. For $( \\boldsymbol { q } , \\boldsymbol { a } ) \\sim \\mathcal { D } , \\{ o _ { i } \\} _ { i = 1 } ^ { G } \\sim \\pi _ { \\theta _ { \\mathrm { o l d } } } ( \\cdot | \\boldsymbol { q } )$",
+        "bbox": [
+            89,
+            106,
+            483,
+            154
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/837c4621e3b256df839a274e68233d271e6b73d18af279947913e554bc65d2c1.jpg",
+        "text": "$$\nJ ( \\theta ) = \\mathbb { E } _ { ( q , a ) , o _ { i } } \\lfloor \\frac { 1 } { \\sum _ { i = 1 } ^ { G } | o _ { i } | } \\sum _ { i = 1 } ^ { \\cup } | o _ { i } | \\sum _ { t = 1 } \\operatorname* { m i n } ( r _ { i , t } ( \\theta ) \\hat { A } _ { i , t } , \n$$",
+        "text_format": "latex",
+        "bbox": [
+            96,
+            154,
+            475,
+            190
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/3d9c061af8e5080aea7bafecc10b3a368c451215c5b30163be0d095d6f9e8d13.jpg",
+        "text": "$$\n\\mathrm { c l i p } \\big ( r _ { i , t } ( \\theta ) , 1 - \\varepsilon _ { \\mathrm { l o w } } , 1 + \\varepsilon _ { \\mathrm { h i g h } } \\big ) \\hat { A } _ { i , t } \\Big ) \\Bigg ]\\tag{3}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            161,
+            193,
+            416,
+            233
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/cd338eb5823b44982e4c192fca0e4214b64ae1b698e5ada1aec63919d6c47833.jpg",
+        "text": "$$\nr _ { i , t } ( \\theta ) = \\frac { \\pi _ { \\theta } ( o _ { i , t } \\mid q , o _ { i , < t } ) } { \\pi _ { \\theta _ { \\mathrm { o l d } } } ( o _ { i , t } \\mid q , o _ { i , < t } ) } ,\\tag{4}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            176,
+            251,
+            379,
+            285
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/d5bf2fb5b4d292fbbea5954238b8b5fa0501233dadcace2639a9d4661aef0cc9.jpg",
+        "text": "$$\n\\hat { A } _ { i , t } = \\frac { R _ { i } - \\mathrm { m e a n } ( \\{ R _ { i } \\} _ { i = 1 } ^ { G } ) } { \\mathrm { s t d } ( \\{ R _ { i } \\} _ { i = 1 } ^ { G } ) } .\\tag{5}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            192,
+            286,
+            395,
+            321
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The KL divergence term ensures the policy doesn’t deviate too far from the reference model $\\pi _ { \\mathrm { r e f } } .$",
+        "bbox": [
+            89,
+            329,
+            483,
+            359
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/15f6706ae7a97dbdca0b2297bff9000f4bb5be4be3d5ab0d0879ae1ca53883e1.jpg",
+        "text": "$$\n\\begin{array} { r } { \\mathcal { L } _ { \\mathrm { K L } } = \\mathbb { E } _ { ( \\mathbf { v } , \\mathbf { x } , \\mathbf { y } ) } \\left[ D _ { \\mathrm { K L } } ( \\pi _ { \\theta } ( \\cdot  { | } \\mathbf { v } , \\mathbf { x } ) \\| \\pi _ { \\mathrm { r e f } } ( \\cdot  { | } \\mathbf { v } , \\mathbf { x } ) ) \\right] . } \\end{array}\\tag{6}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            111,
+            382,
+            442,
+            401
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "For the reward function, we combine label accuracy, bounding-box reward, tag count, and soft-overlap penalty (see Fig. 2). While these components are common in RLbased training, we introduce the Bounding Box Reward as a verifiable, spatially grounded signal that directly enhances localization performance.",
+        "bbox": [
+            89,
+            409,
+            485,
+            501
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "3.5.1. Bounding Box Reward",
+        "text_level": 2,
+        "bbox": [
+            89,
+            506,
+            297,
+            521
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Given ground truth boxes $\\mathcal { G } = \\{ g _ { j } \\} _ { j = 1 } ^ { G }$ and predictions $\\mathcal { P } = \\{ p _ { i } \\} _ { i = 1 } ^ { P }$ in XYXY format and $\\mathrm { G I o U } _ { i j } \\in [ - 1 , 1 ]$ [71], we score pairs via",
+        "bbox": [
+            89,
+            523,
+            485,
+            571
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/d56531f4b669168c7471cfaeddb7abe2a5b63727804172a994537ef7b4944cf5.jpg",
+        "text": "$$\nL 1 _ { i j } = \\frac { | x _ { 1 } ^ { p } - x _ { 1 } ^ { g } | + | y _ { 1 } ^ { p } - y _ { 1 } ^ { g } | + | x _ { 2 } ^ { p } - x _ { 2 } ^ { g } | + | y _ { 2 } ^ { p } - y _ { 2 } ^ { g } | } { 2 \\sqrt { H ^ { 2 } + W ^ { 2 } } }\n$$",
+        "text_format": "latex",
+        "bbox": [
+            101,
+            579,
+            470,
+            613
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Normalize by the average image dimension makes the denominator resolution-invariant and proportional to image diagonal length. We obtain a one-to-one assignment $M \\subseteq \\{ 1 \\dots P \\} \\times \\{ 1 \\dots G \\}$ by Hungarian matching on",
+        "bbox": [
+            89,
+            621,
+            485,
+            683
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/6f0a4871594b08d605d30b2bfae1f074a3165bae46fe24c991dd0a36432cbd8f.jpg",
+        "text": "$$\nC _ { i j } = w _ { \\mathrm { L } 1 } ^ { m } L 1 _ { i j } + w _ { \\mathrm { G } } ^ { m } \\left( 1 - \\mathrm { G I o U } _ { i j } \\right) , \\quad w _ { \\mathrm { L } 1 } ^ { m } = 5 , ~ w _ { \\mathrm { G } } ^ { m } = 2 .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            89,
+            690,
+            480,
+            708
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "For each matched pair $( i , j ) \\in M$ , define a per-pair quality",
+        "bbox": [
+            89,
+            717,
+            480,
+            733
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/1f987f91bf39419263bd00800f1893249183ec264d896c37a0813ebedcc8b647.jpg",
+        "text": "$$\ns _ { i j } = \\frac { w _ { \\mathrm { L 1 } } \\left( 1 - \\mathrm { c l i p } _ { [ 0 , 1 ] } ( L 1 _ { i j } ) \\right) + w _ { \\mathrm { G } } \\left( \\frac { \\mathrm { G I o U } _ { i j } + 1 } { 2 } \\right) } { w _ { \\mathrm { L 1 } } + w _ { \\mathrm { G } } } ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            114,
+            741,
+            455,
+            782
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "where $w _ { \\mathrm { L 1 } } = 5 , w _ { \\mathrm { G } } = 2 .$ . The reward is a coveragenormalized sum with optional FP/FN penalties (Pen):",
+        "bbox": [
+            89,
+            790,
+            486,
+            820
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/34ce9b743194083ce99c405db7fbf933ee7de2b68ab4378b781a8ee0075099c2.jpg",
+        "text": "$$\n\\mathbf { B } = \\frac { 1 } { G } \\sum _ { ( i , j ) \\in M } s _ { i j } , \\mathrm { P e n } = \\frac { \\lambda _ { \\mathrm { F N } } ( G - | M | ) + \\lambda _ { \\mathrm { F P } } ( P - | M | ) } { \\operatorname* { m a x } ( 1 , G ) } ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            89,
+            827,
+            491,
+            866
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/ec73a9c846b22a8ef742b1a658f52dc13233126bcc4d04c4b5e4fbc172556edf.jpg",
+        "text": "$$\n\\begin{array} { r }  \\boxed { R _ { \\mathsf { b b o x } } = \\mathrm { c l i p } _ { [ 0 , 1 ] } \\big ( \\mathbf { B } - \\mathbf { P e n } \\big ) } \\end{array} .\n$$",
+        "text_format": "latex",
+        "bbox": [
+            184,
+            878,
+            390,
+            901
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "4. Experiments",
+        "text_level": 2,
+        "bbox": [
+            513,
+            89,
+            647,
+            107
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "4.1. Experimental Setup",
+        "text_level": 2,
+        "bbox": [
+            513,
+            114,
+            705,
+            131
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "MedMO was trained using 64× AMD Instinct MI210 GPUs (64 GB each) for 25 days following a four-stage progressive pipeline (Figure 2). The stages comprised: largescale general medical SFT on 18.5M image–text pairs at $7 6 8 \\times 7 6 8$ resolution (225 h); high-resolution fine-tuning on 3M curated samples at 1280×1280 (155 h); instruction tuning on 4.3M multimodal examples covering captioning, diagnosis, and report summarization (110 h); and medicaloriented reinforcement learning on 300K samples with rewards for label accuracy, bounding-box IoU (98 h). We follow standard VLM training practices using TRL [88]. Stage 1 uses BS = 10, LR = 1e-5, cosine schedule, and grad accum = 2. Stage 2 adopts BS = 2, LR = 8e-6, cosine schedule, and grad accum = 8. Stage 3 employs $\\mathrm { B S } = 1 0$ and $\\mathrm { L R } = 5 \\mathrm { e } { - } 6$ with grad accum = 2 for stable convergence <sup>2</sup>.",
+        "bbox": [
+            509,
+            137,
+            910,
+            364
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "4.2. Datasets",
+        "text_level": 2,
+        "bbox": [
+            513,
+            376,
+            617,
+            391
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "We assembled a unified multimodal corpus of 45 datasets spanning radiology, pathology, ophthalmology, dermatology, and surgical imaging, totaling over 26M samples. The MedTrinity dataset [96] forms the core, contributing 18.5M public instruction-following pairs. The corpus combines image–text and text-only data across diverse medical domains and clinical tasks. The dataset (Figure 4) covers both imaging modalities (e.g., X-ray, CT, MRI, ultrasound, optical, and nuclear imaging) and biological systems (chest, brain, heart, liver, kidney, eye, colon, and tissue). For grounding tasks, we additionally used datasets with bounding-box annotations, including Chest X-ray, Wrist X-ray, Cell microscopy, and CT images. This comprehensive coverage supports robust multimodal understanding, spatial reasoning, and medical grounding. We curate a Cell Benchmark Dataset from open-source microscopy images<sup>2</sup>, such as DeepCell [9] and Bacteria [87], covering diverse cell counts and densities<sup>2</sup>.",
+        "bbox": [
+            509,
+            397,
+            910,
+            656
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "4.3. Results and Analysis",
+        "text_level": 2,
+        "bbox": [
+            513,
+            666,
+            710,
+            681
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "4.3.1. SOTA Comparison of MedMO for QA",
+        "text_level": 2,
+        "bbox": [
+            513,
+            689,
+            826,
+            704
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Table 1 summarizes MedMO’s performance across medical VQA and Text QA benchmarks for all four variants: MedMO-4B, MedMO-4B-Next, MedMO-8B, and MedMO-8B-Next.",
+        "bbox": [
+            511,
+            708,
+            908,
+            768
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "VQA Benchmarks. MedMO-8B-Next achieves the highest VQA average of 72.7%, outperforming all open-source competitors including Fleming-VL-8B (66.1%) and Lingshu-7B (55.1%) by +6.6% and +17.6%, respectively. It sets new state-of-the-art scores on MMMU-Med (69.3%), VQA-RAD (86.4/68.0), SLAKE (83.0/81.6), and OMVQA (93.3%). MedMO-4B-Next also surpasses Fleming-VL-8B with a VQA average of 68.5%, achieving competitive scores on PMC-VQA (75.7%) and OMVQA (90.6%) despite its smaller scale. The base variants MedMO-4B (45.4%) and MedMO-8B (63.2%) show consistent improvement with scale, with MedMO-8B notably achieving the second-best PathVQA score (56.3%).",
+        "bbox": [
+            511,
+            768,
+            908,
+            876
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "page_footnote",
+        "text": "<sup>2</sup>For more details, please see our Supplementary Material.",
+        "bbox": [
+            531,
+            886,
+            841,
+            900
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "page_number",
+        "text": "5",
+        "bbox": [
+            493,
+            924,
+            504,
+            936
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "table",
+        "img_path": "images/a21fb7e50669d63cbe78f750a259fbbfc987ede2afce6c2166f31222edecc0b5.jpg",
+        "table_caption": [
+            "Table 1. Performance comparison across medical VQA and Text QA benchmarks. Bold and underline indicate the best and second-best results, respectively. OMIVQA and MedXQA refer to the OmniMedVQA and MedXpertQA benchmarks."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"2\">Models</td><td colspan=\"7\">VQA Benchmarks</td><td colspan=\"8\">Text QA Benchmarks</td></tr><tr><td>MMMU-Med</td><td>VQA-RAD (closed/all)</td><td>SLAKE (closed/all)</td><td>PathVQA (all)</td><td>PMC-VQA</td><td>OMVQA</td><td>MedXQA Avg.</td><td>MMLU-Med</td><td>PubMedQA</td><td>MedMCQA</td><td>MedQA</td><td>Medbullets (op4/op5)</td><td>MedXQA</td><td>SGPQA</td><td>Avg.</td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td>Closed-source Models</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>GPT-4.1</td><td>75.2</td><td>65.0</td><td>72.2</td><td>55.5</td><td>75.5</td><td>45.2</td><td>63.4</td><td>89.6</td><td>75.6</td><td>77.7</td><td>89.1</td><td>77.0</td><td>30.9</td><td>49.9</td><td>70.0</td></tr><tr><td>Claude Sonnet 4</td><td>74.6</td><td>67.6</td><td>70.6</td><td>54.2</td><td>55.2 54.4</td><td>65.5 43.3</td><td>61.5</td><td>91.3</td><td>78.6</td><td>79.3</td><td>92.1</td><td>80.2</td><td>33.6</td><td>56.3</td><td>73.1</td></tr><tr><td>Gemini-2.5-Flash</td><td>76.9</td><td>68.5</td><td>75.8</td><td>55.4</td><td>55.4</td><td>71.0 52.8</td><td>65.1</td><td>84.2</td><td>73.8</td><td>73.6</td><td>91.2</td><td>77.6</td><td>35.6</td><td>53.3</td><td>69.9</td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td>Open-source Models</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>16.6</td><td></td><td></td><td></td><td>27.9</td><td></td><td>一</td><td></td><td></td><td>一</td><td>一</td><td>1</td><td>一</td><td>一</td><td></td></tr><tr><td>BiomedGPT Med-R1-2B</td><td>24.9 34.8</td><td>39.0</td><td>13.6 54.5</td><td>11.3 15.3</td><td>27.6 47.4</td><td>21.1</td><td></td><td>一 51.5</td><td>一 66.2</td><td>39.1</td><td>39.9</td><td>33.6</td><td>11.2</td><td>17.9</td><td>37.0</td></tr><tr><td>MedVLM-R1-2B</td><td>35.2</td><td>48.6</td><td>56.0</td><td>32.5</td><td>47.6</td><td>77.7 69.8</td><td>20.4 45.4</td><td>51.8</td><td>66.4</td><td>39.7</td><td>42.3</td><td>33.8</td><td>11.8</td><td>19.1</td><td>37.8</td></tr><tr><td>MedGemma-4B-IT</td><td>43.7</td><td>72.5</td><td>76.4</td><td>48.8</td><td>49.9</td><td>22.3</td><td>54.8</td><td>66.7</td><td>72.2</td><td>52.2</td><td>56.2</td><td>45.6</td><td>12.8</td><td>21.6</td><td>46.8</td></tr><tr><td>LLaVA-Med-7B</td><td>29.3</td><td>53.7</td><td>48.0</td><td>38.8</td><td>30.5</td><td>20.3</td><td>37.8</td><td>50.6</td><td>26.4</td><td>39.4</td><td>42.0</td><td>34.4</td><td>9.9</td><td>16.1</td><td>31.3</td></tr><tr><td>HuatuoGPT-V-7B</td><td>47.3</td><td>67.0</td><td>67.8</td><td>48.0</td><td>53.3</td><td>21.6</td><td>54.2</td><td>69.3</td><td>72.8</td><td>51.2</td><td>52.9</td><td>40.9</td><td>10.1</td><td>21.9</td><td>45.6</td></tr><tr><td>BioMediX2-8B</td><td>39.8</td><td>49.2</td><td>57.7</td><td>37.0</td><td>43.5</td><td>21.8</td><td>44.6</td><td>68.6</td><td>75.2</td><td>52.9</td><td>58.9</td><td>45.9</td><td>13.4</td><td>25.2</td><td>48.6</td></tr><tr><td>Qwen2.5VL-7B</td><td>50.6</td><td>64.5</td><td>67.2</td><td>44.1</td><td>51.9</td><td>22.3</td><td>52.0</td><td>73.4</td><td>76.4</td><td>52.6</td><td>57.3</td><td>42.1</td><td>12.8</td><td>26.3</td><td>48.7</td></tr><tr><td>InternVL2.5-8B</td><td>53.5</td><td>59.4</td><td>69.0</td><td>42.1</td><td>51.3</td><td>21.7</td><td>54.0</td><td>74.2</td><td>76.4</td><td>52.4</td><td>53.7</td><td>42.4</td><td>11.6</td><td>26.1</td><td>48.1</td></tr><tr><td>InternVL3-8B</td><td>59.2</td><td>76.4/52.9</td><td>72.1/62.4</td><td>39.0</td><td>53.8</td><td>22.4</td><td>57.4</td><td>77.5</td><td>75.4</td><td>57.7</td><td>62.1</td><td>50.2/42.8</td><td>13.1</td><td>31.2</td><td>51.2</td></tr><tr><td>Lingshu-7B</td><td>54.0</td><td>77.2/43.0</td><td>82.4/33.2</td><td>41.9</td><td>54.2</td><td>26.9</td><td>55.1</td><td>69.6</td><td>75.8</td><td>56.3</td><td>63.5</td><td>62.0/53.8</td><td>16.4</td><td>27.5</td><td>53.1</td></tr><tr><td>Fleming-VL-8B</td><td>63.3</td><td>78.4/56.4</td><td>86.9/80.0</td><td>56.5</td><td>64.3</td><td>21.6 24.8</td><td>66.1</td><td>71.8</td><td>74.0</td><td>51.8</td><td>53.7</td><td>40.5/37.3</td><td>12.1</td><td>24.9</td><td>45.7</td></tr><tr><td>Qwen3VL-8B</td><td>61.4</td><td>54.1/31.2</td><td>34.3/15.0</td><td>14.6</td><td>52.3</td><td>77.2</td><td>40.5</td><td>79.3</td><td>70.4</td><td>60.0</td><td>66.1</td><td>56.1/47.7</td><td>15.1</td><td>34.7</td><td>53.6</td></tr><tr><td>MedMO-4B</td><td>54.6</td><td>50.9/35.0</td><td>41.0/30.0</td><td>42.4</td><td>50.6</td><td>79.7</td><td>24.8 45.4</td><td></td><td></td><td></td><td></td><td>57.5/47.7</td><td>16.4</td><td></td><td>55.1</td></tr><tr><td>MedMO-4B-Next</td><td>58.7</td><td>79.7/59.6</td><td>78.0/74.0</td><td></td><td></td><td></td><td>27.0</td><td>75.7</td><td>78.0</td><td>58.0</td><td>78.5</td><td></td><td></td><td>29.4</td><td></td></tr><tr><td></td><td></td><td></td><td></td><td>73.3</td><td>75.7</td><td>90.6 26.2</td><td>68.5</td><td>74.8</td><td>78.2</td><td>58.1</td><td>78.3</td><td>57.4/47.6</td><td>16.5</td><td>29.5</td><td>55.0</td></tr><tr><td>MedMO-8B MedMO-8B-Next</td><td>64.6 69.3</td><td>72.3/64.7 86.4/68.0</td><td>70.6/70.0 83.0/81.6</td><td>56.3 56.3</td><td>59.4 74.1</td><td>84.8 93.3</td><td>63.2 42.9 72.7</td><td>81.0 80.2</td><td>77.6 75.6</td><td>65.0 62.0</td><td>84.3 83.8</td><td>66.5/60.2 65.2/57.8</td><td>19.9 20.9</td><td>36.0 35.5</td><td>61.3 60.1</td></tr></table>",
+        "bbox": [
+            93,
+            128,
+            905,
+            349
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "table",
+        "img_path": "images/7249682a0c6877d68be5304188361f95a3b7b99010e2a3d8cc834a4d02cd1d09.jpg",
+        "table_caption": [
+            "Table 2. Comparison of medical report generation performance on MIMIC-CXR, CheXpert Plus, IU-Xray, and Med-Trinity using semantic (ROUGE-L, CIDEr) and model-based (RaTE, Semb) metrics. Models highlighted in green denote our proposed MedMO, which achieves the best overall performance across all datasets."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"2\">Models</td><td colspan=\"4\">MIMIC-CXR</td><td colspan=\"4\">CheXpert Plus</td><td colspan=\"4\">IU-Xray</td><td colspan=\"4\">Med-Trinity</td></tr><tr><td>ROUGE-L</td><td>CIDEr</td><td>RaTE</td><td>Semb</td><td>ROUGE-L</td><td>CIDEr</td><td>RaTE Semb</td><td>ROUGE-L</td><td></td><td>CIDEr</td><td>RaTE</td><td>Semb</td><td>ROUGE-L</td><td>CIDEr</td><td>RaTE</td><td>Semb</td></tr><tr><td colspan=\"10\"></td><td colspan=\"7\"></td></tr><tr><td>GPT-4.1</td><td>9.0</td><td>82.8</td><td>51.3</td><td>23.9</td><td>24.5</td><td>78.8</td><td>45.5 23.2</td><td></td><td>30.2</td><td>124.6</td><td>51.3</td><td>47.5</td><td></td><td></td><td></td><td></td></tr><tr><td>Claude Sonnet 4</td><td>20.0</td><td>56.6</td><td>45.6</td><td>19.7</td><td>22.0</td><td>59.5</td><td>43.5 18.9</td><td></td><td>25.4</td><td>88.3</td><td>55.4</td><td>41.0</td><td></td><td></td><td></td><td></td></tr><tr><td>Gemini-2.5-Flash</td><td>25.4</td><td>80.7</td><td>50.3</td><td>29.7</td><td>23.6</td><td>72.2</td><td>44.3 27.4</td><td></td><td>33.5</td><td>129.3</td><td>55.6</td><td>50.9</td><td></td><td></td><td></td><td></td></tr><tr><td colspan=\"10\">Open-source Models</td><td colspan=\"3\"></td><td colspan=\"5\"></td></tr><tr><td>Med-R1-2B</td><td>19.3</td><td>35.4</td><td>40.6</td><td>14.8</td><td>18.6</td><td>37.1</td><td>38.5</td><td>17.8</td><td>16.1</td><td>38.3</td><td>41.4</td><td>12.5</td><td></td><td></td><td></td><td></td></tr><tr><td>MedVLM-R1-2B</td><td>20.3</td><td>40.1</td><td>41.6</td><td>14.2</td><td>20.9</td><td>43.5</td><td>38.9</td><td>15.5</td><td>22.7</td><td>61.1</td><td>46.1</td><td>22.7</td><td></td><td></td><td></td><td></td></tr><tr><td>MedGemma-4B-IT</td><td>25.6</td><td>81.0</td><td>52.4</td><td>29.2</td><td>27.1</td><td>79.0</td><td>47.2</td><td>29.3</td><td>30.8</td><td>103.6</td><td>57.0</td><td>46.8</td><td></td><td></td><td></td><td></td></tr><tr><td>LLaVA-Med-7B</td><td>15.0</td><td>43.4</td><td>12.8</td><td>18.3</td><td>18.4</td><td>45.5</td><td>38.8</td><td>23.5</td><td>18.8</td><td>68.2</td><td>40.9</td><td>16.0</td><td></td><td></td><td></td><td></td></tr><tr><td>HuatuoGPT-V-7B</td><td>23.4</td><td>69.5</td><td>48.9</td><td>20.0</td><td>21.3</td><td>64.7</td><td>44.2</td><td>19.3</td><td>29.6</td><td>104.3</td><td>52.9</td><td>40.7</td><td></td><td></td><td></td><td></td></tr><tr><td>BioMediX2-8B</td><td>20.0</td><td>52.8</td><td>44.4</td><td>17.7</td><td>18.1</td><td>47.9</td><td>40.8</td><td>21.6</td><td>19.6</td><td>58.8</td><td>40.1</td><td>11.6</td><td></td><td></td><td></td><td></td></tr><tr><td>Qwen2.5VL-7B</td><td>24.1</td><td>63.7</td><td>47.0</td><td>18.4</td><td>22.2</td><td>62.0</td><td>41.0</td><td>17.2</td><td>26.5</td><td>78.1</td><td>48.4</td><td>36.3</td><td>23.5</td><td>81.5</td><td>44.9</td><td>38.3</td></tr><tr><td>InternVL2.5-8B</td><td>23.2</td><td>61.8</td><td>47.0</td><td>21.0</td><td>20.6</td><td>58.5</td><td>43.1</td><td>19.7</td><td>24.8</td><td>75.4</td><td>51.1</td><td>36.7</td><td>13.5</td><td>47.1</td><td>42.5</td><td>12.8</td></tr><tr><td>InternVL3-8B</td><td>22.9</td><td>66.2</td><td>48.2</td><td>21.5</td><td>20.9</td><td>65.4</td><td>44.3</td><td>25.2</td><td>22.9</td><td>76.2</td><td>51.2</td><td>31.3</td><td>12.9</td><td>46.6</td><td>42.2</td><td>3.7</td></tr><tr><td>Lingshu-7B</td><td>30.8</td><td>109.4</td><td>52.1</td><td>30.0</td><td>26.5</td><td>79.0</td><td>45.4</td><td>26.8</td><td>41.2</td><td>180.7</td><td>57.6</td><td>48.4</td><td>16.0</td><td>74.5</td><td>44.4</td><td>24.0</td></tr><tr><td>Fleming-VL-8B</td><td>35.7</td><td>132.5</td><td>56.7</td><td>33.6</td><td>26.1</td><td>82.2</td><td>47.1</td><td>40.1</td><td>44.9</td><td>198.6</td><td>66.0</td><td>51.3</td><td>13.1</td><td>35.8</td><td>41.9</td><td>18.1</td></tr><tr><td>Qwen3VL-8B</td><td>25.1</td><td>77.9</td><td>50.3</td><td>33.4</td><td>21.9</td><td>67.4</td><td>44.4</td><td>37.9</td><td>25.0</td><td>91.44</td><td>52.5</td><td>42.9</td><td>20.2</td><td>69.9</td><td>45.9</td><td>33.6</td></tr><tr><td>MedMO-4B</td><td>26.0</td><td>92.6</td><td>49.8</td><td>31.6</td><td>15.1</td><td>62.3</td><td>36.6</td><td>34.2</td><td>26.6</td><td>94.0</td><td>42.1</td><td>41.3</td><td>22.5</td><td>152.6</td><td>47.8</td><td>34.3</td></tr><tr><td>MedMO-4B-Next</td><td>28.3</td><td>96.7</td><td>52.0</td><td>34.3</td><td>23.5</td><td>74.5</td><td>42.6</td><td>38.7</td><td>38.0</td><td>147.8</td><td>62.0</td><td>49.4</td><td>26.3</td><td>183.8</td><td>49.5</td><td>38.6</td></tr><tr><td>MedMO-8B MedMO-8B-Next</td><td>31.7 32.6</td><td>140.0 143.4</td><td>57.1</td><td>50.0</td><td>23.6</td><td>87.5</td><td>47.3</td><td>42.2</td><td>31.1</td><td>169.7</td><td>45.3</td><td>41.3</td><td>37.0</td><td>270.4</td><td>53.0</td><td>39.2 40.7</td></tr><tr><td></td><td></td><td></td><td>57.7</td><td>51.5</td><td>25.7</td><td>88.3</td><td>48.1</td><td>43.8</td><td>31.8</td><td>171.9</td><td>56.0</td><td>43.1</td><td>38.5</td><td>272.1</td><td>53.8</td><td></td></tr></table>",
+        "bbox": [
+            93,
+            416,
+            905,
+            666
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            89,
+            693,
+            485,
+            785
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Text QA Benchmarks. MedMO-8B-Next achieves a Text QA average of 60.1%, outperforming Fleming-VL-8B (45.7%) by +14.4%. It leads on MMLU-Med (80.2%), MedQA (83.8%), and MedXpertQA (20.9%), demonstrating strong clinical reasoning and knowledge integration. MedMO-8B achieves the highest QA average among all models including Next variants at 61.3%, leading on",
+        "bbox": [
+            88,
+            795,
+            486,
+            901
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "MedMCQA (65.0%), MedQA (84.3%), and Medbullets (66.5/60.2), suggesting its base instruction tuning yields strong reasoning without RL fine-tuning overhead. MedMO-4B-Next achieves a QA average of 55.0%, surpassing Fleming-VL-8B (45.7%) by +9.3% and even matching or exceeding Lingshu-7B (53.1%) on several benchmarks including PubMedQA (78.2%). Overall, all MedMO variants consistently outperform same-scale open-source models, with larger and Next variants delivering substantial improvements across both VQA and QA tasks.",
+        "bbox": [
+            511,
+            693,
+            908,
+            844
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "page_number",
+        "text": "6",
+        "bbox": [
+            493,
+            924,
+            504,
+            936
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/71e50f2023dcce5558a6357e9cd5bc3f9f45a433b058bb00966886fa767f272b.jpg",
+        "image_caption": [
+            "Figure 3. Qualitative comparison across diverse medical and visual question-answering tasks. Each block shows the ground truth, mode predictions from Fleming-VL-8B (current Medical SOTA), Qwen3-VL (Baseline), and MedMO, and highlights textual or spatial alignment. MedMO provides more accurate medical understanding and localization in both diagnostic accuracy and clinical reasoning."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            91,
+            87,
+            900,
+            315
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "image",
+        "img_path": "images/99e09cd0443d7dd566f5d2412c08a4fa24ffb78973f2aadeae6184fd271a6c0a.jpg",
+        "image_caption": [
+            "Figure 4. Composition of the unified multi-modal medical dataset comprising diverse imaging modalities and biological systems."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            111,
+            392,
+            462,
+            664
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "4.3.2. SOTA Comparison of MedMO for Report Generation",
+        "text_level": 2,
+        "bbox": [
+            91,
+            739,
+            483,
+            770
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Table 2 evaluates medical report generation across four datasets using semantic (ROUGE-L, CIDEr) and modelbased (RaTE, Semb) metrics.",
+        "bbox": [
+            89,
+            776,
+            485,
+            821
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "MIMIC-CXR. MedMO-8B-Next achieves the highest CIDEr of 143.4 and strong RaTE (57.7%) and Semb (51.5%), outperforming Fleming-VL-8B (132.5, 56.7%, 33.6%) on all metrics except ROUGE-L, where Fleming leads (35.7% vs. 32.6%). MedMO-8B achieves the secondbest CIDEr (140.0) with the highest Semb among all models (50.0%), confirming that MedMO generates reports with superior semantic fidelity and clinical coherence. MedMO-4B-Next (CIDEr: 96.7, Semb: 34.3%) and MedMO-4B (CIDEr: 92.6, Semb: 31.6%) also outperform most opensource baselines despite their smaller scale.",
+        "bbox": [
+            89,
+            824,
+            485,
+            901
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            511,
+            396,
+            908,
+            487
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "CheXpert Plus. MedMO-8B-Next achieves the highest CIDEr (88.3) and RaTE (48.1%) and Semb (43.8%), surpassing Fleming-VL-8B (82.2, 47.1%, 40.1%) across all model-based metrics. MedMO-8B achieves the second-best CIDEr (87.5) and Semb (42.2%). While MedGemma-4B-IT leads on ROUGE-L (27.1% vs. 25.7%), MedMO’s superior CIDEr and Semb scores indicate better semantic coherence and clinical accuracy over lexical overlap.",
+        "bbox": [
+            511,
+            488,
+            908,
+            609
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "IU-Xray. Fleming-VL-8B leads on IU-Xray with CIDEr 198.6, RaTE 66.0%, and Semb 51.3%. MedMO-8B-Next achieves competitive performance (CIDEr: 171.9, RaTE: 56.0%, Semb: 43.1%), and MedMO-8B ranks second on ROUGE-L (37.0%) and CIDEr (169.7%). MedMO-4B-Next shows a strong improvement over the base 4B variant, achieving CIDEr 147.8 and Semb 49.4%, while Lingshu-7B leads on ROUGE-L (41.2%) among open-source models.",
+        "bbox": [
+            511,
+            611,
+            908,
+            733
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Med-Trinity. On Med-Trinity, which spans diverse modalities including CT, MRI, ultrasound, and pathology, MedMO-8B-Next achieves the highest ROUGE-L (38.5%) and CIDEr (272.1), while MedMO-8B leads on RaTE (53.0%) and Semb (39.2%). Both variants dramatically outperform all baselines — MedMO-8B-Next’s CIDEr of 272.1 is over 3× higher than the next best open-source model, Qwen2.5VL-7B (81.5), underscoring MedMO’s exceptional capability in multi-modal medical report generation. MedMO-4B-Next also delivers strong performance (CIDEr: 183.8), surpassing all non-MedMO baselines.",
+        "bbox": [
+            511,
+            734,
+            910,
+            901
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "page_number",
+        "text": "7",
+        "bbox": [
+            493,
+            924,
+            504,
+            936
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "table",
+        "img_path": "images/1685e2c50e6288b8de55541894fd2ca7b102291c5283bc60a980224418a2875f.jpg",
+        "table_caption": [
+            "Table 3. Performance comparison of selected MLLMs on Medical Grounding Benchmarks. NIH: Chest X-ray; DeepLesion: lesion detection; Bacteria: detection; MedSG: multi-view, object-tracking, and referring tasks. All values are IoU scores (%), and “Avg.” denotes the mean across tasks."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Model</td><td>NIH</td><td>DeepLession</td><td>Bacteria</td><td>MedSG (multi_view)</td><td>MedSG (object_tracking)</td><td>MedSG (referring)</td><td>Avg.</td></tr><tr><td>InternVL3-8B</td><td>10.1</td><td>0.00</td><td>0.7</td><td>6.3</td><td>13.0</td><td>3.3</td><td>5.6</td></tr><tr><td>Fleming-VL-8B</td><td>0.00</td><td>0.00</td><td>8.3</td><td>42.0</td><td>36.7</td><td>16.6</td><td>17.2</td></tr><tr><td>Lingshu-7B</td><td>5.3</td><td>0.7</td><td>10.8</td><td>28.3</td><td>38.7</td><td>10.4</td><td>13.9</td></tr><tr><td>Qwen3VL-8B</td><td>16.4</td><td>0.00</td><td>9.16</td><td>8.4</td><td>17.8</td><td>31.4</td><td>13.8</td></tr><tr><td>MedSG-Bench</td><td></td><td></td><td></td><td>55.0</td><td>62.1</td><td>60.4</td><td></td></tr><tr><td>MedMO-8B</td><td>8.83</td><td>38.5</td><td>54.6</td><td>75.8</td><td>77.2</td><td>70.1</td><td>54.2</td></tr><tr><td>MedMO-8B-Next</td><td>15.9</td><td>40.5</td><td>56.1</td><td>77.5</td><td>78.8</td><td>71.9</td><td>56.8</td></tr></table>",
+        "bbox": [
+            91,
+            170,
+            482,
+            244
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "4.3.3. MedMO for Grounding",
+        "text_level": 2,
+        "bbox": [
+            89,
+            271,
+            303,
+            286
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Table 3 reports IoU on six medical grounding tasks covering chest X-ray localization (NIH), lesion detection (DeepLesion), microscopy segmentation (Bacteria), and three MedSG subtasks (multi-view, object tracking, and referring expression grounding). MedMO-8B-Next achieves the best overall average at 56.8%, and MedMO-8B follows at 54.2%. Both results are substantially higher than the strongest baseline Fleming-VL-8B at 17.2% and Lingshu-7B at 13.9%.",
+        "bbox": [
+            89,
+            291,
+            486,
+            426
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "On DeepLesion, MedMO-8B and MedMO-8B-Next reach 38.5% and 40.5% IoU, while Fleming-VL-8B, InternVL3-8B, and Qwen3VL-8B obtain 0.00%. This contrast indicates that lesion localization is a major weakness for several existing medical vision language baselines and is a clear strength of MedMO. On Bacteria microscopy segmentation, MedMO-8B-Next achieves 56.1% IoU and MedMO-8B achieves 54.6%, which is far above the best competing baseline Lingshu-7B at 10.8%. On NIH chest X-ray localization, MedMO-8B-Next reaches 15.9%, which is close to the best score from Qwen3VL-8B at 16.4%, and MedMO-8B improves over Fleming-VL-8B which scores 0.00%.",
+        "bbox": [
+            89,
+            426,
+            486,
+            608
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "MedMO also performs strongly on the MedSG benchmarks that test multi-view correspondence, temporal object tracking, and referring expression grounding. MedMO-8B-Next obtains 77.5% on multi-view, 78.8% on object tracking, and 71.9% on referring expression grounding, while MedMO-8B achieves 75.8%, 77.2%, and 70.1%. Both variants exceed the specialist MedSG-Bench scores of 55.0%, 62.1%, and 60.4% on the three subtasks, and they also outperform the strongest general baselines such as Fleming-VL-8B (42.0%, 36.7%, 16.6%) and Lingshu-7B (28.3%, 38.7%, 10.4%). These results show consistent cross-task gains for MedMO on grounding and spatial reasoning across radiology, microscopy, and multi-task medical scene grounding.",
+        "bbox": [
+            89,
+            608,
+            486,
+            806
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "4.4. Ablation Study",
+        "text_level": 2,
+        "bbox": [
+            89,
+            814,
+            245,
+            830
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "4.4.1. Ablation on Post-Training Stages",
+        "text_level": 2,
+        "bbox": [
+            89,
+            835,
+            369,
+            852
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "We perform a stage-wise ablation to evaluate the contribution of each post-training phase to MedMO’s performance on radiology and QA benchmarks. As shown in Figures 5 and 6, performance progressively improves across stages, validating the effectiveness of our optimization strategy. In Stage 1, the model trained on the MedTrinity dataset achieves strong accuracy on that dataset but shows slight degradation on others. Stage 2 provides the largest gain through high-resolution and diverse medical data training, while Stage 3 further boosts QA and VQA performance via instruction tuning, enhancing multimodal alignment and reasoning. Each stage contributes complementary improvements, leading to a consistent overall enhancement in MedMO’s performance across all tasks.",
+        "bbox": [
+            89,
+            854,
+            485,
+            901
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            511,
+            92,
+            908,
+            258
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "chart",
+        "img_path": "images/ef798e4c97bf3fa09a53c4c4d8bc76c18a2fd7b689197891354afbab363a317f.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 5. Performance across post-training stages on radiology datasets. MedMO exhibits consistent gains in diagnostic accuracy and localization across IU-Xray, MIMIC-CXR, CheXpert, and MedTrinity datasets. The sharp improvement at Stage 2 highlights the benefit of alignment tuning with medical reasoning objectives."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            517,
+            270,
+            901,
+            460
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "chart",
+        "img_path": "images/ab9e1ef83f0caacb9b13abdce1a08f87607b05e1018d849cbb5a1f0708324d77.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 6. QA and VQA ablation across stages. Both questionanswering (QA) and visual question-answering (VQA) accuracy improve progressively, demonstrating that stage-wise optimization enhances multimodal reasoning and factual grounding in medical."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            517,
+            577,
+            901,
+            751
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "4.4.2. Bounding-Box Verifiable Reward",
+        "text_level": 2,
+        "bbox": [
+            513,
+            849,
+            792,
+            866
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Table 4 shows consistent gains after reinforcement learning, confirming the effectiveness of our bounding-box reward.",
+        "bbox": [
+            511,
+            869,
+            908,
+            901
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "page_number",
+        "text": "8",
+        "bbox": [
+            493,
+            924,
+            504,
+            936
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Even with small improvements, the reward reliably enhances spatial precision and grounding consistency across datasets<sup>2</sup>.",
+        "bbox": [
+            89,
+            92,
+            483,
+            122
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "table",
+        "img_path": "images/8a85dec92cf0e18617b6acf7a000ce3e6b305f392ab10a6979297e3fd88946e7.jpg",
+        "table_caption": [
+            "Table 4. Absolute change (∆) after bouding box verifiable reward<sup>2</sup>."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Dataset</td><td>Before (IoU)</td><td>After (IoU)</td><td>∆ (IoU)</td></tr><tr><td>NIH</td><td>8.8</td><td>13.3</td><td>+4.5</td></tr><tr><td>DeepLesion</td><td>38.5</td><td>38.9</td><td>+0.4</td></tr><tr><td>Bacteria</td><td>54.6</td><td>55.0</td><td>+0.4</td></tr></table>",
+        "bbox": [
+            153,
+            162,
+            419,
+            215
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "5. Conclusion",
+        "text_level": 2,
+        "bbox": [
+            91,
+            250,
+            209,
+            266
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "We introduced MedMO, a general-purpose medical multimodal foundation model that unifies visual grounding, clinical reasoning, and language understanding across diverse medical modalities. MedMO is trained with a scalable fourstage post-training pipeline that includes large-scale alignment, high-resolution fine-tuning, instruction tuning, and reinforcement learning with verifiable rewards. This design enables robust multimodal comprehension and precise spatial localization. Experimental results show substantial gains over strong open-source baselines across VQA, text QA, report generation, and grounding benchmarks, establishing MedMO as the best fully open-source medical multimodal foundation model to date. As an open medical MLLM, MedMO provides a scalable path toward reliable and transparent medical vision language systems. Future work could explore strategies to better retain SFT knowledge within reinforcement learning frameworks.",
+        "bbox": [
+            89,
+            276,
+            486,
+            534
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Limitation. MedMO’s stage-wise training introduces minor task-level performance shifts, as shown in Figures 5 and 6, a typical behavior in large multimodal models due to catastrophic forgetting [55]. Future work will focus on improving cross-task retention while expanding coverage across additional medical imaging modalities.",
+        "bbox": [
+            89,
+            556,
+            485,
+            647
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "References",
+        "text_level": 2,
+        "bbox": [
+            91,
+            662,
+            187,
+            679
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[1] Asad Aali, Dave Van Veen, YI Arefeen, Jason Hom, Christian Bluethgen, Eduardo Pontes Reis, Sergios Gatidis, Namuun Clifford, Joseph Daws, Arash Tehrani, et al. Mimiciv-ext-bhc: labeled clinical notes dataset for hospital course summarization. PhysioNet, 1(0):10–13026, 2024. 6",
+            "[2] Asad Aali, Dave Van Veen, Yamin Arefeen, Jason Hom, Christian Bluethgen, Eduardo Pontes Reis, Sergios Gatidis, Namuun Clifford, Joseph Daws, Arash Tehrani, Jangwon Kim, and Akshay Chaudhari. Mimic-iv-ext-bhc: Labeled clinical notes dataset for hospital course summarization (version 1.2.0), 2025. 6",
+            "[3] Asma Ben Abacha, Sadid A Hasan, Vivek V Datla, Joey Liu, Dina Demner-Fushman, and Henning Müller. Vqa-med: Overview of the medical visual question answering task at imageclef 2019. CLEF (working notes), 2(6):1–11, 2019. 6",
+            "[4] Rawan AlSaad, Alaa Abd-alrazaq, Sabri Boughorbel, Arfan Ahmed, Max-Antoine Renault, Rafat Damseh, and Javaid Sheikh. Multimodal large language models in health care: Applications, challenges, and future outlook. J Med Internet Res, 26, 2024. 3",
+            "[5] Rahul K. Arora, Jason Wei, Rebecca Soskin Hicks, Preston Bowman, Joaquin Quiñonero-Candela, Foivos Tsimpourlas, Michael Sharman, Meghan Shah, Andrea Vallone, Alex Beutel, Johannes Heidecke, and Karan Singhal. Healthbench: Evaluating large language models towards improved human health. ArXiv, abs/2505.08775, 2025. 3",
+            "[6] Omer Aydin and Enis Karaarslan. Openai chatgpt interprets radiological images: Gpt-4 as a medical doctor for a fast check-up. ArXiv, abs/2501.06269, 2025. 3",
+            "[7] Seongsu Bae, Daeun Kyung, Jaehee Ryu, Eunbyeol Cho, Gyubok Lee, Sunjun Kweon, Jungwoo Oh, Lei Ji, Eric Chang, Tackeun Kim, et al. Mimic-ext-mimic-cxr-vqa: A complex, diverse, and large-scale visual question answering dataset for chest x-ray images, 2024. 6",
+            "[8] Shuai Bai, Keqin Chen, Xuejing Liu, Jialin Wang, Wenbin Ge, Sibo Song, Kai Dang, Peng Wang, Shijie Wang, Jun Tang, Humen Zhong, Yuanzhi Zhu, Mingkun Yang, Zhaohai Li, Jianqiang Wan, Pengfei Wang, Wei Ding, Zheren Fu, Yiheng Xu, Jiabo Ye, Xi Zhang, Tianbao Xie, Zesen Cheng, Hang Zhang, Zhibo Yang, Haiyang Xu, and Junyang Lin. Qwen2.5-vl technical report. ArXiv, abs/2502.13923, 2025. 3",
+            "[9] Dylan Bannon, Erick Moen, Morgan Schwartz, Enrico Borba, Takamasa Kudo, Noah Greenwald, Vibha Vijayakumar, Brian Chang, Edward Pao, Erik Osterman, et al. Deepcell kiosk: scaling deep learning–enabled cellular image analysis with kubernetes. Nature methods, 18(1):43–45, 2021. 5",
+            "[10] Asma Ben Abacha and Dina Demner-Fushman. A questionentailment approach to question answering. BMC Bioinform., 20(1):511:1–511:23, 2019. 6",
+            "[11] Harald Brodoefel, Christof Burgstahler, Ilias Tsiflikas, Anja Reimann, Stephen Schroeder, Claus D Claussen, Martin Heuschmid, and Andreas F Kopp. Dual-source ct: effect of heart rate, heart rate variability, and calcification on image quality and diagnostic accuracy. Radiology, 247(2):346–355, 2008. 6",
+            "[12] Pierre Chambon, Jean-Benoit Delbrouck, Thomas Sounack, Shih-Cheng Huang, Zhihong Chen, Maya Varma, Steven QH Truong, Chu The Chuong, and Curtis P Langlotz. Chexpert plus: Augmenting a large chest x-ray dataset with text radiology reports, patient demographics and additional image formats. arXiv preprint arXiv:2405.19538, 2024. 6",
+            "[13] Junying Chen, Zhenyang Cai, Ke Ji, Xidong Wang, Wanlong Liu, Rongsheng Wang, Jianye Hou, and Benyou Wang. Huatuogpt-o1, towards medical complex reasoning with llms, 2024. 6",
+            "[14] Junying Chen, Chi Gui, Ruyi Ouyang, Anningzhe Gao, Shunian Chen, Guiming Hardy Chen, Xidong Wang, Ruifei Zhang, Zhenyang Cai, Ke Ji, Guangjun Yu, Xiang Wan, and Benyou Wang. Huatuogpt-vision, towards injecting medical visual knowledge into multimodal llms at scale. ArXiv, abs/2406.19280, 2024. 2, 3"
+        ],
+        "bbox": [
+            106,
+            689,
+            485,
+            756
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "page_number",
+        "text": "9",
+        "bbox": [
+            493,
+            924,
+            504,
+            935
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[15] Junying Chen, Zhenyang Cai, Ke Ji, Xidong Wang, Wanlong Liu, Rongsheng Wang, and Benyou Wang. Towards medical complex reasoning with LLMs through medical verifiable problems. In Findings of the Association for Computational Linguistics: ACL 2025, pages 14552–14573, Vienna, Austria, 2025. Association for Computational Linguistics. 3, 6",
+            "[16] Xiaokang Chen, Zhiyu Wu, Xingchao Liu, Zizheng Pan, Wen Liu, Zhenda Xie, Xingkai Yu, and Chong Ruan. Januspro: Unified multimodal understanding and generation with data and model scaling. ArXiv, abs/2501.17811, 2025. 2",
+            "[17] Zhihong Chen, Yan Song, Tsung-Hui Chang, and Xiang Wan. Generating radiology reports via memory-driven transformer. In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing, 2020. 6",
+            "[18] Zhe Chen, Weiyun Wang, Yue Cao, Yangzhou Liu, Zhangwei Gao, Erfei Cui, Jinguo Zhu, Shenglong Ye, Hao Tian, Zhaoyang Liu, Lixin Gu, Xuehui Wang, Qingyun Li, Yimin Ren, Zixuan Chen, Jiapeng Luo, Jiahao Wang, Tan Jiang, Bo Wang, Conghui He, Botian Shi, Xingcheng Zhang, Han Lv, Yi Wang, Wenqi Shao, Pei Chu, Zhongying Tu, Tong He, Zhiyong Wu, Huipeng Deng, Jiaye Ge, Kai Chen, Kaipeng Zhang, Limin Wang, Min Dou, Lewei Lu, Xizhou Zhu, Tong Lu, Dahua Lin, Yu Qiao, Jifeng Dai, and Wenhai Wang. Expanding performance boundaries of open-source multimodal models with model, data, and test-time scaling. ArXiv, abs/2412.05271, 2025. 3",
+            "[19] Matthew Christensen, Milos Vukadinovic, Neal Yuan, and David Ouyang. Vision–language foundation model for echocardiogram interpretation. Nature Medicine, 30: 1481–1488, 2024. 3",
+            "[20] Google DeepMind. Advancing medical ai with med-gemini, 2024. 3",
+            "[21] Google DeepMind. Gemini: A family of highly capable multimodal models. ArXiv, abs/2312.11805, 2025. 2, 3",
+            "[22] Google DeepMind. Gemini 2.5: Our most intelligent ai model, 2025. 2",
+            "[23] DeepSeek-AI. Deepseek-r1: Incentivizing reasoning capability in llms via reinforcement learning. arXiv, abs/2501.12948, 2025. 2, 5",
+            "[24] Matt Deitke, Christopher Clark, Sangho Lee, Rohun Tripathi, Yue Yang, Jae Sung Park, Mohammadreza Salehi, Niklas Muennighoff, Kyle Lo, Luca Soldaini, Jiasen Lu, Taira Anderson, Erin Bransom, Kiana Ehsani, Huong Ngo, YenSung Chen, Ajay Patel, Mark Yatskar, Chris Callison-Burch, Andrew Head, Rose Hendrix, Favyen Bastani, Eli VanderBilt, Nathan Lambert, Yvonne Chou, Arnavi Chheda, Jenna Sparks, Sam Skjonsberg, Michael Schmitz, Aaron Sarnat, Byron Bischoff, Pete Walsh, Chris Newell, Piper Wolters, Tanmay Gupta, Kuo-Hao Zeng, Jon Borchardt, Dirk Groeneveld, Crystal Nam, Sophie Lebrecht, Caitlin Wittlif, Carissa Schoenick, Oscar Michel, Ranjay Krishna, Luca Weihs, Noah A. Smith, Hannaneh Hajishirzi, Ross Girshick, Ali Farhadi, and Aniruddha Kembhavi. Molmo and pixmo: Open weights and open data for state-of-the-art vision-language models. ArXiv, abs/2409.17146, 2024. 3",
+            "[25] Zhuo Deng, Weihao Gao, Chucheng Chen, Zhiyuan Niu, Zheng Gong, Ruiheng Zhang, Zhenjie Cao, Fang Li, Zhaoyi",
+            "Ma, Wenbin Wei, and Lan Ma. Ophglm: An ophthalmology large language-and-vision assistant. Artif. Intell. Med., 157 (C), 2024. 3",
+            "[26] Ross W Filice, Anouk Stein, Carol C Wu, Veronica A Arteaga, Stephen Borstelmann, Ramya Gaddikeri, Maya Galperin-Aizenberg, Ritu R Gill, Myrna C Godoy, Stephen B Hobbs, et al. Crowdsourcing pneumothorax annotations using machine learning annotations on the nih chest x-ray dataset. Journal of digital imaging, 33(2):490–496, 2020. 6",
+            "[27] Jevgenij Gamper, Navid Alemi Koohbanani, Ksenija Benes, Simon Graham, Mostafa Jahanifar, Syed Ali Khurram, Ayesha Azam, Katherine Hewitt, and Nasir Rajpoot. Pannuke dataset extension, insights and baselines. ArXiv, abs/2003.10778, 2020. 5",
+            "[28] Lidia Garrucho, Claire-Anne Reidel, Kaisar Kushibar, Smriti Joshi, Richard Osuala, Apostolia Tsirikoglou, Maciej Bobowicz, Javier del Riego, Alessandro Catanese, Katarzyna Gwo´zdziewicz, et al. Mama-mia: A large-scale multi-center breast cancer dce-mri benchmark dataset with expert segmentations. arXiv e-prints, pages arXiv–2406, 2024. 5",
+            "[29] Ibrahim Ethem Hamamci, Sezgin Er, Anjany Sekuboyina, Enis Simsar, Alperen Tezcan, Ayse Gulnihan Simsek, Sevval Nil Esirgun, Furkan Almas, Irem Dogan,˘ Muhammed Furkan Dasdelen, et al. Generatect: Textconditional generation of 3d chest ct volumes. In European Conference on Computer Vision, pages 126–143. Springer, 2024. 5",
+            "[30] Ibrahim Ethem Hamamci, Sezgin Er, Chenyu Wang, Furkan Almas, Ayse Gulnihan Simsek, Sevval Nil Esirgun, Irem Doga, Omer Faruk Durugol, Weicheng Dai, Murong Xu, Muhammed Furkan Dasdelen, Bastian Wittmann, Tamaz Amiranashvili, Enis Simsar, Mehmet Simsar, Emine Bensu Erdemir, Abdullah Alanbay, Anjany Sekuboyina, Berkan Lafci, Christian Bluethgen, Kayhan Batmanghelich, Mehmet Kemal Ozdemir, and Bjoern Menze. Developing generalist foundation models from a multimodal dataset for 3d computed tomography. ArXiv, abs/2403.17834, 2025. 3",
+            "[31] Xuehai He, Yichen Zhang, Luntian Mou, Eric Xing, and Pengtao Xie. Pathvqa: 30000+ questions for medical visual question answering. ArXiv, abs/2003.10286, 2020. 6",
+            "[32] Stephanie L. Hyland, Shruthi Bannur, Kenza Bouzid, Daniel C. Castro, Mercy Ranjit, Anton Schwaighofer, Fernando Pérez-García, Valentina Salvatelli, Shaury Srivastav, Anja Thieme, Noel Codella, Matthew P. Lungren, Maria Teodora Wetscherek, Ozan Oktay, and Javier Alvarez-Valle. Maira-1: A specialised large multimodal model for radiology report generation. ArXiv, abs/2311.13668, 2024. 2, 3",
+            "[33] Wisdom Oluchi Ikezogwo, Mehmet Saygin Seyfioglu, Fatemeh Ghezloo, Dylan Stefan Chan Geva, Fatwir Sheikh Mohammed, Pavan Kumar Anand, Ranjay Krishna, and Linda Shapiro. Quilt-1m: One million image-text pairs for histopathology. In Thirty-seventh Conference on Neural Information Processing Systems Datasets and Benchmarks Track, 2023. 3"
+        ],
+        "bbox": [
+            99,
+            93,
+            483,
+            188
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "page_number",
+        "text": "10",
+        "bbox": [
+            490,
+            924,
+            509,
+            936
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[34] Jeremy Irvin, Pranav Rajpurkar, Michael Ko, Yifan Yu, Silviana Ciurea-Ilcus, Chris Chute, Henrik Marklund, Behzad Haghgoo, Robyn Ball, Katie Shpanskaya, et al. Chexpert: A large chest radiograph dataset with uncertainty labels and expert comparison. In Proceedings of the AAAI conference on artificial intelligence, pages 590–597, 2019. 6",
+            "[35] Di Jin, Eileen Pan, Nassim Oufattole, Wei-Hung Weng, Hanyi Fang, and Peter Szolovits. What disease does this patient have? a large-scale open domain question answering dataset from medical exams. arXiv preprint arXiv:2009.13081, 2020. 6",
+            "[36] Qiao Jin, Bhuwan Dhingra, Zhengping Liu, William W Cohen, and Xinghua Lu. Pubmedqa: A dataset for biomedical research question answering. ArXiv, abs/1909.06146, 2019. 6",
+            "[37] Alistair EW Johnson, Tom J Pollard, Seth J Berkowitz, Nathaniel R Greenbaum, Matthew P Lungren, Chih-ying Deng, Roger G Mark, and Steven Horng. Mimic-cxr, a deidentified publicly available database of chest radiographs with free-text reports. Scientific data, 6(1):317, 2019. 6",
+            "[38] Masakata Kawai, Noriaki Ota, and Shinsuke Yamaoka. Large-scale pretraining on pathological images for finetuning of small pathological benchmarks. In Workshop on Medical Image Learning with Limited and Noisy Data, pages 257–267. Springer, 2023. 5",
+            "[39] Kimi, Angang Du, Bohong Yin, Bowei Xing, Bowen Qu, Bowen Wang, Cheng Chen, Chenlin Zhang, Chenzhuang Du, Chu Wei, Congcong Wang, Dehao Zhang, Dikang Du, Dongliang Wang, Enming Yuan, Enzhe Lu, Fang Li, Flood Sung, Guangda Wei, Guokun Lai, Han Zhu, Hao Ding, Hao Hu, Hao Yang, Hao Zhang, Haoning Wu, Haotian Yao, Haoyu Lu, Heng Wang, Hongcheng Gao, Huabin Zheng, Jiaming Li, Jianlin Su, Jianzhou Wang, Jiaqi Deng, Jiezhong Qiu, Jin Xie, Jinhong Wang, Jingyuan Liu, Junjie Yan, Kun Ouyang, Liang Chen, Lin Sui, Longhui Yu, Mengfan Dong, Mengnan Dong, Nuo Xu, Pengyu Cheng, Qizheng Gu, Runjie Zhou, Shaowei Liu, Sihan Cao, Tao Yu, Tianhui Song, Tongtong Bai, Wei Song, Weiran He, Weixiao Huang, Weixin Xu, Xiaokun Yuan, Xingcheng Yao, Xingzhe Wu, Xinxing Zu, Xinyu Zhou, Xinyuan Wang, Y. Charles, Yan Zhong, Yang Li, Yangyang Hu, Yanru Chen, Yejie Wang, Yibo Liu, Yibo Miao, Yidao Qin, Yimin Chen, Yiping Bao, Yiqin Wang, Yongsheng Kang, Yuanxin Liu, Yulun Du, Yuxin Wu, Yuzhi Wang, Yuzi Yan, Zaida Zhou, Zhaowei Li, Zhejun Jiang, Zheng Zhang, Zhilin Yang, Zhiqi Huang, Zihao Huang, Zijia Zhao, Ziwei Chen, and Zongyu Lin. Kimi-vl technical report. ArXiv, abs/2504.07491, 2025. 2",
+            "[40] Yuxiang Lai, Jike Zhong, Ming Li, Shitian Zhao, and Xiaofeng Yang. Med-r1: Reinforcement learning for generalizable medical reasoning in vision-language models. ArXiv, abs/2503.13939, 2025. 2, 3",
+            "[41] Jason J Lau, Soumya Gayen, Asma Ben Abacha, and Dina Demner-Fushman. A dataset of clinically generated visual questions and answers about radiology images. Scientific data, 5(1):1–10, 2018. 6",
+            "[42] Lavita AI. Chatdoctor-healthcaremagic-100k. https://huggingface.co/datasets/lavita/",
+            "ChatDoctor - HealthCareMagic - 100k, 2023. Accessed: 2025-11-17. 6",
+            "[43] Peter Lee, Sebastien Bubeck, and Joseph Petro. Benefits, limits, and risks of gpt-4 as an ai chatbot for medicine. New England Journal of Medicine, 388(13):1233–1239, 2023. 2",
+            "[44] Quentin Lhoest, Albert Villanova del Moral, Yacine Jernite, Abhishek Thakur, Patrick von Platen, Suraj Patil, Julien Chaumond, Mariama Drame, Julien Plu, Lewis Tunstall, Joe Davison, Mario Šaško, Gunjan Chhablani, Bhavitvya Malik, Simon Brandeis, Teven Le Scao, Victor Sanh, Canwen Xu, Nicolas Patry, Angelina McMillan-Major, Philipp Schmid, Sylvain Gugger, Clément Delangue, Théo Matussière, Lysandre Debut, Stas Bekman, Pierric Cistac, Thibault Goehringer, Victor Mustar, François Lagunas, Alexander Rush, and Thomas Wolf. Datasets: A community library for natural language processing. In Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing: System Demonstrations, pages 175–184, Online and Punta Cana, Dominican Republic, 2021. Association for Computational Linguistics. 6",
+            "[45] Chunyuan Li, Cliff Wong, Sheng Zhang, Naoto Usuyama, Haotian Liu, Jianwei Yang, Tristan Naumann, Hoifung Poon, and Jianfeng Gao. LLaVA-med: Training a large languageand-vision assistant for biomedicine in one day. In Thirtyseventh Conference on Neural Information Processing Systems Datasets and Benchmarks Track, 2023. 2, 3",
+            "[46] Tianbin Li, Yanzhou Su, Wei Li, Bin Fu, Zhe Chen, Ziyan Huang, Guoan Wang, Chenglong Ma, Ying Chen, Ming Hu, Yanjun Li, Pengcheng Chen, Xiaowei Hu, Zhongying Deng, Yuanfeng Ji, Jin Ye, Yu Qiao, and Junjun He. Gmaivl & gmai-vl-5.5m: A large vision-language model and a comprehensive multimodal dataset towards general medical ai. ArXiv, abs/2411.14522, 2025. 2, 3",
+            "[47] Tianwei Lin, Wenqiao Zhang, Sijing Li, Yuqian Yuan, Binhe Yu, Haoyuan Li, Wanggui He, Hao Jiang, Mengze Li, Xiaohui Song, Siliang Tang, Jun Xiao, Hui Lin, Yueting Zhuang, and Beng Chin Ooi. Healthgpt: A medical large vision-language model for unifying comprehension and generation via heterogeneous knowledge adaptation. ArXiv, abs/2502.09838, 2025. 2, 3",
+            "[48] Weixiong Lin, Ziheng Zhao, Xiaoman Zhang, Chaoyi Wu, Ya Zhang, Yanfeng Wang, and Weidi Xie. Pmc-clip: Contrastive language-image pre-training using biomedical documents. In International Conference on Medical Image Computing and Computer-Assisted Intervention, pages 525– 536. Springer, 2023. 6",
+            "[49] Bo Liu, Li-Ming Zhan, Li Xu, Lin Ma, Yan Yang, and Xiao-Ming Wu. Slake: A semantically-labeled knowledgeenhanced dataset for medical visual question answering. In 2021 IEEE 18th International Symposium on Biomedical Imaging (ISBI), pages 1650–1654, 2021. 6",
+            "[50] Junling Liu, Ziming Wang, Qichen Ye, Dading Chong, Peilin Zhou, and Yining Hua. Qilin-med-vl: Towards chinese large vision-language model for general healthcare. ArXiv, abs/2310.17956, 2023. 3",
+            "[51] Shilong Liu, Zhaoyang Zeng, Tianhe Ren, Feng Li, Hao Zhang, Jie Yang, Qing Jiang, Chunyuan Li, Jianwei Yang, Hang Su, et al. Grounding dino: Marrying dino with"
+        ],
+        "bbox": [
+            99,
+            93,
+            485,
+            174
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "page_number",
+        "text": "11",
+        "bbox": [
+            490,
+            924,
+            508,
+            935
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "grounded pre-training for open-set object detection. In European conference on computer vision, pages 38–55. Springer, 2024. 3",
+            "[52] Meng Lou, Hanning Ying, Xiaoqing Liu, Hong-Yu Zhou, Yuqin Zhang, and Yizhou Yu. Sdr-former: A siamese dualresolution transformer for liver lesion classification using 3d multi-phase imaging. Neural Networks, page 107228, 2025. 5",
+            "[53] Ming Y. Lu, Bowen Chen, Drew F. K. Williamson, Richard J. Chen, Kenji Ikamura, Georg Gerber, Ivy Liang, Long Phi Le, Tong Ding, Anil V Parwani, and Faisal Mahmood. A multimodal generative ai copilot for human pathology. Nature, 634:466–473, 2024. 3",
+            "[54] Yan Luo, Min Shi, Muhammad Osama Khan, Muhammad Muneeb Afzal, Hao Huang, Shuaihang Yuan, Yu Tian, Luo Song, Ava Kouhana, Tobias Elze, et al. Fairclip: Harnessing fairness in vision-language learning. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 12289–12301, 2024. 6",
+            "[55] Yun Luo, Zhen Yang, Fandong Meng, Yafu Li, Jie Zhou, and Yue Zhang. An empirical study of catastrophic forgetting in large language models during continual fine-tuning. IEEE Transactions on Audio, Speech and Language Processing, 2025. 9",
+            "[56] MedAlpaca. medical\\_meadow\\_medical\\_flashcards. https : / / huggingface . co / datasets / medalpaca / medical \\_ meadow \\_ medical flashcards, 2023. Accessed: 2025-11-17. 6",
+            "[57] MedAlpaca. medical\\_meadow\\_wikidoc. https : / / huggingface . co / datasets / medalpaca / medical\\_meadow\\_wikidoc, 2023. Accessed: 2025- 11-17. 6",
+            "[58] Michael Moor, Qian Huang, Shirley Wu, Michihiro Yasunaga, Yash Dalmia, Jure Leskovec, Cyril Zakka, Eduardo Pontes Reis, and Pranav Rajpurkar. Med-flamingo: a multimodal medical few-shot learner. In Proceedings of the 3rd Machine Learning for Health Symposium, pages 353–367. PMLR, 2023. 3",
+            "[59] Eszter Nagy, Michael Janisch, Franko Hržic, Erich Sorantin,´ and Sebastian Tschauner. A pediatric wrist trauma x-ray dataset (grazpedwri-dx) for machine learning. Scientific data, 9(1):222, 2022. 6",
+            "[60] Vishwesh Nath, Wenqi Li, Dong Yang, Andriy Myronenko, Mingxin Zheng, Yao Lu, Zhijian Liu, Hongxu Yin, Yucheng Tang, Pengfei Guo, Can Zhao, Ziyue Xu, Yufan He, Greg Heinrich, Yee Man Law, Benjamin Simon, Stephanie Harmon, Stephen Aylward, Marc Edgar, Michael Zephyr, Song Han, Pavlo Molchanov, Baris Turkbey, Holger Roth, and Daguang Xu. Vila-m3: Enhancing vision-language models with medical expert knowledge. ArXiv, abs/2411.12915, 2025. 3",
+            "[61] Harsha Nori, Nicholas King, Scott Mayer McKinney, Dean Carignan, and Eric Horvitz. Capabilities of gpt-4 on medical challenge problems. ArXiv, abs/2303.13375, 2023. 2",
+            "[62] OpenAI. Gpt-4o system card. ArXiv, abs/2410.21276, 2024. 2",
+            "[63] OpenAI. Openai o1 system card. ArXiv, abs/2412.16720, 2024. 2",
+            "[64] OpenAI. Introducing gpt-4.1 in the api, 2025.",
+            "[65] OpenAI. Introducing o3 and o4-mini, 2025. 2",
+            "[66] Suraj Pai, Ibrahim Hadzic, Dennis Bontempi, Keno Bressem, Benjamin H. Kann, Andriy Fedorov, Raymond H. Mak, and Hugo J. W. L. Aerts. Vision foundation models for computed tomography. ArXiv, abs/2501.09001, 2025. 3",
+            "[67] Ankit Pal, Logesh Kumar Umapathi, and Malaikannan Sankarasubbu. Medmcqa: A large-scale multi-subject multichoice dataset for medical domain question answering. In Proceedings of the Conference on Health, Inference, and Learning, pages 248–260. PMLR, 2022. 6",
+            "[68] Jiazhen Pan, Che Liu, Junde Wu, Fenglin Liu, Jiayuan Zhu, Hongwei Bran Li, Chen Chen, Cheng Ouyang, and Daniel Rueckert. Medvlm-r1: Incentivizing medical reasoning capability of vision-language models (vlms) via reinforcement learning. ArXiv, abs/2502.19634, 2025. 2, 3",
+            "[69] Obioma Pelka, Sven Koitka, Johannes Rückert, Felix Nensa, and Christoph M. Friedrich. Radiology objects in context (roco): A multimodal image dataset. In Intravascular Imaging and Computer Assisted Stenting and Large-Scale Annotation of Biomedical Data and Expert Label Synthesis, pages 180–189, Cham, 2018. Springer International Publishing. 6",
+            "[70] Raymond D Ratliff. Meadows in the sierra nevada of california: state of knowledge. 1985. 6",
+            "[71] Hamid Rezatofighi, Nathan Tsoi, JunYoung Gwak, Amir Sadeghian, Ian Reid, and Silvio Savarese. Generalized intersection over union: A metric and a loss for bounding box regression. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pages 658–666, 2019. 5, 1",
+            "[72] Johannes Rückert, Louise Bloch, Raphael Brüngel, Ahmad Idrissi-Yaghir, Henning Schäfer, Cynthia S. Schmidt, Sven Koitka, Obioma Pelka, Asma Ben Abacha, Alba G. Seco de Herrera, Henning Müller, Peter A. Horn, Felix Nensa, and Christoph M. Friedrich. Rocov2: Radiology objects in context version 2, an updated multimodal image dataset. Scientific Data, 11(1), 2024. 6",
+            "[73] Khaled Saab, Tao Tu, Wei-Hung Weng, Ryutaro Tanno, David Stutz, Ellery Wulczyn, Fan Zhang, Tim Strother, Chunjong Park, Elahe Vedadi, Juanma Zambrano Chaves, Szu-Yeu Hu, Mike Schaekermann, Aishwarya Kamath, Yong Cheng, David G. T. Barrett, Cathy Cheung, Basil Mustafa, Anil Palepu, Daniel McDuff, Le Hou, Tomer Golany, Luyang Liu, Jean baptiste Alayrac, Neil Houlsby, Nenad Tomasev, Jan Freyberg, Charles Lau, Jonas Kemp, Jeremy Lai, Shekoofeh Azizi, Kimberly Kanada, SiWai Man, Kavita Kulkarni, Ruoxi Sun, Siamak Shakeri, Luheng He, Ben Caine, Albert Webson, Natasha Latysheva, Melvin Johnson, Philip Mansfield, Jian Lu, Ehud Rivlin, Jesper Anderson, Bradley Green, Renee Wong, Jonathan Krause, Jonathon Shlens, Ewa Dominowska, S. M. Ali Eslami, Katherine Chou, Claire Cui, Oriol Vinyals, Koray Kavukcuoglu, James Manyika, Jeff Dean, Demis Hassabis, Yossi Matias, Dale Webster, Joelle Barral, Greg Corrado, Christopher Semturs, S. Sara Mahdavi, Juraj Gottweis, Alan Karthikesalingam, and Vivek Natarajan. Capabilities of gemini models in medicine. ArXiv, abs/2404.18416, 2024. 3"
+        ],
+        "bbox": [
+            130,
+            93,
+            485,
+            132
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "page_number",
+        "text": "12",
+        "bbox": [
+            490,
+            924,
+            509,
+            936
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[74] Mourad Sarrouti. Nlm at vqa-med 2020: Visual question answering and generation in the medical domain. In CLEF (Working Notes), 2020. 6",
+            "[75] Mehmet Saygin Seyfioglu, Wisdom O Ikezogwo, Fatemeh Ghezloo, Ranjay Krishna, and Linda Shapiro. Quilt-llava: Visual instruction tuning by extracting localized narratives from open-source histopathology videos. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 13183–13192, 2024. 6",
+            "[76] Mehmet Saygin Seyfioglu, Wisdom O. Ikezogwo, Fatemeh Ghezloo, Ranjay Krishna, and Linda Shapiro. Quiltllava: Visual instruction tuning by extracting localized narratives from open-source histopathology videos. ArXiv, abs/2312.04746, 2025. 2, 3",
+            "[77] Zhihong Shao, Peiyi Wang, Qihao Zhu, Runxin Xu, Junxiao Song, Xiao Bi, Haowei Zhang, Mingchuan Zhang, Y. K. Li, Y. Wu, and Daya Guo. Deepseekmath: Pushing the limits of mathematical reasoning in open language models. ArXiv, abs/2402.03300, 2024. 2, 4, 5",
+            "[78] Yan Shu, Chi Liu, Robin Chen, Derek Li, and Bryan Dai. Fleming-vl: Towards universal medical visual reasoning with multimodal llms. arXiv preprint arXiv:2511.00916, 2025. 3",
+            "[79] Zhongyi Shui, Zhongyi Shui, Jianpeng Zhang, Weiwei Cao, Sinuo Wang, Ruizhe Guo, Le Lu, Lin Yang, Xianghua Ye, Tingbo Liang, Qi Zhang, and Ling Zhang. Large-scale and fine-grained vision-language pre-training for enhanced ct image understanding. In The Thirteenth International Conference on Learning Representations, 2025. 3",
+            "[80] Karan Singhal, Shekoofeh Azizi, Tao Tu, S. Sara Mahdavi, Jason Wei, Hyung Won Chung, Nathan Scales, Ajay Tanwani, Heather Cole-Lewis, Stephen Pfohl, Perry Payne, Martin Seneviratne, Paul Gamble, Chris Kelly, Abubakr Babiker, Nathanael Schärli, Aakanksha Chowdhery, Philip Mansfield, Dina Demner-Fushman, Blaise Agüera y Arcas, Dale Webster, Greg S. Corrado, Yossi Matias, Katherine Chou, Juraj Gottweis, Nenad Tomasev, Yun Liu, Alvin Rajkomar, Joelle Barral, Christopher Semturs, Alan Karthikesalingam, and Vivek Natarajan. Large language models encode clinical knowledge. Nature, 620:172–180, 2023. 3",
+            "[81] Karan Singhal, Tao Tu, Juraj Gottweis, Rory Sayres, Ellery Wulczyn, Le Hou, Kevin Clark, Stephen Pfohl, Heather Cole-Lewis, Darlene Neal, Mike Schaekermann, Amy Wang, Mohamed Amin, Sami Lachgar, Philip Mansfield, Sushant Prakash, Bradley Green, Ewa Dominowska, Blaise Aguera y Arcas, Nenad Tomasev, Yun Liu, Renee Wong, Christopher Semturs, S. Sara Mahdavi, Joelle Barral, Dale Webster, Greg S. Corrado, Yossi Matias, Shekoofeh Azizi, Alan Karthikesalingam, and Vivek Natarajan. Towards expertlevel medical question answering with large language models. Nature Medicine, 31:943–950, 2023. 3",
+            "[82] I Siragusa, S Contino, ML Ciura, R Alicata, and R MedPix Pirrone. 2.0: A comprehensive multimodal biomedical data set for advanced ai applications. arxiv 2024. arXiv preprint arXiv:2407.02994. 6",
+            "[83] Ryutaro Tanno, David G. T. Barrett, Andrew Sellergren, Sumedh Ghaisas, Sumanth Dathathri, Abigail See, Johannes",
+            "Welbl, Charles Lau, Tao Tu, Shekoofeh Azizi, Karan Singhal, Mike Schaekermann, Rhys May, Roy Lee, SiWai Man, Sara Mahdavi, Zahra Ahmed, Yossi Matias, Joelle Barral, S. M. Ali Eslami, Danielle Belgrave, Yun Liu, Sreenivasa Raju Kalidindi, Shravya Shetty, Vivek Natarajan, Pushmeet Kohli, Po-Sen Huang, Alan Karthikesalingam, and Ira Ktena. Collaboration between clinicians and vision–language models in radiology report generation. Nature Medicine, 31, 2025. 3",
+            "[84] Dianzhe Tian, Shitao Jiang, Lei Zhang, Xin Lu, and Yiyao Xu. The role of large language models in medical image processing: a narrative review. Quantitative Imaging in Medicine and Surgery, 14(1):1108, 2023. 3",
+            "[85] Yuri Tolkach, Lisa Marie Wolgast, Alexander Damanakis, Alexey Pryalukhin, Simon Schallenberg, Wolfgang Hulla, Marie-Lisa Eich, Wolfgang Schroeder, Anirban Mukhopadhyay, Moritz Fuchs, et al. Artificial intelligence for tumour tissue detection and histological regression grading in oesophageal adenocarcinomas: a retrospective algorithm development and validation study. The Lancet Digital Health, 5(5):e265–e275, 2023. 5",
+            "[86] Katarzyna Tomczak, Patrycja Czerwinska, and Maciej Wiz-´ nerowicz. Review the cancer genome atlas (tcga): an immeasurable source of knowledge. Contemporary Oncology/Współczesna Onkologia, 2015(1):68–77, 2015. 5",
+            "[87] Simon van Vliet, Annina R Winkler, Stefanie Spriewald, Bärbel Stecher, Martin Ackermann, et al. Spatially correlated gene expression in bacterial groups: the role of lineage history, spatial gradients, and cell-cell interactions. Cell systems, 6(4):496–507, 2018. 5, 6",
+            "[88] Leandro von Werra, Younes Belkada, Lewis Tunstall, Edward Beeching, Tristan Thrush, Nathan Lambert, Shengyi Huang, Kashif Rasul, and Quentin Gallouédec. Trl: Transformer reinforcement learning. https://github.com/ huggingface/trl, 2020. 5",
+            "[89] Patrick Wagner, Maximilian Springenberg, Marius Kröger, Rose KC Moritz, Johannes Schleusener, Martina C Meinke, and Jackie Ma. Semantic modeling of cell damage prediction: a machine learning approach at human-level performance in dermatology. Scientific Reports, 13(1):8336, 2023. 5",
+            "[90] Lucy Lu Wang, Kyle Lo, Yoganand Chandrasekhar, Russell Reas, Jiangjiang Yang, Doug Burdick, Darrin Eide, Kathryn Funk, Yannis Katsis, Rodney Michael Kinney, Yunyao Li, Ziyang Liu, William Merrill, Paul Mooney, Dewey A. Murdick, Devvret Rishi, Jerry Sheehan, Zhihong Shen, Brandon Stilson, Alex D. Wade, Kuansan Wang, Nancy Xin Ru Wang, Christopher Wilhelm, Boya Xie, Douglas M. Raymond, Daniel S. Weld, Oren Etzioni, and Sebastian Kohlmeier. CORD-19: The COVID-19 open research dataset. In Proceedings of the 1st Workshop on NLP for COVID-19 at ACL 2020, Online, 2020. Association for Computational Linguistics. 6",
+            "[91] Sheng Wang, Zihao Zhao, Xi Ouyang, Tianming Liu, Qian Wang, and Dinggang Shen. Interactive computer-aided diagnosis on medical image using large language models. Communications Engineering, 3, 2024. 3"
+        ],
+        "bbox": [
+            99,
+            93,
+            483,
+            133
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "page_number",
+        "text": "13",
+        "bbox": [
+            490,
+            924,
+            509,
+            935
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[92] Xiyue Wang, Junhan Zhao, Eliana Marostica, Wei Yuan, Jietian Jin, Jiayu Zhang, Ruijiang Li, Hongping Tang, Kanran Wang, Yu Li, Fang Wang, Yulong Peng, Junyou Zhu, Jing Zhang, Christopher R. Jackson, Jun Zhang, Deborah Dillon, Nancy U. Lin, Lynette Sholl, Thomas Denize, David Meredith, Keith L. Ligon, Sabina Signoretti, Shuji Ogino, Jeffrey A. Golden, MacLean P. Nasrallah, Xiao Han, Sen Yang, and Kun-Hsing Yu. A pathology foundation model for cancer diagnosis and prognosis prediction. Nature, 634: 970–978, 2024. 3",
+            "[93] Chaoyi Wu, Xiaoman Zhang, Ya Zhang, Yanfeng Wang, and Weidi Xie. Towards generalist foundation model for radiology by leveraging web-scale 2d&3d medical data. ArXiv, abs/2308.02463, 2023. 2",
+            "[94] Juncheng Wu, Wenlong Deng, Xingxuan Li, Sheng Liu, Taomian Mi, Yifan Peng, Ziyang Xu, Yi Liu, Hyunjin Cho, Chang-In Choi, Yihan Cao, Hui Ren, Xiang Li, Xiaoxiao Li, and Yuyin Zhou. Medreason: Eliciting factual medical reasoning steps in llms via knowledge graphs. ArXiv, abs/2504.00993, 2025. 6",
+            "[95] Yunfei Xie, Juncheng Wu, Haoqin Tu, Siwei Yang, Bingchen Zhao, Yongshuo Zong, Qiao Jin, Cihang Xie, and Yuyin Zhou. A preliminary study of o1 in medicine: Are we closer to an ai doctor? ArXiv, abs/2409.15277, 2024. 3",
+            "[96] Yunfei Xie, Ce Zhou, Lang Gao, Juncheng Wu, Xianhang Li, Hong-Yu Zhou, Sheng Liu, Lei Xing, James Zou, Cihang Xie, and Yuyin Zhou. Medtrinity-25m: A large-scale multimodal dataset with multigranular annotations for medicine. In The Thirteenth International Conference on Learning Representations, 2025. 3, 5, 6",
+            "[97] Weiwen Xu, Hou Pong Chan, Long Li, Mahani Aljunied, Ruifeng Yuan, Jianyu Wang, Chenghao Xiao, Guizhen Chen, Chaoqun Liu, Zhaodonghui Li, et al. Lingshu: A generalist foundation model for unified multimodal medical understanding and reasoning. arXiv preprint arXiv:2506.07044, 2025. 3",
+            "[98] Ke Yan, Xiaosong Wang, Le Lu, and Ronald M Summers. Deeplesion: automated mining of large-scale lesion annotations and universal lesion detection with deep learning. Journal of medical imaging, 5(3):036501–036501, 2018. 6",
+            "[99] Zhiling Yan, Kai Zhang, Rong Zhou, Lifang He, Xiang Li, and Lichao Sun. Multimodal chatgpt for medical applications: an experimental study of gpt-4v. ArXiv, abs/2310.19061, 2023. 2",
+            "[100] Hang Yang, Hao Chen, Hui Guo, Yineng Chen, Ching-Sheng Lin, Shu Hu, Jinrong Hu, Xi Wu, and Xin Wang. Llmmedqa: Enhancing medical question answering through case studies in large language models. arXiv preprint arXiv:2501.05464, 2024. 6",
+            "[101] Lin Yang, Shawn Xu, Andrew Sellergren, Timo Kohlberger, Yuchen Zhou, Ira Ktena, Atilla Kiraly, Faruk Ahmed, Farhad Hormozdiari, Tiam Jaroensri, Eric Wang, Ellery Wulczyn, Fayaz Jamil, Theo Guidroz, Chuck Lau, Siyuan Qiao, Yun Liu, Akshay Goel, Kendall Park, Arnav Agharwal, Nick George, Yang Wang, Ryutaro Tanno, David G. T. Barrett, Wei-Hung Weng, S. Sara Mahdavi, Khaled Saab, Tao Tu, Sreenivasa Raju Kalidindi, Mozziyar Etemadi,",
+            "Jorge Cuadros, Gregory Sorensen, Yossi Matias, Katherine Chou, Greg Corrado, Joelle Barral, Shravya Shetty, David Fleet, S. M. Ali Eslami, Daniel Tse, Shruthi Prabhakara, Cory McLean, Dave Steiner, Rory Pilgrim, Christopher Kelly, Shekoofeh Azizi, and Daniel Golden. Advancing multimodal medical capabilities of gemini. arXiv, abs/2405.03162, 2024. 3",
+            "[102] YongchengYAO. Kipa22. https://huggingface. co/datasets/YongchengYAO/KiPA22, 2025. Accessed: 2025-11-17. 5",
+            "[103] Bei Yu, Yingya Li, and Jun Wang. Detecting causal language use in science findings. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pages 4664–4674, Hong Kong, China, 2019. Association for Computational Linguistics. 6",
+            "[104] Qiying Yu, Zheng Zhang, Ruofei Zhu, Yufeng Yuan, Xiaochen Zuo, Yu Yue, Weinan Dai, Tiantian Fan, Gaohong Liu, Lingjun Liu, Xin Liu, Haibin Lin, Zhiqi Lin, Bole Ma, Guangming Sheng, Yuxuan Tong, Chi Zhang, Mofan Zhang, Wang Zhang, Hang Zhu, Jinhua Zhu, Jiaze Chen, Jiangjie Chen, Chengyi Wang, Hongli Yu, Yuxuan Song, Xiangpeng Wei, Hao Zhou, Jingjing Liu, Wei-Ying Ma, Ya-Qin Zhang, Lin Yan, Mu Qiao, Yonghui Wu, and Mingxuan Wang. Dapo: An open-source llm reinforcement learning system at scale. ArXiv, abs/2503.14476, 2025. 2, 5, 4",
+            "[105] Jingkun Yue, Siqi Zhang, Zinan Jia, Huihuan Xu, Zongbo Han, Xiaohong Liu, and Guangyu Wang. Medsg-bench: A benchmark for medical image sequences grounding. arXiv preprint arXiv:2505.11852, 2025. 3, 6",
+            "[106] Juan Manuel Zambrano Chaves, Shih-Cheng Huang, Yanbo Xu, Hanwen Xu, Naoto Usuyama, Sheng Zhang, Fei Wang, Yujia Xie, Mahmoud Khademi, Ziyi Yang, Hany Awadalla, Julia Gong, Houdong Hu, Jianwei Yang, Chunyuan Li, Jianfeng Gao, Yu Gu, Cliff Wong, Mu Wei, Tristan Naumann, Muhao Chen, Matthew P. Lungren, Akshay Chaudhari, Serena Yeung-Levy, Curtis P. Langlotz, Sheng Wang, and Hoifung Poon. A clinically accessible small multimodal radiology model and evaluation metric for chest x-ray findings. Nature Communications, 16(1), 2025. 3",
+            "[107] Kai Zhang, Rong Zhou, Eashan Adhikarla, Zhiling Yan, Yixin Liu, Jun Yu, Zhengliang Liu, Xun Chen, Brian D. Davison, Hui Ren, Jing Huang, Chen Chen, Yuyin Zhou, Sunyang Fu, Wei Liu, Tianming Liu, Xiang Li, Yong Chen, Lifang He, James Zou, Quanzheng Li, Hongfang Liu, and Lichao Sun. A generalist vision–language foundation model for diverse biomedical tasks. Nature Medicine, 30(11):3129–3141, 2024. 2, 3",
+            "[108] Xinlu Zhang, Chenxin Tian, Xianjun Yang, Lichang Chen, Zekun Li, and Linda Ruth Petzold. Alpacare: Instructiontuned large language models for medical application, 2023. 6",
+            "[109] Xiaoman Zhang, Chaoyi Wu, Ziheng Zhao, Weixiong Lin, Ya Zhang, Yanfeng Wang, and Weidi Xie. Pmc-vqa: Visual instruction tuning for medical visual question answering. arXiv preprint arXiv:2305.10415, 2023. 6"
+        ],
+        "bbox": [
+            99,
+            93,
+            485,
+            229
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "page_number",
+        "text": "14",
+        "bbox": [
+            490,
+            924,
+            509,
+            935
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[110] Xiaoman Zhang, Chaoyi Wu, Ziheng Zhao, Weixiong Lin, Ya Zhang, Yanfeng Wang, and Weidi Xie. Pmc-vqa: Visual instruction tuning for medical visual question answering. ArXiv, abs/2305.10415, 2024. 2",
+            "[111] Theodore Zhao, Yu Gu, Jianwei Yang, Naoto Usuyama, Ho Hin Lee, Sid Kiblawi, Tristan Naumann, Jianfeng Gao, Angela Crabtree, Jacob Abel, Christine Moung-Wen, Brian Piening, Carlo Bifulco, Mu Wei, Hoifung Poon, and Sheng Wang. A foundation model for joint segmentation, detection and recognition of biomedical objects across nine modalities. Nature Methods, 22(1):166–176, 2024. 3",
+            "[112] Jinguo Zhu, Weiyun Wang, Zhe Chen, Zhaoyang Liu, Shenglong Ye, Lixin Gu, Hao Tian, Yuchen Duan, Weijie Su, Jie Shao, Zhangwei Gao, Erfei Cui, Xuehui Wang, Yue Cao, Yangzhou Liu, Xingguang Wei, Hongjie Zhang, Haomin Wang, Weiye Xu, Hao Li, Jiahao Wang, Nianchen Deng, Songze Li, Yinan He, Tan Jiang, Jiapeng Luo, Yi Wang, Conghui He, Botian Shi, Xingcheng Zhang, Wenqi Shao, Junjun He, Yingtong Xiong, Wenwen Qu, Peng Sun, Penglong Jiao, Han Lv, Lijun Wu, Kaipeng Zhang, Huipeng Deng, Jiaye Ge, Kai Chen, Limin Wang, Min Dou, Lewei Lu, Xizhou Zhu, Tong Lu, Dahua Lin, Yu Qiao, Jifeng Dai, and Wenhai Wang. Internvl3: Exploring advanced training and test-time recipes for open-source multimodal models. ArXiv, abs/2504.10479, 2025. 2"
+        ],
+        "bbox": [
+            93,
+            93,
+            485,
+            147
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "page_number",
+        "text": "15",
+        "bbox": [
+            490,
+            924,
+            509,
+            936
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Appendix",
+        "text_level": 2,
+        "bbox": [
+            446,
+            95,
+            550,
+            117
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "A. Reward function details",
+        "text_level": 2,
+        "bbox": [
+            89,
+            132,
+            321,
+            150
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "A.1. Bounding Box Reward Function",
+        "text_level": 2,
+        "bbox": [
+            89,
+            159,
+            379,
+            175
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "For grounding tasks in the reinforcement learning stage, we employ a specialized reward function that evaluates the quality of predicted bounding boxes against ground truth annotations. This reward is computed using Hungarian matching combined with geometric metrics.",
+        "bbox": [
+            88,
+            181,
+            485,
+            258
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Notation and Setup. Given ground truth boxes $\\mathcal { G } \\ =$ $\\{ g _ { j } \\} _ { j = 1 } ^ { G }$ and predicted boxes $\\bar { \\mathcal { P } } = \\{ p _ { i } \\} _ { i = 1 } ^ { P }$ in XYXY format $( \\mathrm { i . e . , } ( x _ { 1 } , y _ { 1 } , x _ { 2 } , y _ { 2 } )$ coordinates), we first determine the image dimensions $( H , W )$ from the maximum extents of ground truth boxes if available, otherwise from predictions (with fallback to (1, 1) if both are empty).",
+        "bbox": [
+            89,
+            281,
+            485,
+            373
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Pairwise Metrics. For each pair of boxes $( p _ { i } , g _ { j } )$ , we compute two geometric measures:",
+        "bbox": [
+            89,
+            395,
+            485,
+            426
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Normalized L1 Distance: The L1 distance over all four coordinates, normalized by the image perimeter:",
+        "bbox": [
+            89,
+            428,
+            483,
+            458
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "equation",
+        "img_path": "images/94e8f22905f5935b9d77ae8c36e2b3f4320f050d77a971ca07912af0b7a2c620.jpg",
+        "text": "$$\nL 1 _ { i j } = \\frac { | x _ { 1 } ^ { p } - x _ { 1 } ^ { g } | + | y _ { 1 } ^ { p } - y _ { 1 } ^ { g } | + | x _ { 2 } ^ { p } - x _ { 2 } ^ { g } | + | y _ { 2 } ^ { p } - y _ { 2 } ^ { g } | } { 2 \\sqrt { H ^ { 2 } + W ^ { 2 } } }\\tag{7}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            101,
+            468,
+            470,
+            502
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Generalized IoU (GIoU): We compute ${ \\mathrm { G I o U } } _ { i j } \\in$ $[ - 1 , 1 ]$ following Rezatofighi et al. [71], which extends standard IoU to account for non-overlapping boxes.",
+        "bbox": [
+            89,
+            516,
+            483,
+            563
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Hungarian Matching. To establish optimal correspondence between predictions and ground truth, we construct a cost matrix:",
+        "bbox": [
+            89,
+            585,
+            485,
+            631
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "equation",
+        "img_path": "images/bc1a5f4aab482d1d87f95ffa753e31790a3ab83e73a1d4a5b906d5ea8ec773c6.jpg",
+        "text": "$$\nC _ { i j } = w _ { \\mathrm { L 1 } } ^ { m } \\cdot L 1 _ { i j } + w _ { \\mathrm { G } } ^ { m } \\cdot ( 1 - \\mathrm { G I o U } _ { i j } ) ,\\tag{8}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            150,
+            645,
+            421,
+            662
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "where $w _ { \\mathrm { L 1 } } ^ { m } = 5 . 0$ and $w _ { \\mathrm { G } } ^ { m } = 2 . 0$ are matching cost weights. We apply the Hungarian algorithm to find the minimum-cost bipartite matching, yielding $m = \\operatorname* { m i n } ( P , G )$ matched pairs $\\{ ( i _ { k } , j _ { k } ) \\} _ { k = 1 } ^ { m }$",
+        "bbox": [
+            89,
+            675,
+            485,
+            738
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Per-Match Score. For each matched pair $( i _ { k } , j _ { k } )$ , we compute a quality score by:",
+        "bbox": [
+            89,
+            760,
+            485,
+            790
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "1. Mapping GIoU to $\\begin{array} { r } { [ 0 , 1 ] \\colon \\tilde { G } _ { k } = \\frac { \\mathrm { G I o U } _ { i _ { k } j _ { k } } + 1 } { 2 } } \\end{array}$",
+        "bbox": [
+            91,
+            789,
+            397,
+            809
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "2. Clamping L1 to [0, 1]: $\\hat { L 1 } _ { k } = \\mathrm { c l i p } _ { [ 0 , 1 ] } ( L 1 _ { i _ { k } j _ { k } } )$",
+        "bbox": [
+            89,
+            810,
+            423,
+            827
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "3. Computing weighted blend:",
+        "bbox": [
+            89,
+            827,
+            299,
+            840
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "equation",
+        "img_path": "images/043c32d7627e24f09ac421000ab524ddc41dfea2e8d98e7af03baca593573b5e.jpg",
+        "text": "$$\ns _ { k } = \\frac { w _ { \\mathrm { L 1 } } \\cdot ( 1 - \\hat { L 1 } _ { k } ) + w _ { \\mathrm { G } } \\cdot \\tilde { G } _ { k } } { w _ { \\mathrm { L 1 } } + w _ { \\mathrm { G } } } , \\quad s _ { k } \\in [ 0 , 1 ]\\tag{9}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            127,
+            843,
+            446,
+            878
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "where $w _ { \\mathrm { L 1 } } = 5 . 0$ and $w _ { \\mathrm { G } } = 2 . 0$ are pair score weights.",
+        "bbox": [
+            89,
+            885,
+            452,
+            901
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Final Reward Computation. The base reward is the coverage-normalized sum of matched pair scores:",
+        "bbox": [
+            511,
+            133,
+            906,
+            165
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "equation",
+        "img_path": "images/a12e54894d85b33f0734e52c09f58de0f1412fdb491aef301f90293437b50632.jpg",
+        "text": "$$\n{ \\mathrm { b a s e } } = { \\frac { 1 } { G } } \\sum _ { k = 1 } ^ { m } { s _ { k } }\\tag{10}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            648,
+            175,
+            769,
+            215
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "We optionally apply penalties for false positives (FP) and false negatives (FN):",
+        "bbox": [
+            511,
+            223,
+            906,
+            253
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "equation",
+        "img_path": "images/73a91014a11dfbcecfaf7f67cb153d4357b9097b3a1d901e773e48118e95e758.jpg",
+        "text": "$$\n\\mathrm { p e n a l t y } = \\frac { \\lambda _ { \\mathrm { F N } } \\cdot ( G - m ) + \\lambda _ { \\mathrm { F P } } \\cdot ( P - m ) } { \\operatorname* { m a x } ( 1 , G ) } ,\\tag{11}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            547,
+            262,
+            843,
+            295
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "where $\\lambda _ { \\mathrm { F N } }$ and $\\lambda _ { \\mathrm { F P } }$ are penalty coefficients (default: 0). The final bounding box reward is:",
+        "bbox": [
+            511,
+            304,
+            906,
+            335
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "equation",
+        "img_path": "images/5e5ed67388dfd2a964cb4985ea650468aa5f96c0f021e550f5a0e4086c49cb0a.jpg",
+        "text": "$$\n\\boxed { R _ { \\mathrm { b b o x } } = \\mathrm { c l i p } _ { [ 0 , 1 ] } \\left( \\mathrm { b a s e - p e n a l t y } \\right) }\\tag{12}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            591,
+            347,
+            826,
+            368
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Expanding the base term:",
+        "bbox": [
+            532,
+            380,
+            705,
+            395
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "equation",
+        "img_path": "images/9a4249130c69ba0b680595eaf3343e1c3970e917f7664009b29f4ad1708afb16.jpg",
+        "text": "$$\n{ \\mathrm { b a s e } } = { \\frac { 1 } { G } } \\sum _ { k = 1 } ^ { m } { \\frac { w _ { \\mathrm { L 1 } } ( 1 - L 1 _ { i _ { k } j _ { k } } ) + w _ { \\mathrm { G } } \\cdot { \\frac { { \\mathrm { G I o U } } _ { i _ { k } j _ { k } } + 1 } { 2 } } } { w _ { \\mathrm { L 1 } } + w _ { \\mathrm { G } } } }\\tag{13}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            522,
+            404,
+            867,
+            445
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Edge Cases. The reward function handles special cases as follows:",
+        "bbox": [
+            511,
+            462,
+            905,
+            491
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "• No ground truth boxes $( G = 0 ) \\colon R _ { \\mathsf { b b o x } } = 0 . 5$ (neutral reward)",
+        "bbox": [
+            513,
+            492,
+            905,
+            521
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "• Ground truth present but no predictions $( G > 0 , P =$ 0): $R _ { \\mathrm { b b o x } } = \\mathrm { c l i p } _ { [ 0 , 1 ] } ( 0 - \\mathrm { p e n a l t y } )$ , which equals 0.0 with default penalties",
+        "bbox": [
+            513,
+            522,
+            906,
+            568
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "• Failed matching (no feasible pairs): Treated as $m =$ 0, where all ground truth boxes are unmatched and all predictions are false positives",
+        "bbox": [
+            513,
+            568,
+            906,
+            613
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "This reward formulation encourages the model to produce accurate bounding box predictions through Hungarianmatched optimization of both localization (L1) and overlap quality (GIoU), while penalizing missing detections and spurious predictions.",
+        "bbox": [
+            511,
+            613,
+            908,
+            689
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "B. Experimental Details",
+        "text_level": 2,
+        "bbox": [
+            513,
+            702,
+            720,
+            718
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "We conducted all experiments using the SFT\\_Trainer and RL (GRPO) trainer frameworks. Unless otherwise noted, we used mixed-precision training (dtype=bfloat16) on a cluster of 64× AMD Instinct MI210 GPUs. Random seeds, optimizer state, and scheduler configuration were logged for full reproducibility.",
+        "bbox": [
+            511,
+            727,
+            908,
+            819
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "B.1. Stage 1: General SFT",
+        "text_level": 2,
+        "bbox": [
+            513,
+            827,
+            720,
+            843
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Parameters Details",
+        "text_level": 2,
+        "bbox": [
+            513,
+            848,
+            666,
+            863
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "We provide detailed experimental settings in Table 5, which we apply exclusively to training stage 1 MedMO.",
+        "bbox": [
+            511,
+            869,
+            906,
+            901
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "page_number",
+        "text": "1",
+        "bbox": [
+            493,
+            924,
+            503,
+            935
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "table",
+        "img_path": "images/f64e6a06f962561930da3e0e22a57041b712710d9fdf541bb36c2139d2fbdcc2.jpg",
+        "table_caption": [
+            "Table 5. Training parameter details for stage 1."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Parameter</td><td>Value</td></tr><tr><td>Batch size</td><td>10</td></tr><tr><td>Gradient accumulation steps</td><td>2</td></tr><tr><td>Learning rate (initial)</td><td> $1 \\times 1 0 ^ { - 5 }$ </td></tr><tr><td>LR scheduler</td><td>Cosine decay</td></tr><tr><td>Number of epochs</td><td>1</td></tr><tr><td>Image resolution</td><td>768 × 768 pixels</td></tr><tr><td>dtype</td><td>bfloat16</td></tr></table>",
+        "bbox": [
+            119,
+            88,
+            457,
+            213
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "Training Dynamics",
+        "text_level": 2,
+        "bbox": [
+            91,
+            265,
+            245,
+            281
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "During Stage 1, optimization converges rapidly: the loss drops from ∼ 11 to < 0.3 within the first ≈ 10 steps, and entropy collapses from ∼ 5.3 to ∼ 0.1 over the same window, indicating quickly sharpened token distributions. Mean token accuracy rises steeply from ∼ 0.6 to ∼ 0.95 by step ≈ 10 and then plateaus with minor oscillations thereafter. These curves reflect stable optimization under the cosine schedule, fast fit to the instruction format, and no signs of late-stage instability during the single-epoch SFT. Unless noted, one plotted “step” corresponds to an aggregate over 100 mini-batches (logging interval = 100 batches).",
+        "bbox": [
+            89,
+            286,
+            485,
+            454
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "chart",
+        "img_path": "images/304930eb770d1c34994b2ea413f25c6f97c11c9fc2257f366e2346d31425bfc7.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 7. Stage 1 mean token accuracy vs. step (each step = 100 mini-batches). Accuracy jumps to ∼0.95 within ≈10 steps and remains stable."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            98,
+            473,
+            467,
+            619
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "B.2. Stage 2: High-Resolution Image SFT",
+        "text_level": 2,
+        "bbox": [
+            89,
+            703,
+            413,
+            720
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "Parameters Details",
+        "text_level": 2,
+        "bbox": [
+            89,
+            724,
+            245,
+            741
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "We provide detailed experimental settings in Table 6, which we apply exclusively to training stage 2 MedMO.",
+        "bbox": [
+            89,
+            747,
+            483,
+            779
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "Training Dynamics",
+        "text_level": 2,
+        "bbox": [
+            91,
+            787,
+            245,
+            804
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "During Stage 2, we fine-tuned MedMO on high-resolution (1280 × 1280) medical images using a combination of VQA, grounding, and report-generation datasets. Each logged step corresponds to 100 training batches. As illustrated in Figures 10–12, the model exhibits rapid convergence and stable learning behavior. Mean token accuracy (Fig. 10) increases sharply from ∼0.86 to ∼0.95 within the first few hundred steps, indicating strong adaptation to high-resolution visual–textual data. Training loss (Fig. 11) decreases quickly from ∼0.9 to ∼0.3 and then plateaus, confirming smooth optimization without overfitting. Entropy (Fig. 12) drops from ∼0.65 to ∼0.27 and remains steady, showing reduced uncertainty and confident token predictions. These results confirm that Stage 2 effectively enhances MedMO’s multimodal alignment and high-resolution spatial reasoning.",
+        "bbox": [
+            89,
+            809,
+            485,
+            901
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "chart",
+        "img_path": "images/d7142c362b8d7123ce5a5d52230f7c44624d054aabb27e64f29dceb13d5b2a13.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 8. Stage 1 training loss vs. step (each step = 100 minibatches). Loss declines from ∼11 to < 0.3 in the first ≈10 steps, then flattens."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            522,
+            94,
+            892,
+            242
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "chart",
+        "img_path": "images/34fd240fa0693f5e1d8dc9952eb8f3072d8b00dcb06803da1af3785f1ae95188.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 9. Stage 1 output entropy vs. step (each step = 100 minibatches). Entropy collapses from ∼5.3 to ∼0.1 by ≈10 steps, indicating confident token distributions."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            521,
+            337,
+            892,
+            484
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "table",
+        "img_path": "images/c077756f542ce5ef9df69f07fe64f7e04af1d8801d6ada4a94a9e8c9eb1580fb.jpg",
+        "table_caption": [
+            "Table 6. Training parameter details for stage 2."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Parameter</td><td>Value</td></tr><tr><td>Batch size</td><td>2</td></tr><tr><td>Gradient accumulation steps</td><td>8</td></tr><tr><td>Learning rate (initial)</td><td> $8 \\times 1 0 ^ { - 6 }$ </td></tr><tr><td>LR scheduler</td><td>Cosine decay</td></tr><tr><td>Number of epochs</td><td>1</td></tr><tr><td>Image resolution</td><td>1280 × 1280 pixels</td></tr><tr><td>dtype</td><td>bfloat16</td></tr></table>",
+        "bbox": [
+            532,
+            570,
+            887,
+            696
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            511,
+            763,
+            908,
+            902
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "page_number",
+        "text": "2",
+        "bbox": [
+            491,
+            924,
+            504,
+            936
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "chart",
+        "img_path": "images/2e0c7028edde07e57e315372546b10face30a5a9c188da8176896e98d6fc0068.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 10. Stage 2 mean token accuracy vs. global step (each step = 100 mini-batches). Accuracy improves rapidly from ∼0.86 to ∼0.95, showing strong convergence and model stability."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            98,
+            93,
+            465,
+            242
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "chart",
+        "img_path": "images/19cf108cfee2f91ceb1506af61a193396c627f80faf28cba73daa01df82e6161.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 11. Stage 2 training loss vs. global step (each step = 100 mini-batches). Loss decreases from ∼0.9 to ∼0.3, confirming efficient optimization and stable convergence."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            96,
+            324,
+            470,
+            472
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "chart",
+        "img_path": "images/b578766ff3e583914a7b49f640d614dceb1fc814a717b0ce4ebc474a6d8a8bd9.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 12. Stage 2 output entropy vs. global step (each step = 100 mini-batches). Entropy declines from ∼0.65 to ∼0.27, reflecting reduced uncertainty and higher confidence in predictions."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            98,
+            554,
+            467,
+            699
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "Datasets Used",
+        "text_level": 2,
+        "bbox": [
+            89,
+            786,
+            205,
+            803
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "For Stage 2, we employed datasets emphasizing multimodal reasoning, high-quality medical captions, and spatial grounding. The training corpus included a diverse mix of VQAoriented datasets such as VQA-Med-2019, PubMed-Vision, NIH-VQA, Quilt-LLaVA-Pretrain, MIMIC-Ext-MIMIC-CXR-VQA, VQA-RAD, PathVQA, PMC-VQA, SLAKE, and CT-",
+        "bbox": [
+            88,
+            809,
+            486,
+            901
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "RATE. We also incorporated report-generation datasets including IU-Xray, MIMIC-CXR, CheXpert, CheXpert Plus, MEDPIX-ClinQA, ROCO, ROCO-V2, and FairVLMed to enhance radiology-style narrative generation and image–text consistency. Finally, for grounding and boundingbox prediction, we used NIH Chest X-ray, DeepLesion, GRAZPEDWRI-DX, SLAKE, Cell Microscopy (DeepCell, Bacteria, and CTC), and MedSG, which provide localized annotations for spatial reasoning and fine-grained object detection.",
+        "bbox": [
+            511,
+            90,
+            908,
+            243
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "This combination allows MedMO to improve fine-grained visual grounding and detailed report synthesis under highresolution supervision.",
+        "bbox": [
+            511,
+            248,
+            908,
+            295
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "B.3. Stage 3: Instruction Tuning",
+        "text_level": 2,
+        "bbox": [
+            513,
+            301,
+            766,
+            319
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "Parameters Details",
+        "text_level": 2,
+        "bbox": [
+            513,
+            323,
+            668,
+            339
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "We provide detailed experimental settings in Table 7, which we apply exclusively to training stage 3 MedMO.",
+        "bbox": [
+            511,
+            344,
+            906,
+            377
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "table",
+        "img_path": "images/5017a39aab3ddfb89d581a058eb62c505f97364237340746de02eb100c75a5eb.jpg",
+        "table_caption": [
+            "Table 7. Training parameter details for stage 2."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Parameter</td><td>Value</td></tr><tr><td>Batch size</td><td>14</td></tr><tr><td>Gradient accumulation steps</td><td>2</td></tr><tr><td>Learning rate (initial)</td><td>5 × 10−6</td></tr><tr><td>LR scheduler</td><td>Cosine decay</td></tr><tr><td>Number of epochs</td><td>1</td></tr><tr><td>dtype</td><td>bfloat16</td></tr></table>",
+        "bbox": [
+            553,
+            386,
+            867,
+            496
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "Training Dynamics",
+        "text_level": 2,
+        "bbox": [
+            513,
+            546,
+            666,
+            563
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "Stage 3 focuses on instruction tuning to enhance MedMO’s clinical reasoning, comprehension, and text generation capabilities. Each step shown in the plots corresponds to 100 mini-batches. As shown in Figures 13–15, the model exhibits smooth and stable convergence. Mean token accuracy (Fig. 13) rises steadily from ∼0.62 to ∼0.69, demonstrating improved instruction-following and cross-modal reasoning. Training loss (Fig. 14) decreases from ∼1.7 to ∼1.4 within the first few steps, while entropy (Fig. 15) declines from ∼1.55 to ∼1.38, both indicating effective optimization and improved confidence. Overall, Stage 3 consolidates multimodal understanding and instruction-following capabilities with stable convergence and balanced learning dynamics.",
+        "bbox": [
+            511,
+            568,
+            908,
+            765
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "Datasets Used",
+        "text_level": 2,
+        "bbox": [
+            513,
+            772,
+            629,
+            787
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "For Stage 3, we utilized datasets centered on medical instruction-following, comprehension, reasoning, and report summarization. The training corpus integrated a broad collection of QA and understanding datasets, including MedQA, PubMedQA, PMC-OA, MedMCQA, PMC-InstructQA, MedQuAD, Medical-Meadow-MedQA, ChatDoctor-HealthCareMagic-100k,",
+        "bbox": [
+            509,
+            795,
+            910,
+            901
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "page_number",
+        "text": "3",
+        "bbox": [
+            491,
+            924,
+            504,
+            936
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "chart",
+        "img_path": "images/44218669d5016c69e32ac4d1c95e1a40c0a93063b314e94d1c6261b38f100180.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 13. Stage 3 mean token accuracy vs. step (each step = 100 mini-batches). Accuracy increases gradually from ∼0.62 to ∼0.69, indicating improved instruction-following and reasoning."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            98,
+            90,
+            465,
+            242
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "chart",
+        "img_path": "images/9ecf2e4231cf752d24cfa785461714ae499bdb47ad137a0886adad8e252742ec.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 14. Stage 3 training loss vs. step (each step = 100 minibatches). Loss decreases from ∼1.7 to ∼1.4, showing smooth convergence and stable optimization."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            98,
+            321,
+            468,
+            468
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "chart",
+        "img_path": "images/52ef74a4dd944fca41c89e7de73f74faad89574683f9ef598d5198f28a29c6af.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 15. Stage 3 output entropy vs. step (each step = 100 minibatches). Entropy decreases from ∼1.55 to ∼1.38, reflecting higher model confidence and stable prediction behavior."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            99,
+            549,
+            467,
+            694
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "AlpaCare-MedInstruct-52k, ChatDoctor-iCliniq, MedReason, MIMIC-IV-Ext-BHC, Medical-R1-Distill-Data, medical-o1-reasoning-SFT, Meadow-PubMed-Causal, Meadow-Medical-Flashcards, Meadow-MediQA, and Meadow-Wikidoc. These datasets collectively provide diverse factual, reasoning, and instruction-based supervision across medical, clinical, and biomedical contexts.",
+        "bbox": [
+            88,
+            780,
+            485,
+            885
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "In addition, we incorporated summarization and clinical reporting datasets such as Medical-Meadow-Cord19, and mimic-ext-bhc. These datasets focus on long-form radiology and biomedical report synthesis, improving contextual understanding, summarization, and domain-specific narrative generation.",
+        "bbox": [
+            109,
+            885,
+            483,
+            900
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            511,
+            92,
+            908,
+            166
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "Together, this combined corpus strengthens MedMO’s instruction-tuned reasoning, factual grounding, and text–image comprehension, enabling robust performance across diverse medical instruction and report-generation scenarios.",
+        "bbox": [
+            511,
+            166,
+            908,
+            242
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "B.4. Stage 4: Reinforcement Learning (Spatial Grounding)",
+        "text_level": 2,
+        "bbox": [
+            513,
+            251,
+            905,
+            282
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "Parameters Details",
+        "text_level": 2,
+        "bbox": [
+            513,
+            287,
+            666,
+            304
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "• Reward functions: Label accuracy, bounding-box IoU (∆), tag count, and soft-overlong-punishment.",
+        "bbox": [
+            513,
+            309,
+            906,
+            340
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "• Image resolution: dynamic (no fixed resize or boundingbox rescaling).",
+        "bbox": [
+            514,
+            340,
+            908,
+            369
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "• Epsilon (policy perturbation) = 0.15.",
+        "bbox": [
+            514,
+            369,
+            771,
+            385
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "• Epsilon\\_high (upper bound) = 0.25.",
+        "bbox": [
+            514,
+            386,
+            767,
+            400
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "• Number of training epochs = 2.",
+        "bbox": [
+            514,
+            401,
+            738,
+            415
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "• Number of batch size = 2.",
+        "bbox": [
+            514,
+            416,
+            702,
+            429
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "• Gradient accumulation steps = 4.",
+        "bbox": [
+            514,
+            431,
+            748,
+            444
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "• Number of generations per prompt = 8.",
+        "bbox": [
+            514,
+            446,
+            787,
+            460
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "• Maximum prompt length = 2048 tokens.",
+        "bbox": [
+            514,
+            462,
+            797,
+            476
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "• Maximum completion length = 1024 tokens.",
+        "bbox": [
+            513,
+            477,
+            823,
+            491
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "Implementation & Reproducibility Notes",
+        "text_level": 2,
+        "bbox": [
+            513,
+            500,
+            833,
+            517
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "• Optimizer: AdamW with default betas (0.9, 0.999) and weight decay = 0.1.",
+        "bbox": [
+            522,
+            522,
+            905,
+            551
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "• Warm-up steps = 10% of total training steps per stage.",
+        "bbox": [
+            524,
+            553,
+            897,
+            568
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "• Seed: All runs initialized with a fixed seed (e.g., 42) per stage; randomness only arises from data shuffling and augmentations.",
+        "bbox": [
+            524,
+            568,
+            906,
+            613
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "Training Dynamics",
+        "text_level": 2,
+        "bbox": [
+            514,
+            622,
+            666,
+            638
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "During Stage 4, MedMO was trained with reinforcement learning using the DAPO [104] algorithm to refine its spatial grounding and bounding-box localization capabilities. Each global step aggregates multiple rollouts sampled per instruction prompt. As shown in Figure 16, the boundingbox reward rises sharply from nearly zero to ∼0.45 within the first 100 steps, indicating rapid adaptation of the policy to spatial localization signals. Beyond this point, the mean reward curve (blue) stabilizes around 0.42–0.45 with moderate oscillations, while the smoothed trend (red) shows a consistent upward trajectory, reflecting incremental performance gains and robust reward optimization. The steady variance band (rolling standard deviation) demonstrates that exploration remains controlled throughout training, preventing reward collapse or policy drift. Overall, the DAPO stage successfully enhances the model’s spatial precision and stability in bounding-box generation tasks such as bacteria and",
+        "bbox": [
+            511,
+            643,
+            910,
+            901
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "page_number",
+        "text": "4",
+        "bbox": [
+            493,
+            924,
+            504,
+            935
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "chart",
+        "img_path": "images/89177a23f22d9db1e48dc0acba072c7dd8ae47fe1abb7fcf9a384c0d0718762f.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 16. DAPO training progress for bounding-box detection. Mean bounding-box reward (blue) with ± rolling standard deviation (shaded) and smoothed trend (red). The consistent upward trajectory indicates effective policy optimization and stable improvement in spatial localization accuracy."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            93,
+            89,
+            478,
+            238
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "lesion detection.",
+        "bbox": [
+            91,
+            347,
+            202,
+            361
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "Datasets Used",
+        "text_level": 2,
+        "bbox": [
+            91,
+            371,
+            204,
+            386
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "For Stage 4, we utilized datasets providing explicit spatial supervision and precise bounding-box annotations for medical object detection and grounding tasks. These include NIH Chest X-ray, DeepLesion, Bacteria Segmentation, CTC (Cell Tracking Challenge), SLAKE, GRAZPEDWRI-DX, and MedSG, which collectively cover anatomical structures, lesions, and microscopic cellular regions. The DAPO objective leverages bounding-box IoU and label-accuracy rewards derived from these datasets to iteratively refine spatial alignment and improve localization precision. This stage significantly enhances MedMO’s visual grounding ability, leading to robust disease localization and fine-grained spatial reasoning across diverse medical modalities.",
+        "bbox": [
+            89,
+            392,
+            486,
+            592
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "C. Dataset Collection",
+        "text_level": 2,
+        "bbox": [
+            91,
+            603,
+            274,
+            619
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "We curated a unified multimodal corpus comprising 45 datasets spanning radiology, pathology, ophthalmology, dermatology, and surgical imaging, totaling more than 26M samples. At the core lies the MedTrinity dataset [96], which contributes 18.5M publicly available instructionfollowing pairs. This large-scale collection integrates both image–text and text-only medical data, enabling tasks such as captioning, visual question answering (VQA), clinical reasoning, and visual grounding.",
+        "bbox": [
+            89,
+            628,
+            485,
+            765
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "The model was trained through four progressive stages. In Stage 1, we used the MedTrinity dataset to establish foundational multimodal understanding across diverse imaging modalities. Stage 2 incorporated additional VQA, grounding, and captioning datasets, and trained the model with high-resolution medical images to enhance visual reasoning and fine-grained spatial grounding.",
+        "bbox": [
+            89,
+            765,
+            485,
+            871
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "Stage 3 focused on medical text-only instruction data to strengthen clinical knowledge and language understanding. Finally, Stage 4 employed reinforcement learning with bounding-box supervision to further refine localization and grounding capabilities.",
+        "bbox": [
+            89,
+            871,
+            485,
+            901
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            511,
+            92,
+            906,
+            137
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "The datasets encompass a broad spectrum of imaging modalities (X-ray, CT, MRI, ultrasound, optical, and nuclear imaging) and biological systems (chest, brain, heart, liver, kidney, eye, colon, and tissue), ensuring comprehensive anatomical and modality coverage. For grounding supervision, we incorporated datasets containing bounding-box annotations, including NIH Chest X-ray, DeepLesion, Bacteria, Wrist X-ray (boneanomaly, fracture etc.), CT, and Cell Microscopy (DeepCell). This diverse corpus collectively supports robust multimodal alignment, spatial reasoning, and medical instruction tuning.",
+        "bbox": [
+            511,
+            137,
+            908,
+            303
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "Table 8 summarizes the datasets used in MedMO’s training pipeline, grouped according to their primary role in each stage.",
+        "bbox": [
+            511,
+            303,
+            908,
+            347
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "Note. Several other publicly available datasets such as TCGA [86], VALSET [85], MAMA-MIA [28], LLD-MMRI [52], CPD [89], CISC [27], CT-RATE [29], KIPA22 [102], and PTCGA [38] are already included in MedTrinity and were not trained on separately.",
+        "bbox": [
+            511,
+            348,
+            908,
+            424
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "D. Qualitative Results",
+        "text_level": 2,
+        "bbox": [
+            513,
+            435,
+            702,
+            454
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "To complement the quantitative analyses presented in the main text, Figures 17–20 provide qualitative insights into our method’s performance across diverse medical imaging scenarios. These visualizations illustrate representative predictions, highlighting both successful cases and challenging examples under varied clinical conditions.",
+        "bbox": [
+            511,
+            462,
+            908,
+            554
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "E. Overall Training Summary",
+        "text_level": 2,
+        "bbox": [
+            513,
+            566,
+            769,
+            584
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "Across the four stages, MedMO progressively improves from general multimodal alignment (Stage 1) to high-resolution spatial reasoning and grounding (Stage 2), instruction-tuned language understanding (Stage 3), and reinforcement-driven grounding refinement (Stage 4). Together, these stages establish a robust, domain-aware foundation model for diverse medical imaging tasks.",
+        "bbox": [
+            511,
+            592,
+            908,
+            699
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "page_number",
+        "text": "5",
+        "bbox": [
+            493,
+            924,
+            504,
+            936
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "table",
+        "img_path": "images/3fda283e9a76cb4824462c95680ba69a3169a4adf38378c2f694f64d4ed75fa4.jpg",
+        "table_caption": [
+            "Table 8. Overview of datasets used in MedMO training. Datasets are grouped by category, each contributing to distinct training objectives such as image captioning, multimodal and text-based instruction tuning, and spatial grounding."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Category</td><td>Datasets</td><td>Purpose / Usage</td></tr><tr><td>Medical Caption Data</td><td>MedTrinity [96], IU-Xray [17], MIMIC-CXR [37], CheXpert [34], CheXpert Plus [12], MEDPIX-ClinQA [82], ROCO [69], ROCO-V2 [72], FairVLMed [54]</td><td>Used for large-scale image-text alignment, caption-based supervision, and radiology-style report modeling across diverse imaging modalities.</td></tr><tr><td>Medical Multimodal Instruction Data</td><td>VQA-Med-2019 [3], PubMed-Vision [15], NIH-VQA [74], Quilt-LLaVA-Pretrain [75], MIMIC-Ext-MIMIC-CXR-VQA [7], VQA-RAD [41], PathVQA [31], PMC-VQA [109], SLAKE [49], CT-RATE [11]</td><td>Facilitates multimodal instruction tuning for VQA, diagnosis, reasoning, and clinical summarization, improving image-text comprehension and task-driven responses.</td></tr><tr><td>Medical Text Instruction Data</td><td>MedQA [100], PubMedQA [36], PMC-OA [48], MedMCQA [67], PMC-InstructQA [109], MedQuAD [10], Medical-Meadow-MedQA [35], ChatDoctor-HealthCareMagic-100k [42], AlpaCare-MedInstruct-52k [108], ChatDoctor-iCliniq [44], MedReason [94], MIMIC-IV-Ext-BHC [1], Medical-R1-Distill-Data [13], medical-o1-reasoning-SFT [13], Meadow-PubMed-Causal [103], Meadow-Medical-Flashcards [56], Meadow-MediQA [70], Meadow-Wikidoc [57],</td><td>Provides text-only instruction and QA supervision to enhance factual reasoning, language understanding, and medical knowledge grounding across clinical and biomedical contexts.</td></tr><tr><td>Medical Bounding Box Data</td><td>Medical-Meadow-Cord19 [90], mimic-ext-bhc [2] NIH Chest X-ray [26], DeepLesion [98], GRAZPEDWRI-DX [59], SLAKE [49], Cell Microscopy (DeepCell, Bacteria, CTC) [87], MedSG [105]</td><td>Provides explicit spatial grounding and disease-localization supervision with bounding-box annotations, enabling fine-grained object detection and improved spatial reasoning in medical imagery.</td></tr></table>",
+        "bbox": [
+            98,
+            128,
+            900,
+            662
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/1dfb61c8e5c07f3967c29af27b599ad0cc87847e9a70d92bdd291c09e94621c4.jpg",
+        "image_caption": [
+            "Figure 17. Qualitative result example #1. We show model predictions compared against ground truth annotations. The input medical image is displayed on the left, with corresponding text outputs on the right. Correct predictions are highlighted (highlighted in green) to demonstrate alignment with clinical ground truth, while differences indicate areas for potential improvement."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            98,
+            678,
+            246,
+            815
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Ground Truth : The heart is normal in size. The mediastinal and hilar contours are unremarkable. There is no pleural effusion or pneumothorax.   \nThe lungs appear clear. No evidence of acute process.",
+        "bbox": [
+            251,
+            700,
+            892,
+            729
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "MedMO : The lungs are clear. The cardiomediastinal silhouette is within normal limits. No acute osseous abnormalities. No acute cardiopulmonary process.",
+        "bbox": [
+            251,
+            739,
+            826,
+            768
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "page_number",
+        "text": "6",
+        "bbox": [
+            493,
+            924,
+            504,
+            936
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/3a02a2cf6b9d7c7e4943e5c448f9a3a78e76756c284ff8a77c354d15769f6e0b.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            96,
+            90,
+            901,
+            215
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/be83314a0da5bb15fa054571326f4efd220883a123b62627dc38a5b31b3da747.jpg",
+        "image_caption": [
+            "Figure 18. Qualitative result example #2. We show model predictions compared against ground truth annotations. The input medical image is displayed on the left, with corresponding text outputs on the right. Correct predictions are highlighted (highlighted in green) to demonstrate alignment with clinical ground truth, while differences indicate areas for potential improvement."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            93,
+            281,
+            903,
+            492
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/03dbe14d4ebd3ad53b90045875b0c42e1c5de0fa8e6d7822667a5297f5f66313.jpg",
+        "image_caption": [
+            "Figure 19. Qualitative result example #3. We show model predictions compared against ground truth annotations. The input medical image is displayed on the left, with corresponding text outputs on the right. Correct predictions are highlighted (highlighted in green) to demonstrate alignment with clinical ground truth, while differences indicate areas for potential improvement.",
+            "Figure 20. Qualitative result example #4. We show model predictions compared against ground truth annotations. The input medical image is displayed on the left, with corresponding text outputs on the right. Correct predictions are highlighted (highlighted in green) to demonstrate alignment with clinical ground truth, while differences indicate areas for potential improvement."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            93,
+            558,
+            903,
+            838
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "page_number",
+        "text": "7",
+        "bbox": [
+            493,
+            924,
+            504,
+            936
+        ],
+        "page_idx": 21
+    }
+]

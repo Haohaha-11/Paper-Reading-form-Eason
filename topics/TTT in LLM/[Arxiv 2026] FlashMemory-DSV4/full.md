@@ -1,0 +1,289 @@
+# FlashMemory-DeepSeek-V4: Lightning Index Ultra-Long Context via Lookahead Sparse Attention
+
+Yan Wang<sup>1,∗,†</sup>, Qifan Zhang<sup>2,3,∗</sup>, Jiachen Yu<sup>2,4,∗</sup>, Tian Liang<sup>2,∗</sup>, Dongyang Ma<sup>1,∗</sup>, Xiang Hu<sup>2</sup>, Zibo Lin<sup>2</sup>, Chunyang Li<sup>2</sup>, Zhichao Wang<sup>2</sup>, Miao Peng<sup>2,3</sup>, Nuo Chen<sup>2</sup>, Jia Li<sup>3</sup>, Yujiu Yang<sup>4</sup>, Haitao Mi<sup>2</sup>, Dong Yu<sup>2</sup>
+
+<sup>1</sup>Independent Researchers
+
+<sup>2</sup>Tencent <sup>3</sup>The Hong Kong University of Science and Technology (Guangzhou)
+
+<sup>∗</sup>Equal contribution, <sup>†</sup>Project Lead
+
+## yanwang.branden@gmail.com
+
+Conventional LLMs keep the full KV cache loaded during decoding, causing a severe GPU memory bottleneck for ultra-long context serving. In this report, we propose Lookahead Sparse Attention (LSA), a novel inference paradigm powered by a Neural Memory Indexer built upon the DeepSeek-V4 architecture. Rather than passively attending to all historical tokens, LSA proactively predicts future context demands and preserves only the query-critical KV chunks in the GPU memory. Crucially, we instantiate this architecture via a backbone-free decoupled training strategy. By formulating the indexer as a standard dual-encoder architecture, we train it independently using standard retrieval training frameworks without ever loading the massive backbone model into GPU memory.
+
+We demonstrate that this “less is more” paradigm significantly maximizes serving eficiency while acting as an efective attention denoiser in tasks that rely on long-term global memory. Across primary long-context evaluation suites (e.g., LongBench-v2, LongMemEval, and RULER), FM-DS-V4 compresses the average physical KV cache footprint down to merely 13.5% of the full-context baseline, while consistently preserving or slightly elevating downstream accuracy (+0.6% absolute margin on average). Crucially, at extreme 500K scales, FlashMemory suppresses the physical KV cache overhead by over 90% without destabilizing the backbone’s core reasoning capacities.
+
+ Code
+
+Model
+
+## Project Status:
+
+Due to organizational realignments, the Project Lead has parted ways with Tencent, and this project has been suspended. This technical report documents our preliminary breakthroughs and verified checkpoints. We firmly believe in the potential of the FlashMemory paradigm for infinite long-context intelligence. If you or your organization are interested in supporting or collaborating on the next phase (e.g., compute sponsorship, scaling tests, or research integration), please contact the Project Lead at yanwang.branden@gmail.com.
+
+![](images/d99802f4868d2f9ce4ffff8758df1b0a18690006207416d25e996d6c5467f02d.jpg)
+
+![](images/11f825663333f3c9227fee354468b9f25184679fb3b9269557674ec0dc969491.jpg)
+
+![](images/6a0d905d1bb3ecb6c9714613575890de72506f91b422de215504d509433f644b.jpg)  
+Figure 1 Performance and hardware efficiency of FlashMemory-DeepSeek-V4. On LongBench-v2 and RULER, FM-DS-V4 consistently matches or exceeds DS-V4-Flash, while reducing KV cache overhead to merely 13.5% on average. KV cache memory footprints are measured via sglang deployment logs on an 8×H20 GPU server.
+
+## 1 Introduction
+
+The extension of Large Language Models (LLMs) toward ultra-long context windows is fundamentally bottlenecked by memory capacity. While modern sparse attention mechanisms successfully reduce the computational FLOPs per decoding step to a near-constant level, the GPU memory footprint of the Key-Value (KV) cache still scales linearly with the sequence length. Recent foundation models like DeepSeek-V4<sup>1</sup> and Qwen3.5<sup>2</sup> attempt to slow down this memory explosion by incorporating heavily compressed attention (HCA) or linear attention layers [1, 2]. However, to preserve fine-grained factual recall, these models must still retain a significant portion of low-compression or full-attention layers [1]. Consequently, they only mitigate the rate of memory growth rather than eliminating the linear scaling bottleneck itself.
+
+This work stems from a simple yet striking observation of resource waste during inference: conventional LLMs fully load and carry the entire KV cache in GPU memory even when the active decoding step is completely independent of the historical context. Our empirical analysis of real-world inference logs reveals that over 90% of user requests with contexts longer than 64K tokens can be accurately resolved using only the last 8K tokens. This indicates that an overwhelming majority of GPU memory is squandered on inactive context that contributes nothing to the current token prediction. Conversely, simply discarding history via standard sliding-window attention fails entirely on the remaining tasks that genuinely require global context synthesis. This hard contradiction—supporting deep global reasoning without paying the full GPU memory tax for local generation steps—is the root cause behind the prohibitive cost of long-context serving.
+
+To resolve this dilemma, we present Lookahead Sparse Attention (LSA). Following the structural compression spirit of DeepSeek-V4 [1], our architecture retains all highly condensed HCA chunks (128:1 compression ratio) to maintain global context awareness. However, we fundamentally upgrade the conventional Compressed Sparse Attention (CSA) layers into our predictive LSA paradigm. LSA empowers the model to not recall that much fine-grained context; instead, driven by a highly eficient Neural Memory Indexer, the system triggers periodically at a fixed decoding interval of τ steps (e.g., τ = 64) to evaluate current hidden states and proactively fetch only the critical CSA chunks into the GPU memory. Crucially, we formulate the indexer as a standalone dual-encoder architecture. This decoupled design allows us to train the indexer independently on pre-computed hidden states and labels, completely bypassing the prohibitive memory and computational overhead of full-model fine-tuning or joint distillation.
+
+Experimental results across three distinct long-context benchmarks confirm the robustness and striking eficiency of LSA. In scenarios requiring long-term memory and deep understanding, LSA acts as an efective attention denoiser. Specifically, averaged across LongBench-v2, LongMemEval, and RULER, LSA reduces GPU memory consumption to merely 13.5% of the baseline (an 86.5% reduction) while outperforming the standard Deepseek-V4-Flash by +0.6% absolute accuracy. At 500K context lengths, the memory reduction reaches up to 90%.
+
+In summary, our core contributions are threefold:
+
+• Lookahead Sparse Attention (LSA) Paradigm: We propose LSA, a novel inference paradigm that eliminates the hard contradiction between long-context modeling capabilities and hardware eficiency by proactively predicting and fetching query-critical KV chunks on demand.
+
+• Backbone-Free Decoupled Training: We introduce an ultra-lightweight training strategy that physically isolates the indexer from the host LLM. Formulated as a standalone dual-encoder trained on precomputed representations, the indexer can be optimized independently in just a single H20 GPU hour without ever loading the massive backbone model.
+
+• Breakthrough in Efficiency: Extensive evaluations show that LSA reduces GPU memory to merely 13.5% of the baseline (up to 90% reduction at 500K) while maintaining comparable accuracy to the full-attention baseline.
+
+![](images/3dd003aee5929ff7f094cff48fb4723e868ab664545386a45a7abfa32d27498d.jpg)  
+Figure 2 Architectural overview of LSA vs. CSA. The black lines denote the standard, step-by-step CSA pipelines. The red lines highlight our proposed LSA mechanism, which decouples the GPU memory footprint by leveraging a Memory Indexer to fetch historical KV chunks dynamically every τ steps.
+
+## 2 Methodology
+
+In this section, we present the technical details of Lookahead Sparse Attention (LSA), including its architectural formulation, data curation pipeline, optimization strategy, and optimal configuration. Specifically, Section 2.1 introduces how we architect LSA on top of the DeepSeek-V4 framework to achieve predictive context selection. Section 2.2 introduces our lookahead data formats and the automated gathering pipeline. Section 2.3 details our decoupled training strategy that physically isolates indexer optimization from the massive LLM backbone. Finally, Section 2.4 presents our systematic exploration of the optimal layer configuration and training recipe for the production model.
+
+## 2.1 Memory Indexer for Lookahead Selection
+
+The core design principle of LSA is to minimize modifications to the DeepSeek-V4 architecture, thereby maximizing the preservation of its established capabilities. Therefore, our Memory Indexer mirrors the exact architecture of the native Lightning Indexer used in DeepSeek-V4, reusing the compressed indexer keys $K ^ { \mathrm { I C o m p } }$ as the dense representation of historical context. The definitive departure is that we introduce a Sigmoid function as the final activation layer to scale the indexer scores into the (0, 1) range, and we replace the rigid Top-k selector with a threshold-based mechanism to recall a dynamic number of historical entries.
+
+During the autoregressive decoding stage, the Memory Indexer triggers periodically at a fixed decoding step interval $\tau \ ( \mathrm { e . g . } , \tau = 6 4 )$ to perform lookahead block prediction. As illustrated in Figure 2, at decoding step $t \ ( { \mathrm { w h e r e } } \ t \ ( { \mathrm { m o d } } \ \tau ) = 0 )$ , given the current input hidden state of the query token $\mathbf { h } _ { t } \in \mathbb { R } ^ { d }$ , we map it into low-rank indexer queries across $n _ { h } ^ { l }$ indexer heads:
+
+$$
+\begin{array} { r } { \mathbf { c } _ { t } ^ { Q } = { \bf h } _ { t } \cdot W ^ { D Q } , } \end{array}\tag{1}
+$$
+
+$$
+\begin{array} { r } { [ \mathbf { q } _ { t , 1 } ^ { l } ; \mathbf { q } _ { t , 2 } ^ { l } ; \ldots ; \mathbf { q } _ { t , n _ { h } ^ { l } } ^ { l } ] = \mathbf { q } _ { t } ^ { l } = \mathbf { c } _ { t } ^ { Q } \cdot W ^ { I U Q } , } \end{array}\tag{2}
+$$
+
+where $W ^ { D Q } \in \mathbb { R } ^ { d \times d _ { c } }$ and $W ^ { I U Q } \in \mathbb { R } ^ { d _ { c } \times c ^ { l } n _ { h } ^ { l } }$ represent the down-projection and up-projection matrices for the lookahead query representation, respectively. Concurrently, we dynamically project $\mathbf { h } _ { t }$ to compute the routing head weights $\mathbf { w } _ { t } ^ { l } ;$
+
+$$
+\begin{array} { r } { [ \mathbf { w } _ { t , 1 } ^ { l } ; \mathbf { w } _ { t , 2 } ^ { l } ; \ldots ; \mathbf { w } _ { t , n _ { h } ^ { l } } ^ { l } ] = \mathbf { w } _ { t } ^ { l } = \mathbf { h } _ { t } \cdot W ^ { w } , } \end{array}\tag{3}
+$$
+
+where $W ^ { w } \in \mathbb { R } ^ { d \times n _ { h } ^ { l } }$ is a learnable matrix, and $\mathbf { w } _ { t , h } ^ { l }$ dynamically scales the importance of the h-th indexer head.
+
+To determine which historical compressed KV entries are strictly critical for the upcoming window $[ t , t + \tau - 1 ]$ ], the lookahead index score $I _ { t , s }$ between the query token t and a preceding compressed entry $\begin{array} { r } { s \left( s < \lfloor \frac { t } { m } \rfloor \right) } \end{array}$ is formulated as a head-fused gated matching score with a Sigmoid activation:
+
+$$
+I _ { t , s } = \sigma \left( \sum _ { h = 1 } ^ { n _ { h } ^ { l } } \mathbf { w } _ { t , h } ^ { l } \cdot \mathrm { R e L U } \left( \mathbf { q } _ { t , h } ^ { l } \cdot \left( K _ { s } ^ { \mathrm { I C o m p } } \right) ^ { T } \right) \right) ,\tag{4}
+$$
+
+where $\sigma ( \cdot )$ denotes the standard Sigmoid function.
+
+This Sigmoid activation stands as the only architectural departure from the native Lightning Indexer. While the original one applies a ReLU boundary for raw attention scoring, LSA introduces Sigmoid normalization to align the Memory Indexer’s scalar outputs explicitly with discrete binary targets $y \in \{ 0 , 1 \}$ . For a query token $t ,$ rather than a rigid Top-k selection strategy, we fetch all preceding compressed KV entries whose lookahead scores meet or exceed a specific classification threshold $\left( \mathrm { i . e . , ~ } I _ { t , s } \geq 0 . 5 \right)$ from the CPU Cold Pool into the GPU memory for subsequent core attention:
+
+$$
+C _ { t } ^ { \mathrm { M e m C o m p } } = \left\{ C _ { s } ^ { \mathrm { C o m p } } \ \middle | \ I _ { t , s } \geq 0 . 5 \right\} ,\tag{5}
+$$
+
+where $C ^ { \mathrm { C o m p } }$ denotes the pre-computed compressed KV entries. Once the query-critical context subset $C _ { t } ^ { \mathrm { M e m C o m p } }$ is successfully resident in the GPU memory, the native Lightning Indexer calculates the token-level matching scores within this restricted $C _ { t } ^ { \mathrm { M e m C o m p } }$ boundary instead of scanning the full context. It applies the native ReLU-based Multi-Query Attention scoring over the fetched subset to select the final fine-grained Top-k core compressed entries:
+
+$$
+C _ { i } ^ { \mathrm { C o r e C o m p } } = \left\{ C _ { s } ^ { \mathrm { C o m p } } \in C _ { t } ^ { \mathrm { M e m C o m p } } \biggm | \operatorname { S c o r e } _ { \mathrm { n a t i v e } } ( i , s ) \in \mathrm { T o p } { - } k \right\} .\tag{6}
+$$
+
+The selected $C _ { i } ^ { \mathrm { C o r e C o m p } }$ entries are then concatenated with the non-ofloadable sliding window KV cache to participate in the final core attention computation. This tiered selection mechanism guarantees that the underlying FlashInfer or FlashAttention kernels operate exclusively on a highly condensed, hardware-resident active sequence footprint.
+
+## 2.2 Lookahead Dataset Construction
+
+The cornerstone of optimizing our Memory Indexer is pinning down exactly which historical compressed KV entries a decoding token needs to look ahead to. A naive approach would define the positive label set for token t as the simple union of all Top-k entries recalled by the native Lightning Indexer across the future window $[ t , t + \tau - 1 ]$ . However, empirical analysis reveals a massive inflation problem with this strategy, resulting in nearly 10,000 positive samples per token window before filtering (reduced to approximately 100–1,000 after our pipeline). The root cause is that a rigid Top-k selector forces the model to recall a fixed number of preceding entries regardless of their actual relevance, causing low-probability noise entries from diferent attention layers to heavily pollute the ground-truth dataset.
+
+To eliminate this noise, we propose an golden label filtering pipeline that uses a Cross-Layer Majority Voting mechanism to identify the true “golden entries.” The data generation pass runs completely ofline on the frozen DeepSeek-V4-Flash backbone model. For each decoding token $i \in [ t , t + \tau - 1 ]$ and across all L CSA layers (where $L = 2 1$ for DeepSeek-V4-Flash [1]), we extract the raw indexer logit scores $S _ { i , l , s }$ for every preceding compressed entry s. We then filter these scores through a three-step denoising pipeline:
+
+• Step 1: Softmax Normalization. We convert the raw logit scores into a valid probability distribution
+
+via a Softmax operation over all historical entries:
+
+$$
+P _ { i , l , s } = \frac { \exp ( S _ { i , l , s } ) } { \sum _ { j } \exp ( S _ { i , l , j } ) } .\tag{7}
+$$
+
+• Step 2: Top-p Thresholding. Instead of using a fixed Top-k count, we dynamically retain only the high-confidence entries using a nucleus threshold p (we empirically set $p = 0 . 6 )$ . An entry s is marked as selected by layer l if it falls within the minimum set of entries that cumulatively account for the top 60% of the probability mass:
+
+$$
+\mathcal { M } _ { i , l } = \left\{ s \left| \sum _ { j \in \mathrm { S o r t e d } ( P _ { i , l , : } ) } P _ { i , l , j } \leq p \right. \right\} .\tag{8}
+$$
+
+• Step 3: Cross-Layer Majority Voting. We aggregate the selection hits across all L layers. The voting score $V _ { i , s }$ for entry s at token step i is calculated by counting how many layers independently voted for it:
+
+$$
+V _ { i , s } = \sum _ { l = 1 } ^ { L } \mathbb { I } ( s \in \mathcal { M } _ { i , l } ) ,\tag{9}
+$$
+
+where $\mathbb { I } ( \cdot )$ is the indicator function. An entry is oficially recognized as a core active entry $\mathcal { A } _ { i } ^ { \mathrm { g o l d e n } }$ if and only if it secures consensus backing from at least θ layers (we set $\theta = 3 )$ :
+
+$$
+\mathcal { A } _ { i } ^ { \mathrm { g o l d e n } } = \{ s \ | \ V _ { i , s } \geq 3 \} .\tag{10}
+$$
+
+Finally, for each lookahead evaluation window triggered at decoding step t, the positive ground-truth label set $\mathcal { V } _ { t } ^ { + }$ is established by taking the union of these denoised golden entries across the entire future temporal window of τ steps:
+
+$$
+\mathcal { Y } _ { t } ^ { + } = \bigcup _ { i = t } ^ { t + \tau - 1 } \mathcal { A } _ { i } ^ { \mathrm { g o l d e n } } .\tag{11}
+$$
+
+By shifting from an arbitrary Top-k lookup to a consensus-driven density estimation, our pipeline isolates the true contextual backbone of the long sequence, discarding irrelevant background noise. In total, our training set comprises approximately 10,000 long documents with context lengths ranging from 16K to 512K tokens.
+
+## 2.3 Optimization and Decoupled Training
+
+Although our Memory Indexer shares a structural setup similar to the native Lightning Indexer, their underlying optimization paradigms are fundamentally diferent. Unlike the native Lightning Indexer which relies on heavy end-to-end self-distillation, we treat the Memory Indexer as a standard retrieval model and optimize it via metric learning. The primary training objective is to perform distance-based contrastive optimization: maximizing the lookahead matching scores for query-critical historical entries while minimizing the scores for negative samples.
+
+A key system insight of LSA is that the compressed indexer keys $K _ { s } ^ { \mathrm { I C o m p } }$ of historical entries are entirely pre-computed and strictly frozen during the training stage. Consequently, the optimization process simplifies into training only the query encoder of a standard dual-encoder retrieval architecture. Specifically, we only need to optimize the low-rank projection matrices $( W ^ { D Q } , W ^ { I U Q } , W ^ { w } )$ to map the current input hidden state $\mathbf { h } _ { t }$ to align with the fixed historical targets.
+
+To achieve this objective, we minimize a standard element-wise Binary Cross-Entropy (BCE) loss function over the predicted lookahead scores. For a single sample with predicted probability p and label $y \in \{ 0 , 1 \}$ , the
+
+per-sample BCE is defined as:
+
+$$
+\ell _ { \mathrm { B C E } } ( p , y ) = - \big ( y \log ( p ) + ( 1 - y ) \log ( 1 - p ) \big ) ,\tag{12}
+$$
+
+where $y _ { t , s } = 1 { \mathrm { ~ i f ~ } } s \in \mathcal { V } _ { t } ^ { + }$ , and $y _ { t , s } = 0$ otherwise. The overall batch objective is then the average over all samples in the batch ${ \mathcal { S } } .$
+
+Because the historical representations $K _ { s } ^ { \mathrm { I C o m p } }$ , target labels $\mathcal { V } _ { t } ^ { + }$ , and layer-specific query hidden states $\mathbf { h } _ { t }$ are all pre-extracted and stored ofline, the training pipeline achieves complete physical isolation from the host LLM. The thousand-billion-parameter backbone model is never loaded into GPU memory during the entire optimization loop. Since the trainable projection layers represent less than 0.1% of the full model’s parameter scale, the computational workload is remarkably small. As a result, the entire Memory Indexer converges elegantly within a single H20 GPU hour.
+
+This decoupled design significantly accelerates our research cycle. Leveraging a single cluster of 8× NVIDIA H20 GPUs, we seamlessly executed approximately 500 distinct training runs within a single week to systematically map out the optimal architecture and training strategies, a feat that would be computationally prohibitive under traditional joint end-to-end distillation.
+
+## 2.4 Architectural Optimal Configuration
+
+A fundamental premise of designing LSA is that not every transformer layer is suited for contextual lookahead prediction. Our early-stage exploration revealed that deploying memory indexers on the initial shallow layers of the LLM yields exceptionally poor lookahead performance, as these early representations predominantly capture low-level token statistics rather than long-range semantic dependencies. Therefore, an eficient system routing paradigm must selectively place indexers only on layers that possess mature global context awareness.
+
+However, scaling the number of joint training layers introduces a strict trade-of between performance and serving eficiency. While a single-layer retriever lacks the representative capacity to handle diverse long-context workloads, aggressively scaling to an 8-layer joint configuration (spanning layers 6 to 20) introduces severe hardware-side eficiency degradation. As verified in our full-system benchmarks, an 8-layer ensemble triggers an excessively loose context recall mask, fetching up to 30%–49% of historical compressed KV entries into the GPU memory, which defeats our primary goal of minimizing the memory tax.
+
+Through extensive Pareto-frontier optimization, we established that placing independent Memory Indexers on exactly three strategic intermediate layers—layers 10, 12, and 20—delivers the ultimate sweet spot. During inference, our runtime system aggregates the scoring predictions from these three layers using a union operations strategy (OR-mode routing). Specifically, a preceding compressed KV entry is actively fetched into the GPU memory if at least one of the three layer indexers predicts its classification score $I _ { t , s } \geq 0 . 5 $
+
+$$
+C _ { t } ^ { \mathrm { M e m C o m p } } = \bigcup _ { l \in \{ 1 0 , 1 2 , 2 0 \} } \left\{ C _ { s } ^ { \mathrm { C o m p } } \ \Big | \ I _ { t , s } ^ { ( l ) } \geq 0 . 5 \right\} .\tag{13}
+$$
+
+This 3-layer consensus framework provides an exceptionally robust fallback protection boundary.
+
+Our final production model instantiation is built upon this optimal 3-layer geometry and optimized via a carefully curated combination of efective training strategies:
+
+• Random Initialization: Rather than loading alignment-biased weights from a host checkpoint, we initialize the indexer’s projection matrices randomly, forcing the dual-encoder to learn unified representations from scratch.
+
+• Query Low-Rank Conditioning: We leverage the native low-rank query projection geometry of the DeepSeek-V4 architecture. In DeepSeek’s $\mathrm { M L A } / \mathrm { M Q A }$ design, the query vector is projected through an internal low-rank bottleneck (oficially designated q\_lora\_rank in the DeepSeek-V3 codebase, where the default is 1536). In our implementation, we set this internal projection dimension to $r = 2 0 4 8$ for the R-series configuration. This is not PEFT-style LoRA fine-tuning (which typically uses ranks of
+
+8–64 to learn small perturbations on frozen weights); rather, it is a fixed architectural dimension of the model’s attention backbone that determines the representational capacity of the query encoder. Increasing this rank directly expands the spatial projection capacity of the lookahead indexer without introducing any adapter overhead.
+
+• Focal Loss Denoising: To prevent easy negative samples from dominating the gradients, we replace standard BCE with a sample-weighted Focal Loss. Let $p _ { t , s } \in [ 0 , 1 ]$ denote the Sigmoid-activated indexer score and $y _ { t , s } \in \{ 0 , 1 \}$ the binary label. We first compute the predicted confidence on the correct class:
+
+$$
+p _ { t , s } ^ { ( \mathrm { c o r r e c t } ) } = p _ { t , s } \cdot y _ { t , s } + ( 1 - p _ { t , s } ) \cdot ( 1 - y _ { t , s } ) .\tag{14}
+$$
+
+The per-sample Focal Loss is then defined as:
+
+$$
+\mathcal { L } _ { \mathrm { F L } } = \frac { 1 } { \vert \mathcal { S } \vert } \sum _ { s \in \mathcal { S } } w _ { t , s } \left( 1 - p _ { t , s } ^ { ( \mathrm { c o r r e c t } ) } \right) ^ { \gamma } \ell _ { \mathrm { B C E } } ( I _ { t , s } , y _ { t , s } ) ,\tag{15}
+$$
+
+where $\mathcal { L } _ { \mathrm { B C E } }$ is the standard binary cross-entropy, $\gamma = 2$ is the focusing parameter that down-weights well-classified samples, and $w _ { t , s }$ is a per-sample weight. Notably, we do not use a separate classbalancing coefficient $\alpha ;$ instead, class imbalance is handled jointly by (i) a negative sampling ratio of 3:1 (three negatives per positive) and (ii) the per-sample weight $w _ { t , s }$ computed by the –weighted-loss scheduler. This design forces the optimizer to concentrate on hard boundary tokens while keeping the hyperparameter surface minimal.
+
+Conversely, multiple popular retrieval and contrastive learning tricks proved to be redundant or even detrimental during our 500-run sweep, and were systematically excluded from our final pipeline:
+
+• Pairwise-to-Pointwise Chaining: Transitioning optimization from a pairwise ranking stage (BPR/Margin Loss) to a pointwise calibration stage yielded no statistical recall gains over a pure pointwise training loop.
+
+• Strong Negative Mining: Utilizing LLM-annotated semantic chunks as a hard negative pool introduced severe secondary label noise into the contrastive format; random negative sampling within the non-voted historical repository proved significantly more robust.
+
+• Weighted Loss Functions: Scaling the loss according to native layer matching counts increased raw precision slightly but degraded the absolute recall bound by discarding boundary context, shifting the model away from its safety-net objective.
+
+Note on Hyperparameter Selection. Due to the unexpected suspension of this project, we were unable to conduct systematic ablation studies on several key hyperparameters. Specifically, the decoding interval $\tau = 6 4$ and the classification threshold of 0.5 were selected based on initial exploratory runs but remain untested across alternative values. The 3-layer configuration (layers 10, 12, 20) was determined through the 500-run Pareto sweep described in Section 2.4; however, a more fine-grained layer-wise ablation would be desirable for future work.
+
+## 3 Experiments
+
+## 3.1 Experimental Setup
+
+To ensure a rigorous and controlled evaluation of the FlashMemory paradigm, we benchmark our model against three structural variants. Crucially, to maintain architectural consistency, all evaluated configurations universally retain the full Heavily Compressed Attention (HCA) layers (at a 128:1 compression ratio), alongside the exact CSA chunks corresponding to both the last 8K tokens of the original prompt and all actively decoded tokens within the local window. The precise treatment of the remaining historical long-context CSA chunks diferentiates the methods as follows:
+
+• DS-V4-Flash: The standard, unaltered DeepSeek-V4-Flash model.
+
+• FM-DS-V4 (Ours): The DS-V4-Flash backbone augmented with the Memory Indexer. The lookahead selection mechanism triggers periodically every τ = 64 decoding steps, dynamically evaluating and fetching query-critical historical CSA chunks from the CPU cold pool into the active GPU HBM.
+
+• Recency Only: A sliding-window fallback control. While it shares the same base HCA layers and the local 8K/decoded CSA window to match the static local memory allocation budget, it completely discards all prior long-context historical CSA chunks and executes zero predictive lookahead retrieval.
+
+• Random 10%: A naive sparse routing control. On top of the foundational HCA layers and the local 8K/decoded CSA window, it randomly selects and retains exactly 10% of the global historical context CSA chunks in the active KV cache, providing a non-predictive stochastic baseline.
+
+## 3.2 Primary Results: Breaking the Capacity Wall
+
+Table 1 highlights the performance and hardware footprint scaling across three major long-context benchmarks: LongBench-v2 [3], LongMemEval [4], and RULER [5].
+
+Table 1 System performance and physical KV cache footprints (GPU memory overhead in gigabytes [GB] in parentheses) across primary long-context benchmarks. DS-V4-Flash operates at 100% full KV cache allocation without chunk pruning.
+<table><tr><td>Benchmark /Dataset</td><td>DS-V4-Flash</td><td>FM-DS-V4</td><td>Recency Only</td><td>Random 10%</td></tr><tr><td>LongBench-v2-S (46K)</td><td>68.9 (0.17 GB)</td><td>70.2 (0.04 GB)</td><td>50.0 (0.03 GB)</td><td>53.3 (0.04 GB)</td></tr><tr><td>LongBench-v2-M (179K)</td><td>67.6 (0.65 GB)</td><td>68.9 (0.08 GB)</td><td>54.4 (0.03 GB)</td><td>48.9 (0.09 GB)</td></tr><tr><td>LongBench-v2-L (493K)</td><td>68.1 (1.80 GB)</td><td>70.0 (0.18 GB)</td><td>54.3 (0.04 GB)</td><td>46.9 (0.22 GB)</td></tr><tr><td>LongMemEval-S (125K)</td><td>80.6 (0.46 GB)</td><td>82.0 (0.06 GB)</td><td>19.2 (0.04 GB)</td><td>20.1 (0.07 GB)</td></tr><tr><td>LongMemEval-M (500K)</td><td>39.3 (1.82 GB)</td><td>40.2 (0.17 GB)</td><td>23.1 (0.04 GB)</td><td>25.7 (0.22 GB)</td></tr><tr><td>RULER (64K)</td><td>94.7 (0.23 GB)</td><td>95.0 (0.04 GB)</td><td>36.6 (0.03 GB)</td><td>52.8 (0.05 GB)</td></tr><tr><td>RULER (128K)</td><td>94.3 (0.47 GB)</td><td>93.2 (0.06 GB)</td><td>21.6 (0.03 GB)</td><td>32.3 (0.08 GB)</td></tr><tr><td>RULER (256K)</td><td>90.5 (0.94 GB)</td><td>88.2 (0.09 GB)</td><td>20.6 (0.04 GB)</td><td>41.2 (0.12 GB)</td></tr><tr><td>RULER (512K)</td><td>88.3 (1.87 GB)</td><td>89.6 (0.18 GB)</td><td>18.8 (0.04 GB)</td><td>27.2 (0.22 GB)</td></tr><tr><td>Avg.</td><td>76.9 (0.93 GB)</td><td>77.5 (0.10 GB)</td><td>33.3 (0.04 GB)</td><td>38.7 (0.12 GB)</td></tr></table>
+
+The empirical findings deliver a striking victory for the FlashMemory paradigm. Averaged across all tasks, FM-DS-V4 consumes merely 13.5% of the baseline GPU memory footprint—representing an average 86.5% reduction in KV cache storage—while actually improving overall performance to 77.5% (+0.6% absolute margin over DS-V4-Flash). When the average context length reaches 500K, this reduction ratio further climbs to an astonishing 90%.
+
+This counter-intuitive “less is more” phenomenon is especially pronounced in the ultra-long LongBench-v2-L (493K) setting, where our model beats DS-V4-Flash by +1.9% while running on a threadbare 10.0% memory budget. This forcefully proves our core hypothesis: LSA acts as an expert attention denoiser, filtering out thousands of irrelevant historical chunks that would otherwise clutter the attention dot-products and cause factual hallucinations. Under the same memory restrictions, native heuristic controls (Recency Only and Random 10%) completely collapse, failing to synthesize global context and confirming that our indexer has mastered complex predictive temporal routing.
+
+One might naturally question why Recency Only and Random 10% can still maintain a reasonable performance baseline on specific datasets like LongBench-v2. It is critical to reiterate that in DeepSeek-V4’s hybrid design, the sparse CSA mechanism operates in parallel with the full Heavily Compressed Attention (HCA) layers (at a 128:1 compression ratio). For evaluation scenarios that primarily necessitate global semantic themes or coarse-grained synthesis rather than lossy, hyper-granular token retrieval, utilizing the global compressed HCA foundations alongside the local 8K cache proves suficient to navigate basic context structures.
+
+## 3.3 Limitations and Diagnostics
+
+While FlashMemory achieves unprecedented eficiency gains on three standard long-context benchmarks, our stress-testing exposes critical boundaries of the current paradigm. Due to recent organizational realignments, active development has been suspended. We present these diagnostic findings and concrete failure cases to provide transparent insights for the open-source community.
+
+## 3.3.1 Context-Independent Overhead
+
+We originally hypothesized that for context-independent queries where historical long context is entirely irrelevant, the pointwise Sigmoid gating would naturally collapse to near-zero retrievals, yielding a strict O(1) constant KV cache footprint. To test this adversarial boundary, we augmented LongMemEval-S and LongMemEval-M by explicitly appending queries that are strictly context-free or tightly bounded to the local 8K window only.
+
+Table 2 System evaluation under adversarial context-independent tasks (No-Context).
+<table><tr><td>Context Independent Datasets</td><td>DS-V4-Flash</td><td>FM-DS-V4 (Ours)</td></tr><tr><td>LongMemEval-S (No-Context)</td><td>96.7 (0.46 GB)</td><td>95.0 (0.06 GB)</td></tr><tr><td>LongMemEval-M (No-Context)</td><td>91.2 (1.82 GB)</td><td>92.5 (0.16 GB)</td></tr></table>
+
+As shown in Table 2, while the downstream accuracy gracefully matches the foundation baseline, the model fails to preserve a constant memory overhead. Moving from the 125K context to the 500K context, the lookahead memory allocation ratio does scale down to 8.4%, yet the physical absolute chunk retention volume inflates by approximately 2.5×. This indicates that the point-wise Sigmoid gater still leaks a marginal background probability across massive sequence lengths, accumulating false-positive retrievals when facing massive distraction pools.
+
+## 3.3.2 Dense Global Memory Breakdown (The MRCR Failure Case)
+
+Our model experiences a severe breakdown on the Multi-Range Context Retrieval (MRCR) [6] benchmark, where accuracy plummets from the baseline’s 76.0% down to a dismal 48.0%. To isolate the root cause of this severe performance regression, we conducted a rigorous oracle simulation: we pre-computed the global golden attention weights of DS-V4-Flash across the full decoding path for each sample, sorted the historical blocks based on cumulative attention density, and selectively loaded only the Top 50%, 25%, or 10% highest-weighted chunks into core MQA layers.
+
+Our diagnostic oracle sweeps revealed a fundamental property diference between benchmarks: for LongBenchv2, LongMemEval, and RULER, retaining a mere 10% or 25% of golden CSA chunks alongside global HCA layers completely secures 100% baseline accuracy. However, MRCR exhibits an aggressive global dense memory dependency—even when providing the indexer with 50% of the absolute true golden chunks, the accuracy still drops by about 2% compared to full-context cache execution.
+
+These two empirical findings firmly isolate the architectural limitations of our current Memory Indexer. Ideally, we envisioned an ideal indexer capable of executing deterministic, context-adaptive retrieval: achieving nearzero recall on context-independent tasks to maintain a constant memory floor, while delivering near-perfect recall on memory-dense tasks to secure maximum contextual awareness.
+
+Unfortunately, by relying on a highly compressed, standalone Dual-Encoder framework, the model fundamentally lacks the capacity to balance such extreme operational boundaries of precision and recall. Consequently, the following three critical factors bound its performance:
+
+1. Frozen Key Representation: Due to computational budget constraints, we never adjusted or optimized the native DeepSeek-V4 Compressed indexer keys $\left( K ^ { \mathrm { I C o m p } } \right)$ , fine-tuning only the query projection encoder.
+
+2. Shallow Cross-Interaction: Operating purely via a 64-step coarse dot-product similarity, the indexer lacks the multi-turn interaction capacity. Incorporating a Late-Interaction architecture (e.g., ColBERT-style token-level cross-matching) is essential to untangle complex dense retrieval patterns.
+
+3. Decoupled Training Isolation: The lack of end-to-end joint optimization with the main backbone restricts the indexer to static pseudo-labels, ignoring live autoregressive shift dynamics.
+
+Addressing these items remains our formal future roadmap.
+
+## 3.3.3 The Length Generalization Ceiling
+
+Our initial design intent assumed that because our lookahead indexer operates via point-wise chunk matching, we could train the Dual-Encoder on relatively short context windows (e.g., 128K) and seamlessly scale zero-shot inference to 1M+ context fields, as candidate pool expansion theoretically shouldn’t distort point-wise scoring.
+
+Our empirical evaluations completely dismantled this assumption. The indexer safely generalizes up to exactly 2× its training context length. Attempting to execute inference beyond this hard boundary causes accuracy to collapse precipitously, with lookahead block selection degenerating into near-random sampling. We attribute this performance bottleneck to the efects from the out-of-distribution positional embeddings, which constitutes the primary architectural divergence between self-attention mechanisms and generic text retrieval systems. Consequently, our final released memory indexer was explicitly trained on context lengths up to 512K. Although empirical validation at greater scales remains untested, we hypothesize that its retrieval discriminability would decay irreversibly when deployed on sequences exceeding 1M tokens.
+
+## 4 Conclusion
+
+In this report, we have presented FlashMemory-DeepSeek-V4, an LLM augmented with Lookahead Sparse Attention (LSA). By introducing a Neural Memory Indexer into the DeepSeek-V4-Flash architecture, we enable the model to proactively predict and fetch only the query-critical KV chunks into GPU memory. Compared to DeepSeek-V4-Flash, our model achieves comparable or even superior performance across the majority of benchmarks, while consuming merely approximately 13.5% of the GPU memory.
+
+We emphasize that the architecture, training pipeline, and hyperparameters of FlashMemory-DeepSeek-V4 are severely constrained by computational resources and the unexpected suspension of the project. The indexer was trained with frozen key representations, shallow dot-product interaction, and no end-to-end joint optimization with the backbone—design choices dictated by resource availability rather than optimality. Nevertheless, the results achieved under these constraints make us highly confident in the vast potential for improvement that remains: FlashMemory-DeepSeek-V4, in its current form, is merely the first glimpse of what LSA can achieve for ultra-long-context intelligence.
+
+## References
+
+[1] DeepSeek-AI. Deepseek-v4: Towards highly eficient million-token context intelligence. Technical report, DeepSeek-AI, 2026. Technical Report. Available at https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro/blob/main/ DeepSeek\_V4.pdf.
+
+[2] Qwen Team. Qwen3.5: Extending the frontier of open large language models. Qwen AI Blog, 2026. https: //qwen.ai/blog?id=qwen3.5.
+
+[3] Yushi Bai, Shangqing Tu, Jiajie Zhang, Hao Peng, Xiaozhi Wang, Xin Lv, Shulin Cao, Jiazheng Xu, Lei Hou, Yuxiao Dong, Jie Tang, and Juanzi Li. Longbench v2: Towards deeper understanding and reasoning on realistic long-context multitasks, 2025.
+
+[4] Di Wu, Hongwei Wang, Wenhao Yu, Yuwei Zhang, Kai-Wei Chang, and Dong Yu. Longmemeval: Benchmarking chat assistants on long-term interactive memory, 2025.
+
+[5] Cheng-Ping Hsieh, Simeng Sun, Samuel Kriman, Shantanu Acharya, Dima Rekesh, Fei Jia, Yang Zhang, and Bori Ginsburg. Ruler: What’s the real context size of your long-context language models?, 2024.
+
+[6] Kiran Vodrahalli, Santiago Ontanon, Nilesh Tripuraneni, Kelvin Xu, Sanil Jain, Rakesh Shivanna, Jefrey Hui, Nishanth Dikkala, Mehran Kazemi, Bahare Fatemi, Rohan Anil, Ethan Dyer, Siamak Shakeri, Roopali Vij, Harsh Mehta, Vinay Ramasesh, Quoc Le, Ed Chi, Yifeng Lu, Orhan Firat, Angeliki Lazaridou, Jean-Baptiste Lespiau, Nithya Attaluri, and Kate Olszewska. Michelangelo: Long context evaluations beyond haystacks via latent structure queries, 2024.

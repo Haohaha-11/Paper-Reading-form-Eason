@@ -6,6 +6,19 @@ Haojiang 的文献阅读仓库，按课题组织。每篇论文都有「批读�
 
 ---
 
+## 📅 每日待读
+
+| 日期 | 论文 | 课题 | 状态 | 反馈 |
+|------|------|------|------|------|
+| 2025-06-23 | [SAMPath](./topics/Medical-Compression/%5BArxiv%202025%5D%20SAMPath/) | Medical Compression | ⏳ 待读 | - |
+| 2025-06-23 | [VideoStreamThinking](./topics/video-VLM/%5BArxiv%202026%5D%20VideoStreamThinking/) | Video VLM | ⏳ 待读 | - |
+| 2025-06-23 | [ConsistencyVL](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20ConsistencyVL/) | VisMem for Med Image | ⏳ 待读 | - |
+| 2025-06-23 | [MedMO](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20MedMO/) | VisMem for Med Image | ⏳ 待读 | - |
+| 2025-06-23 | [TissueWSI](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202026%5D%20TissueWSI/) | Whole Slide Image Analysis | ⏳ 待读 | - |
+| 2025-06-23 | [FlashMemory-DSV4](./topics/TTT%20in%20LLM/%5BArxiv%202026%5D%20FlashMemory-DSV4/) | TTT in LLM | ⏳ 待读 | - |
+
+---
+
 ## 课题列表
 
 ### ⚡ One-Step Diffusion Super-Resolution
@@ -47,6 +60,8 @@ latent vision memory / latent reasoning / medical image VLM：让医学影像模
 | [Visual-Enhanced-Depth-Scaling](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20Visual-Enhanced-Depth-Scaling/) | Arxiv 2026 | Visual Enhanced Depth Scaling 针对 multimodal latent reasoning 中视觉 token 梯度不稳定与语言偏置，提出视觉重放和动态深度扩展。 |
 | [DMLR](./topics/VisMem-for-Med-Image/%5BArxiv%202025%5D%20DMLR/) | Arxiv 2025 | DMLR 提出 training-free 测试时动态潜空间推理：置信度引导的策略梯度优化 + 动态视觉注入，实现推理-感知自适应交错。 |
 | [MedVLThinker](./topics/VisMem-for-Med-Image/%5BArxiv%202025%5D%20MedVLThinker/) | Arxiv 2025 | MedVLThinker 是首个全开源医学多模态推理配方，揭示 RLVR > SFT 且 text-only > image-text 的反直觉发现，32B 匹配 GPT-4o。 |
+| [ConsistencyVL](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20ConsistencyVL/) | Arxiv 2026 | ConsistencyVL 将空间注意力与可靠性解耦，用跨视图一致性信号识别 VLM 中哪些视觉区域可信。 |
+| [MedMO](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20MedMO/) | Arxiv 2026 | MedMO 面向医学影像的 MLLM ground 与理解，增强模型在医学图像上的定位和诊断解释能力。 |
 
 📖 [VisMem for Med Image 详细总结](./topics/VisMem-for-Med-Image/README.md)
 
@@ -79,6 +94,7 @@ LLM latent reasoning / cache augmentation / CoT compression：把额外推理、
 | [Pathology-AE](./topics/Medical-Compression/%5BArxiv%202025%5D%20Pathology-AE/) | Arxiv 2025 | Pathology-AE 将 latent diffusion autoencoder 复用于病理压缩，用 pathology foundation model 感知指标微调，并用 K-means latent quantization 提升存储效率。 |
 | [NIC](./topics/Medical-Compression/%5BTPAMI%202020%5D%20NIC/) | IEEE TPAMI 2020 | NIC 把 gigapixel WSI patch 编成低维 embedding 网格，让 CNN 在压缩表示上用弱图像级标签完成分类、回归和可视化定位。 |
 | [CAR](./topics/Medical-Compression/%5BTIP%202020%5D%20CAR/) | IEEE TIP 2020 | CAR 学习内容自适应下采样 kernel 与 offsets，并用 SRNet 反向指导低分辨率图像保留可恢复细节。 |
+| [SAMPath](./topics/Medical-Compression/%5BArxiv%202025%5D%20SAMPath/) | Arxiv 2025 | SAMPath 用自然语言驱动病理图像分割，将 SAM 扩展到病理领域实现文本提示的任意分割。 |
 
 📖 [Medical Compression 详细总结](./topics/Medical-Compression/README.md)
 
@@ -95,6 +111,7 @@ Test-Time Training / Test-Time Learning / long-context continual adaptation：�
 | [TTT-E2E](./topics/TTT%20in%20LLM/%5BArxiv%202025%5D%20TTT-E2E/) | Arxiv 2025 | TTT-E2E 将 long-context LM 视作 continual learning，用测试时 next-token prediction 更新权重，并用训练时 meta-learning 学适合测试时学习的初始化。 |
 | [TLM](./topics/TTT%20in%20LLM/%5BICML%202025%5D%20TLM/) | ICML 2025 | TLM 把 LLM test-time learning 表述为无标签测试数据的 input perplexity minimization，用高困惑度样本选择和 LoRA 更新做域适应。 |
 | [TTT4LC](./topics/TTT%20in%20LLM/%5BArxiv%202025%5D%20TTT4LC/) | arXiv 2025 | TTT4LC 揭示长上下文 static attention 的 score dilution 导致 thinking tokens 失效，提出 Query-Only TTT 用梯度更新打破注意力静态限制。 |
+| [FlashMemory-DSV4](./topics/TTT%20in%20LLM/%5BArxiv%202026%5D%20FlashMemory-DSV4/) | arXiv 2026 | FlashMemory-DSV4 用 lookahead sparse attention 实现超长上下文的闪电索引，提升长序列处理效率。 |
 
 📖 [TTT in LLM 详细总结](./topics/TTT%20in%20LLM/README.md)
 
@@ -124,6 +141,28 @@ Test-Time Training / Test-Time Learning / long-context continual adaptation：�
 | [ELF](./topics/Continuous-Latent-Language-Modeling/%5BArxiv%202026%5D%20ELF/) | Arxiv 2026 | ELF 用 Flow Matching 在连续嵌入空间建模语言，全程留在连续空间直到最后一步映射到 token，天然支持 CFG。 |
 
 📖 [Continuous Latent Language Modeling 详细总结](./topics/Continuous-Latent-Language-Modeling/README.md)
+
+---
+
+### 🎬 Video VLM
+视频大语言模型：让 VLM 在视频流中同时观看和思考，实现流式视觉感知与推理的实时交错。
+
+| 论文 | 会议 | 方法特点 |
+|------|------|----------|
+| [VideoStreamThinking](./topics/video-VLM/%5BArxiv%202026%5D%20VideoStreamThinking/) | Arxiv 2026 | Video Streaming Thinking 让 VideoLLM 在视频流中边看边想，实现视觉感知与推理的同步交错。 |
+
+📖 [Video VLM 详细总结](./topics/video-VLM/README.md)
+
+---
+
+### 🔬 Whole Slide Image Analysis
+全切片病理图像分析：让模型像病理学家一样在 gigapixel 组织图像中进行空间感知推理，从定位关键区域到构建诊断证据链。
+
+| 论文 | 会议 | 方法特点 |
+|------|------|----------|
+| [TissueWSI](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202026%5D%20TissueWSI/) | Arxiv 2026 | Tissue-Aware WSI Reasoning 让模型像病理学家一样在组织空间上下文中推理，实现端到端的空间定位与诊断。 |
+
+📖 [Whole Slide Image Analysis 详细总结](./topics/Whole-Slide-Image-Analysis/README.md)
 
 ---
 

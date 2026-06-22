@@ -14,6 +14,7 @@
 | [Pathology-AE](./%5BArxiv%202025%5D%20Pathology-AE/) | arXiv 2025 | Pathology-AE 将 latent diffusion autoencoder 复用于病理压缩，用 pathology foundation model 感知指标微调，并用 K-means latent quantization 提升存储效率。 |
 | [NIC](./%5BTPAMI%202020%5D%20NIC/) | IEEE TPAMI 2020 | NIC 把 gigapixel WSI patch 编成低维 embedding 网格，让 CNN 在压缩表示上用弱图像级标签完成分类、回归和可视化定位。 |
 | [CAR](./%5BTIP%202020%5D%20CAR/) | IEEE TIP 2020 | CAR 学习内容自适应下采样 kernel 与 offsets，并用 SRNet 反向指导低分辨率图像保留可恢复细节。 |
+| [SAMPath](./%5BArxiv%202025%5D%20SAMPath/) | Arxiv 2025 | SAMPath 用自然语言驱动病理图像分割，将 SAM 扩展到病理领域实现文本提示的任意分割。 |
 
 ## 课题主线
 
