@@ -24,15 +24,15 @@ Due to organizational realignments, the Project Lead has parted ways with Tencen
 
 *Figure 1 Performance and hardware efficiency of FlashMemory-DeepSeek-V4. On LongBench-v2 and RULER, FM-DS-V4 consistently matches or exceeds DS-V4-Flash, while reducing KV cache overhead to merely 13.5% on average. KV cache memory footprints are measured via sglang deployment logs on an 8xH20 GPU server.*
 
-> **Figure 1 批读**: 本图是整篇论文的 "killer graph"。三幅子图从不同维度展示了 FlashMemory 的核心优势。左侧和中部分别展示 LongBench-v2 和 RULER 上的 Accuracy vs. Memory 对比，FM-DS-V4 在极低的内存占用下（0.10 GB avg vs 0.93 GB baseline）不仅没有损失精度，反而在多数场景超越 full-attention baseline。右侧可能展示 scaling behavior —— memory reduction 随 context length 增长而更加显著（500K 时达 90%）。这一可视化有力支撑了论文的核心主张："less is more" -- 精准筛选比全量保留更有效。需要注意的是，Recency Only 和 Random 10% 作为 ablation baselines 全面崩溃，证明了 predictive retrieval 的必要性。
+> **Figure 1 批读**: 本图是整篇论文的核心亮点图。三幅子图从不同维度展示了 FlashMemory 的核心优势。左侧和中部分别展示 LongBench-v2 和 RULER 上的准确率 vs. 内存对比，FM-DS-V4 在极低的内存占用下（平均 0.10 GB vs 基线 0.93 GB）不仅没有损失精度，反而在多数场景超越全注意力基线。右侧可能展示扩展行为——内存压缩随上下文长度增长而更加显著（500K 时达 90%）。这一可视化有力支撑了论文的核心主张："少即是多"——精准筛选比全量保留更有效。需要注意的是，Recency Only 和 Random 10% 作为消融基线全面崩溃，证明了预测性检索的必要性。
 
 ---
 
-> **问题动机**: LLM 长上下文推理的 GPU 内存瓶颈源于 KV cache 的线性增长。现有的 sparse attention (如 DeepSeek-V4 的 HCA/CSA) 仅减缓增长速率，未消除线性扩展本质。作者观察到 >90% 的 >64K token 请求仅需最后 8K token，揭示出大量 GPU 内存浪费在 "inactive context" 上。核心矛盾在于：如何在不需要时为 local generation 免除 full GPU memory tax，同时在需要时又能进行 deep global reasoning。
+> **问题动机**: LLM 长上下文推理的 GPU 内存瓶颈源于 KV Cache 的线性增长。现有的稀疏注意力（如 DeepSeek-V4 的 HCA/CSA）仅减缓增长速率，未消除线性扩展本质。作者观察到 >90% 的超过 64K token 的请求仅需最后 8K token，揭示出大量 GPU 内存浪费在"非活跃上下文"上。核心矛盾在于：如何在不需要时为本地生成步骤免除完整的 GPU 内存税，同时在需要时又能进行深度全局推理。
 
-> **机制拆解**: LSA 的核心思路是在 DeepSeek-V4 的 Compressed Sparse Attention (CSA) 框架上引入一个 Neural Memory Indexer，该 indexer 以固定的解码步间隔 τ=64 周期性触发，利用当前 hidden state 预测未来窗口需要的 critical KV chunks，从 CPU Cold Pool 按需加载到 GPU memory 中。关键设计是将 indexer 构建为独立的 dual-encoder 检索架构，训练时完全不加载千亿参数 backbone。
+> **机制拆解**: LSA 的核心思路是在 DeepSeek-V4 的压缩稀疏注意力（CSA）框架上引入一个神经记忆索引器（Neural Memory Indexer），该索引器以固定的解码步间隔 τ=64 周期性触发，利用当前隐藏状态预测未来窗口需要的查询关键 KV chunks，从 CPU Cold Pool 按需加载到 GPU 内存中。关键设计是将索引器构建为独立的双编码器检索架构，训练时完全不加载千亿参数骨干模型。
 
-> **核心数字**: 13.5% KV cache retention (86.5% reduction), +0.6% accuracy improvement, 90% reduction at 500K, <0.1% trainable params, 1 GPU hour training.
+> **核心数字**: 13.5% KV Cache 保留率（压缩 86.5%），+0.6% 准确率提升，500K 上下文下压缩 90%，<0.1% 可训练参数，1 个 GPU 小时完成训练。
 
 ## 🔖 Summary
 

@@ -20,7 +20,7 @@ To ensure a rigorous and controlled evaluation of the FlashMemory paradigm, we b
 
 - **Random 10%**: A naive sparse routing control. On top of the foundational HCA layers and the local 8K/decoded CSA window, it randomly selects and retains exactly 10% of the global historical context CSA chunks in the active KV cache, providing a non-predictive stochastic baseline.
 
-> **Q&A 批注记录**: 所有实验配置保留了全局 HCA 层（128:1 压缩比），因为 HCA 提供 coarse-grained semantic awareness，相对内存开销极小。实验的变量控制非常严格：只有 historical CSA chunks 的处理方式不同。Recency Only 和 Random 10% 作为 ablations 区分了 "预测性检索" vs "启发式策略" 的必要性。
+> **Q&A 批注记录**: 所有实验配置保留了全局 HCA 层（128:1 压缩比），因为 HCA 提供粗粒度语义感知，相对内存开销极小。实验的变量控制非常严格：只有历史 CSA chunks 的处理方式不同。Recency Only 和 Random 10% 作为消融实验区分了"预测性检索"与"启发式策略"的必要性。
 
 ## 3.2 Primary Results: Breaking the Capacity Wall
 
@@ -50,7 +50,7 @@ The empirical findings deliver a striking victory for the FlashMemory paradigm. 
 
 This counter-intuitive "less is more" phenomenon is especially pronounced in the ultra-long LongBench-v2-L (493K) setting, where our model beats DS-V4-Flash by +1.9% while running on a threadbare 10.0% memory budget. This forcefully proves our core hypothesis: LSA acts as an expert attention denoiser, filtering out thousands of irrelevant historical chunks that would otherwise clutter the attention dot-products and cause factual hallucinations. Under the same memory restrictions, native heuristic controls (Recency Only and Random 10%) completely collapse, failing to synthesize global context and confirming that our indexer has mastered complex predictive temporal routing.
 
-> **Table 1 批读**: 这是全论文最重要的实验表格。关键发现：(1) **Memory scaling pattern**: FM-DS-V4 的 memory footprint 随 context length 增长极缓（0.04→0.18 GB from 46K→493K on LongBench-v2），而 DS-V4-Flash 线性增长（0.17→1.80 GB），证明 LSA 基本打破了线性 memory scaling。(2) **Accuracy preservation across tasks**: FM-DS-V4 在几乎所有 task/context length 组合上都 >= baseline accuracy，唯一例外是 RULER (128K-256K) 有轻微下降 (< 2.3%)。(3) **Recency Only/Random 10% 在 memory-intensive tasks 上崩溃**: LongMemEval (19.2-25.7 vs 80.6-82.0) 和 RULER (18.8-52.8 vs 88.3-95.0) 的巨大差距证明了 predictive retrieval vs 启发式策略的本质区别。LongMemEval 需要长期记忆能力，仅靠近端 token 完全不够。(4) **LongBench-v2 上 Recency Only 仍有 50+**: 因为 HCA (128:1 global compression) + 8K CSA window 对 coarse-grained semantic tasks 已足够。这揭示了 LongBench-v2 和 LongMemEval/RULER 的任务特性差异：前者 more forgiving to long-term memory loss。
+> **Table 1 批读**: 这是全论文最重要的实验表格。关键发现：（1）**内存扩展模式**：FM-DS-V4 的内存占用随上下文长度增长极缓（LongBench-v2 上从 46K 的 0.04 GB 到 493K 的 0.18 GB），而 DS-V4-Flash 线性增长（0.17→1.80 GB），证明 LSA 基本打破了线性内存扩展。（2）**跨任务准确率保持**：FM-DS-V4 在几乎所有任务/上下文长度组合上都优于或等于基线准确率，唯一例外是 RULER（128K-256K）有轻微下降（< 2.3%）。（3）**Recency Only/Random 10% 在记忆密集型任务上崩溃**：LongMemEval（19.2-25.7 vs 80.6-82.0）和 RULER（18.8-52.8 vs 88.3-95.0）的巨大差距证明了预测性检索与启发式策略的本质区别。LongMemEval 需要长期记忆能力，仅靠近端 token 完全不够。（4）**LongBench-v2 上 Recency Only 仍有 50+**：因为 HCA（128:1 全局压缩）+ 8K CSA 窗口对粗粒度语义任务已足够。这揭示了 LongBench-v2 和 LongMemEval/RULER 的任务特性差异：前者对长期记忆损失更宽容。
 
 One might naturally question why Recency Only and Random 10% can still maintain a reasonable performance baseline on specific datasets like LongBench-v2. It is critical to reiterate that in DeepSeek-V4's hybrid design, the sparse CSA mechanism operates in parallel with the full Heavily Compressed Attention (HCA) layers (at a 128:1 compression ratio). For evaluation scenarios that primarily necessitate global semantic themes or coarse-grained synthesis rather than lossy, hyper-granular token retrieval, utilizing the global compressed HCA foundations alongside the local 8K cache proves sufficient to navigate basic context structures.
 
@@ -76,7 +76,7 @@ We originally hypothesized that for context-independent queries where historical
 
 As shown in Table 2, while the downstream accuracy gracefully matches the foundation baseline, the model fails to preserve a constant memory overhead. Moving from the 125K context to the 500K context, the lookahead memory allocation ratio does scale down to 8.4%, yet the physical absolute chunk retention volume inflates by approximately 2.5x. This indicates that the point-wise Sigmoid gater still leaks a marginal background probability across massive sequence lengths, accumulating false-positive retrievals when facing massive distraction pools.
 
-> **消融解读 -- Context-Independent Overhead**: 这是 LSA 的一个 subtle failure mode。理想情况下，对于与上下文无关的 query，Memory Indexer 应该输出全 0（no chunks needed），实现 O(1) 恒定内存。但是 per-token Sigmoid gating 在超长序列上存在 "概率泄漏" 现象：即使每个 token 的 false positive rate 极低 (~0.01%)，乘以候选池大小 (500K/128 ≈ 3,900 compressed entries) 后，仍会有约 0.39 个 false positive per lookup。每 τ=64 步累积后，absolute chunk retention 随序列长度线性增长（2.5x from 125K to 500K）。这表明 point-wise Sigmoid 无法实现真正的 context-adaptive 推理 -- 需要更结构化的 gating mechanism 或 explicit null-retrieval mode。
+> **消融解读 -- 上下文无关开销**: 这是 LSA 的一个隐蔽失败模式。理想情况下，对于与上下文无关的查询，Memory Indexer 应该输出全 0（无需任何 chunks），实现 O(1) 恒定内存。但是逐 token 的 Sigmoid 门控在超长序列上存在"概率泄漏"现象：即使每个 token 的假阳性率极低（约 0.01%），乘以候选池大小（500K/128 ≈ 3,900 个压缩 entries）后，仍会有约 0.39 个假阳性 per lookup。每 τ=64 步累积后，绝对 chunk 保留量随序列长度线性增长（从 125K 到 500K 膨胀 2.5 倍）。这表明逐点 Sigmoid 无法实现真正的上下文自适应推理——需要更结构化的门控机制或显式的空检索模式。
 
 ### 3.3.2 Dense Global Memory Breakdown (The MRCR Failure Case)
 
@@ -96,9 +96,9 @@ Unfortunately, by relying on a highly compressed, standalone Dual-Encoder framew
 
 Addressing these items remains our formal future roadmap.
 
-> **消融解读 -- MRCR Failure Case**: 这是全论文最深刻的 diagnostic analysis。作者通过 oracle simulation 揭示了 benchmarks 的 fundamental property divergence：(1) "Sparse-Memory" benchmarks (LongBench-v2, LongMemEval, RULER)：10-25% golden chunks 即恢复全精度，说明这些任务的信息呈现 "long-tail" distribution -- 少数 critical chunks 决定性能；(2) "Dense-Memory" benchmarks (MRCR)：50% golden chunks 仍有精度损失，说明 MRCR 需要均匀分布在整个 context 的信息。这个分类是本文最重要的贡献之一。
+> **消融解读 -- MRCR 失败案例**: 这是全论文最深刻的诊断分析。作者通过神谕模拟揭示了基准测试的根本性质分歧：（1）"稀疏记忆型"基准测试（LongBench-v2、LongMemEval、RULER）：10-25% 金标签 chunks 即恢复全精度，说明这些任务的信息呈现"长尾"分布——少数关键 chunks 决定性能；（2）"密集记忆型"基准测试（MRCR）：50% 金标签 chunks 仍有精度损失，说明 MRCR 需要均匀分布在整个上下文的信息。这个分类是本文最重要的贡献之一。
 
-> **Q&A 批注记录**: Oracle simulation 的方法论值得学习。作者不是简单地报告 "MRCR 失败"，而是设计了一个可插拔的 golden chunk injection experiment 来隔离问题的根本原因。这种方法可以推广到其他稀疏 attention 系统的 failure analysis 中。
+> **Q&A 批注记录**: 神谕模拟的方法论值得学习。作者不是简单地报告"MRCR 失败"，而是设计了一个可插拔的金标签 chunk 注入实验来隔离问题的根本原因。这种方法可以推广到其他稀疏注意力系统的失败分析中。
 
 ### 3.3.3 The Length Generalization Ceiling
 
@@ -106,7 +106,7 @@ Our initial design intent assumed that because our lookahead indexer operates vi
 
 Our empirical evaluations completely dismantled this assumption. The indexer safely generalizes up to exactly 2x its training context length. Attempting to execute inference beyond this hard boundary causes accuracy to collapse precipitously, with lookahead block selection degenerating into near-random sampling. We attribute this performance bottleneck to the effects from the out-of-distribution positional embeddings, which constitutes the primary architectural divergence between self-attention mechanisms and generic text retrieval systems. Consequently, our final released memory indexer was explicitly trained on context lengths up to 512K. Although empirical validation at greater scales remains untested, we hypothesize that its retrieval discriminability would decay irreversibly when deployed on sequences exceeding 1M tokens.
 
-> **消融解读 -- Length Generalization Ceiling**: 这是 LSA 与 generic text retrieval 之间的一个 fundamental gap。标准双塔检索模型假设 query-document matching 是 position-agnostic 的 -- candidate pool 的大小不影响 scoring。但 LSA 的 query (h_t) 来自 Transformer 的 hidden state，其 position embedding 随 absolute position 变化，因此 training distribution 外的 position 导致 hidden state 的 OOD shift，进而 corrupt 匹配分数。2x generalization 是一个经验的 "安全边际"。这暗示了 future work 可能需要相对位置编码辅助或 position-aware 的 dual-encoder 设计。
+> **消融解读 -- 长度泛化上限**: 这是 LSA 与通用文本检索之间的一个根本性差距。标准双塔检索模型假设查询-文档匹配是与位置无关的——候选池的大小不影响打分。但 LSA 的查询（h_t）来自 Transformer 的隐藏状态，其位置编码随绝对位置变化，因此训练分布外的位置导致隐藏状态的分布外偏移，进而破坏匹配分数。2 倍泛化是一个经验的"安全边际"。这暗示了未来工作可能需要相对位置编码辅助或位置感知的双编码器设计。
 
 ## 🔖 Summary
 

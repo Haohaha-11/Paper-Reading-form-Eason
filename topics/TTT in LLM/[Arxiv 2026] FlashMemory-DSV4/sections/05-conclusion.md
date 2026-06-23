@@ -12,14 +12,14 @@ In this report, we have presented FlashMemory-DeepSeek-V4, an LLM augmented with
 
 We emphasize that the architecture, training pipeline, and hyperparameters of FlashMemory-DeepSeek-V4 are severely constrained by computational resources and the unexpected suspension of the project. The indexer was trained with frozen key representations, shallow dot-product interaction, and no end-to-end joint optimization with the backbone -- design choices dictated by resource availability rather than optimality. Nevertheless, the results achieved under these constraints make us highly confident in the vast potential for improvement that remains: FlashMemory-DeepSeek-V4, in its current form, is merely the first glimpse of what LSA can achieve for ultra-long-context intelligence.
 
-> **Q&A 批注记录**: 这个结论有异于大多数 paper 的 "triumphal" 语调。作者坦率承认当前结果是资源受限下的 "lower bound"，并明确列出了三项未实现但高度 promising 的改进方向（来自 Section 3.3.2 的 roadmap）：
-> 1. **优化 Frozen Key Representations**: 当前只训练 query encoder，同时 fine-tune compressed indexer keys 可能大幅提升 matching 精度。
-> 2. **引入 Late-Interaction Architecture**: ColBERT-style token-level cross-matching 替代 coarse dot-product 可能解决 MRCR 类 dense-memory 任务的崩溃问题。
-> 3. **End-to-End Joint Optimization**: 利用 backbone 的 autoregressive loss 进行在线 fine-tuning 使 indexer 适应 live decoding 的分布偏移。
+> **Q&A 批注记录**: 这个结论有异于大多数论文的"胜利主义"语调。作者坦率承认当前结果是资源受限下的"下界"，并明确列出了三项未实现但高度有前景的改进方向（来自 Section 3.3.2 的路线图）：
+> 1. **优化冻结的 Key 表示**: 当前只训练查询编码器，同时微调压缩索引器 keys 可能大幅提升匹配精度。
+> 2. **引入 Late-Interaction 架构**: ColBERT 风格的 token 级交叉匹配替代粗粒度点积可能解决 MRCR 类密集记忆任务的崩溃问题。
+> 3. **端到端联合优化**: 利用骨干模型的自回归损失进行在线微调，使索引器适应实时解码的分布偏移。
 >
-> 这三个方向各自解决 LSA 的一个已知 failure mode，且彼此正交可叠加。这种 "this is a lower bound, here's exactly how to improve it" 的 framing 在技术报告中非常罕见，体现了作者对 open research community 的诚意。
+> 这三个方向各自解决 LSA 的一个已知失败模式，且彼此正交可叠加。这种"这是下界，这里就是具体改进方案"的框架在技术报告中非常罕见，体现了作者对开放研究社区的诚意。
 
-> **问题动机**: 论文最终传达的核心信息：当前的 LSA 实现是一个 "existence proof" -- 证明了 predictive KV cache retrieval 在保持精度前提下可以极大压缩 GPU 内存，即使是在极度受限的训练条件下（frozen keys, shallow interaction, no joint training）。如果未来的工作在去除这些限制后能进一步提升，长上下文推理的 memory wall 可能从根本上被攻克。
+> **问题动机**: 论文最终传达的核心信息：当前的 LSA 实现是一个"存在性证明"——证明了预测性 KV Cache 检索在保持精度前提下可以极大压缩 GPU 内存，即使是在极度受限的训练条件下（冻结的 keys、浅层交互、无联合训练）。如果未来的工作在去除这些限制后能进一步提升，长上下文推理的内存墙可能从根本上被攻克。
 
 ## References
 

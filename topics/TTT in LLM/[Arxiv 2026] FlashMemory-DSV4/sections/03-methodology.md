@@ -42,9 +42,9 @@ where C^{Comp} denotes the pre-computed compressed KV entries. Once the query-cr
 
 The selected C_i^{CoreComp} entries are then concatenated with the non-offloadable sliding window KV cache to participate in the final core attention computation. This tiered selection mechanism guarantees that the underlying FlashInfer or FlashAttention kernels operate exclusively on a highly condensed, hardware-resident active sequence footprint.
 
-> **机制拆解**: 这个两阶段筛选（Memory Indexer → Native Lightning Indexer）是 LSA 的核心引擎。第一阶段（LSA indexer）执行粗粒度的 block-level 二进制分类（需要/不需要这个 compressed chunk），阈值 0.5 作为 Sigmoid 输出的自然分界。第二阶段（native Lightning Indexer）在已筛选的子集上执行细粒度的 token-level Top-k matching。这种 tiered design 的好处是：(1) 大幅减少 FlashAttention kernel 需要处理的有效序列长度；(2) 保留了 DeepSeek-V4 原生的 fine-grained token selection 能力；(3) 两阶段的职责分离使 Memory Indexer 可以独立训练（仅需 block-level labels）。
+> **机制拆解**: 这个两阶段筛选（Memory Indexer → Native Lightning Indexer）是 LSA 的核心引擎。第一阶段（LSA 索引器）执行粗粒度的块级二进制分类（需要/不需要这个压缩 chunk），阈值 0.5 作为 Sigmoid 输出的自然分界。第二阶段（原生 Lightning Indexer）在已筛选的子集上执行细粒度的 token 级 Top-k 匹配。这种分层设计的好处是：（1）大幅减少 FlashAttention 内核需要处理的有效序列长度；（2）保留了 DeepSeek-V4 原生的细粒度 token 选择能力；（3）两阶段的职责分离使 Memory Indexer 可以独立训练（仅需块级标签）。
 
-> **公式批读** (Eq 4): I_{t,s} = σ(Σ w_{t,h} · ReLU(q_{t,h} · (K_s^{IComp})^T)) 是核心 scoring 函数。需要关注三个设计细节：(1) ReLU 内积确保只有正向匹配贡献分数（与 native Lightning Indexer 一致）；(2) w_{t,h} 作为 learnable routing weight，动态调整各 indexer head 的重要性 -- 这是一个 gating mechanism；(3) Sigmoid 将多 head 的加权求和映射到 (0,1)，直接对齐 BCE 的 binary label 空间。对比 native 版本（仅 ReLU + Top-k），LSA 多了两个自由度：head gating (w_{t,h}) 和 probabilistic thresholding (Sigmoid + 0.5)。
+> **公式批读** (Eq 4): I_{t,s} = σ(Σ w_{t,h} · ReLU(q_{t,h} · (K_s^{IComp})^T)) 是核心打分函数。需要关注三个设计细节：（1）ReLU 内积确保只有正向匹配贡献分数（与原生 Lightning Indexer 一致）；（2）w_{t,h} 作为可学习的路由权重，动态调整各索引器 head 的重要性——这是一个门控机制；（3）Sigmoid 将多 head 的加权求和映射到 (0,1)，直接对齐 BCE 的二分类标签空间。对比原生版本（仅 ReLU + Top-k），LSA 多了两个自由度：head 门控（w_{t,h}）和概率阈值化（Sigmoid + 0.5）。
 
 ## 2.2 Lookahead Dataset Construction
 
@@ -74,9 +74,9 @@ Finally, for each lookahead evaluation window triggered at decoding step t, the 
 
 By shifting from an arbitrary Top-k lookup to a consensus-driven density estimation, our pipeline isolates the true contextual backbone of the long sequence, discarding irrelevant background noise. In total, our training set comprises approximately 10,000 long documents with context lengths ranging from 16K to 512K tokens.
 
-> **机制拆解**: 这个三步过滤 pipeline 是工程贡献的精华。Naive Top-k union 会产生 10,000 positive samples/token window 的严重膨胀（因为各层各自的 Top-k entries 即使 low-probability 也被强制包含），使二分类训练几乎不可能。三步过滤的设计直觉：(1) Softmax 将原始 logits 转为有效概率分布；(2) Top-p=0.6 动态决定每层的选择门槛，避免固定 k 的 over-selection；(3) Cross-Layer Majority Voting (θ=3) 确保只有跨层达成共识的 entries 才被认定为核心 -- 单个层的 noise 被多数投票机制滤除。最终 gold label set 缩小到 ~100-1,000 per window，这是可训练的二分类数据规模。此外，数据生成在 frozen backbone 上离线完成，全程不产生额外训练成本。
+> **机制拆解**: 这个三步过滤流水线是工程贡献的精华。朴素的 Top-k 并集会为每 token 窗口产生约 10,000 个正样本的严重膨胀（因为各层各自的 Top-k entries 即使低概率也被强制包含），使二分类训练几乎不可能。三步过滤的设计直觉：（1）Softmax 将原始 logits 转为有效概率分布；（2）Top-p=0.6 动态决定每层的选择门槛，避免固定 k 的过度选择；（3）跨层多数投票（θ=3）确保只有跨层达成共识的 entries 才被认定为核心——单个层的噪声被多数投票机制滤除。最终金标签集合缩小到每窗口约 100-1,000 个，这是可训练的二分类数据规模。此外，数据生成在冻结的骨干模型上离线完成，全程不产生额外训练成本。
 
-> **Q&A 批注记录**: 为什么是 θ=3 层投票阈值？21 层 CSA 中，大部分 layers 的 attention pattern 高度相关。θ=3 是一个低门槛共识 -- 只要有 3/21 层独立选出同一 entry，就认为是可靠的。太低 (θ=1) 等同于无过滤，太高 (θ>=5) 会导致 recall 不足（很多真正有用但仅在少数层凸显的 entries 被过滤）。但作者未做 θ 的系统消融实验，这是一个待验证的超参数。
+> **Q&A 批注记录**: 为什么是 θ=3 层投票阈值？21 层 CSA 中，大部分层的注意力模式高度相关。θ=3 是一个低门槛共识——只要有 3/21 层独立选出同一 entry，就认为是可靠的。太低（θ=1）等同于无过滤，太高（θ>=5）会导致召回不足（很多真正有用但仅在少数层凸显的 entries 被过滤）。但作者未做 θ 的系统消融实验，这是一个待验证的超参数。
 
 ## 2.3 Optimization and Decoupled Training
 
@@ -94,7 +94,7 @@ Because the historical representations K_s^{IComp}, target labels Y_t^+, and lay
 
 This decoupled design significantly accelerates our research cycle. Leveraging a single cluster of 8x NVIDIA H20 GPUs, we seamlessly executed approximately 500 distinct training runs within a single week to systematically map out the optimal architecture and training strategies, a feat that would be computationally prohibitive under traditional joint end-to-end distillation.
 
-> **机制拆解**: 这是 LSA 最大的工程创新点。朴素方案需要对 backbone LLM 进行 full-model fine-tuning 或 joint distillation（千亿参数，数千 GPU hours），而 LSA 通过三个 pre-computed 静态组件 (K_s^{IComp} 作为 keys, Y_t^+ 作为 labels, h_t 作为 queries) 将 indexer 训练完全解耦为标准的 dual-encoder retrieval 训练。关键等价关系：Memory Indexer ≈ Query Encoder of Dual-Encoder；frozen K_s^{IComp} ≈ Document Embeddings。这个 reduction 使 1 GPU hour 完成训练成为可能，进而支撑了 500 次消融实验的快速迭代。
+> **机制拆解**: 这是 LSA 最大的工程创新点。朴素方案需要对骨干 LLM 进行全模型微调或联合蒸馏（千亿参数，数千 GPU 小时），而 LSA 通过三个预计算的静态组件（K_s^{IComp} 作为 keys、Y_t^+ 作为 labels、h_t 作为 queries）将索引器训练完全解耦为标准的双编码器检索训练。关键等价关系：Memory Indexer ≈ 双编码器的查询编码器；frozen K_s^{IComp} ≈ 文档嵌入向量。这个约化使 1 个 GPU 小时完成训练成为可能，进而支撑了 500 次消融实验的快速迭代。
 
 ## 2.4 Architectural Optimal Configuration
 
@@ -108,7 +108,7 @@ Through extensive Pareto-frontier optimization, we established that placing inde
 
 This 3-layer consensus framework provides an exceptionally robust fallback protection boundary.
 
-> **消融解读**: 层选择是 LSA 的 critical design choice。早期浅层 (layers 1-5) 表征的是 low-level token statistics，缺乏长程语义依赖的 mature awareness，因此不适用于 lookahead prediction。单层 retriever 的 recall 产能不足（无法覆盖多样化负载）；8 层导致过召回（30%-49% chunks fetched → memory savings 消失）。3 层 OR-mode 策略的精妙之处在于：每一层提供互补的召回信号（不同层关注不同语义粒度的上下文模式），OR 聚合提供 recall safety net（层 10 漏掉的由层 12 或 20 补上），同时整体 recall mask 仍然紧缩（远低于 30%）。注意层号 (10, 12, 20) 是相对靠后的 intermediate-to-deep 层，符合 "possess mature global context awareness" 的设计原则。
+> **消融解读**: 层选择是 LSA 的关键设计选择。早期浅层（层 1-5）表征的是低级 token 统计信息，缺乏长程语义依赖的成熟感知能力，因此不适用于前瞻预测。单层检索器的召回产能不足（无法覆盖多样化负载）；8 层导致过召回（30%-49% chunks 被获取 → 内存节省收益消失）。3 层 OR 模式策略的精妙之处在于：每一层提供互补的召回信号（不同层关注不同语义粒度的上下文模式），OR 聚合提供召回安全网（层 10 漏掉的由层 12 或 20 补上），同时整体召回掩码仍然紧缩（远低于 30%）。注意层号（10、12、20）是相对靠后的中深层，符合"具备成熟的全局上下文感知能力"的设计原则。
 
 Our final production model instantiation is built upon this optimal 3-layer geometry and optimized via a carefully curated combination of effective training strategies:
 
@@ -116,7 +116,7 @@ Our final production model instantiation is built upon this optimal 3-layer geom
 
 - **Query Low-Rank Conditioning**: We leverage the native low-rank query projection geometry of the DeepSeek-V4 architecture. In DeepSeek's MLA/MQA design, the query vector is projected through an internal low-rank bottleneck (officially designated q_lora_rank in the DeepSeek-V3 codebase, where the default is 1536). In our implementation, we set this internal projection dimension to r = 2048 for the R-series configuration. This is not PEFT-style LoRA fine-tuning (which typically uses ranks of 8-64 to learn small perturbations on frozen weights); rather, it is a fixed architectural dimension of the model's attention backbone that determines the representational capacity of the query encoder. Increasing this rank directly expands the spatial projection capacity of the lookahead indexer without introducing any adapter overhead.
 
-> **公式批读**: 关于 r=2048 的设计选择。需要区分两类 "low-rank"：(1) PEFT-style LoRA (r=8-64) 是在 frozen weights 上学习 small perturbations，用于 fine-tuning 阶段；(2) MLA/MQA 的 q_lora_rank (r=2048) 是 attention backbone 的固定架构维度，决定了 query encoder 的表示容量。LSA 选择全秩（2048 vs native 1536）而非低秩微调，因为 Memory Indexer 的训练是 scratch initialization 而非从 checkpoint 微调。这是一个架构参数（architectural dimension）而非训练参数（trainable dimension），所以增加 rank 直接扩展 projection capacity，没有额外 adapter overhead。
+> **公式批读**: 关于 r=2048 的设计选择。需要区分两类"低秩"：（1）PEFT 风格的 LoRA（r=8-64）是在冻结权重上学习小扰动，用于微调阶段；（2）MLA/MQA 的 q_lora_rank（r=2048）是注意力骨干的固定架构维度，决定了查询编码器的表示容量。LSA 选择全秩（2048 vs 原生 1536）而非低秩微调，因为 Memory Indexer 的训练是从头初始化而非从 checkpoint 微调。这是一个架构参数而非训练参数，所以增加 rank 直接扩展投影容量，没有额外的适配器开销。
 
 - **Focal Loss Denoising**: To prevent easy negative samples from dominating the gradients, we replace standard BCE with a sample-weighted Focal Loss. Let p_{t,s} ∈ [0, 1] denote the Sigmoid-activated indexer score and y_{t,s} ∈ {0, 1} the binary label. We first compute the predicted confidence on the correct class:
 
@@ -146,7 +146,7 @@ Conversely, multiple popular retrieval and contrastive learning tricks proved to
 
 **Note on Hyperparameter Selection.** Due to the unexpected suspension of this project, we were unable to conduct systematic ablation studies on several key hyperparameters. Specifically, the decoding interval τ = 64 and the classification threshold of 0.5 were selected based on initial exploratory runs but remain untested across alternative values. The 3-layer configuration (layers 10, 12, 20) was determined through the 500-run Pareto sweep described in Section 2.4; however, a more fine-grained layer-wise ablation would be desirable for future work.
 
-> **Q&A 批注记录**: 作者坦诚指出了几个未被充分消融的关键超参：(1) τ=64 作为解码间隔 -- 更短的 τ 增加预测频率和准确性但提升 overhead，更长的 τ 降低成本但增加 recall risk；(2) threshold=0.5 -- 这是 Sigmoid 的自然中点，但可能不是最优的 precision-recall operating point。这为后续研究者提供了明确的可改进方向。
+> **Q&A 批注记录**: 作者坦诚指出了几个未被充分消融的关键超参：（1）τ=64 作为解码间隔——更短的 τ 增加预测频率和准确性但提升开销，更长的 τ 降低成本但增加召回风险；（2）threshold=0.5——这是 Sigmoid 的自然中点，但可能不是最优的精度-召回操作点。这为后续研究者提供了明确的可改进方向。
 
 ## 🔖 Summary
 
