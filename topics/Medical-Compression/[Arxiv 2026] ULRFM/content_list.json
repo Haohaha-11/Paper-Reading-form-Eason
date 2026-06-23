@@ -1,0 +1,97 @@
+[
+  {
+    "page": 1,
+    "type": "image",
+    "img_path": "images/page1_img1.jpeg"
+  },
+  {
+    "page": 1,
+    "type": "image",
+    "img_path": "images/page1_img2.jpeg"
+  },
+  {
+    "page": 3,
+    "type": "image",
+    "img_path": "images/page3_img1.jpeg"
+  },
+  {
+    "page": 3,
+    "type": "image",
+    "img_path": "images/page3_img2.png"
+  },
+  {
+    "page": 3,
+    "type": "image",
+    "img_path": "images/page3_img3.png"
+  },
+  {
+    "page": 3,
+    "type": "image",
+    "img_path": "images/page3_img4.png"
+  },
+  {
+    "page": 3,
+    "type": "image",
+    "img_path": "images/page3_img5.png"
+  },
+  {
+    "page": 3,
+    "type": "image",
+    "img_path": "images/page3_img6.png"
+  },
+  {
+    "page": 3,
+    "type": "image",
+    "img_path": "images/page3_img7.png"
+  },
+  {
+    "page": 3,
+    "type": "image",
+    "img_path": "images/page3_img8.png"
+  },
+  {
+    "page": 3,
+    "type": "image",
+    "img_path": "images/page3_img9.png"
+  },
+  {
+    "page": 3,
+    "type": "image",
+    "img_path": "images/page3_img10.png"
+  },
+  {
+    "page": 3,
+    "type": "image",
+    "img_path": "images/page3_img11.png"
+  },
+  {
+    "page": 3,
+    "type": "image",
+    "img_path": "images/page3_img12.png"
+  },
+  {
+    "page": 4,
+    "type": "image",
+    "img_path": "images/page4_img1.jpeg"
+  },
+  {
+    "page": 4,
+    "type": "image",
+    "img_path": "images/page4_img2.jpeg"
+  },
+  {
+    "page": 6,
+    "type": "image",
+    "img_path": "images/page6_img1.jpeg"
+  },
+  {
+    "page": 8,
+    "type": "image",
+    "img_path": "images/page8_img1.jpeg"
+  },
+  {
+    "page": 9,
+    "type": "image",
+    "img_path": "images/page9_img1.jpeg"
+  }
+]

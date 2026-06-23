@@ -16,6 +16,8 @@ Haojiang 的文献阅读仓库，按课题组织。每篇论文都有「批读�
 | 2025-06-23 | [MedMO](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20MedMO/) | VisMem for Med Image | ⏳ 待读 | - |
 | 2025-06-23 | [TissueWSI](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202026%5D%20TissueWSI/) | Whole Slide Image Analysis | ⏳ 待读 | - |
 | 2025-06-23 | [FlashMemory-DSV4](./topics/TTT%20in%20LLM/%5BArxiv%202026%5D%20FlashMemory-DSV4/) | TTT in LLM | ⏳ 待读 | - |
+| 2025-06-23 | [ULRFM](./topics/Medical-Compression/%5BArxiv%202026%5D%20ULRFM/) | Medical Compression | ⏳ 待读 | - |
+| 2025-06-23 | [PathoLIC](./topics/Medical-Compression/%5BArxiv%202026%5D%20PathoLIC/) | Medical Compression | ⏳ 待读 | - |
 
 ---
 
@@ -95,6 +97,8 @@ LLM latent reasoning / cache augmentation / CoT compression：把额外推理、
 | [NIC](./topics/Medical-Compression/%5BTPAMI%202020%5D%20NIC/) | IEEE TPAMI 2020 | NIC 把 gigapixel WSI patch 编成低维 embedding 网格，让 CNN 在压缩表示上用弱图像级标签完成分类、回归和可视化定位。 |
 | [CAR](./topics/Medical-Compression/%5BTIP%202020%5D%20CAR/) | IEEE TIP 2020 | CAR 学习内容自适应下采样 kernel 与 offsets，并用 SRNet 反向指导低分辨率图像保留可恢复细节。 |
 | [SAMPath](./topics/Medical-Compression/%5BArxiv%202025%5D%20SAMPath/) | Arxiv 2025 | SAMPath 用自然语言驱动病理图像分割，将 SAM 扩展到病理领域实现文本提示的任意分割。 |
+| [ULRFM](./topics/Medical-Compression/%5BArxiv%202026%5D%20ULRFM/) | MedIA 2026 | ULRFM 用 Transformer 上下文建模对病理 JPEG 做无损再压缩，9M+ tile 训练，最高减容 34.13%。 |
+| [PathoLIC](./topics/Medical-Compression/%5BArxiv%202026%5D%20PathoLIC/) | MedIA 2026 | PathoLIC 内容感知可变码率病理压缩，诊断区高保真、背景区高压缩，超 Aperio SVS 8×。 |
 
 📖 [Medical Compression 详细总结](./topics/Medical-Compression/README.md)
 
