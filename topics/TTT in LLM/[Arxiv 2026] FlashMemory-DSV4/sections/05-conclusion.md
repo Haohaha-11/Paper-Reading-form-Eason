@@ -4,7 +4,7 @@
 
 ## 📌 Preview
 
-Summarizes the FlashMemory-DeepSeek-V4 system and its achievements, while humbly acknowledging that the current results are a lower-bound constrained by resource limitations and project suspension -- framing the work as a "first glimpse" of LSA's potential.
+总结 FlashMemory-DeepSeek-V4 系统及其成就，同时谦逊地承认当前结果是受资源限制和项目暂停约束的下限——将工作定位为 LSA 潜力的"初次一瞥"。
 
 ---
 
@@ -37,4 +37,4 @@ We emphasize that the architecture, training pipeline, and hyperparameters of Fl
 
 ## 🔖 Summary
 
-The conclusion positions FM-DS-V4 as a proof-of-concept that establishes the viability of predictive KV cache retrieval for long-context LLM serving, even with severe resource constraints. The honest acknowledgment of limitations and the clear three-item future roadmap transforms what could have been a "suspended project post-mortem" into a valuable research artifact with actionable next steps for the community.
+结论将 FM-DS-V4 定位为概念验证（proof-of-concept），确立了预测性 KV Cache 检索在长上下文 LLM 服务中的可行性，即使在严重的资源约束下。对局限性的坦诚承认和清晰的三项未来路线图，将原本可能是"暂停项目的事后总结"转化为一件有价值的研究成果，为社区提供了可操作的后续步骤。

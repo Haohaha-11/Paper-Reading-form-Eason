@@ -4,7 +4,7 @@
 
 ## 📌 Preview
 
-Comprehensive evaluation across four families of benchmarks: (1) Medical VQA (7 datasets), (2) Text QA (8 datasets), (3) Report Generation (4 datasets with semantic + model-based metrics), (4) Grounding (6 tasks). MedMO-8B-Next achieves the best VQA avg 72.7% and text QA avg 60.1%. Ablation studies validate contributions of each post-training stage and the bounding-box reward. 64x AMD MI210 GPUs, 25-day training.
+全面评估涵盖四类基准：(1) 医学 VQA（7 个数据集），(2) 文本 QA（8 个数据集），(3) 报告生成（4 个数据集，使用语义 + 模型评估指标），(4) Grounding（6 个任务）。MedMO-8B-Next 取得最佳 VQA 平均分 72.7% 和文本 QA 平均分 60.1%。消融研究验证了每个后训练阶段和边界框奖励的贡献。训练使用 64 块 AMD MI210 GPU，耗时 25 天。
 
 ---
 
@@ -151,7 +151,7 @@ Table 4 shows consistent gains after reinforcement learning, confirming the effe
 
 ## 🔖 Summary
 
-MedMO's experiments are comprehensive and transparent. The four evaluation families (VQA, QA, Report, Grounding) cover the full spectrum of medical MLLM capabilities. The most impressive results are in multi-modal report generation (3x CIDEr on Med-Trinity) and grounding (unlocking DeepLesion from 0 to 38.5 IoU). Stage-wise ablation confirms each training phase provides independent value. The bounding-box reward ablation, while limited to three datasets, shows clear monotonic gains, particularly on the hardest task (NIH).
+MedMO 的实验全面且透明。四类评估（VQA、QA、报告生成、Grounding）覆盖了医学 MLLM 能力的全谱。最令人印象深刻的结果是多模态报告生成（Med-Trinity 上 3 倍 CIDEr）和 grounding（将 DeepLesion 从 0 解锁至 38.5 IoU）。分阶段消融证实每个训练阶段都有独立价值。边界框奖励消融虽仅限于三个数据集，但展示了明确的单调提升，尤其是在最难的任务（NIH）上。
 
 > 💡 **Q&A 批注记录**: 
 > - **Q**: "为什么 RL 阶段的提升看起来不大（Table 4），但论文仍然强调 RL 的重要性？"

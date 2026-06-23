@@ -236,4 +236,4 @@ In contrast, VST-7B employs streaming thinking to continuously update its eviden
 > - Q: Video-R1 和 VST 的 QA Latency 对比是否公平？Video-R1 的 CoT 可以视为 VST 的 streaming thinking 的总和吗？
 > - A: 不完全等价。Video-R1 的 post-query CoT 是一次性生成长段推理文本，而 VST 的 streaming thinking 是多次短段生成且被视频播放间隙覆盖。从"总计算量"角度看两者可能相近（都需要生成推理 token），但从"用户体感延迟"角度看 VST 远优于 Video-R1。这个对比的目的是证明"计算前置"的工程设计价值。
 
-🔖 **Summary**: VST-7B achieves SOTA on online benchmarks (StreamingBench 79.5%, OVO-Bench 59.3%) while maintaining competitive offline performance (VideoHolmes 41.9%, +5.4% over Video-R1). Ablations reveal VST-SFT primarily benefits backward memory (+9.2%) and VST-RL benefits forward prediction (+12.7%), with their combination yielding best overall results. VST responds 15.7x faster than Video-R1 and scales effectively from 3B to 32B parameters.
+🔖 **Summary**: VST-7B 在在线基准测试上达到 SOTA（StreamingBench 79.5%，OVO-Bench 59.3%），同时离线性能保持竞争力（VideoHolmes 41.9%，比 Video-R1 高 +5.4%）。消融实验揭示 VST-SFT 主要提升 Backward 记忆（+9.2%），VST-RL 主要提升 Forward 预测（+12.7%），两者结合取得最优综合结果。VST 比 Video-R1 快 15.7 倍，且从 3B 到 32B 参数规模均有效扩展。

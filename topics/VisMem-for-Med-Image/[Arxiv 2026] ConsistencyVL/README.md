@@ -10,138 +10,138 @@
 
 ---
 
-## One-Sentence Summary
+## 一句话总结
 
-This paper systematically demonstrates that spatial attention patterns in Vision-Language Models (VLMs) have near-zero correlation with output correctness (R ~ 0.001), and instead, reliability signals are best captured by generation-time dynamics (Self-Consistency, R = 0.429) and hidden-state probes (AUROC > 0.95), revealing a fundamental "Symbolic Detachment" between visual grounding and truthful generation.
-
----
-
-## Key Contributions
-
-1. **"Cluster Failure" Discovery:** Spatial attention metrics (cluster count C_k, spatial entropy H_s) show near-zero correlation (R ~ 0.001) with correctness across three VLM families (LLaVA-1.5, PaliGemma, Qwen2-VL), directly refuting the widely-held "Attention-Confidence Assumption."
-
-2. **"Symbolic Detachment" Mechanism:** Layer-wise attention evolution analysis reveals "Early Locking" -- models sharpen visual attention early but later diffuse it, severing the link between perception and generation. This explains why attention maps are statistically orthogonal to truth.
-
-3. **Hidden-State Probes as Reliability Detectors:** Trained probes on internal hidden states achieve AUROC > 0.95 for predicting answer correctness in single-pass inference, drastically outperforming attention-based metrics (AUROC ~ 0.50) and output confidence (AUROC ~ 0.54).
-
-4. **Architectural Divergence in Causal Robustness:** Large-scale ablation reveals that LLaVA relies on fragile, localized late-stage bottleneck neurons (ablation of just 5 neurons drops object-ID accuracy by 8.3pp), while PaliGemma and Qwen2-VL distribute reliability globally, remaining robust even when > 50% of neurons in predictive layers are destroyed.
-
-5. **Self-Consistency as Gold Standard Behavioral Signal:** Agreement across K=10 sampled reasoning paths (R = 0.429, AUROC = 0.78-0.81) emerges as the strongest behavioral reliability signal, though at 10x inference cost. Hidden-state probes achieve higher AUROC (up to 0.971) at single-pass cost.
+本文系统性地证明了视觉语言模型（VLM）中的空间注意力模式与输出正确性之间近乎零相关（R ≈ 0.001）；相反，可信度信号最优的捕获方式是生成时动态（Self-Consistency，R = 0.429）和隐藏状态探针（AUROC > 0.95），揭示出视觉定位与真实生成之间存在根本性的"Symbolic Detachment"（符号性脱钩）。
 
 ---
 
-## Section Navigation
+## 核心贡献
 
-| Section | File | Description |
+1. **"Cluster Failure" 发现：** 空间注意力指标（聚类数 C_k、空间熵 H_s）在三族 VLM（LLaVA-1.5、PaliGemma、Qwen2-VL）中与正确性的相关性接近零（R ≈ 0.001），直接反驳了被广泛接受的"Attention-Confidence Assumption"（注意力-置信度假定）。
+
+2. **"Symbolic Detachment" 机制：** 逐层注意力演化分析揭示了"Early Locking"——模型在早期就锐化了视觉注意力，但在后期却将其扩散，切断了感知与生成之间的联系。这解释了为什么注意力图在统计上与正确答案正交。
+
+3. **隐藏状态探针作为可信度检测器：** 在内部隐藏状态上训练的探针在单次推理中实现了 AUROC > 0.95 的答案正确性预测，大幅超越基于注意力的指标（AUROC ≈ 0.50）和输出置信度（AUROC ≈ 0.54）。
+
+4. **因果鲁棒性的架构分化：** 大规模消融实验揭示，LLaVA 依赖脆弱、局部的后期瓶颈神经元（仅消融 5 个神经元，对象识别准确率即下降 8.3pp），而 PaliGemma 和 Qwen2-VL 将可信度分布到全局，即使在预测层中摧毁超过 50% 的神经元仍保持鲁棒。
+
+5. **Self-Consistency 作为金标准行为信号：** K=10 条采样推理路径的一致性（R = 0.429，AUROC = 0.78-0.81）是最强的行为可信度信号，尽管推理成本为 10 倍。隐藏状态探针在单次推理成本下实现了更高的 AUROC（最高 0.971）。
+
+---
+
+## 📖 批读导航
+
+| 章节 | 文件 | 说明 |
 |---------|------|-------------|
-| Abstract | [00-abstract.md](sections/00-abstract.md) | Full abstract with annotations |
-| 1. Introduction | [01-introduction.md](sections/01-introduction.md) | Problem motivation and the Attention-Confidence Assumption |
-| 2. Related Work | [02-related-work.md](sections/02-related-work.md) | VLMs, hallucination, interpretability, language prior |
-| 3. Methodology | [03-methodology.md](sections/03-methodology.md) | VRP framework: Structural vs. Consistency hypotheses |
-| 4. Experiments | [04-experiments.md](sections/04-experiments.md) | Full results: attention failure, logit lens, sparse circuits, reliability prediction |
-| 5. Conclusion | [05-conclusion.md](sections/05-conclusion.md) | Summary, limitations, future work |
+| Abstract | [00-abstract.md](sections/00-abstract.md) | 带批注的完整摘要 |
+| 1. Introduction | [01-introduction.md](sections/01-introduction.md) | 问题动机与注意力-置信度假定 |
+| 2. Related Work | [02-related-work.md](sections/02-related-work.md) | VLM、幻觉、可解释性、语言先验 |
+| 3. Methodology | [03-methodology.md](sections/03-methodology.md) | VRP框架：结构假设 vs 一致性假设 |
+| 4. Experiments | [04-experiments.md](sections/04-experiments.md) | 完整结果：注意力失败、logit lens、稀疏电路、可信度预测 |
+| 5. Conclusion | [05-conclusion.md](sections/05-conclusion.md) | 总结、局限性、未来工作 |
 
 ---
 
-## Key Numbers
+## 关键数字
 
-| Metric | Value | Context |
+| 指标 | 数值 | 上下文 |
 |--------|-------|---------|
-| R(C_k, y) -- Cluster Count vs. Correctness | 0.001 (95% CI [-0.034, 0.036]) | Near-zero correlation, p > 0.05 |
-| R(H_s, y) -- Spatial Entropy vs. Correctness | -0.012 (95% CI [-0.047, 0.024]) | Statistically indistinguishable from noise |
-| Self-Consistency (SC) R | 0.429 | Strongest behavioral reliability signal |
-| Precision at SC=1 | 90.8% (95% CI [88.4, 92.8]%) | High precision when all 10 samples agree |
-| Hidden-State Probe AUROC (LLaVA) | 0.956 (POPE) | Near-perfect reliability discrimination |
-| Hidden-State Probe AUROC (Qwen2-VL) | 0.971 (POPE) | Best single-pass reliability detector |
-| Supervised Attention Probe AUROC | 0.725 | Attention carries limited signal |
-| Spatial Attention AUROC | 0.50 | Random-chance level |
-| Logit Entropy AUROC | 0.50-0.52 | Poor calibration baseline |
-| Output Confidence AUROC | 0.54 | Marginally above random |
-| MLP Contribution to Margin Growth (LLaVA) | 82.1% | Reliability driven by feature processing, not routing |
-| LLaVA Accuracy Drop (top-5 neurons ablated, Object ID) | -8.3pp | Fragile localized bottleneck |
-| PaliGemma Accuracy Drop (1000/2048 neurons ablated) | -1.0pp | Highly distributed, robust |
-| Qwen2-VL Accuracy Change (2000/3584 neurons ablated) | +2.0pp (within noise) | Extreme resilience |
-| Qwen2-VL on POPE | 28.8% accuracy | Severely miscalibrated (caution: low model accuracy may inflate probe AUROC) |
-| Pooled Structural-Analysis Set | n = 3,090 | POPE + LLaVA-Bench + custom tasks |
-| Self-Consistency Cost | 10x inference | K=10 samples with nucleus sampling (p=0.9, T=0.7) |
+| R(C_k, y) -- 聚类数 vs 正确性 | 0.001 (95% CI [-0.034, 0.036]) | 近零相关，p > 0.05 |
+| R(H_s, y) -- 空间熵 vs 正确性 | -0.012 (95% CI [-0.047, 0.024]) | 统计上无法区分于噪声 |
+| Self-Consistency (SC) R | 0.429 | 最强的行为可信度信号 |
+| SC=1 时的精度 | 90.8% (95% CI [88.4, 92.8]%) | 10条样本全部一致时的高精度 |
+| 隐藏状态探针 AUROC (LLaVA) | 0.956 (POPE) | 近乎完美的可信度鉴别 |
+| 隐藏状态探针 AUROC (Qwen2-VL) | 0.971 (POPE) | 最佳单次推理可信度检测器 |
+| 监督注意力探针 AUROC | 0.725 | 注意力携带有限信号 |
+| 空间注意力 AUROC | 0.50 | 随机猜测水平 |
+| Logit Entropy AUROC | 0.50-0.52 | 校准能力差，作为基线 |
+| 输出置信度 AUROC | 0.54 | 略高于随机 |
+| MLP 对 Margin 增长的贡献 (LLaVA) | 82.1% | 可信度由特征处理驱动，而非路由 |
+| LLaVA 准确率下降 (消融 top-5 神经元，对象识别) | -8.3pp | 脆弱的局部瓶颈 |
+| PaliGemma 准确率下降 (消融1000/2048神经元) | -1.0pp | 高度分布式，鲁棒 |
+| Qwen2-VL 准确率变化 (消融2000/3584神经元) | +2.0pp (在噪声范围内) | 极端弹性 |
+| Qwen2-VL 在 POPE 上 | 28.8% 准确率 | 严重失校准（注意：低模型准确率可能夸大探针 AUROC） |
+| 聚合结构分析集 | n = 3,090 | POPE + LLaVA-Bench + 自定义任务 |
+| Self-Consistency 成本 | 10x 推理 | K=10 条样本，核采样 (p=0.9, T=0.7) |
 
 ---
 
-## Data Flow: Input -> Intermediate -> Output
+## 数据流：输入 → 中间表示 → 输出
 
 ```
-[Image + Question]
+[图像 + 问题]
        |
        v
-[Stage 1: Structural Metrics]
-  - Extract cross-attention maps A^{(l,h)} from visual encoder
-  - Average over heads & answer-token positions -> per-layer spatial vector m^{(l)} in R^S
-  - Compute: Cluster Count (C_k), Spatial Entropy (H_s), Attention Evolution (ΔH_s)
-  - Output: Structural reliability scores (FAIL: R^2 < 0.08)
+[阶段 1：结构指标]
+  - 从视觉编码器提取交叉注意力图 A^{(l,h)}
+  - 对注意力头及答案token位置取平均 → 逐层空间向量 m^{(l)} ∈ R^S
+  - 计算：聚类数 (C_k)、空间熵 (H_s)、注意力演化 (ΔH_s)
+  - 输出：结构可信度分数（失败：R^2 < 0.08）
        |
        v
-[Stage 2: Mechanistic Probes]
-  - Logit Lens: Project hidden state h_l to vocabulary space
-  - Compute Truth Margin ΔM_l = logit(correct) - logit(top incorrect)
-  - Train: Dense MLP probes + Sparse L1-logistic probes on hidden states
-  - Identify predictive neurons (success/failure neurons)
-  - Causal ablation: Zero out identified neurons, measure accuracy impact
-  - Output: Reliability prediction scores (SUCCEED: AUROC up to 0.971)
+[阶段 2：机制探针]
+  - Logit Lens：将隐藏状态 h_l 投影到词表空间
+  - 计算 Truth Margin ΔM_l = logit(正确答案) - logit(最高错误答案)
+  - 训练：密集 MLP 探针 + 稀疏 L1-logistic 探针（作用于隐藏状态）
+  - 识别预测性神经元（成功/失败神经元）
+  - 因果消融：将识别的神经元置零，测量准确率影响
+  - 输出：可信度预测分数（成功：AUROC 最高 0.971）
        |
        v
-[Stage 3: Behavioral Metrics]
-  - Sample K=10 reasoning paths (nucleus sampling p=0.9, T=0.7)
-  - Compute Self-Consistency = agreement rate across samples
-  - Output: Behavioral reliability score (SUCCEED: R = 0.429, AUROC 0.78-0.81)
+[阶段 3：行为指标]
+  - 采样 K=10 条推理路径（核采样 p=0.9, T=0.7）
+  - 计算 Self-Consistency = 各样本之间的回答一致率
+  - 输出：行为可信度分数（成功：R = 0.429, AUROC 0.78-0.81）
        |
        v
-[Final Prediction: Is this answer reliable?]
-  - Best single-pass: Hidden-state probe (AUROC 0.95+)
-  - Best behavioral: Self-Consistency (10x cost, R = 0.429)
-  - Do NOT use: Attention map sharpness / cluster count (AUROC = 0.50)
+[最终判断：该回答可信吗？]
+  - 最佳单次推理：隐藏状态探针（AUROC 0.95+）
+  - 最佳行为信号：Self-Consistency（10倍成本，R = 0.429）
+  - 不要使用：注意力图锐度 / 聚类数（AUROC = 0.50）
 ```
 
 ---
 
-## Pros & Cons
+## 优缺点与还能做什么
 
-### Pros
-- **Rigorous cross-family design:** Tests three architecturally diverse VLM families (prefix-based LLaVA, early-fusion PaliGemma, native-multimodal Qwen2-VL), strengthening generalizability claims
-- **Multi-level analysis:** Moves from correlation (attention vs. correctness) to causation (neuron ablation) to mechanism (logit lens, sparse circuits), forming a complete scientific narrative
-- **Practical implications clear:** Hidden-state probes offer single-pass reliability at near-zero overhead, directly actionable for deployment
-- **Negative results well-documented:** "Cluster Failure" and attention failures are statistically validated with confidence intervals and supervised stress tests
-- **Honest positioning:** Authors explicitly state that attention-failure and self-consistency are prior findings; novelty is in the unified cross-family reliability study and hidden-state probes
+### 优点
+- **严谨的跨架构设计：** 测试了三种架构各异的 VLM 家族（prefix-based 的 LLaVA、early-fusion 的 PaliGemma、native-multimodal 的 Qwen2-VL），增强了结论的泛化性
+- **多层次分析：** 从相关性（注意力 vs 正确性）推进到因果性（神经元消融）再到机制（logit lens、稀疏电路），形成了完整的科学叙事
+- **实践意义明确：** 隐藏状态探针以几乎零额外开销提供单次推理可信度评估，可直接部署落地
+- **负结果记录详实：** "Cluster Failure"和注意力失败通过置信区间和监督压力测试获得统计验证
+- **诚实的学术定位：** 作者明确指出注意力失败和 self-consistency 是已有发现；创新在于统一的跨架构可信度研究和隐藏状态探针
 
-### Cons
-- **Mid-scale models only (7B, 3B, 7B):** Larger models (LLaVA-34B, GPT-4V) may exhibit different attention-reliability relationships due to better RLHF
-- **Qwen2-VL's low accuracy (28.8% on POPE) confounds probe AUROC:** High probe AUROC (0.971) on a model that is mostly wrong raises questions about what the probe is actually detecting
-- **Effect size of neuron ablation is modest (-8.3pp on Object ID):** The causal evidence shows correlation but limited mechanistic control; neurons are "contributors" not "truth units"
-- **Limited benchmark diversity in main analysis:** POPE and LLaVA-Bench dominate; VQA v2 and TextVQA results are more mixed
-- **Self-Consistency requires 10x inference:** Impractical for real-time applications; distillation proposed but not implemented
-- **No investigation of calibration techniques:** Finetuning or RLHF could potentially align attention with reliability
-- **Probe requires labeled correctness data for training:** Not zero-shot; needs in-distribution calibration per model family
+### 局限 / 风险
+- **仅限中等规模模型（7B、3B、7B）：** 更大模型（LLaVA-34B、GPT-4V）可能由于更好的 RLHF 而表现出不同的注意力-可信度关系
+- **Qwen2-VL 的低准确率（POPE 上 28.8%）混淆了探针 AUROC：** 在一个大多时候出错的模型上，高探针 AUROC（0.971）引出了探针到底在检测什么的问题
+- **神经元消融的效应量中等（对象识别 -8.3pp）：** 因果证据显示了相关性但机制控制有限；神经元是"贡献者"而非"真理单元"
+- **主要分析中的基准多样性有限：** POPE 和 LLaVA-Bench 占主导；VQA v2 和 TextVQA 的结果更加混杂
+- **Self-Consistency 需要 10 倍推理成本：** 对实时应用不实用；蒸馏方案被提出但未实现
+- **未考察校准技术：** 微调或 RLHF 可能使注意力与可信度对齐
+- **探针需要标注正确性数据用于训练：** 非零样本方法；需要按模型家族进行分布内校准
 
 ---
 
-## Q&A Record
+## 阅读 Q&A 记录
 
-> **Q1:** If attention is causally necessary (masking top 30% attended patches drops accuracy by 8-11pp), why is it not correlated with correctness?
-> **A:** The paper draws a key distinction: attention enables *feature extraction* (causally necessary for task performance) but does not encode *uncertainty about those features* (not correlated with correctness). Think of it as: attention is the "where to look" mechanism, but knowing "where you looked" does not tell you "whether you interpreted what you saw correctly." The Symbolic Detachment phenomenon (Early Locking + Late Diffusion) means that early attention patterns become stale by the time the LLM decoder makes its decision.
+> **Q1:** 如果注意力是因果必要的（遮盖 top 30% 的高注意力 patch 会使准确率下降 8-11pp），为什么它与正确性不相关？
+> **A:** 本文给出了一个关键区分：注意力支持*特征提取*（因果上对任务性能必要），但并不编码*关于这些特征的不确定性*（与正确性不相关）。可以这样理解：注意力是"看哪里"的机制，但知道"看了哪里"并不等于知道"是否正确地理解了所见内容"。Symbolic Detachment 现象（Early Locking + Late Diffusion）意味着早期注意力模式在 LLM 解码器做出决策时早已过时。
 
-> **Q2:** Why does Qwen2-VL have such low POPE accuracy (28.8%) but the highest probe AUROC (0.971)?
-> **A:** This is a potential confounding factor the paper does not fully address. When a model is wrong most of the time, a probe that learns to detect "when the model goes against its own bias" might achieve artificially high AUROC simply by detecting rare correct answers. The authors note this as a limitation (model scale / architecture-specific effects), but the high AUROC should be interpreted with caution given the low base accuracy.
+> **Q2:** 为什么 Qwen2-VL 的 POPE 准确率如此之低（28.8%），却拥有最高的探针 AUROC（0.971）？
+> **A:** 这是本文未完全解决的一个潜在混淆因素。当一个模型大多数时候出错时，一个学会检测"模型何时违背了自身偏见"的探针，可能仅仅因为检测到了罕见的正确答案而获得了人为的高 AUROC。作者将此作为一个局限性（模型规模/架构特定效应），但鉴于低基线准确率，高 AUROC 应谨慎解读。
 
-> **Q3:** How is "self-consistency" different from simple majority voting?
-> **A:** Self-consistency (SC) here is the agreement rate across K=10 sampled reasoning paths using nucleus sampling (p=0.9, T=0.7). It is essentially majority voting with temperature-based diversity. The key insight is that when all 10 diverse samples agree, the answer is highly reliable (90.8% precision at SC=1).
+> **Q3:** "self-consistency" 与简单的多数投票有何不同？
+> **A:** 这里的 Self-Consistency（SC）是 K=10 条核采样（p=0.9, T=0.7）推理路径之间的回答一致率。本质上是通过基于温度的多样性进行多数投票。关键洞察在于：当10条多样化样本全部一致时，答案高度可信（SC=1 时精度为 90.8%）。
 
-> **Q4:** Why does PaliGemma have lower probe AUROC (0.738) compared to LLaVA/Qwen2-VL?
-> **A:** PaliGemma integrates visual evidence earlier (peak at L14) and has a shallower decoder (18 layers), leaving less late-layer separation between correct and hallucinated trajectories. This weakens probe margin contrast. LLaVA delays integration to L24-31, creating a large separation gap that probes can exploit.
+> **Q4:** 为什么 PaliGemma 的探针 AUROC（0.738）低于 LLaVA/Qwen2-VL？
+> **A:** PaliGemma 更早地集成视觉证据（峰值在 L14），且解码器更浅（18层），导致正确与幻觉轨迹在后期层面的分离空间较小，削弱了探针的 margin 对比度。LLaVA 将集成延迟到 L24-31，创造了探针可利用的巨大分离间隙。
 
-> **Q5:** Can we use hidden-state probes in a zero-shot manner across different models?
-> **A:** No. The paper recommends architecturally adaptive probing (different layer selection and probe capacity per family). Cross-family generalization of probes is not tested.
+> **Q5:** 我们可以跨不同模型以零样本方式使用隐藏状态探针吗？
+> **A:** 不能。本文推荐架构自适应的探测（每个家族不同的层选择和探针容量）。探针的跨家族泛化能力未被测试。
 
-> **Q6:** What is the Counting Anomaly and why is it significant?
-> **A:** The Counting Anomaly is a case where the visual encoder correctly identifies 3 distinct clusters in an image, but the LLM decoder outputs "Four" with 92% confidence. This vividly illustrates Symbolic Detachment: the visual system works correctly, but the linguistic projection fails. Token probability reflects fluency, not grounding.
+> **Q6:** 什么是 Counting Anomaly，为什么它很重要？
+> **A:** Counting Anomaly 是指视觉编码器正确识别了图像中的 3 个独立聚类，但 LLM 解码器以 92% 的置信度输出"Four"的案例。这生动地展示了 Symbolic Detachment：视觉系统工作正常，但语言投影失败。Token 概率反映的是流畅度而非视觉基础。
 
 ---
 

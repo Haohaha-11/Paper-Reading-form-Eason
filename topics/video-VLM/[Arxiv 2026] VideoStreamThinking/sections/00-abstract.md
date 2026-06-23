@@ -38,4 +38,4 @@ Extensive evaluations show that VST-7B performs strongly on online benchmarks, e
 > - Q: VST 的"thinking while watching"和 human cognition 有何关联？
 > - A: 作者在 Introduction 中引用了神经耦合（neural coupling）[16,36] 的研究——大脑在接收外部信息时，逻辑流与信息流入同步。VST 模仿了这一机制：在处理 incoming video clips 的同时生成 intermediate thoughts。
 
-🔖 **Summary**: VST is a paradigm that introduces synchronized logical reasoning into streaming video understanding by front-loading CoT generation to the pre-query phase, achieving both strong reasoning performance and low response latency.
+🔖 **Summary**: VST 是一种范式，通过将 CoT 推理前移至查询前阶段，为流式视频理解引入了同步的逻辑推理能力，在实现强推理性能的同时保持了低响应延迟。

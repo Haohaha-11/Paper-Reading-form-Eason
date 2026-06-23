@@ -46,4 +46,4 @@ Despite these advances, existing post-training research remains predominantly co
 > - Q: 为什么现有流式方法不直接加 CoT？
 > - A: 根本原因有两个：1) 如果 query 后再做 CoT，响应延迟不可接受（Video-R1 的 QA latency 达 8.80s vs VST 的 0.56s，差距 15.7x）；2) 流式场景的因果约束意味着你无法"回顾未来"来修正思考。VST 通过前移 CoT 到查询前解决了延迟问题，通过 streaming attention mask 解决了因果性问题。
 
-🔖 **Summary**: VST bridges two previously disconnected research directions: (1) streaming video understanding (which lacked reasoning) and (2) VideoLLM test-time scaling (which lacked streaming support). This represents the first unified framework enabling explicit CoT reasoning in online video scenarios.
+🔖 **Summary**: VST 桥接了此前互不相干的两个研究方向：(1) 流式视频理解（缺乏推理能力）和 (2) VideoLLM test-time scaling（缺乏流式支持）。这是首个在在线视频场景中实现显式 CoT 推理的统一框架。

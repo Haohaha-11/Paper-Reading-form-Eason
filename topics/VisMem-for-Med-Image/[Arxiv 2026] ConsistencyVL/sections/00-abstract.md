@@ -14,7 +14,7 @@ We challenge this assumption through VLM Reliability Probe (VRP), a systematic c
 
 Contrary to the grounding hypothesis, our results demonstrate a "Cluster Failure": spatial attention patterns possess near-zero correlation (R ≈ 0.001) with model accuracy. Instead, we find that reliability is fundamentally a phenomenon of generation dynamics and internal state distributions. Self-Consistency (SC), the agreement rate across sampled reasoning paths, emerges as the dominant predictor of truth (R = 0.429). By aggressively scaling causal interventions, we further demonstrate a massive architectural divergence: LLaVA "locks" its prediction in a fragile late-stage structural bottleneck, whereas PaliGemma and Qwen2-VL distribute reliability globally, showing extreme resilience even when ~ 50% or more of their most predictive layer is destroyed. These findings suggest that for current VLMs, reliability signals are detached from visual grounding maps, and are best inferred from generation-time dynamics and hidden-state probes.
 
-> 💡 **核心三发现概述**:
+> 💡 **机制拆解 — 核心三发现概述**:
 > 1. **Visuals Lie (视觉说谎)**: 注意力空间结构与正确性近零相关 (R ≈ 0.001)，即看对区域 ≠ 答对问题
 > 2. **Consistency Speaks (一致性说话)**: Self-Consistency (采样多条推理路径的一致性) 是最强的行为信号 (R = 0.429)
 > 3. **Causal Architectures Diverge (因果架构分化)**: LLaVA将可靠性集中在脆弱的后层瓶颈，PaliGemma/Qwen2-VL将其分布到全局，即使摧毁>50%的神经元仍保持鲁棒

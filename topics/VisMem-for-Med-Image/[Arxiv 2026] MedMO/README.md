@@ -10,146 +10,146 @@
 
 ---
 
-## One-Sentence Summary
+## 一句话总结
 
-MedMO is a fully open-source medical multimodal foundation model built on Qwen3-VL, post-trained through a four-stage progressive pipeline (large-scale alignment, high-resolution fine-tuning, instruction tuning, and GRPO-based RL with bounding-box verifiable reward) on **26M+ samples from 45 multimodal medical datasets**, achieving SOTA performance across medical VQA, text QA, report generation, and grounding tasks while supporting spatial localization with bounding boxes.
-
----
-
-## Contributions
-
-1. **Open-source Medical Foundation Model**: Developed MedMO (4B and 8B variants), a post-trained multimodal VLM that unifies visual grounding, clinical reasoning, and language understanding across radiology, pathology, ophthalmology, dermatology, CT, MRI, ultrasound, and surgical videos.
-
-2. **Large-scale Data Curation**: Assembled over **26M multimodal medical and biomedical samples** from **45 diverse open-source datasets**, spanning multiple imaging modalities and biological systems, coupled with a dedicated Cell detection benchmark from open-source microscopy images.
-
-3. **Multi-stage Post-training Pipeline**: Designed a four-stage progressive training recipe: (i) General SFT on 18.5M pairs at 768x768, (ii) High-resolution SFT on 3M samples at 1280x1280 for grounding, (iii) Instruction tuning on 4.3M multimodal QA/reasoning pairs, (iv) GRPO-based RL with a novel **Bounding Box Verifiable Reward** that combines Hungarian-matched GIoU + normalized L1 with FP/FN penalties.
-
-4. **State-of-the-Art Results**: MedMO-8B-Next surpasses Fleming-VL-8B by **+6.6% VQA average**, **+14.4% text QA average**, **+6.7% CIDEr on MIMIC-CXR**, and **+47.0 IoU on Bacteria grounding**. MedMO-4B-Next is competitive with 8B-scale baselines.
-
-5. **Comprehensive Ablation Framework**: Provides open, reproducible stage-wise ablation studies and bounding-box reward analyses, establishing benchmarks and training recipes for future medical MLLM research.
+MedMO 是一个基于 Qwen3-VL 构建的完全开源的多模态医学基础模型，通过四阶段渐进式后训练流程（大规模对齐、高分辨率微调、指令微调，以及基于 GRPO 的 RL 并采用边界框可验证奖励），在来自 **45 个多模态医学数据集的 2600 万+样本**上进行训练，在医学 VQA、文本 QA、报告生成和空间定位（grounding）任务上均达到 SOTA 表现，同时支持带边界框的空间定位。
 
 ---
 
-## Section Navigation
+## 核心贡献
+
+1. **开源医学基础模型**：开发了 MedMO（4B 和 8B 两个变体），这是一个经过后训练的多模态 VLM，统一了放射学、病理学、眼科、皮肤科、CT、MRI、超声和手术视频等领域的视觉定位、临床推理和语言理解能力。
+
+2. **大规模数据构建**：从 **45 个多样化的开源数据集**中收集了超过 **2600 万条多模态医学和生物医学样本**，涵盖多种成像模态和生物系统，并额外构建了一个基于开源显微镜图像的细胞检测评测基准。
+
+3. **多阶段后训练流程**：设计了四阶段渐进式训练方案：(i) 在 18.5M 图文对上以 768x768 分辨率进行通用 SFT，(ii) 在 3M 样本上以 1280x1280 分辨率进行高分辨率 SFT 以引入 grounding 能力，(iii) 在 4.3M 多模态 QA/推理对上进行指令微调，(iv) 基于 GRPO 的 RL，并引入了新颖的**边界框可验证奖励**（结合 Hungarian 匹配的 GIoU + 归一化 L1，以及 FP/FN 惩罚项）。
+
+4. **SOTA 结果**：MedMO-8B-Next 在 VQA 平均指标上超越 Fleming-VL-8B **+6.6%**，文本 QA 平均指标上超越 **+14.4%**，MIMIC-CXR CIDEr 上超越 **+6.7%**，Bacteria grounding IoU 上超越 **+47.0**。MedMO-4B-Next 与 8B 规模的 baseline 模型相比仍具有竞争力。
+
+5. **全面的消融框架**：提供了开放、可复现的分阶段消融研究和边界框奖励分析，为未来的医学 MLLM 研究建立了基准和训练方案参考。
+
+---
+
+## 📖 批读导航
 
 | Section | File | Description |
 |---------|------|-------------|
-| Abstract | [00-abstract.md](sections/00-abstract.md) | Paper abstract with batch-reading annotations |
-| 1. Introduction | [01-introduction.md](sections/01-introduction.md) | Motivation, gap analysis, and contributions |
-| 2. Related Work | [02-related-work.md](sections/02-related-work.md) | Medical MLLMs and grounding with multimodal models |
-| 3. Methodology | [03-methodology.md](sections/03-methodology.md) | Four-stage training pipeline, SFT, RL, bounding-box reward |
-| 4. Experiments | [04-experiments.md](sections/04-experiments.md) | Setup, datasets, SOTA results, ablation studies |
-| 5. Conclusion | [05-conclusion.md](sections/05-conclusion.md) | Summary, limitations, and future work |
+| Abstract | [00-abstract.md](sections/00-abstract.md) | 论文摘要及批读标注 |
+| 1. Introduction | [01-introduction.md](sections/01-introduction.md) | 研究动机、差距分析与核心贡献 |
+| 2. Related Work | [02-related-work.md](sections/02-related-work.md) | 医学 MLLM 与多模态模型 grounding |
+| 3. Methodology | [03-methodology.md](sections/03-methodology.md) | 四阶段训练流程、SFT、RL、边界框奖励 |
+| 4. Experiments | [04-experiments.md](sections/04-experiments.md) | 实验设置、数据集、SOTA 结果、消融研究 |
+| 5. Conclusion | [05-conclusion.md](sections/05-conclusion.md) | 总结、局限性与未来工作 |
 
 ---
 
-## Key Numbers
+## 关键数字
 
-| Metric | Value |
+| 指标 | 数值 |
 |--------|-------|
-| Base architecture | Qwen3-VL-8B-Instruct |
-| Model variants | MedMO-4B, MedMO-4B-Next, MedMO-8B, MedMO-8B-Next |
-| Total training data | **26M+ samples** from **45 datasets** |
-| Training compute | 64x AMD Instinct MI210 (64 GB), **25 days** |
-| Stage 1 (General SFT) | 18.5M pairs, 768x768, BS=10, LR=1e-5, **225 hours** |
-| Stage 2 (High-res SFT) | 3M samples, 1280x1280, BS=2, LR=8e-6, **155 hours** |
-| Stage 3 (Instruction Tuning) | 4.3M instruction pairs, BS=10, LR=5e-6, **110 hours** |
-| Stage 4 (RL/DAPO) | 300K samples, 8 generations/prompt, **98 hours** |
-| VQA Avg (MedMO-8B-Next) | **72.7%** (+6.6% vs Fleming-VL-8B) |
-| QA Avg (MedMO-8B-Next) | **60.1%** (+14.4% vs Fleming-VL-8B) |
-| MIMIC-CXR CIDEr (MedMO-8B-Next) | **143.4** |
-| Grounding Avg IoU (MedMO-8B-Next) | **56.8%** |
-| Bacteria IoU (MedMO-8B-Next) | **56.1** (+47.0 vs Fleming-VL-8B) |
+| 基础架构 | Qwen3-VL-8B-Instruct |
+| 模型变体 | MedMO-4B, MedMO-4B-Next, MedMO-8B, MedMO-8B-Next |
+| 训练数据总量 | **2600 万+样本**，来自 **45 个数据集** |
+| 训练算力 | 64x AMD Instinct MI210 (64 GB)，**25 天** |
+| Stage 1（通用 SFT） | 18.5M 图文对，768x768，BS=10，LR=1e-5，**225 小时** |
+| Stage 2（高分辨率 SFT） | 3M 样本，1280x1280，BS=2，LR=8e-6，**155 小时** |
+| Stage 3（指令微调） | 4.3M 指令对，BS=10，LR=5e-6，**110 小时** |
+| Stage 4（RL/DAPO） | 300K 样本，每 prompt 生成 8 个响应，**98 小时** |
+| VQA 平均分（MedMO-8B-Next） | **72.7%**（比 Fleming-VL-8B +6.6%） |
+| QA 平均分（MedMO-8B-Next） | **60.1%**（比 Fleming-VL-8B +14.4%） |
+| MIMIC-CXR CIDEr（MedMO-8B-Next） | **143.4** |
+| Grounding 平均 IoU（MedMO-8B-Next） | **56.8%** |
+| Bacteria IoU（MedMO-8B-Next） | **56.1**（比 Fleming-VL-8B +47.0） |
 
 ---
 
-## Data Flow: Input -> Intermediate -> Output
+## 数据流：输入 → 中间表示 → 输出
 
 ```
-[Input] Multimodal Medical Images (X-ray, CT, MRI, ultrasound, pathology, OCT, fundus, surgical, etc.)
-  + Text Queries (VQA questions, clinical prompts, report requests)
+[输入] 多模态医学图像（X 光、CT、MRI、超声、病理、OCT、眼底、手术视频等）
+  + 文本查询（VQA 问题、临床提示、报告请求）
     │
     ▼
-[Stage 1: General Medical SFT] 18.5M image-text pairs @ 768×768
-  • Vision Encoder (ViT) → Vision-Language Adapter (DeepStack) → LLM Decoder
-  • Tasks: captioning, VQA, general multimodal alignment
-  • Output: Base model with foundational medical knowledge
+[Stage 1：通用医学 SFT] 18.5M 图文对 @ 768×768
+  • 视觉编码器（ViT）→ 视觉-语言适配器（DeepStack）→ LLM 解码器
+  • 任务：图像描述、VQA、通用多模态对齐
+  • 输出：具备基础医学知识的 base 模型
     │
     ▼
-[Stage 2: High-Resolution Medical Image + Grounding SFT] 3M samples @ 1280×1280
-  • High-res expert-annotated image-text pairs
-  • Introduces bounding-box prediction for spatial grounding
-  • Tasks: captioning + VQA + supervised grounding signals
-  • Output: Spatial-aware model with localization capability
+[Stage 2：高分辨率医学图像 + Grounding SFT] 3M 样本 @ 1280×1280
+  • 高分辨率专家标注的图文对
+  • 引入边界框预测，实现空间定位能力
+  • 任务：图像描述 + VQA + 监督式 grounding 信号
+  • 输出：具备空间感知和定位能力的模型
     │
     ▼
-[Stage 3: Instruction Tuning] 4.3M instruction-response pairs
-  • Medical QA, reasoning, report summarization, retrieval
-  • Aligns responses with human-style medical reasoning
-  • Output: Clinically-aligned instruction-following model
+[Stage 3：指令微调] 4.3M 指令-响应对
+  • 医学 QA、推理、报告总结、检索
+  • 将模型响应与人类风格的医学推理对齐
+  • 输出：具备临床对齐指令遵循能力的模型
     │
     ▼
-[Stage 4: RL with Verifiable Rewards] GRPO/DAPO, 300K samples
-  • 4 reward signals: label accuracy, bounding-box GIoU, tag count, soft-overlap penalty
-  • Hungarian matching for box assignment
-  • Bounding Box Reward = clip(base - penalty)
-  • Output: MedMO (base) / MedMO-Next (with RL)
+[Stage 4：带可验证奖励的 RL] GRPO/DAPO，300K 样本
+  • 4 种奖励信号：标签准确率、边界框 GIoU、标签计数、soft-overlap 惩罚
+  • Hungarian 匹配用于边界框分配
+  • 边界框奖励 = clip(基础分 - 惩罚项)
+  • 输出：MedMO（base）/ MedMO-Next（含 RL）
     │
     ▼
-[Output] Text Responses + Bounding Box Coordinates
-  • Medical VQA answers, diagnostic reports, spatial localization
-  • Benchmark: VQA, Text QA, Report Generation (ROUGE-L, CIDEr, RaTE, Semb), Grounding (IoU)
+[输出] 文本响应 + 边界框坐标
+  • 医学 VQA 答案、诊断报告、空间定位
+  • 评测基准：VQA、文本 QA、报告生成（ROUGE-L、CIDEr、RaTE、Semb）、Grounding（IoU）
 ```
 
 ---
 
-## Pros and Cons
+## 优缺点与还能做什么
 
-### Pros
+### 优点
 
-- **Fully open-source**: All models, datasets, and training recipes are publicly released.
-- **Comprehensive multi-modality coverage**: Handles radiology, pathology, ophthalmology, dermatology, CT, MRI, ultrasound, and surgical videos -- much broader than most medical MLLMs.
-- **Built-in visual grounding**: Native bounding-box localization capability via the novel GRPO bounding-box reward, unlike most medical MLLMs that only do VQA/captioning.
-- **Efficient scaling**: MedMO-4B-Next surpasses Fleming-VL-8B on many benchmarks, demonstrating strong performance even at smaller scales.
-- **Transparent ablation**: Full stage-wise ablation studies show the contribution of each training phase.
-- **Progressive curriculum**: The four-stage pipeline is designed as a scalable roadmap from general alignment to fine-grained spatial reasoning.
+- **完全开源**：所有模型、数据集和训练方案均已公开发布。
+- **多模态覆盖全面**：涵盖放射学、病理学、眼科、皮肤科、CT、MRI、超声和手术视频，覆盖范围远超大多数医学 MLLM。
+- **原生视觉定位能力**：通过新颖的 GRPO 边界框奖励机制，具备原生边界框定位能力，区别于仅支持 VQA/图像描述的大多数医学 MLLM。
+- **高效缩放**：MedMO-4B-Next 在多个基准上超越 Fleming-VL-8B，证明了即使在较小规模下也能实现强劲性能。
+- **透明的消融分析**：完整的分阶段消融研究展示了每个训练阶段的贡献。
+- **渐进式课程设计**：四阶段流程的设计提供了一条从通用对齐到细粒度空间推理的可扩展路线图。
 
-### Cons
+### 局限 / 风险
 
-- **Catastrophic forgetting**: Stage-wise training introduces minor task-level performance shifts (e.g., Stage 1 improves on MedTrinity but degrades slightly on other datasets).
-- **IU-Xray not best**: On IU-Xray report generation, Fleming-VL-8B still leads (CIDEr 198.6 vs MedMO-8B-Next 171.9).
-- **RL overhead**: The Next variants add 98 hours of RL training, and the gains from RL are modest on some benchmarks (e.g., Qwen3VL-8B already achieves strong QA scores without RL).
-- **Limited ablation for RL reward components**: Only bounding-box reward ablation is shown; the relative contribution of tag count and soft-overlap penalty is not isolated.
-- **English-only**: No explicit multilingual evaluation for non-English clinical settings.
-- **25-day training**: Training requires substantial GPU resources (64x MI210), somewhat limiting accessibility for smaller labs.
+- **灾难性遗忘**：分阶段训练会引入轻微的任务级性能波动（例如，Stage 1 在 MedTrinity 上有所提升，但在其他数据集上略有下降）。
+- **IU-Xray 未达最优**：在 IU-Xray 报告生成上，Fleming-VL-8B 仍保持领先（CIDEr 198.6 vs MedMO-8B-Next 171.9）。
+- **RL 训练开销**：Next 变体额外增加了 98 小时的 RL 训练，且在某些基准上 RL 带来的增益有限（例如，Qwen3VL-8B 即使不经过 RL 也在 QA 上取得强劲分数）。
+- **RL 奖励组件的消融不充分**：仅展示了边界框奖励的消融；标签计数和 soft-overlap 惩罚的相对贡献未被单独分析。
+- **仅限英语**：未对非英语临床场景进行显式的多语言评估。
+- **25 天训练周期**：训练需要大量 GPU 资源（64x MI210），在一定程度上限制了小型实验室的可及性。
 
 ---
 
-## Q&A Record
+## 阅读 Q&A 记录
 
-> **Q1**: Why does MedMO use Qwen3-VL as the base instead of other VLMs?
+> **Q1**：为什么 MedMO 选择 Qwen3-VL 作为基础模型，而不是其他 VLM？
 >
-> MedMO builds on Qwen3-VL-8B-Instruct. The authors do not explicitly ablate the base model choice, but Qwen3-VL provides native dynamic-resolution processing and a DeepStack vision-language fusion mechanism, which likely facilitate the multi-scale feature alignment needed for medical grounding tasks. The strong baseline performance of Qwen3VL-8B on Text QA (53.6% avg, close to MedMO-8B at 61.3%) also suggests it is a capable starting point.
+> MedMO 基于 Qwen3-VL-8B-Instruct 构建。作者未对基础模型的选择进行显式消融分析，但 Qwen3-VL 提供了原生的动态分辨率处理和 DeepStack 视觉-语言融合机制，这可能有助于医学 grounding 任务所需的多尺度特征对齐。Qwen3VL-8B 在文本 QA 上的强劲基线表现（平均 53.6%，接近 MedMO-8B 的 61.3%）也表明它是一个有能力的起点。
 >
-> > **Q1 追问**: Could other strong VLMs like InternVL3 be an even better starting point?
+> > **Q1 追问**：更强的 VLM（如 InternVL3）会不会是更好的起点？
 > >
-> > InternVL3-8B shows solid VQA performance (57.4% avg on VQA) but notably scores 0.00 IoU on both DeepLesion and near-zero (0.7) on Bacteria grounding (Table 3), suggesting its spatial localization capability is fundamentally broken for medical detection. Qwen3VL-8B achieves 16.4 IoU on NIH and 9.16 on Bacteria, indicating it already possesses emergent grounding capability before fine-tuning, making it a more suitable starting point for spatial grounding tasks.
+> > InternVL3-8B 在 VQA 上表现不错（平均 57.4%），但在 DeepLesion 上 IoU 为 0.00，在 Bacteria grounding 上也接近零（0.7）（见表 3），说明其空间定位能力在医学检测任务上根本不可用。而 Qwen3VL-8B 在 NIH 上达到 16.4 IoU，在 Bacteria 上达到 9.16，表明其在微调之前就已经具备 emergent grounding 能力，是空间定位任务更合适的起点。
 
-> **Q2**: What is the difference between "MedMO" and "MedMO-Next"?
+> **Q2**："MedMO" 和 "MedMO-Next" 之间有什么区别？
 >
-> The "Next" suffix denotes models that underwent Stage 4 (Reinforcement Learning with GRPO/DAPO and the bounding-box verifiable reward). The plain MedMO-4B/8B are the Stage 3 checkpoint. Interestingly, for some metrics (e.g., MedQA where MedMO-8B scores 84.3% vs Next's 83.8%, and MedMCQA where base scores 65.0% vs Next's 62.0%), the base variant actually performs better, suggesting that RL fine-tuning can degrade certain text QA capabilities while improving grounding.
+> "Next" 后缀表示模型经过了 Stage 4（使用 GRPO/DAPO 和边界框可验证奖励进行强化学习）。普通 MedMO-4B/8B 是 Stage 3 的检查点。有趣的是，在某些指标上（例如 MedQA，MedMO-8B 得分 84.3% vs Next 的 83.8%；MedMCQA，base 得分 65.0% vs Next 的 62.0%），base 变体反而表现更好，说明 RL 微调在提升 grounding 的同时可能会削弱某些文本 QA 能力。
 
-> **Q3**: Why does the bounding-box reward use Hungarian matching instead of simpler greedy matching?
+> **Q3**：为什么边界框奖励使用 Hungarian 匹配而非更简单的 greedy 匹配？
 >
-> The Hungarian algorithm finds the globally optimal one-to-one matching between predicted and ground-truth boxes, which is critical when multiple objects are present in an image (e.g., multiple lesions, multiple bacterial cells). Greedy matching can produce suboptimal pairings and lead to incorrect credit assignment during RL training. The cost matrix combines a weighted L1 distance (w=5) and GIoU (1 - GIoU, w=2), prioritizing spatial proximity over overlap initially, consistent with how detection evaluation metrics judge localization.
+> Hungarian 算法能在预测框与真值框之间找到全局最优的一对一匹配，这在图像中存在多个目标（如多个病灶、多个细菌细胞）时至关重要。Greedy 匹配可能产生次优的配对，导致 RL 训练中的信用分配错误。代价矩阵结合了加权 L1 距离（w=5）和 GIoU（1 - GIoU，w=2），优先考虑空间邻近度而非重叠度，这与检测评估指标判断定位质量的方式一致。
 
-> **Q4**: Is MedMO suitable for deployment in real clinical settings?
+> **Q4**：MedMO 是否适合在真实临床环境中部署？
 >
-> The paper does not report clinical validation or FDA/CE clearance. While MedMO achieves strong benchmarks, the authors acknowledge catastrophic forgetting as a limitation and note "minor task-level performance shifts." There is no discussion of bias/fairness evaluation, inference latency, or clinical workflow integration. MedMO is primarily positioned as a research foundation model for open scientific development, not a clinically certified diagnostic tool.
+> 论文未报告临床验证或 FDA/CE 认证。虽然 MedMO 在基准测试中取得了强劲表现，但作者承认灾难性遗忘是一个局限性，并指出存在"轻微的任务级性能波动"。论文未讨论偏差/公平性评估、推理延迟或临床工作流集成。MedMO 主要定位为面向开放科学研究的 foundation model 研究项目，而非经过临床认证的诊断工具。
 
-> **Q5**: How does the Cell Benchmark Dataset differ from existing microscopy benchmarks?
+> **Q5**：Cell Benchmark Dataset 与现有的显微镜基准有何不同？
 >
-> MedMO introduces a Cell dataset constructed from open-source microscopy images (DeepCell, Bacteria), covering varying cell sizes, shapes, and densities. The key novelty is that it is designed specifically to evaluate VLM performance on detection tasks (IoU-based), bridging a gap in current medical VLM benchmarks which focus almost exclusively on VQA and text QA rather than spatial detection accuracy. This allows evaluating whether VLMs can correctly locate objects rather than just answer questions about images.
+> MedMO 引入了一个基于开源显微镜图像（DeepCell、Bacteria）构建的 Cell 数据集，涵盖不同大小、形状和密度的细胞。关键创新在于，该数据集专门设计用于评估 VLM 在检测任务上的表现（基于 IoU），填补了当前医学 VLM 基准几乎只聚焦于 VQA 和文本 QA 而非空间检测精度的空白。这使得评估 VLM 是否能够正确"定位"目标而不仅仅是"回答"关于图像的问题成为可能。
 
 ---
 

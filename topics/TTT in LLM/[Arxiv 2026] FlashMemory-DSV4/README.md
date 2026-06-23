@@ -7,125 +7,125 @@
 >
 > **Project Status**: Suspended (Project Lead left Tencent due to organizational realignments)
 
-## One-Sentence Summary
+## 一句话总结
 
-FlashMemory-DeepSeek-V4 proposes Lookahead Sparse Attention (LSA), a novel inference paradigm that deploys a lightweight Neural Memory Indexer to proactively predict and fetch only query-critical KV cache chunks into GPU memory, reducing KV cache footprint to 13.5% of baseline while maintaining or improving accuracy across long-context benchmarks.
+FlashMemory-DeepSeek-V4 提出前瞻稀疏注意力（Lookahead Sparse Attention, LSA），一种新颖的推理范式，通过部署轻量级神经记忆索引器（Neural Memory Indexer），主动预测并仅将查询关键（query-critical）的 KV Cache 块加载到 GPU 内存中，将 KV Cache 占用降至基线的 13.5%，同时在长上下文基准测试中保持或提升准确性。
 
-## Core Contributions
+## 核心贡献
 
-1. **Lookahead Sparse Attention (LSA) Paradigm**: A predictive attention mechanism that eliminates the contradiction between long-context modeling and hardware efficiency by proactively fetching query-critical KV chunks on demand every τ decoding steps, rather than passively keeping the full KV cache in GPU memory.
+1. **前瞻稀疏注意力（LSA）范式**：一种预测性注意力机制，通过每 τ 个解码步按需主动获取查询关键的 KV 块，而非被动将完整 KV Cache 保留在 GPU 内存中，消除了长上下文建模与硬件效率之间的矛盾。
 
-2. **Backbone-Free Decoupled Training**: Formulates the Memory Indexer as a standalone dual-encoder architecture trained on precomputed hidden states and labels, completely bypassing the need to load the thousand-billion-parameter backbone model into GPU memory. Full training converges in a single H20 GPU hour.
+2. **无骨干模型的解耦训练（Backbone-Free Decoupled Training）**：将 Memory Indexer 构建为独立的双编码器（dual-encoder）架构，在预计算的隐藏状态和标签上进行训练，完全无需将千亿参数骨干模型加载到 GPU 内存中。完整训练在一张 H20 GPU 上的一小时内即可收敛。
 
-3. **Golden Label Filtering Pipeline**: A three-step denoising pipeline (Softmax normalization + Top-p thresholding + Cross-Layer Majority Voting) that eliminates noise from native Top-k indexer labels, producing clean ground-truth data for training the Memory Indexer.
+3. **金标签过滤流水线（Golden Label Filtering Pipeline）**：三步去噪流水线（Softmax 归一化 + Top-p 阈值过滤 + 跨层多数投票），消除原生 Top-k Indexer 标签中的噪声，生成干净的 ground-truth 训练数据，用于训练 Memory Indexer。
 
-4. **Breakthrough Memory Efficiency**: Achieves 86.5% average KV cache reduction (to merely 13.5% of baseline), up to 90% at 500K context lengths, while consistently matching or exceeding baseline accuracy (+0.6% absolute average improvement).
+4. **突破性的内存效率**：实现平均 86.5% 的 KV Cache 压缩（仅保留基线的 13.5%），在 500K 上下文长度下可达 90%，同时持续匹配或超越基线准确率（平均 +0.6% 绝对提升）。
 
-5. **Empirical Architecture Design via 500-Run Pareto Sweep**: Systematically explored 500 training configurations in one week to determine optimal 3-layer indexer placement (layers 10, 12, 20), Focal Loss over BCE, random initialization over checkpoint loading, and other design choices.
+5. **通过 500 次运行的帕累托扫描进行经验架构设计**：在一周内系统探索 500 个训练配置，确定最优的 3 层 Indexer 布局（层 10、12、20）、Focal Loss 优于 BCE、随机初始化优于 checkpoint 加载，以及其他设计选择。
 
-## Section Navigation
+## 📖 批读导航
 
-| Section | Title | Key Content |
+| 章节 | 标题 | 核心内容 |
 |---------|-------|-------------|
-| [00](./sections/00-abstract.md) | Abstract | Problem statement, method summary, key results |
-| [01](./sections/01-introduction.md) | Introduction | Motivation, observation of GPU memory waste, LSA paradigm overview |
-| [02](./sections/02-related-work.md) | Related Work | (No standalone section; references integrated into introduction & methodology) |
-| [03](./sections/03-methodology.md) | Methodology | Memory Indexer design, dataset construction, decoupled training, optimal configuration |
-| [04](./sections/04-experiments.md) | Experiments | Primary results (Table 1), limitations & diagnostics (context-independent overhead, MRCR failure, length generalization ceiling) |
-| [05](./sections/05-conclusion.md) | Conclusion | Summary and future roadmap |
+| [00](./sections/00-abstract.md) | Abstract | 问题陈述、方法摘要、关键结果 |
+| [01](./sections/01-introduction.md) | Introduction | 研究动机、GPU 内存浪费观察、LSA 范式概述 |
+| [02](./sections/02-related-work.md) | Related Work | （无独立章节；参考文献已整合入引言和方法论） |
+| [03](./sections/03-methodology.md) | Methodology | Memory Indexer 设计、数据集构造、解耦训练、最优配置 |
+| [04](./sections/04-experiments.md) | Experiments | 主要结果（Table 1）、局限性与诊断（上下文无关开销、MRCR 失败、长度泛化上限） |
+| [05](./sections/05-conclusion.md) | Conclusion | 总结与未来路线图 |
 
-## Key Numbers
+## 关键数字
 
-| Metric | Value |
+| 指标 | 数值 |
 |--------|-------|
-| **Average KV Cache Reduction** | 86.5% (13.5% of baseline) |
-| **KV Cache Reduction at 500K** | ~90% (10% of baseline) |
-| **Average Accuracy Improvement** | +0.6% absolute over DS-V4-Flash |
-| **LongBench-v2-L (493K) Improvement** | +1.9% over baseline, 10% memory budget |
-| **Decoding Trigger Interval τ** | 64 steps |
-| **HCA Compression Ratio** | 128:1 |
-| **Indexer Placement** | Layers 10, 12, 20 (3-layer ensemble) |
-| **Sliding Window** | Last 8K tokens |
-| **Trainable Parameters** | < 0.1% of full model |
-| **Training Cost** | 1 H20 GPU hour |
-| **Research Runs** | ~500 training runs in 1 week (8×H20) |
-| **Training Set** | ~10,000 long documents (16K--512K tokens) |
-| **CSA Layers (L)** | 21 |
-| **Top-p Threshold** | p = 0.6 |
-| **Cross-Layer Voting Threshold** | θ = 3 |
+| **平均 KV Cache 压缩率** | 86.5%（基线 13.5%） |
+| **500K 下的 KV Cache 压缩率** | ~90%（基线 10%） |
+| **平均准确率提升** | 相对 DS-V4-Flash 提升 +0.6%（绝对值） |
+| **LongBench-v2-L (493K) 提升** | 相较基线 +1.9%，10% 内存预算 |
+| **解码触发间隔 τ** | 64 步 |
+| **HCA 压缩比** | 128:1 |
+| **Indexer 布局层** | 10、12、20（3 层集成） |
+| **滑动窗口** | 最后 8K tokens |
+| **可训练参数占比** | 全模型 < 0.1% |
+| **训练成本** | 1 个 H20 GPU 小时 |
+| **研究运行次数** | 约 500 次训练运行 / 1 周（8×H20） |
+| **训练集规模** | 约 10,000 份长文档（16K--512K tokens） |
+| **CSA 层数（L）** | 21 |
+| **Top-p 阈值** | p = 0.6 |
+| **跨层投票阈值** | θ = 3 |
 | **Focal Loss γ** | 2 |
-| **Negative Sampling Ratio** | 3:1 |
-| **Low-Rank Projection r** | 2048 |
-| **Length Generalization Ceiling** | 2× training context length |
-| **MRCR Accuracy Collapse** | 76.0% → 48.0% |
-| **Sigmoid Classification Threshold** | 0.5 |
-| **GPU Hardware** | 8× NVIDIA H20 |
+| **负采样比例** | 3:1 |
+| **低秩投影维度 r** | 2048 |
+| **长度泛化上限** | 训练上下文长度的 2 倍 |
+| **MRCR 准确率崩溃** | 76.0% → 48.0% |
+| **Sigmoid 分类阈值** | 0.5 |
+| **GPU 硬件** | 8× NVIDIA H20 |
 
-## Input → Intermediate → Output Data Flow
+## 数据流：输入 → 中间表示 → 输出
 
 ```
-[Long Context Prompt (up to 512K tokens)]
+[长上下文 Prompt（最长 512K tokens）]
     │
     ▼
 ┌──────────────────────────────────────────────┐
-│  Step 1: Pre-compute compressed KV entries    │
-│  (HCA at 128:1 ratio + CSA chunks)            │
-│  All stored in CPU Cold Pool                  │
+│  步骤 1：预计算压缩 KV entries                │
+│  （HCA 128:1 压缩比 + CSA chunks）           │
+│  全部存储在 CPU Cold Pool 中                  │
 └──────────────────────────────────────────────┘
     │
-    ▼ (Every τ = 64 decoding steps)
+    ▼ （每 τ = 64 解码步触发一次）
 ┌──────────────────────────────────────────────┐
-│  Step 2: Memory Indexer (Dual-Encoder)        │
-│  Input:  Current hidden state h_t             │
-│  Process:                                    
-│    h_t → W^{DQ} (down-project, d→d_c) → c_t^Q│
-│    c_t^Q → W^{IUQ} (up-project) → q_t^l      │
-│    h_t → W^w → w_t^l (routing head weights)   │
+│  步骤 2：Memory Indexer（双编码器）            │
+│  输入：当前隐藏状态 h_t                        │
+│  处理流程：                                    │
+│    h_t → W^{DQ}（降维投影, d→d_c）→ c_t^Q     │
+│    c_t^Q → W^{IUQ}（升维投影）→ q_t^l         │
+│    h_t → W^w → w_t^l（路由头权重）             │
 │    I_{t,s} = σ(Σ w_{t,h} · ReLU(q_{t,h}·K_s^{IComp})) │
-│  Output: Sigmoid scores I_{t,s} ∈ (0,1)      │
+│  输出：Sigmoid 分数 I_{t,s} ∈ (0,1)            │
 └──────────────────────────────────────────────┘
     │
-    ▼ (Threshold I_{t,s} ≥ 0.5, union across 3 layers)
+    ▼ （阈值 I_{t,s} ≥ 0.5，3 层取并集）
 ┌──────────────────────────────────────────────┐
-│  Step 3: Fetch C_t^{MemComp} from CPU → GPU   │
-│  Only query-critical compressed KV chunks     │
-└──────────────────────────────────────────────┘
-    │
-    ▼
-┌──────────────────────────────────────────────┐
-│  Step 4: Native Lightning Indexer             │
-│  ReLU-based MQA scoring on fetched subset     │
-│  Select Top-k → C_i^{CoreComp}               │
+│  步骤 3：从 CPU 获取 C_t^{MemComp} 到 GPU       │
+│  仅获取查询关键的压缩 KV chunks                 │
 └──────────────────────────────────────────────┘
     │
     ▼
 ┌──────────────────────────────────────────────┐
-│  Step 5: Core Attention Computation           │
-│  C_i^{CoreComp} + non-offloadable sliding     │
-│  window KV cache → FlashInfer/FlashAttention  │
-│  → Next token prediction                      │
+│  步骤 4：原生 Lightning Indexer               │
+│  在已获取子集上执行 ReLU 风格 MQA 打分          │
+│  选取 Top-k → C_i^{CoreComp}                  │
+└──────────────────────────────────────────────┘
+    │
+    ▼
+┌──────────────────────────────────────────────┐
+│  步骤 5：Core Attention 计算                   │
+│  C_i^{CoreComp} + 不可 offload 的滑动          │
+│  窗口 KV Cache → FlashInfer/FlashAttention    │
+│  → 预测下一个 token                            │
 └──────────────────────────────────────────────┘
 ```
 
-## Pros
+## 优点
 
-1. **Dramatic memory savings**: 86.5% average reduction in GPU KV cache, enabling ultra-long context serving on modest hardware.
-2. **No accuracy degradation**: Surprisingly, the "less is more" phenomenon — filtering irrelevant chunks acts as an attention denoiser, improving accuracy by +0.6%.
-3. **Ultra-lightweight training**: Backbone-free decoupled design means trainable params < 0.1% and training converges in 1 H20 GPU hour. Allows rapid experimentation (500 runs in 1 week).
-4. **Minimal architectural intrusion**: Only replaces Sigmoid for ReLU in the final activation; reuses all pre-existing DeepSeek-V4 infrastructure (compressed indexer keys, Lightning Indexer, MLA/MQA design).
-5. **Robustness through 3-layer OR-mode routing**: Multi-layer ensemble provides fallback protection — if one indexer misses a critical chunk, others may catch it.
-6. **Transparent failure analysis**: Authors honestly document limitations (MRCR collapse, length generalization ceiling, context-independent overhead), providing clear roadmap for future work.
+1. **显著的内存节省**：平均减少 86.5% 的 GPU KV Cache，使在普通硬件上服务超长上下文成为可能。
+2. **无损准确率**：令人惊讶的"少即是多"现象——过滤不相关 chunk 充当了注意力去噪器，准确率提升 +0.6%。
+3. **超轻量训练**：无骨干模型的解耦设计意味着可训练参数 < 0.1%，训练在 1 个 H20 GPU 小时内收敛。支持快速实验（1 周 500 次运行）。
+4. **最小架构侵入**：仅在最终激活层将 ReLU 替换为 Sigmoid；完全复用 DeepSeek-V4 的既有基础设施（压缩 Indexer Keys、Lightning Indexer、MLA/MQA 设计）。
+5. **通过 3 层 OR 模式路由实现鲁棒性**：多层集成提供 fallback 保护——即使某个 Indexer 遗漏了关键 chunk，其他层可能捕获。
+6. **透明的失败分析**：作者诚实地记录了局限性（MRCR 崩溃、长度泛化上限、上下文无关开销），为未来工作提供了清晰的路线图。
 
-## Cons
+## 局限 / 风险
 
-1. **MRCR catastrophic failure**: Accuracy collapses from 76% to 48% on the Multi-Range Context Retrieval benchmark due to dense global memory dependency that the sparse indexer cannot satisfy.
-2. **Length generalization ceiling**: Indexer only generalizes to 2× training context length; positional embedding OOD causes collapse beyond this.
-3. **Context-independent memory leakage**: Sigmoid gating still leaks marginal probabilities over long sequences, causing false-positive retrievals on context-independent queries (2.5× chunk volume inflation from 125K to 500K).
-4. **Frozen key representations**: Only query encoder is trained; compressed indexer keys are frozen, limiting representational alignment.
-5. **Shallow dot-product interaction**: Lacks ColBERT-style late interaction, limiting capacity on complex dense retrieval patterns.
-6. **No end-to-end joint optimization**: Decoupled training uses static pseudo-labels, ignoring autoregressive shift dynamics during live decoding.
-7. **Hyperparameter fragility**: τ = 64 and classification threshold 0.5 were not systematically ablated; project suspension prevented thorough tuning.
-8. **Project suspended**: Not production-ready; future development uncertain.
+1. **MRCR 灾难性失败**：在 Multi-Range Context Retrieval 基准上准确率从 76% 跌至 48%，原因是稀疏 Indexer 无法满足的密集全局记忆依赖。
+2. **长度泛化上限**：Indexer 仅泛化到训练上下文长度的 2 倍；超出后位置编码 OOD 导致崩溃。
+3. **上下文无关记忆泄漏**：Sigmoid 门控在长序列上仍泄漏边际概率，导致上下文无关查询上的假阳性检索（chunk 量从 125K 到 500K 膨胀 2.5 倍）。
+4. **冻结的 Key 表示**：仅训练了 Query Encoder；压缩 Indexer Keys 被冻结，限制了表示对齐能力。
+5. **浅层点积交互**：缺乏 ColBERT 风格的 late interaction，限制了对复杂密集检索模式的处理能力。
+6. **无端到端联合优化**：解耦训练使用静态伪标签，忽略了实时解码中的自回归分布偏移动态。
+7. **超参数脆弱性**：τ = 64 和分类阈值 0.5 未经系统消融实验；项目暂停阻碍了彻底调优。
+8. **项目已暂停**：未达到生产就绪状态；未来发展不确定。
 
 ## Q&A 批注记录
 
@@ -157,8 +157,8 @@ FlashMemory-DeepSeek-V4 proposes Lookahead Sparse Attention (LSA), a novel infer
 >
 > 关键 hyperparameters (τ=64, threshold=0.5) 未做系统消融；更大的 context length (>512K) 未验证；未来 roadmap 中明确的三项改进 (优化 frozen keys, Late-Interaction 架构, end-to-end joint optimization) 均未实施。作者认为当前结果仅是 LSA 潜力的 "first glimpse"。
 
-## Citation Landscape
+## 📊 Citation Landscape
 
 - **Connected Papers**: https://www.connectedpapers.com/main/2606.09079
 - **arXiv**: https://arxiv.org/abs/2606.09079
-- **Key References**: DeepSeek-V4 [1], Qwen3.5 [2], LongBench-v2 [3], LongMemEval [4], RULER [5], Michelangelo/MRCR [6]
+- **核心参考文献**: DeepSeek-V4 [1], Qwen3.5 [2], LongBench-v2 [3], LongMemEval [4], RULER [5], Michelangelo/MRCR [6]

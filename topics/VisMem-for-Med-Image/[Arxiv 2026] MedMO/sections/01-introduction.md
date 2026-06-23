@@ -4,7 +4,7 @@
 
 ## 📌 Preview
 
-The introduction establishes three gaps in medical MLLMs: reliance on distilled data without structured supervision, narrow modality coverage, and lack of cross-modal generalization. MedMO addresses these through a scalable progressive post-training pipeline with 26M+ samples from 45 datasets.
+引言部分指出了医学 MLLM 的三个核心缺口：依赖蒸馏数据而缺乏结构化监督、模态覆盖范围窄、以及跨模态泛化能力不足。MedMO 通过一个可扩展的渐进式后训练流程（使用来自 45 个数据集的 2600 万+样本）来解决这些问题。
 
 ---
 
@@ -40,7 +40,7 @@ We further conduct comprehensive experiments and analyses on data curation, trai
 
 ## 🔖 Summary
 
-The introduction clearly identifies three structural problems in existing medical MLLMs: (1) reliance on distillation without ground-truth supervision produces ungrounded outputs, (2) no structured supervision in training amplifies hallucination, (3) most models handle only narrow modality subsets. MedMO's response -- 26M+ samples from 45 datasets + progressive training + grounding capability -- targets all three. The four contributions span model development, data engineering, benchmark construction, and empirical analysis.
+引言清晰地指出现有医学 MLLM 的三个结构性问题：(1) 依赖蒸馏而无真值监督，导致模型输出缺乏 grounded；(2) 训练中缺乏结构化监督，放大了幻觉风险；(3) 大多数模型仅处理狭窄的模态子集。MedMO 的回应——来自 45 个数据集的 2600 万+样本 + 渐进式训练 + grounding 能力——精准针对这三个问题。四项贡献涵盖了模型开发、数据工程、基准构建和实证分析。
 
 > 💡 **问题动机 深度解读**: 三个局限的排序值得注意。第一条（依赖蒸馏数据）是根源性的：从 GPT-4V 等 proprietary model 蒸馏数据虽然可扩展，但这些模型的医学知识本身就不可靠（GPT-4V 在医学任务上的幻觉率可达 30-40%），蒸馏只会"垃圾进，垃圾出"。MedMO 的核心立场是：用开源、结构化、多任务的监督信号替代蒸馏，从根本上解决医学知识的"grounding"问题。
 

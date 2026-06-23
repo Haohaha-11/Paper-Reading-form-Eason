@@ -4,7 +4,7 @@
 
 ## 📌 Preview
 
-Motivates the FlashMemory approach through analysis of GPU memory waste in long-context LLM serving, introduces the LSA paradigm, and presents three core contributions.
+通过对长上下文 LLM 服务中 GPU 内存浪费的分析引入 FlashMemory 方案的动机，介绍 LSA 范式，并阐述三项核心贡献。
 
 ---
 
@@ -43,4 +43,4 @@ In summary, our core contributions are threefold:
 
 ## 🔖 Summary
 
-The introduction establishes a compelling empirical motivation (>90% of requests don't need full context, but ~10% do), frames LSA as resolving this "hard contradiction" through predictive retrieval rather than compression, and highlights the backbone-free decoupled training strategy as a key enabler for practical deployment. The three contributions map to paradigm innovation, training efficiency, and serving efficiency.
+引言建立了令人信服的实证动机（>90% 的请求不需要完整上下文，但约 10% 需要），将 LSA 定位为通过预测性检索（而非压缩）解决这一"硬矛盾"的方案，并强调无骨干模型的解耦训练策略是实现实用部署的关键推动因素。三项贡献对应范式创新、训练效率和服务效率。

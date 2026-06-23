@@ -4,7 +4,7 @@
 
 ## 📌 Preview
 
-Presents primary results (Table 1) across LongBench-v2, LongMemEval, RULER with four baselines, followed by three detailed diagnostic analyses: context-independent overhead, MRCR dense memory breakdown, and length generalization ceiling.
+展示在 LongBench-v2、LongMemEval、RULER 上的主要结果（Table 1），包含四个基线的对比，随后是三个详细的诊断分析：上下文无关开销、MRCR 密集记忆崩溃以及长度泛化上限。
 
 ---
 
@@ -110,4 +110,4 @@ Our empirical evaluations completely dismantled this assumption. The indexer saf
 
 ## 🔖 Summary
 
-The experiments are deliberately structured as "Primary Results" + "Limitations & Diagnostics" (rather than just a victory lap). Table 1 demonstrates ~86.5% memory reduction with +0.6% accuracy gain across 9 task/context combinations. The diagnostic sections are unusually honest and valuable: (1) Sigmoid gating leaks background probability over long sequences (2.5x inflation from 125K to 500K), (2) MRCR (dense-memory) causes catastrophic collapse (76% → 48%), and (3) the indexer only generalizes 2x beyond training length due to OOD positional embeddings. The oracle simulation methodology for analyzing MRCR failure is a model for future diagnostic analysis.
+实验部分特意设计为"主要结果"+"局限性与诊断"的结构（而非仅仅展示胜利成果）。Table 1 证明在 9 个任务/上下文组合上实现了约 86.5% 的内存压缩和 +0.6% 的准确率提升。诊断部分异常诚实且有价值：（1）Sigmoid 门控在长序列上泄漏背景概率（从 125K 到 500K，chunk 保留量膨胀 2.5 倍），（2）MRCR（密集记忆）导致灾难性崩溃（76% → 48%），（3）由于 OOD 位置编码，Indexer 仅在训练长度的 2 倍范围内泛化。用于分析 MRCR 失败的神谕模拟方法论是未来诊断分析的典范。

@@ -4,7 +4,7 @@
 
 ## 📌 Preview
 
-Brief overview of the FlashMemory-DeepSeek-V4 system: proposes Lookahead Sparse Attention (LSA) to alleviate GPU memory bottleneck in long-context LLM serving, reducing KV cache footprint to 13.5% of baseline while preserving accuracy.
+简要概述 FlashMemory-DeepSeek-V4 系统：提出 Lookahead Sparse Attention (LSA) 以缓解长上下文 LLM 服务中的 GPU 内存瓶颈，将 KV Cache 占用压缩至基线的 13.5%，同时保持准确率。
 
 ---
 
@@ -36,4 +36,4 @@ Due to organizational realignments, the Project Lead has parted ways with Tencen
 
 ## 🔖 Summary
 
-The abstract establishes three key pillars: (1) the GPU memory waste problem in long-context LLM serving, (2) LSA as a predictive retrieval solution that fetches only query-critical KV chunks, and (3) the counter-intuitive "less is more" result where aggressive KV cache compression actually improves accuracy by acting as an attention denoiser. The project status note reveals this is a suspended but openly documented research effort.
+摘要确立了三个核心支柱：(1) 长上下文 LLM 服务中的 GPU 内存浪费问题，(2) LSA 作为预测性检索方案，仅获取查询关键的 KV 块，(3) 反直觉的"少即是多"结果——激进的 KV Cache 压缩通过充当注意力去噪器反而提升了准确率。项目状态说明揭示这是一项已暂停但公开记录的研究工作。

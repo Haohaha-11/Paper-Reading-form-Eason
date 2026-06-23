@@ -1,6 +1,6 @@
 # Act Like a Pathologist: Tissue-Aware Whole Slide Image Reasoning
 
-## Metadata
+## 论文信息
 
 | Field | Value |
 |---|---|
@@ -10,149 +10,149 @@
 | **Code** | https://github.com/winston52/HistoSelect |
 | **Paper PDF** | [paper.pdf](./paper.pdf) |
 
-## One-Sentence Summary
+## 一句话总结
 
-HistoSelect is a question-guided, tissue-aware, coarse-to-fine patch selection framework for pathology VQA that reduces visual token usage by **70%** while improving accuracy across three benchmarks, by mimicking how pathologists first identify relevant tissue regions and then zoom into critical patches for diagnosis.
+HistoSelect 是一个问题引导、组织感知、由粗到细的补丁选择框架，用于病理 VQA，通过模拟病理学家先识别相关组织区域、再放大关键补丁进行诊断的工作流程，将视觉 token 使用量减少 **70%**，同时在三个基准上提升准确率。
 
-## Contributions
+## 核心贡献
 
-1. **Pathologist-Collaborative Tissue Prompts**: Collaborated with clinical pathologists to design a set of fundamental tissue type prompts, enabling automatic semantic partitioning of WSIs into distinct tissue regions (e.g., tumor, stroma, lymphocyte).
+1. **病理学家协作的组织提示词**：与临床病理学家合作设计了一套基础组织类型提示词，实现了将 WSI 自动语义分割为不同的组织区域（如肿瘤、基质、淋巴细胞）。
 
-2. **Hierarchical Question-Guided Selection (HistoSelect)**: Introduced a two-stage, Information Bottleneck (IB)-theoretic selection framework consisting of a group sampler (coarse tissue-level) and a patch selector (fine-grained patch-level), which prunes question-irrelevant visual tokens and increases the signal-to-noise ratio for the downstream LLM.
+2. **层级问题引导选择（HistoSelect）**：引入了一个基于信息瓶颈（IB）理论的两阶段选择框架，由组采样器（粗粒度组织级别）和补丁选择器（细粒度补丁级别）组成，用于剪枝与问题无关的视觉 token，提高下游 LLM 的信噪比。
 
-3. **Clinical Pathologist Evaluation**: Conducted rigorous human evaluation with two independent pathologists on both tissue segmentation accuracy and patch selection relevance, using a custom interactive survey tool, achieving average ratings above 3.5/5.0 across all evaluation dimensions.
+3. **临床病理学家评估**：使用自定义交互式评估工具，与两位独立病理学家对组织分割准确性和补丁选择相关性进行了严格的人工评估，在所有评估维度上平均评分均超过 3.5/5.0。
 
-4. **State-of-the-Art Performance**: Achieved the best overall results on SlideBench-VQA (83.80% avg accuracy), WSI-Bench (best on 5/6 open-ended metrics and all close-ended categories), and an in-house Ovarian dataset (73.33% accuracy).
+4. **最优性能**：在 SlideBench-VQA（平均准确率 83.80%）、WSI-Bench（5/6 开放域指标和所有封闭式类别最优）以及自建卵巢癌数据集（73.33% 准确率）上取得了最佳综合结果。
 
-## Section Navigation
+## 📖 批读导航
 
 | Section | File | Description |
 |---|---|---|
-| Abstract | [00-abstract.md](sections/00-abstract.md) | Problem, method overview, and results summary |
-| 1. Introduction | [01-introduction.md](sections/01-introduction.md) | Motivation, pre-analysis, and contributions |
-| 2. Related Work | [02-related-work.md](sections/02-related-work.md) | WSI analysis, multimodal pathology models, IB in pathology |
-| 3. Methodology | [03-methodology.md](sections/03-methodology.md) | Tissue segmentation, group sampler, patch selector, HIB objective |
-| 4. Experiments | [04-experiments.md](sections/04-experiments.md) | Quantitative, qualitative, ablation, and supplementary results |
-| 5. Conclusion | [05-conclusion.md](sections/05-conclusion.md) | Summary and future directions |
+| Abstract | [00-abstract.md](sections/00-abstract.md) | 问题、方法概述与结果总结 |
+| 1. Introduction | [01-introduction.md](sections/01-introduction.md) | 动机、前置分析与核心贡献 |
+| 2. Related Work | [02-related-work.md](sections/02-related-work.md) | WSI 分析、多模态病理模型、IB 在病理中的应用 |
+| 3. Methodology | [03-methodology.md](sections/03-methodology.md) | 组织分割、组采样器、补丁选择器、HIB 目标 |
+| 4. Experiments | [04-experiments.md](sections/04-experiments.md) | 定量、定性、消融与补充实验结果 |
+| 5. Conclusion | [05-conclusion.md](sections/05-conclusion.md) | 总结与未来方向 |
 
-## Key Numbers
+## 关键数字
 
 | Metric | Value |
 |---|---|
-| **Total QA pairs evaluated** | 356,000 |
-| **Token reduction** | 70% (5k optimal from ~17k) |
-| **Close-ended avg accuracy** | 83.80% (vs. SlideChat 80.88%) |
-| **Open-ended BLEU-4** | 0.221 (vs. Quilt-LLaVA 0.216) |
-| **Open-ended ROUGE-L** | 0.463 (vs. Quilt-LLaVA 0.455) |
-| **Datasets** | SlideBench-VQA (4,560 WSIs, 176K QA), WSI-Bench (9,850 WSIs, 180K QA), In-house Ovarian (375 WSIs, 375 QA) |
-| **Base LLM** | Qwen2.5-7B-Instruct |
-| **Vision Encoder** | CONCH |
-| **Pathologist rating (tissue seg.)** | 4.17 / 3.67 (P1 / P2, 5-point Likert) |
-| **Pathologist rating (patch relevance)** | 4.80 / 3.87 (P1 / P2) |
-| **Optimal token budget** | 5,000 patches (peak accuracy; 10k degrades performance) |
-| **Hyperparameters** | βg = 0.2, βp = 0.1 (warmup from 0 over 5k iterations) |
+| **评估的 QA 对总数** | 356,000 |
+| **Token 减少量** | 70%（从约 17k 优化至 5k） |
+| **封闭式平均准确率** | 83.80%（vs. SlideChat 80.88%） |
+| **开放域 BLEU-4** | 0.221（vs. Quilt-LLaVA 0.216） |
+| **开放域 ROUGE-L** | 0.463（vs. Quilt-LLaVA 0.455） |
+| **数据集** | SlideBench-VQA（4,560 WSIs, 176K QA）、WSI-Bench（9,850 WSIs, 180K QA）、自建卵巢癌（375 WSIs, 375 QA） |
+| **基础 LLM** | Qwen2.5-7B-Instruct |
+| **视觉编码器** | CONCH |
+| **病理学家评分（组织分割）** | 4.17 / 3.67（P1 / P2，5 分 Likert 量表） |
+| **病理学家评分（补丁相关性）** | 4.80 / 3.87（P1 / P2） |
+| **最优 Token 预算** | 5,000 补丁（准确率峰值；10k 反而降低性能） |
+| **超参数** | βg = 0.2，βp = 0.1（前 5k 迭代从 0 线性 warmup） |
 
-## Data Flow: Input → Intermediate → Output
+## 数据流：输入 → 中间表示 → 输出
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│ INPUT                                                                 │
-│  • WSI (gigapixel) → N non-overlapping patches (224×224)             │
-│  • Question Q (natural language, e.g., "What is the tumor subtype?")  │
+│ 输入                                                                  │
+│  • WSI（千兆像素）→ N 个非重叠补丁（224×224）                           │
+│  • 问题 Q（自然语言，如 "肿瘤亚型是什么？"）                            │
 └───────────────────────────┬─────────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│ STAGE 1: TISSUE SEGMENTATION (coarse, question-agnostic)             │
-│  • CONCH visual encoder → patch features X = {x₁, ..., x_N}          │
-│  • CONCH text encoder → M tissue prompt features T = {t₁, ..., t_M}  │
-│  • Cosine similarity → tissue label lᵢ = argmax(xᵢ·tⱼ / |xᵢ||tⱼ|) │
-│  • Output: M tissue groups (tumor, stroma, lymphocyte, etc.)          │
+│ 阶段 1：组织分割（粗粒度，问题无关）                                   │
+│  • CONCH 视觉编码器 → 补丁特征 X = {x₁, ..., x_N}                     │
+│  • CONCH 文本编码器 → M 个组织提示词特征 T = {t₁, ..., t_M}            │
+│  • 余弦相似度 → 组织标签 lᵢ = argmax(xᵢ·tⱼ / |xᵢ||tⱼ|)              │
+│  • 输出：M 个组织组（肿瘤、基质、淋巴细胞等）                           │
 └───────────────────────────┬─────────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│ STAGE 2: HIERARCHICAL SELECTOR (coarse→fine, question-guided)        │
+│ 阶段 2：层级选择器（粗→细，问题引导）                                  │
 │                                                                       │
-│  Group Sampler:                                                       │
-│    • Compute group prototype gⱼ = avg({xᵢ | i ∈ Tⱼ})                 │
-│    • Predict sampling rate rⱼ = σ(F_group([gⱼ; q]))                   │
-│    • Determine tokens per group: kⱼ = ⌈rⱼ · Nⱼ⌉                      │
+│  组采样器：                                                            │
+│    • 计算组原型 gⱼ = avg({xᵢ | i ∈ Tⱼ})                               │
+│    • 预测采样率 rⱼ = σ(F_group([gⱼ; q]))                              │
+│    • 确定每组 token 数量：kⱼ = ⌈rⱼ · Nⱼ⌉                              │
 │                                                                       │
-│  Patch Selector:                                                      │
-│    • Predict selection prob sᵢ = σ(F_patch([xᵢ; q]))                  │
-│    • Within each group j, rank by sᵢ, select top-kⱼ patches Zⱼ       │
-│    • Final selected set: Z = ∪ⱼ Zⱼ                                    │
+│  补丁选择器：                                                          │
+│    • 预测选择概率 sᵢ = σ(F_patch([xᵢ; q]))                            │
+│    • 在每个组 j 内，按 sᵢ 排序，选择 top-kⱼ 补丁 Zⱼ                    │
+│    • 最终选择集：Z = ∪ⱼ Zⱼ                                             │
 │                                                                       │
-│  Training Objective: L_final = L_VQA + βg·L_group + βp·L_patch       │
-│    • L_VQA: negative log-likelihood of answer sequence                │
-│    • L_group: KL(B(rⱼ) || B(pⱼ^g)), pⱼ^g = cos(gⱼ, q)               │
-│    • L_patch: KL(B(sᵢ) || B(pᵢ^p)), pᵢ^p = cos(xᵢ, q)               │
+│  训练目标：L_final = L_VQA + βg·L_group + βp·L_patch                 │
+│    • L_VQA：答案序列的负对数似然                                        │
+│    • L_group：KL(B(rⱼ) || B(pⱼ^g))，pⱼ^g = cos(gⱼ, q)                │
+│    • L_patch：KL(B(sᵢ) || B(pᵢ^p))，pᵢ^p = cos(xᵢ, q)                │
 └───────────────────────────┬─────────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│ OUTPUT                                                                │
-│  • Compact, question-aligned visual tokens Z (5k patches, ~30%)      │
-│  • Interpretable: selected patches highlight relevant tissue regions  │
-│  • Generated answer: Y = LLM(Z, Q)                                    │
+│ 输出                                                                  │
+│  • 紧凑的、问题对齐的视觉 token Z（5k 补丁，约 30%）                    │
+│  • 可解释：所选补丁高亮相关组织区域                                     │
+│  • 生成的答案：Y = LLM(Z, Q)                                           │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-## Pros and Cons
+## 优缺点与还能做什么
 
-### Pros
+### 优点
 
-- **Efficiency**: 70% token reduction while maintaining or improving accuracy; peak performance at 5k tokens with no gain from 10k, confirming that WSIs are highly redundant for specific questions.
-- **Interpretability**: The selection process is transparent — selected patches can be visualized and verified by pathologists, providing attributable evidence for predictions.
-- **Clinically Validated**: Pathologist evaluation confirms both tissue segmentation accuracy and patch selection relevance (avg ratings > 3.5/5.0 on all dimensions).
-- **Theoretically Grounded**: The hierarchical IB formulation provides a principled framework for balancing compression and relevance at both group and patch levels.
-- **Model-Agnostic**: The selector module improves performance even when paired with a different base model (Gemini 3 Flash), demonstrating its independent utility.
-- **Adaptive Sampling Patterns**: t-SNE analysis reveals four distinct question-driven sampling clusters (Tumor Classification, Cellular Morphology, Tissue Architecture, Tumor Infiltration), confirming the model dynamically adjusts sampling based on question semantics.
+- **高效率**：70% token 减少的同时保持甚至提升准确率；5k token 达到峰值性能，10k 无增益，确认了 WSI 对特定问题高度冗余。
+- **可解释性**：选择过程是透明的——所选补丁可以被可视化和病理学家验证，为预测提供可溯源的证据。
+- **临床验证**：病理学家评估确认了组织分割准确性和补丁选择相关性（所有维度平均评分 > 3.5/5.0）。
+- **理论扎实**：层级 IB 公式为在组级别和补丁级别平衡压缩与相关性提供了原则性框架。
+- **模型无关**：选择器模块即使在搭配不同基础模型（Gemini 3 Flash）时也能提升性能，证明了其独立效用。
+- **自适应采样模式**：t-SNE 分析揭示了四种不同的问题驱动采样聚类（肿瘤分类、细胞形态学、组织架构、肿瘤浸润），确认模型根据问题语义动态调整采样策略。
 
-### Cons
+### 局限 / 风险
 
-- **Limited Dataset Diversity**: Evaluation is primarily on TCGA and one private ovarian dataset; generalizability to other cancer types, organs, and scanning protocols remains to be validated (authors acknowledge this and mention BCNB as future work).
-- **No Explicit Textual Reasoning**: While the model provides visual interpretability (selected patches), it does not generate natural language explanations for why specific patches were selected — a gap between visual attention and semantic reasoning.
-- **Tissue Type Granularity**: Relies on a fixed set of M pathologist-defined tissue prompts; may not capture rare or dataset-specific tissue types not included in the prompt set.
-- **Two-Stage Training**: Requires a two-stage training process with careful hyperparameter tuning (warmup schedule for βg and βp), which adds complexity to deployment.
-- **Slide-Level Only**: The method is designed for slide-level VQA; performance on patch-level or region-level tasks is not explored.
+- **数据集多样性有限**：评估主要在 TCGA 和一个私有卵巢癌数据集上进行；对其他癌症类型、器官和扫描协议的泛化性有待验证（作者承认这一点并将 BCNB 列为未来工作）。
+- **缺乏显式文本推理**：虽然模型提供了视觉可解释性（所选补丁），但不生成自然语言解释来说明为什么选择了特定补丁——视觉注意力与语义推理之间存在差距。
+- **组织类型粒度**：依赖一组固定的 M 个病理学家定义的组织提示词；可能无法捕获未包含在提示词集中的罕见或数据集特定的组织类型。
+- **两阶段训练**：需要两阶段训练过程，并精心调节超参数（βg 和 βp 的 warmup 计划），增加了部署的复杂性。
+- **仅限切片级别**：该方法专为切片级 VQA 设计；在补丁级别或区域级别任务上的表现未被探索。
 
-## Q&A Record
+## 问答记录
 
-> 💡 **Q1**: Why is question-guided selection necessary for WSI VQA? Why not just use all patches?
+> 💡 **Q1**：为什么问题引导的选择对 WSI VQA 是必要的？为什么不能直接使用所有补丁？
 >
-> **A1**: A single WSI contains tens of thousands of patches, most of which are background or unrelated to a specific clinical question. Feeding all patches indiscriminately overwhelms the LLM with irrelevant information and hits token limits. The authors' pre-analysis (Figure 2d) shows that question-guided (cosine similarity) sampling dramatically outperforms diversity-based and random sampling in retrieving tumor-relevant patches. The IB framework further improves upon simple similarity by learning a task-optimized selection policy.
+> **A1**：单张 WSI 包含数万个补丁，其中大多数是背景或与特定临床问题无关。不加选择地将所有补丁送入 LLM 会用不相关信息淹没模型并触及 token 限制。作者的前置分析（Figure 2d）表明，问题引导（余弦相似度）采样在检索肿瘤相关补丁方面远超多样性采样和随机采样。IB 框架通过在简单相似度基础上学习任务优化的选择策略进一步提升了效果。
 
-> 💡 **Q2**: What is the relationship between the group sampler and patch selector? Could one work without the other?
+> 💡 **Q2**：组采样器和补丁选择器之间的关系是什么？能否单独工作？
 >
-> **A2**: The ablation in Table 5 answers this directly. Removing the patch selector (relying only on coarse group selection) drops performance (e.g., Diagnosis: 85.79→81.32). Removing the group sampler (forcing the patch selector to search globally) also drops performance (Diagnosis: 85.79→81.82). The two work synergistically: the group sampler narrows the search space, and the patch selector performs fine-grained selection within that narrowed space.
+> **A2**：Table 5 的消融直接回答了这个问题。移除补丁选择器（仅依赖粗粒度组选择）会导致性能下降（如 Diagnosis: 85.79→81.32）。移除组采样器（强制补丁选择器全局搜索）同样导致性能下降（Diagnosis: 85.79→81.82）。两者协同工作：组采样器缩小搜索空间，补丁选择器在缩小的空间内进行细粒度选择。
 
-> 💡 **Q3**: How does the IB objective differ from standard VIB in this hierarchical setting?
+> 💡 **Q3**：IB 目标在这个层级设置中与标准 VIB 有何不同？
 >
-> **A3**: Standard VIB uses a single β for the compression term. Here, the compression is decomposed hierarchically: I(Z; X | q) = I(Zg; X | q) + I(Zp; X | Zg, q). This allows independent Lagrange multipliers βg and βp to regulate information flow at group and patch granularities separately. The pseudo-priors pg_j and pp_i are derived from question-patch cosine similarity, providing a semantically grounded prior for the selection.
+> **A3**：标准 VIB 使用单个 β 作为压缩项。在这里，压缩被层级分解：I(Z; X | q) = I(Zg; X | q) + I(Zp; X | Zg, q)。这允许独立的 Lagrange 乘子 βg 和 βp 分别在组粒度和补丁粒度上调节信息流。伪先验 pⱼᵍ 和 pᵢᵖ 来自问题-补丁余弦相似度，为选择提供了语义上有依据的先验。
 
-> 💡 **Q4**: Why does increasing token budget from 5k to 10k slightly degrade performance?
+> 💡 **Q4**：为什么将 token 预算从 5k 增加到 10k 会略微降低性能？
 >
-> **A4**: This counterintuitive result (Table 6) validates the core thesis: a large portion of WSI patches are redundant for a specific question. Adding more tokens beyond the optimal 5k introduces redundant information that acts as noise for the LLM, potentially distracting it from the truly informative patches. This is consistent with the IB principle — more information about the input X can harm the model if it does not carry additional information about the target Y.
+> **A4**：这个反直觉的结果（Table 6）验证了核心论点：WSI 中很大一部分补丁对特定问题是冗余的。在最优 5k 之外添加更多 token 会引入冗余信息，对 LLM 构成噪声，可能使其偏离真正有信息量的补丁。这与 IB 原则一致——更多关于输入 X 的信息如果没有携带关于目标 Y 的额外信息，反而会损害模型。
 
-> 💡 **Q5**: How does the differentiable hard selection work, since patch selection is a discrete operation?
+> 💡 **Q5**：补丁选择是离散操作，可微硬选择是如何工作的？
 >
-> **A5**: The Straight-Through Estimator (STE) is used. During the forward pass, a hard binary mask selects the top-kⱼ patches per group (discrete). During the backward pass, gradients flow through the soft probabilities (rⱼ and sᵢ), bypassing the discrete step. This allows end-to-end gradient-based optimization of the entire pipeline including both selectors.
+> **A5**：使用 Straight-Through Estimator (STE)。在前向传播中，硬二值掩码选择每个组的 top-kⱼ 补丁（离散）。在反向传播中，梯度通过软概率（rⱼ 和 sᵢ）流动，绕过离散步骤。这使得包括两个选择器在内的整个流水线能够端到端地进行基于梯度的优化。
 
-> 💡 **Q6**: How is the tissue segmentation different from standard tissue classification?
+> 💡 **Q6**：组织分割与标准组织分类有何不同？
 >
-> **A6**: Instead of training a classifier, the authors use zero-shot CLIP-style matching with M pathologist-designed text prompts (e.g., "tumor region", "stromal region", "lymphocyte region"). Each patch is assigned to the tissue type with highest cosine similarity between patch embedding and prompt embedding. This is question-agnostic and serves as the structural basis for subsequent question-guided selection.
+> **A6**：作者不训练分类器，而是使用 M 个病理学家设计的文本提示词（如 "tumor region", "stromal region", "lymphocyte region"）进行零样本 CLIP 风格匹配。每个补丁被分配到补丁嵌入与提示词嵌入余弦相似度最高的组织类型。这是问题无关的，作为后续问题引导选择的结构基础。
 
-> 💡 **Q7**: Are the βg and βp hyperparameters sensitive?
+> 💡 **Q7**：βg 和 βp 超参数是否敏感？
 >
-> **A7**: The supplementary ablation (Tables 9-10) shows moderate sensitivity. βg=0.2 and βp=0.1 are optimal. Setting βg=0 (no group regularization) loses ~2.8 points on Diagnosis. Setting βg=0.3 (overly aggressive) loses ~2.5 points. The authors use a linear warmup schedule for the first 5k iterations to stabilize training. The optimal values suggest that patch-level compression needs to be less aggressive (βp=0.1) than group-level (βg=0.2), which makes intuitive sense — you want to be more selective about which tissue groups to attend to, but within a relevant group you want broader patch coverage.
+> **A7**：补充消融（Tables 9-10）显示中等敏感度。βg=0.2 和 βp=0.1 是最优的。设 βg=0（无组正则化）在 Diagnosis 上损失约 2.8 分。设 βg=0.3（过于激进）损失约 2.5 分。作者在前 5k 迭代中使用线性 warmup 来稳定训练。最优值表明补丁级别的压缩需要比组级别更温和（βp=0.1 < βg=0.2），这在直觉上是合理的——你希望对关注哪些组织组更加挑剔，但在相关组内你希望更广泛的补丁覆盖。
 
-## Citation Landscape
+## 引用图谱
 
-- **Connected Papers**: https://www.connectedpapers.com/main/2603.00667
-- **Key References**: CONCH [26], SlideChat [9], WSI-LLaVA [22], VIB [2, 41], CLAM [25], Quilt-LLaVA [32], LLaVA-Med [20]
-- **Venue Context**: This paper sits at the intersection of computational pathology, vision-language models, and information theory. It builds on foundational WSI analysis (MIL-based classification [17, 19, 31]) and extends recent slide-level VQA methods (SlideChat [9], WSI-LLaVA [22]) by introducing hierarchical question-guided selection grounded in IB theory.
+- **Connected Papers**：https://www.connectedpapers.com/main/2603.00667
+- **关键参考文献**：CONCH [26], SlideChat [9], WSI-LLaVA [22], VIB [2, 41], CLAM [25], Quilt-LLaVA [32], LLaVA-Med [20]
+- **会议背景**：本文处于计算病理学、视觉-语言模型和信息理论的交叉点。它建立在基础性 WSI 分析（基于 MIL 的分类 [17, 19, 31]）之上，并通过引入基于 IB 理论的层级化问题引导选择，扩展了近期的切片级 VQA 方法（SlideChat [9], WSI-LLaVA [22]）。
 
 ---
 

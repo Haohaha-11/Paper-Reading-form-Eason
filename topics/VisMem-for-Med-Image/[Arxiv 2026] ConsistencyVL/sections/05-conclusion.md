@@ -10,7 +10,7 @@ This study reveals that reliability and causal robustness in current VLMs are hi
 
 For reliability prediction, stronger signals come from generation dynamics and internal-state probes: self-consistency provides the best behavioral proxy for correctness (R = 0.429), and hidden-state probes achieve high discrimination (AUROC > 0.95 on our strongest settings). Ultimately, these findings support a practical direction for trustworthy multimodal systems: use latent-state and consistency-based monitors rather than heatmap sharpness, and favor distributed, early-fusion architectures for causally robust multimodal reasoning.
 
-> 💡 **核心启示 — 如何构建更可信的多模态系统**:
+> 💡 **机制拆解 — 核心启示：如何构建更可信的多模态系统**:
 > 1. **监控机制**: 用潜在状态探针和一致性评分替代注意力热力图的"锐度"作为可信度指标
 > 2. **架构选择**: 倾向于分布式、早期融合的架构（如PaliGemma/Qwen2-VL），因为它们的可靠性路径不依赖脆弱的单点瓶颈
 > 3. **部署策略**: 在实时应用中，使用单次推理的隐藏状态探针（额外开销仅一个线性层）；在允许更高延迟的场景，使用Self-Consistency作为金标准
@@ -27,7 +27,7 @@ For reliability prediction, stronger signals come from generation dynamics and i
 
 **Computational Cost:** The most reliable metric found, Self-Consistency, requires K = 10 inference passes. This is prohibitively expensive for low-latency edge applications.
 
-> 💡 **效率-可靠性权衡**:
+> 💡 **机制拆解 — 效率-可靠性权衡**:
 > Self-Consistency的10x推理代价是其主要实用障碍。但Hidden-State Probe提供了两全其美的可能：(1) AUROC可达到或超过SC；(2) 额外开销仅为一个线性层；(3) 单次推理即可输出可信度评分。
 
 **Causal Evidence Scope:** While our ablation experiments demonstrate causal effects of probe-identified neurons (8.3% accuracy drop for top-5 vs. 0% for random), the effect requires ablating multiple neurons simultaneously, suggesting a localized circuit rather than individual "truth units." The effect is also moderate in magnitude, indicating these neurons are contributors to reliability rather than sole determinants. Future work should explore activation patching and interchange interventions to further characterize the causal mechanism.
@@ -39,7 +39,7 @@ For reliability prediction, stronger signals come from generation dynamics and i
 
 **Future Direction:** We propose that future work should focus on distillation. Since Self-Consistency provides a high-quality "silver label" for reliability (R = 0.43), we can curate a dataset of (Image, Question, Answer, SC-Score) and fine-tune a value head on top of the VLM to predict the SC-Score in a single pass. This would combine the accuracy of consistency with the efficiency of a probe.
 
-> 💡 **自一致性蒸馏的愿景**: 
+> 💡 **机制拆解 — 自一致性蒸馏的愿景**: 
 > 作者提出的蒸馏思路非常现实可行：(1) 用SC=10生成高质量"银标签"(R=0.43)；(2) 构建(图像, 问题, 答案, SC分数)数据集；(3) 微调一个value head预测SC分数；(4) 部署时单次推理即可输出可信度。这本质上是将"多路径一致性"的知识压缩到"单路径预测"中，类似于模型蒸馏的核心思想。
 
 ---

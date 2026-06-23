@@ -4,7 +4,7 @@
 
 ## 📌 Preview
 
-Two research threads are reviewed: (1) the evolution of medical MLLMs from early efforts (LLaVA-Med, Med-Flamingo) to SOTA systems (Lingshu, Fleming-VL), and (2) grounding capabilities that extend VLMs beyond captioning/VQA to explicit spatial localization via bounding boxes or point coordinates.
+回顾了两条研究线索：(1) 医学 MLLM 从早期尝试（LLaVA-Med、Med-Flamingo）到 SOTA 系统（Lingshu、Fleming-VL）的演化路径；(2) 将 VLM 能力从图像描述/VQA 扩展到显式空间定位（通过边界框或点坐标）的 grounding 能力。
 
 ---
 
@@ -22,7 +22,7 @@ Unlike detection objective-based approaches such as grounding-DINO [51], recent 
 
 ## 🔖 Summary
 
-The related work survey is concise but strategically positioned. Sec 2.1 traces the lineage from early medical MLLMs to SOTA, highlighting a persistent gap: even the best prior systems (Lingshu, Fleming-VL) are "limited to selective tasks." Sec 2.2 establishes grounding as a distinct capability axis, noting that while general-domain VLMs like Qwen2.5-VL have built-in grounding, they fail on clinical fine-grained tasks, motivating MedMO's medical-specific grounding post-training.
+相关工作综述虽简洁但定位精准。第 2.1 节追溯了从早期医学 MLLM 到 SOTA 的演替，突出一个持续存在的差距：即使是最好的先前系统（Lingshu、Fleming-VL）也"仅限于选择性任务"。第 2.2 节将 grounding 确立为一条独立的能力轴，指出虽然 Qwen2.5-VL 等通用领域 VLM 具备原生 grounding 能力，但在临床细粒度任务上表现不佳，从而为 MedMO 的医学专用 grounding 后训练提供了动机。
 
 > 💡 **机制拆解 - 医学MLLM演化路径**: 这段related work隐含了一条清晰的技术演进路径：（1）线性投影对齐（LLaVA-Med）→（2）更丰富的数据+更好的训练策略（HuatuoGPT, GMAI-VL）→（3）RL注入（Med-R1, MedVLM-R1）→（4）任务统一化（Lingshu, Fleming-VL）。MedMO声称自己处于第（4+）阶段：不仅统一VQA/QA/Report，还增加了Grounding维度，且全开源。
 

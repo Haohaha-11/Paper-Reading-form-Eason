@@ -18,7 +18,7 @@ In this work, we rigorously test this assumption across three representative VLM
 > - Qwen2-VL: 原生多模态架构，视觉token与文本token交错排列，支持动态分辨率。代表了最新一代的设计思路。
 > 这三种架构覆盖了从"后期注入视觉"到"早期融合视觉"的完整谱系，使得跨架构结论更具说服力。
 
-> 💡 **创新边界自我定位**: 作者非常诚实地指出：他们不声称首次发现"注意力不忠"或"self-consistency有用"——这些在NLP/VLM文献中已有先例。本文的创新在于：(1) 统一跨架构的可靠性研究；(2) 将"Early Locking/Symbolic Detachment"动力学与下游正确性联系起来；(3) 证明隐藏状态探针提供最强的单次推理可靠性信号。
+> 💡 **机制拆解 — 创新边界自我定位**: 作者非常诚实地指出：他们不声称首次发现"注意力不忠"或"self-consistency有用"——这些在NLP/VLM文献中已有先例。本文的创新在于：(1) 统一跨架构的可靠性研究；(2) 将"Early Locking/Symbolic Detachment"动力学与下游正确性联系起来；(3) 证明隐藏状态探针提供最强的单次推理可靠性信号。
 
 Terminology note. We use VLM as the default term throughout; MFM and LVLM are used only when matching prior-work phrasing.
 

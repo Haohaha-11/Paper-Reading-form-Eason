@@ -51,4 +51,4 @@ In summary, our main contributions are as follows:
 > - Q: 为什么选 human cognition 中的 neural coupling 作为 motivation？
 > - A: Neural coupling [16, 36] 发现大脑在处理自然视觉信息时，不同个体之间的皮层活动高度同步，表明人脑的信息处理与外界信息流在时间上是耦合的。作者借这个认知科学发现来论证 "thinking while watching" 的合理性——自然智能体不会等到所有信息都看完才开始思考，而是在信息流入的过程中持续推理。这为 VST 的设计提供了认知科学的理论依据。
 
-🔖 **Summary**: VST addresses the key trade-off in streaming video understanding by introducing proactive, pre-query CoT reasoning. This is realized through a two-stage training pipeline (SFT + RL) and a knowledge-graph-based data synthesis pipeline producing 100K samples, achieving SOTA on online benchmarks with low QA latency.
+🔖 **Summary**: VST 通过引入主动的、查询前的 CoT 推理，解决了流式视频理解中的核心权衡。这通过两阶段训练流程（SFT + RL）和基于知识图谱的数据合成 pipeline（产出 100K 样本）来实现，在在线基准测试中达到 SOTA 且 QA 延迟极低。

@@ -4,7 +4,7 @@
 
 ## 📌 Preview
 
-Covers all technical details: Memory Indexer architectural design (2.1), golden label data construction pipeline (2.2), decoupled training optimization (2.3), and optimal layer configuration search (2.4). Three key innovations: Sigmoid-based threshold selection, Cross-Layer Majority Voting for label denoising, and backbone-free Focal Loss training.
+涵盖全部技术细节：Memory Indexer 架构设计（2.1）、金标签数据构造流水线（2.2）、解耦训练优化（2.3）以及最优层配置搜索（2.4）。三项关键创新：基于 Sigmoid 的阈值选择、跨层多数投票标签去噪、以及无骨干模型的 Focal Loss 训练。
 
 ---
 
@@ -150,4 +150,4 @@ Conversely, multiple popular retrieval and contrastive learning tricks proved to
 
 ## 🔖 Summary
 
-The methodology comprises four tightly integrated components: (1) Memory Indexer architecture that minimally modifies DeepSeek-V4 (only Sigmoid replaces ReLU), (2) a sophisticated golden label pipeline that reduces noisy labels from ~10,000 to ~100-1,000 per window via three-step denoising, (3) a decoupled training paradigm that treats indexer optimization as a standard dual-encoder retrieval problem with Focal Loss, and (4) extensive Pareto-frontier optimization to select the optimal 3-layer (10, 12, 20) OR-mode ensemble. The methodology section is unusually honest about untested hyperparameters and failed training strategies, offering valuable practical insights.
+方法论由四个紧密集成的组成部分构成：（1）Memory Indexer 架构以最小化方式修改 DeepSeek-V4（仅将 Sigmoid 替换 ReLU），（2）通过三步去噪将噪声标签从每窗口约 10,000 压缩至约 100-1,000 的精密金标签流水线，（3）将 Indexer 优化视为标准双编码器检索问题并使用 Focal Loss 的解耦训练范式，以及（4）通过广泛的帕累托前沿优化选择最优的 3 层（10、12、20）OR 模式集成。方法论部分对未测试的超参数和失败的训练策略异常坦诚，提供了宝贵的实践洞察。

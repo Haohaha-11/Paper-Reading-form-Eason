@@ -4,7 +4,7 @@
 
 ## 📌 Preview
 
-MedMO is built on Qwen3-VL with a four-stage pipeline: (1) General Medical SFT on 18.5M pairs, (2) High-resolution SFT on 3M samples with grounding, (3) Instruction tuning on 4.3M pairs, (4) GRPO-based RL with a novel bounding-box reward using Hungarian matching of GIoU + normalized L1.
+MedMO 基于 Qwen3-VL 构建，采用四阶段流程：(1) 在 18.5M 图文对上进行通用医学 SFT；(2) 在 3M 样本上进行高分辨率 SFT 并引入 grounding；(3) 在 4.3M 对上进行指令微调；(4) 基于 GRPO 的 RL，采用新颖的边界框奖励（使用 Hungarian 匹配的 GIoU + 归一化 L1）。
 
 ---
 
@@ -119,6 +119,6 @@ $$\begin{array} { r }  \boxed { R _ { \mathsf { b b o x } } = \mathrm { c l i p 
 
 ## 🔖 Summary
 
-The methodology consists of three SFT stages plus one RL stage. Stage-wise progression from 18.5M coarse alignment to 300K fine-grained RL with bounding-box rewards follows a curriculum design. The bounding-box reward using Hungarian matching of GIoU + normalized L1 is the most novel component, providing a verifiable spatial signal that drives grounding improvements without requiring separate detection heads.
+方法论由三个 SFT 阶段加一个 RL 阶段构成。从 18.5M 粗粒度对齐到 300K 细粒度 RL（带边界框奖励）的阶段递进遵循课程设计思路。使用 Hungarian 匹配的 GIoU + 归一化 L1 边界框奖励是最具新颖性的组件，提供了可验证的空间信号来驱动 grounding 提升，而无需额外的检测头。
 
 [← 返回 README](../README.md)

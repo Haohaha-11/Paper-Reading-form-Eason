@@ -165,4 +165,4 @@ Following the above procedure, we generate **100K** streaming-thought examples w
 > - Q: 为什么 data synthesis 要使用 knowledge graph 而非直接让 LLM 看视频生成 QA？
 > - A: 如果让 Gemini 直接看整段视频再生成 QA 和 CoT，生成的 CoT 可能隐含 future information leakage（例如在时间点 t 的 thinking 中提及 t+1 时刻才发生的事件）。通过先构建 knowledge graph（entity bank 随 clip 逐步更新），再基于 graph 采样 evidence chains 生成 QA，确保了生成的 streaming CoT 严格满足 temporal causality——每步思考只能基于该时间点之前已知的实体和关系。
 
-🔖 **Summary**: VST's methodology consists of three tightly integrated components: (1) a dual-memory paradigm (short-term visual buffer + long-term textual memory) that enables streaming reasoning under fixed memory budgets; (2) a two-stage training pipeline where VST-SFT enforces temporal causality via streaming attention masks and VST-RL provides end-to-end optimization via GRPO; (3) a knowledge-graph-grounded data synthesis pipeline producing 100K streaming-thought examples with strict causal constraints.
+🔖 **Summary**: VST 的方法论由三个紧密集成的组件构成：(1) 双记忆范式（短期视觉缓冲 + 长期文本记忆），在固定 memory budget 下实现流式推理；(2) 两阶段训练流程，VST-SFT 通过流式注意力掩码强制时序因果约束，VST-RL 通过 GRPO 进行端到端优化；(3) 基于知识图谱的数据合成 pipeline，产出 100K 具有严格因果约束的流式思维样本。

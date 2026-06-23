@@ -8,7 +8,7 @@
 
 We evaluate LLaVA-1.5-7B, PaliGemma-3B, and Qwen2-VL-7B Liu et al. (2023); Beyer et al. (2024); Wang et al. (2024) across POPE Li et al. (2023b) (Adversarial split, 1,000 samples), LLaVA-Bench Zhou et al. (2023) (90 open-ended questions), custom counting/spatial tasks, and the new VQA v2 and TextVQA evaluations. This setup allows us to compare reliability behavior on hallucination stress tests, open-ended reasoning, scene understanding, and OCR-heavy question answering using correlation and AUROC metrics; it is complementary to broader multimodal suites such as MME Fu et al. (2023), SEED-Bench Li et al. (2023a), and MM-Vet Yu et al. (2023). We provide sample accounting and uncertainty intervals for headline claims in Table 4.
 
-> 💡 **实验设计解读**: 数据集的选择覆盖了四个维度：
+> 💡 **机制拆解 — 实验设计解读**: 数据集的选择覆盖了四个维度：
 > 1. **POPE (Adversarial)**: 专门设计用于压力测试对象幻觉，对抗性负样本使模型难以通过语言先验猜测
 > 2. **LLaVA-Bench**: 开放式推理问题，测试复杂场景下的理解能力
 > 3. **Custom Counting & Spatial**: 自建数据集，精确控制计数和空间关系标签
@@ -35,7 +35,7 @@ We present empirical evaluation across three VLMs: LLaVA-1.5-7B, PaliGemma-3B, a
 
 **Core Finding:** Spatial attention metrics show near-zero correlation with correctness. On the pooled 3,090-sample structural-analysis set (Table 4), cluster count (C_k) achieves R = 0.001 (95% CI: [-0.034, 0.036]) and spatial entropy (H_s) achieves R = -0.012 (95% CI: [-0.047, 0.024]), both statistically indistinguishable from random noise (p > 0.05). This "Cluster Failure" persists regardless of attention head selection: even when filtering to the top-k heads by logit contribution, R^2 ≤ 0.08 (Table 1).
 
-> 💡 **"Cluster Failure" 深度解读**: 
+> 💡 **机制拆解 — Cluster Failure 深度解读**: 
 > 这篇论文最核心的实证发现。95%置信区间跨越零值，p > 0.05，说明在统计意义上，空间注意力结构和正确性之间没有任何可靠的关系。这不是"相关性弱"，而是"完全不相关"。想象一下：你拿着放大镜仔细观察一幅画，然后让别人复述画中的内容——别人复述的正确与否与你放大镜聚焦的位置几乎无关。
 
 > 💡 **消融解读 — Attention Head Selection的影响**:
@@ -49,7 +49,7 @@ We conducted a supervised stress test to close potential loopholes: on the poole
 
 **Causal Role:** Despite correlation failure, attention is causally necessary. Masking the top 30% attended patches reduces LLaVA accuracy by 8.2pp and PaliGemma by 11.3pp (p < 0.001). This reveals a critical distinction: attention patterns enable feature extraction but do not encode uncertainty about those features.
 
-> 💡 **因果必要性与预测能力的分离**:
+> 💡 **机制拆解 — 因果必要性与预测能力的分离**:
 > 这是一个非常重要的概念区分。类比：汽车的引擎是行驶所必需的（因果必要），但引擎的温度并不能预测你将安全到达目的地（缺乏预测能力）。同样，注意力是特征提取所必需的（ablation后有显著性能下降），但注意力的空间模式并不编码"模型是否正确理解了这些特征"的信息。
 
 ### 5.2 Logit Lens: Tracing the Emergence of Reliability
@@ -168,7 +168,7 @@ The ultimate test is whether internal signals can predict correctness at inferen
 
 **Finding:** Standard uncertainty baselines fail. Logit entropy achieves AUROC ≈ 0.50, confirming poor calibration, and spatial attention remains near random (AUROC = 0.50). Probe gains are strongest on POPE/LLaVA-Bench and mixed on the added VQA tasks: for VQA v2/TextVQA cells in Table 3, probe outperforms output confidence in 3 of 6 model-task comparisons (both LLaVA tasks and Qwen2-VL on TextVQA), while output confidence is stronger for PaliGemma on both tasks and Qwen2-VL on VQA v2. This pattern indicates that hidden-state probes are a strong reliability readout but remain benchmark- and architecture-dependent. Self-consistency achieves R = 0.429, substantially outperforming all visual metrics but requiring 10x inference cost.
 
-> 💡 **基准对比解读**:
+> 💡 **机制拆解 — 基准对比解读**:
 > AUROC = 0.50 意味着完全随机——这些标准不确定性指标（logit entropy, spatial attention）没有任何区分正确/错误回答的能力。这证实了VLM的严重校准问题：模型的"自信"与"正确"之间没有可靠关系。
 
 **Table 3: Cross-Model Summary III: Reliability prediction across benchmarks.**
@@ -269,7 +269,7 @@ Across models, structural attention metrics are weak predictors of correctness (
 
 **A.4 The Counting Anomaly: Severe Miscalibration** -- Case Study: Consider an image with 3 baseball players. Ground Truth: 3. Model Prediction: "Four". Token Confidence (P_tok): 92% (Very High). Total Visual Clusters (K_total): 3 distinct clusters. This dissociation highlights "Symbolic Detachment." The visual encoder correctly identifies 3 regions, but the projection into the language space maps these features to the token "Four." Because the language model is autoregressively coherent, it assigns high probability to the token "Four" despite being factually grounded in "Three" visual features.
 
-> 💡 **Counting Anomaly的深层含义**: 这个案例是最干净地展示Symbolic Detachment的例子——视觉编码器数对了（3个cluster），但语言解码器说错了（"Four"），而且置信度高达92%。这揭示了一个关键事实：**token概率衡量的是语言模型的流畅度(fluency)，而非其视觉基础(grounding)**。语言模型非常擅长自回归连贯性——一旦开始说"Four"，它会非常自信地继续说下去，因为它高度自信于"Four"这个token在语言序列中的合理性。但这与图像中的实际数量无关。
+> 💡 **机制拆解 — Counting Anomaly的深层含义**: 这个案例是最干净地展示Symbolic Detachment的例子——视觉编码器数对了（3个cluster），但语言解码器说错了（"Four"），而且置信度高达92%。这揭示了一个关键事实：**token概率衡量的是语言模型的流畅度(fluency)，而非其视觉基础(grounding)**。语言模型非常擅长自回归连贯性——一旦开始说"Four"，它会非常自信地继续说下去，因为它高度自信于"Four"这个token在语言序列中的合理性。但这与图像中的实际数量无关。
 
 **A.6 Qualitative Failure Analysis:**
 - **False Negatives (Good Attention, Bad Answer):** In 15% of failure cases, the attention map was "perfect" (low entropy, high clustering on relevant objects).

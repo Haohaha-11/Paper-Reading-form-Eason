@@ -99,4 +99,4 @@ The data generation pipeline uses three distinct prompt templates:
 > - "No restate" 约束确保每个 streaming thought 只描述增量信息，避免冗余——这直接对应了 streaming 场景中的效率需求
 > - 生成 QA 时强制使用时间区间（如"03:15 to 04:30"）而非 clip index，使 QA 更自然、更具泛化性
 
-🔖 **Summary**: VST establishes a practical streaming test-time scaling framework, with two clear future directions: (1) token-efficient latent reasoning to reduce computation overhead, and (2) integration with existing visual memory mechanisms for a unified dual-stream memory architecture. The inference pipeline cleanly decouples pre-query thinking from post-query answering, enabling real-time responsiveness.
+🔖 **Summary**: VST 建立了一个实用的流式 test-time scaling 框架，明确了两个未来方向：(1) token 高效的 latent reasoning 以降低计算开销，(2) 与现有人视觉记忆机制整合以构建统一的"双流记忆"架构。推理 pipeline 将查询前思维与查询后回答干净地解耦，实现了实时响应。

@@ -4,7 +4,7 @@
 
 ## 📌 Preview
 
-MedMO is positioned as the best fully open-source medical multimodal foundation model, unifying VQA, QA, report generation, and grounding. Future work targets catastrophic forgetting mitigation and broader modality coverage.
+MedMO 被定位为当前最佳的全开源多模态医学基础模型，统一了 VQA、QA、报告生成和 grounding 能力。未来工作将聚焦于灾难性遗忘缓解和更广泛的模态覆盖。
 
 ---
 
@@ -18,7 +18,7 @@ We introduced MedMO, a general-purpose medical multimodal foundation model that 
 
 ## 🔖 Summary
 
-MedMO represents the current frontier of open-source medical VLMs: fully open (model + data + training recipe), multi-task (VQA + QA + report + grounding), and multi-modal (8 imaging modalities). The explicit acknowledgment of catastrophic forgetting as the primary limitation is both honest and forward-looking -- it sets up future research on continual/lifelong learning for medical foundation models, which is particularly important in healthcare where new diseases, imaging protocols, and clinical guidelines continuously emerge.
+MedMO 代表了当前开源医学 VLM 的前沿水平：全开源（模型 + 数据 + 训练方案）、多任务（VQA + QA + 报告 + grounding）、多模态（8 种成像模态）。明确承认灾难性遗忘为首要局限性既诚实又具有前瞻性——这为医学基础模型的持续/终身学习指明了未来研究方向，在医疗领域新疾病、新成像协议和新临床指南不断涌现的背景下尤为重要。
 
 > 💡 **问题动机 -- "Retain SFT knowledge within RL" 核心挑战**: 这个future work方向直指当前RLHF/RLVR范式的根本矛盾：RL奖励信号（bounding box quality, label accuracy）可能与SFT阶段学到的 rich clinical knowledge 产生冲突。表现为表1中MedMO-8B在QA上（61.3%）优于Next版本（60.1%）。未来的解决方案可能包括：(1) SFT+RL联合训练而非串行, (2) 在RL reward中加入knowledge retention信号, (3) 使用更强的KL正则化约束policy偏离。
 
