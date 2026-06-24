@@ -20,18 +20,18 @@ In Section 3.1, we first revisit the concept of latent reasoning in MLLMs. Then,
 
 ### 3.1. Latent Reasoning in MLLMs
 
-Formally, given an input text sequence **x** = (x₁, ..., x_T) and images I, we formulate the task as generating a corresponding text response. During inference with latent reasoning, the model iteratively switches between two distinct modes: latent and language. In detail, in the latent mode, the model produces latent reasoning tokens that are not directly shown as text, while in the language mode, it generates the response with text tokens.
+Formally, given an input text sequence **x** = (x₁, ..., $x_{T}$) and images I, we formulate the task as generating a corresponding text response. During inference with latent reasoning, the model iteratively switches between two distinct modes: latent and language. In detail, in the latent mode, the model produces latent reasoning tokens that are not directly shown as text, while in the language mode, it generates the response with text tokens.
 
-Specifically, the native vision encoder first extracts image tokens from images I, i.e., **v** = (v₁, v₂, ..., v_S) = ViT(I). Subsequently, the transformer decoder processes input text-token embeddings, E_T = [v₁, ..., v_S, e(x₁), ..., e(x_T)], to yield the last hidden state H_T = Transformer(E_T), where e is the token embedding function. During inference, the model enters the latent mode by predicting a special token `<latent>` and reverts to the language mode by predicting another special token `</latent>`. In the latent mode, the model leverages the previous hidden state, h_t = H_t[t, :], as input for the next prediction, whereas in the language mode, the model uses the token embedding, e(x_{t+1}), as input for the next prediction, as formulated below:
+Specifically, the native vision encoder first extracts image tokens from images I, i.e., **v** = (v₁, v₂, ..., $v_{S}$) = ViT(I). Subsequently, the transformer decoder processes input text-token embeddings, $E_{T}$ = [v₁, ..., $v_{S}$, e(x₁), ..., e($x_{T}$)], to yield the last hidden state $H_{T}$ = Transformer($E_{T}$), where e is the token embedding function. During inference, the model enters the latent mode by predicting a special token `<latent>` and reverts to the language mode by predicting another special token `</latent>`. In the latent mode, the model leverages the previous hidden state, $h_{t}$ = $H_{t}$[t, :], as input for the next prediction, whereas in the language mode, the model uses the token embedding, e($x_{{t+1}}$), as input for the next prediction, as formulated below:
 
 $E_{t+1} = \begin{cases}
-[E_t; h_t] & \text{if latent mode}, \\
-[E_t; e(x_{t+1})] & \text{if language mode},
+[$E_{t}$; $h_{t}$] & \text{if latent mode}, \\
+[$E_{t}$; e($x_{{t+1}}$)] & \text{if language mode},
 \end{cases}$
 
 $H_{t+1} = \text{Transformer}(E_{t+1}),$
 
-where t > T. This recursive process repeats until the model predicts the `<EOS>` token. Upon entering the latent mode, the model is constrained to remain in this state for a fixed number K of steps. After K latent steps, the model reverts to the language mode and resumes generating text tokens from the current hidden state h_t, using the language model head, LM-Head:
+where t > T. This recursive process repeats until the model predicts the `<EOS>` token. Upon entering the latent mode, the model is constrained to remain in this state for a fixed number K of steps. After K latent steps, the model reverts to the language mode and resumes generating text tokens from the current hidden state $h_{t}$, using the language model head, LM-Head:
 
 $M(x_t | v, x_{\lt t}) = \text{LM-Head}(h_t),$
 
@@ -57,7 +57,7 @@ where $M$ denotes the standard MLLM. This alternation strategy allows MLLMs to b
 
 To effectively leverage latent reasoning for visual grounding, we align hidden states of MLLM with visual features from pre-trained vision encoders during the latent mode. This alignment encourages the MLLM to maintain visual information throughout the recurrent reasoning process.
 
-**Alignment objective.** For each reasoning stage i, we first select an image I⁽ⁱ⁾ ∈ I (details in Appendix B). We then extract patch-wise visual features from pre-trained vision encoder, φ, i.e., **F**\_φ⁽ⁱ⁾ = φ(I⁽ⁱ⁾) ∈ ℝ^{P×D}, where P is the number of patches and D is the feature dimension. Afterward, we extract features from the intermediate layer of MLLM, i.e., **F**\_MLLM⁽ⁱ⁾ = [f₁⁽ⁱ⁾, ..., f_K⁽ⁱ⁾]. We project these intermediate features through a learnable MLP ψ to match the dimension of vision encoder features:
+**Alignment objective.** For each reasoning stage i, we first select an image I⁽ⁱ⁾ ∈ I (details in Appendix B). We then extract patch-wise visual features from pre-trained vision encoder, φ, i.e., **F**\_φ⁽ⁱ⁾ = φ(I⁽ⁱ⁾) ∈ ℝ^{P×D}, where P is the number of patches and D is the feature dimension. Afterward, we extract features from the intermediate layer of MLLM, i.e., **F**\_MLLM⁽ⁱ⁾ = [f₁⁽ⁱ⁾, ..., $f_{K}$⁽ⁱ⁾]. We project these intermediate features through a learnable MLP ψ to match the dimension of vision encoder features:
 
 $\hat{F}_{MLLM}^{(i)} = \psi(\text{Upsample}(F_{MLLM}^{(i)})) \in R^{P \times D},$
 
@@ -69,7 +69,7 @@ where sim(·,·) denotes the conventional cosine similarity function. By alignin
 
 > 💡 **机制拆解 — REPA 对齐的四个关键操作**:
 > 1. **目标编码器特征提取**: φ(I⁽ⁱ⁾) → F_φ⁽ⁱ⁾ ∈ ℝ^{P×D}（冻结的视觉编码器，无需梯度）
-> 2. **MLLM 中间层特征提取**: 从指定层（第 12 层，实验证明最优）提取 K=16 个 latent tokens 的 hidden states → F_MLLM⁽ⁱ⁾
+> 2. **MLLM 中间层特征提取**: 从指定层（第 12 层，实验证明最优）提取 K=16 个 latent tokens 的 hidden states → $F_{MLLM}$⁽ⁱ⁾
 > 3. **维度对齐**: Upsample（匹配 patch 分辨率）+ MLP ψ（匹配特征维度 D）→ F̂_MLLM⁽ⁱ⁾
 > 4. **Patch-wise Cosine Similarity**: 对每个 patch 位置计算余弦相似度，取负均值作为 loss
 >
@@ -79,15 +79,15 @@ where sim(·,·) denotes the conventional cosine similarity function. By alignin
 
 **Multi-encoder Alignment.** While alignment with a single vision encoder provides a robust visual foundation, we observe that leveraging multiple vision encoders enables the model to capture complementary visual representations. For instance, CLIP (Radford et al., 2021) and SigLIP (Tschannen et al., 2025) excel at semantic understanding, DINO (Oquab et al., 2023; Simeoni et al., 2025) capture fine-grained appearance and spatial relationships, and π³ (Wang et al., 2025d) encode 3D spatial structure. To leverage these complementary strengths, we extend our framework to incorporate multiple vision encoders simultaneously.
 
-Let {φ₁, ..., φ_M} denotes a set of M frozen vision encoders. We extract features from each vision encoder for each reasoning stage i:
+Let {φ₁, ..., $φ_{M}$} denotes a set of M frozen vision encoders. We extract features from each vision encoder for each reasoning stage i:
 
 $F_{\phi_m}^{(i)} = \phi_m(I^{(i)}) \in R^{P_m \times D_m} \quad \text{for } m = 1, \cdots, M,$
 
-where P_m and D_m denote the varying number of patches and feature dimension across different vision encoders, respectively. For each vision encoder, we employ a separate learnable projection head ψ_m to match its feature dimension. The multi-encoder alignment loss is computed as the average of individual REPA losses:
+where $P_{m}$ and $D_{m}$ denote the varying number of patches and feature dimension across different vision encoders, respectively. For each vision encoder, we employ a separate learnable projection head $ψ_{m}$ to match its feature dimension. The multi-encoder alignment loss is computed as the average of individual REPA losses:
 
 $L_{REPA}^{multi} := \frac{1}{M} \sum_{m=1}^{M} L_{REPA}^{(m)},$
 
-where each $L_{REPA}^{(m)}$ follows the same formulation as the single-encoder case but uses features from the m-th vision encoder, φ_m, and its corresponding projection head ψ_m. This multi-encoder approach allows the model to distill diverse visual knowledge into its latent reasoning space, enhancing both spatial awareness and general visual understanding.
+where each $L_{REPA}^{(m)}$ follows the same formulation as the single-encoder case but uses features from the m-th vision encoder, $φ_{m}$, and its corresponding projection head $ψ_{m}$. This multi-encoder approach allows the model to distill diverse visual knowledge into its latent reasoning space, enhancing both spatial awareness and general visual understanding.
 
 > 💡 **多编码器协同设计分析**:
 >
@@ -108,7 +108,7 @@ We adopt a two-stage curriculum learning strategy to progressively foster latent
 
 $L_{CE} := -E_{(I, q, y)} \left[ \sum_{t} \log M(y_t | v, q, y_{\lt t}) \right],$
 
-where y_t denotes the t-th token in the reasoning sequence. This stage establishes the fundamental ability to decompose complex visual questions into intermediate linguistic reasoning steps. During this stage, we only train the decoder of MLLM while freezing the native vision encoder.
+where $y_{t}$ denotes the t-th token in the reasoning sequence. This stage establishes the fundamental ability to decompose complex visual questions into intermediate linguistic reasoning steps. During this stage, we only train the decoder of MLLM while freezing the native vision encoder.
 
 > 💡 **Stage 1 设计考量**: 为什么需要先做标准 SFT？直觉上，对于一个 base MLLM（Qwen2.5-VL），它可能还不具备将复杂视觉问题分解为多步推理的能力。直接跳到 Stage 2（latent + REPA）的话，模型既要学推理分解，又要学潜空间对齐，任务过于困难。Stage 1 先建立"语言推理能力"这个基础，Stage 2 再叠加"潜空间视觉对齐"。
 
@@ -118,7 +118,7 @@ Specifically, each sample from existing CoT datasets consists of visual informat
 
 $v, q \to (r^{(i)})_{i=1}^{N} \to a.$
 
-To adapt these datasets for latent reasoning, we insert K latent tokens, {ℓ\_k⁽ⁱ⁾}^K_{k=1}, before each language reasoning step r⁽ⁱ⁾. To inform the model when the latent mode should be initialized or terminated, we set the first and last tokens of each latent segment to special control tokens, i.e., ℓ\_1⁽ⁱ⁾ = `<latent>` and ℓ\_K⁽ⁱ⁾ = `</latent>`. This transformation yields a latent-augmented reasoning sequence, which can be expressed as follows:
+To adapt these datasets for latent reasoning, we insert K latent tokens, {ℓ\_k⁽ⁱ⁾}^$K_{{k=1}}$, before each language reasoning step r⁽ⁱ⁾. To inform the model when the latent mode should be initialized or terminated, we set the first and last tokens of each latent segment to special control tokens, i.e., ℓ\_1⁽ⁱ⁾ = `<latent>` and ℓ\_K⁽ⁱ⁾ = `</latent>`. This transformation yields a latent-augmented reasoning sequence, which can be expressed as follows:
 
 $v, q \to (\ell_{[1:K]}^{(i)}, r^{(i)})_{i=1}^{N} \to a.$
 

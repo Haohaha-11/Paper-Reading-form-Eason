@@ -81,9 +81,9 @@ Attention Masking: Our analysis shows that inter-image attention diminishes in d
 > **FLOPs 减少的原理**:
 >
 > 标准 self-attention: O(($N_t$ + $N_v$)^2 * d)
-> 掩码后的 attention: O($N_t$ * ($N_t$ + $N_v$) + M * (N_v/M)^2) * d = O($N_t^2$ + $N_t$*$N_v$ + N_v^2/M) * d
+> 掩码后的 attention: O($N_t$ * ($N_t$ + $N_v$) + M * ($N_{v}$/M)^2) * d = O($N_t^2$ + $N_t$*$N_v$ + $N_{v}^2$/M) * d
 >
-> M=10.4 张图时，$N_v^2$ -> N_v^2/M 意味着视觉 token 间的 attention 计算量减少约 10x。加上 MLP 开销后总体减少约 81% (0.5B model)。
+> M=10.4 张图时，$N_v^2$ -> $N_{v}^2$/M 意味着视觉 token 间的 attention 计算量减少约 10x。加上 MLP 开销后总体减少约 81% (0.5B model)。
 
 ### Implementation Details
 

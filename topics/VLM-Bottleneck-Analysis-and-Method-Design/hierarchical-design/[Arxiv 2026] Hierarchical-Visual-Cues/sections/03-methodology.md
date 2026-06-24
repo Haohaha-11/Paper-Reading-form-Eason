@@ -12,7 +12,7 @@ Method 分为三个子模块：(3.1) Recurrent Visual-Language Backbone——基
 
 ### 3.1. Recurrent Visual-Language Backbone
 
-We denote the input sequence length as n, the hidden dimension of the model as h, and the vocabulary as V. Given a recurrent depth R, an iteration step t, an input text sequence x ∈ V^n, and a sequence of flattened image patches X_v, we process the textual and visual modalities separately. For the visual components, we denote the vision transformer and its associated projector as ViT(.) and Proj(.), respectively. The feature extraction and fusion process can be written as:
+We denote the input sequence length as n, the hidden dimension of the model as h, and the vocabulary as V. Given a recurrent depth R, an iteration step t, an input text sequence x ∈ V^n, and a sequence of flattened image patches $X_{v}$, we process the textual and visual modalities separately. For the visual components, we denote the vision transformer and its associated projector as ViT(.) and Proj(.), respectively. The feature extraction and fusion process can be written as:
 
 $e = [ e _ { v } ; e _ { t } ] = \text{concat}( e _ { v } , e _ { t } ), $
 
@@ -20,7 +20,7 @@ where
 
 $\left\{ { \begin{array} { l l } { e _ { v } = \text{Proj}( \text{ViT}( X _ { v } ) ) , } \\ { e _ { t } = E ( x ) , } \end{array} } \right. $
 
-e_v and e_t represent the visual and textual embeddings, respectively.
+$e_{v}$ and $e_{t}$ represent the visual and textual embeddings, respectively.
 
 > 💡 **公式批读 — Eq.1-2（输入构造）**:
 > - 文本嵌入 $e_t$ 由 Huginn 的 Embedding Block E 生成（这是 Huginn 三元结构的第一元）
@@ -28,7 +28,7 @@ e_v and e_t represent the visual and textual embeddings, respectively.
 > - 两者 concat 为 e，这是送入 Recurrent Block 的输入序列
 > - **注意**: 这里的 $e_v$ 只是 ViT 最后一层的投影，层级视觉特征（Section 3.2 中的 $v_l$）是额外的注入信号，二者并存。
 
-We denote s_t as the hidden states after t iterations. To stabilize the recurrent iterations, Huginn utilizes a random vector:
+We denote $s_{t}$ as the hidden states after t iterations. To stabilize the recurrent iterations, Huginn utilizes a random vector:
 
 $s _ { 0 } \sim N( 0 , \sigma ^ { 2 } I _ { n \cdot h } ). $
 
@@ -63,21 +63,21 @@ Specifically, we extract hidden states from a set of representative layers L = {
 >
 > **课程式注入的认知基础**: 先看细节（纹理/边缘→定位），再理解语义（概念→关系→全局）。这与人类视觉认知的 coarse-to-fine 或 bottom-up attention 机制有类比性。
 
-To bridge the modality gap and align the dimensionalities, we employ a set of patch mergers inspired by Qwen3-VL: M = {m_l}_{l∈L} (Bai et al., 2025b). For each selected layer l, the visual features h_v^l are projected as:
+To bridge the modality gap and align the dimensionalities, we employ a set of patch mergers inspired by Qwen3-VL: M = {$m_{l}$}_{l∈L} (Bai et al., 2025b). For each selected layer l, the visual features $h_{v}^l$ are projected as:
 
 $v _ { l } = m _ { l } ( h _ { v } ^ { l } ), \quad l \in \{ 6 , 1 2 , 1 8 , 2 4 \}, $
 
-where v_l ∈ R^{n×h} represents the projected visual cues ready for recurrent injection. By progressively injecting these features from fine-grained semantics to coarse-grained textures into the initial recurrent iterations, we provide the language backbone with a "curriculum" of visual understanding, stabilizing the hidden state transition during the early stages of reasoning.
+where $v_{l}$ ∈ R^{n×h} represents the projected visual cues ready for recurrent injection. By progressively injecting these features from fine-grained semantics to coarse-grained textures into the initial recurrent iterations, we provide the language backbone with a "curriculum" of visual understanding, stabilizing the hidden state transition during the early stages of reasoning.
 
 > 💡 **公式批读 — Eq.5（Patch Merger）**:
-> - 每个选定的 ViT 层有一组独立的 patch merger m_l（轻量投影模块）
+> - 每个选定的 ViT 层有一组独立的 patch merger $m_{l}$（轻量投影模块）
 > - 作用：将 ViT 中间层特征 $h_v^l$ 从 ViT 的特征空间映射到 LLM 的 embedding 空间
 > - "Curriculum of visual understanding": 从 fine-grained（低层）到 coarse-grained（高层）的渐进式注入，稳定早期推理阶段的 hidden state transition
 > - **灵感来源**: Qwen3-VL 的 patch merger，但用法不同——Qwen3-VL 是静态注入到不同 LLM 层，HIVE 是动态注入到不同迭代步
 
 The injection schedule is defined as:
 
-${ \hat { e } } _ { v } = { \left\{ \begin{array} { l l } { v _ { i } } & { \text{if } t < K , } \\ { 0 } & { \text{if } t \geq K . } \end{array} \right. } \quad \text{where } i = L[ t ] $
+${ \hat { e } } _ { v } = { \left\{ \begin{array} { l l } { v _ { i } } & { \text{if } t \lt  K , } \\ { 0 } & { \text{if } t \geq K . } \end{array} \right. } \quad \text{where } i = L[ t ] $
 
 > 💡 **公式批读 — Eq.6（注入调度）**:
 > - 只在前 K 次迭代中注入视觉线索（K 通常是 4，因为视觉层级数为 4）
@@ -91,7 +91,7 @@ We introduce an adaptive injection schedule. The core challenge lies in aligning
 
 1. **Case I: Sufficient Iterations (R ≥ 4)**. The visual cues are injected in a "top-down" hierarchical order during the initial 4 steps. For t > 4, the model performs pure language modeling to refine the reasoning output.
 
-2. **Case II: Constrained Iterations (R < 4)**. When the sampled depth is shallower than the visual hierarchy, we perform progressive downsampling of the visual cues. Specifically, we select a subset of V with an interval of floor(4 / R) to ensure that even in shallow reasoning, the model still receives a representative spectrum of visual information (e.g., if R = 2, the model integrates {v_1, v_2}).
+2. **Case II: Constrained Iterations (R < 4)**. When the sampled depth is shallower than the visual hierarchy, we perform progressive downsampling of the visual cues. Specifically, we select a subset of V with an interval of floor(4 / R) to ensure that even in shallow reasoning, the model still receives a representative spectrum of visual information (e.g., if R = 2, the model integrates {$v_{1}$, $v_{2}$}).
 
 > 💡 **机制拆解 — 自适应注入策略**:
 >
@@ -107,12 +107,12 @@ We introduce an adaptive injection schedule. The core challenge lies in aligning
 **Algorithm (Pseudo-code)**:
 
 ```python
-def core_block_forward(x_in, embd):
+def core_block_forward($x_{in}$, embd):
     ... # Model expand recurrent blocks here.
-    return x_out
+    return $x_{out}$
 
 def iterate_forward(x, embeds, vis_features):
-    n_no_grad, n_grad = random_sampler()
+    n_no_grad, $n_{grad}$ = random_sampler()
 
     def get_input(i):
         if i < len(vis_features):
@@ -125,16 +125,16 @@ def iterate_forward(x, embeds, vis_features):
         for i in range(n_no_grad):
             core_block_forward(x, get_input(i))
 
-    for i in range(n_no_grad, n_no_grad + n_grad):
+    for i in range(n_no_grad, n_no_grad + $n_{grad}$):
         core_block_forward(x, get_input(i))
 ```
 
 > 💡 **伪代码批读**:
-> - **n_no_grad / n_grad**: 随机采样决定多少步不做梯度回传（truncated BPTT）。前 n_no_grad 步用 `torch.no_grad()`，后 n_grad 步正常计算梯度
+> - **n_no_grad / $n_{grad}$**: 随机采样决定多少步不做梯度回传（truncated BPTT）。前 n_no_grad 步用 `torch.no_grad()`，后 $n_{grad}$ 步正常计算梯度
 > - **get_input(i)**: 核心的分发逻辑——当 i < len(vis_features) 时注入视觉特征，否则只传原始 embed。这是层级注入在代码层面的实际体现
 > - **设计要点**: 视觉特征通过 `func(embeds, vis_features[i])` 与基础嵌入融合（可能是 concat 或 add 后过 adapter），具体实现在 `core_block_forward` 的注释 "Model expand recurrent blocks here" 中，论文未详细展开
 
-Finally, after r recurrent iterations, the model decodes the hidden state s_r to produce the output probabilities:
+Finally, after r recurrent iterations, the model decodes the hidden state $s_{r}$ to produce the output probabilities:
 
 $p = H ( s _ { r } ). $
 
@@ -142,11 +142,11 @@ $p = H ( s _ { r } ). $
 
 ### 3.3. Training Objective
 
-Given an input text sequence x and a set of hierarchical visual features V_hier = {v_(1), v_(2), ..., v_(L)} extracted from multiple encoder layers, the training loss is defined as:
+Given an input text sequence x and a set of hierarchical visual features $V_{hier}$ = {v_(1), v_(2), ..., v_(L)} extracted from multiple encoder layers, the training loss is defined as:
 
 $L( \theta ) = E _ { ( x , V _ { hier } ) \in X } \; E _ { r \sim \Lambda } \left[ L _ { CE } \left( \Gamma _ { \theta } ( x , V _ { hier } , r ) , x ^ { \prime } \right) \right],$
 
-where θ denotes the trainable parameters, and Γ_θ(x, V_hier, r) represents the model output at the r-th recurrence step. The hierarchical features V_hier are selectively injected into the early layers of the transformer during each recurrent pass. This ensures that the model progressively refines its latent representations by anchoring them to multi-scale visual cues. The recurrence depth r is sampled from a log-normal Poisson distribution Λ with a targeted mean r_bar+1. This stochastic supervision forces the model to maintain semantic consistency across varied computational paths, facilitating the adaptive early-exit mechanism during inference.
+where θ denotes the trainable parameters, and $Γ_{θ}$(x, $V_{hier}$, r) represents the model output at the r-th recurrence step. The hierarchical features $V_{hier}$ are selectively injected into the early layers of the transformer during each recurrent pass. This ensures that the model progressively refines its latent representations by anchoring them to multi-scale visual cues. The recurrence depth r is sampled from a log-normal Poisson distribution Λ with a targeted mean $r_{bar}$+1. This stochastic supervision forces the model to maintain semantic consistency across varied computational paths, facilitating the adaptive early-exit mechanism during inference.
 
 > 💡 **公式批读 — Training Objective**:
 > - **双层期望**：外层在数据分布上求期望，内层在 recurrency depth r 的分布上求期望
@@ -159,7 +159,7 @@ where θ denotes the trainable parameters, and Γ_θ(x, V_hier, r) represents th
 
 ## 三、Summary
 
-- **3.1 Recurrent V-L Backbone**: Huginn 三元结构扩展——文本嵌入 E(x) + 视觉嵌入 ViT+Proj → concat → 随机初始化 s_0 → R-Block 迭代
+- **3.1 Recurrent V-L Backbone**: Huginn 三元结构扩展——文本嵌入 E(x) + 视觉嵌入 ViT+Proj → concat → 随机初始化 $s_{0}$ → R-Block 迭代
 - **3.2 Hierarchical Visual Injection**: 核心创新——从 ViT {6,12,18,24} 提取多尺度特征 → Patch Merger 对齐 → 前 K 次迭代按课程顺序注入 → R 不足时降采样
 - **3.3 Training Objective**: Poisson 分布采样深度 + CE Loss → 解耦推理深度与视觉融合 → 支持自适应早停
 - **关键设计原则**:

@@ -36,42 +36,42 @@ Figure 3 illustrates the training workflow of SIEVE. Prior to training-time roll
 > 💡 **Evidence Discovery 的两阶段设计**: Textual Anchor → Visual Evidence 的映射关系。先用梯度找到"模型最在意的词"，再在图像 patch 中找到与这些词最对齐的区域。这个 pipeline 完全自引导 (self-guided)，不需要任何外部模型或人工标注。
 
 Algorithm 1 Self-Guided Visual Evidence Discovery
-Require: Multimodal model M; image I; token embeddings {h_i}; u, v row and column coordinates of the patch.
+Require: Multimodal model M; image I; token embeddings {$h_{i}$}; u, v row and column coordinates of the patch.
 Ensure: Evidence snapshot set E
-Run M(I, {h_i}) to obtain logits z_L and hidden states {H^(ℓ)}
-v̂ = argmax_v z_L[v], s = z_L[v̂]  // choose prediction target
-Sal(i) = ||∇_{h_i} s ⊙ h_i||_2, A = Filter(Sal)  // identify salient textual anchors
-H̄ = (1/|L_mid|) Σ_{ℓ∈L_mid} H^(ℓ)  // stabilize cross-modal representations
-Extract patch tokens X = {x_j} and anchor token reps {q_i} from H̄.
-Normalize x̂_j = x_j / ||x_j||_2, q̂_i = q_i / ||q_i||_2; initialize E = ∅.
+Run M(I, {$h_{i}$}) to obtain logits $z_{L}$ and hidden states {H^(ℓ)}
+v̂ = argmax_v $z_{L}$[v], s = $z_{L}$[v̂]  // choose prediction target
+Sal(i) = ||∇_{$h_{i}$} s ⊙ $h_{i}$||_2, A = Filter(Sal)  // identify salient textual anchors
+H̄ = (1/|$L_{mid}$|) $Σ_{{ℓ∈L_mid}}$ H^(ℓ)  // stabilize cross-modal representations
+Extract patch tokens X = {$x_{j}$} and anchor token reps {$q_{i}$} from H̄.
+Normalize x̂_j = $x_{j}$ / ||$x_{j}$||_2, q̂_i = $q_{i}$ / ||$q_{i}$||_2; initialize E = ∅.
 for i ∈ A do
-    s_ij = cos(q̂_i, x̂_j), w_ij = exp(s_ij/τ) / Σ_u exp(s_iu/τ)  // anchor–patch affinity
-    S(B_i) = max_{u,v∈B_i} s_{u,v}, B* = TopK({S(B_i)})  // score blocks and select top-k
-    R_i = BBox(⋃_{B∈B*} B)  // merge selected blocks into a region
-    E_i = Concat x_j  // concatenate all patch embeddings in region R_i
-    E ← E ∪ {E_i}
+    $s_{ij}$ = cos(q̂_i, x̂_j), $w_{ij}$ = exp($s_{ij}$/τ) / $Σ_{u}$ exp($s_{iu}$/τ)  // anchor–patch affinity
+    S($B_{i}$) = max_{u,v∈$B_{i}$} $s_{{u,v}}$, B* = TopK({S($B_{i}$)})  // score blocks and select top-k
+    $R_{i}$ = BBox(⋃_{B∈B*} B)  // merge selected blocks into a region
+    $E_{i}$ = Concat $x_{j}$  // concatenate all patch embeddings in region $R_{i}$
+    E ← E ∪ {$E_{i}$}
 end for
 return E
 
 > 💡 **Algorithm 1 逐行批读 — 最核心的算法**:
 >
-> **步骤 1: 前向传播** `Run M(I, {h_i})`
+> **步骤 1: 前向传播** `Run M(I, {$h_{i}$})`
 > - 对输入 (image + text) 做一次完整的前向传播，获取最后位置的 logits 和所有层的 hidden states。
 > - 注意：这里用的是**完整输入**（image + question），不是仅图像。因为锚点需要在**任务上下文**中被识别。
 >
-> **步骤 2: 预测目标选择** `v̂ = argmax $z_L$, s = z_L[v̂]`
+> **步骤 2: 预测目标选择** `v̂ = argmax $z_L$, s = $z_{L}$[v̂]`
 > - 选取模型在最后一个输入位置**最可能预测的下一个 token** 作为优化目标。
 > - 这是一个精妙的设计：用模型自己的预测倾向来定义"什么重要"，而不是用 ground truth answer。这保证了自引导的纯粹性。
 >
-> **步骤 3: 梯度显著性** `Sal(i) = ||∇_{h_i} s ⊙ h_i||_2`
+> **步骤 3: 梯度显著性** `Sal(i) = ||∇_{$h_{i}$} s ⊙ $h_{i}$||_2`
 > - 计算每个 input token 对预测目标 s 的梯度大小。梯度越大 → 模型输出对这个 token 越敏感 → 这个 token 越重要。
-> - `⊙ h_i` 的 element-wise product：Simonyan et al. (2013) 的 gradient×input 方法，比纯梯度更能反映 token 的实际贡献（因为同时考虑了梯度和表示大小）。
+> - `⊙ $h_{i}$` 的 element-wise product：Simonyan et al. (2013) 的 gradient×input 方法，比纯梯度更能反映 token 的实际贡献（因为同时考虑了梯度和表示大小）。
 > - **Filter(Sal)**: 过滤 stop words + 保留超过阈值的 content-bearing tokens → 得到 textual anchors。
 >
 > **步骤 4: 中层表示稳定化** `H̄ = mean(ℓ ∈ $L_mid$) H^(ℓ)`
 > - 对中间层的 hidden states 取平均。为什么是中间层？Section 4.4.2 的 IHR 实验给出实证支持：中间层同时具有足够的语义抽象和空间保真度。
 >
-> **步骤 5: 跨模态匹配** `s_ij = cos(q̂_i, x̂_j) → $w_ij$ = softmax(s_ij/τ)`
+> **步骤 5: 跨模态匹配** `$s_{ij}$ = cos(q̂_i, x̂_j) → $w_ij$ = softmax($s_{ij}$/τ)`
 > - 在**同一个** H̄ 中提取 anchor 表示 $q_i$ 和 patch 表示 $x_j$，做 cosine similarity + temperature-scaled softmax。
 > - 关键前提：VLM 中 text token 和 image patch token 在**同一个表示空间**中（经过 projector 对齐后），可以直接比较。
 >
@@ -79,7 +79,7 @@ return E
 > - 将 patch 映射到 H×W 网格，对每个 block 取最大 similarity 作为该 block 的得分。
 > - TopK 选取得分最高的 block(s)。默认 K=1（Section 4.4.2 和 Appendix B 验证了 K=1 最优）。
 >
-> **步骤 7: 区域构建与嵌入缓存** `R_i = BBox(⋃ B*) → $E_i$ = Concat x_j`
+> **步骤 7: 区域构建与嵌入缓存** `$R_{i}$ = BBox(⋃ B*) → $E_i$ = Concat $x_{j}$`
 > - 将选中的 block(s) 合并成 bounding box 区域，并可能进行扩张（expand）——补全对象边缘（因为 patch grid 可能与 object boundary 不对齐）。
 > - 拼接该区域内所有 patch 的 embedding 作为 evidence snapshot。
 > - **关键操作**: $E_i$ 是**拼接** (concat) 而非池化 (pooling)——保留了所有 patch 的空间信息，让模型在注入时能看到完整的区域表示。
@@ -97,17 +97,17 @@ A central challenge in constructing visual evidence lies in determining what to 
 
 #### 3.2.1 Discovering Textual Anchors via Gradient Saliency
 
-Rather than relying on external concept taggers or handcrafted keyword lists, we derive anchors directly from the model's own predictive dynamics. Our primary signal is token-level gradient saliency: if a token is critical to the model's next-step prediction, the output logit will exhibit high sensitivity to perturbations of that token's embedding, manifesting as a large gradient magnitude. This yields an importance landscape over input tokens, from which we select the most influential ones as anchors. Formally, let the multimodal model produce logits z_L ∈ R^{|V|} at the last input position L, where V is the vocabulary. Let v̂ = argmax_{v∈V} z_L[v] denote the predicted next token, and define the scalar target s = z_L[v̂]. We compute a saliency score for each input token embedding h_i ∈ R^d as
+Rather than relying on external concept taggers or handcrafted keyword lists, we derive anchors directly from the model's own predictive dynamics. Our primary signal is token-level gradient saliency: if a token is critical to the model's next-step prediction, the output logit will exhibit high sensitivity to perturbations of that token's embedding, manifesting as a large gradient magnitude. This yields an importance landscape over input tokens, from which we select the most influential ones as anchors. Formally, let the multimodal model produce logits $z_{L}$ ∈ R^{|V|} at the last input position L, where V is the vocabulary. Let v̂ = argmax_{v∈V} $z_{L}$[v] denote the predicted next token, and define the scalar target s = $z_{L}$[v̂]. We compute a saliency score for each input token embedding $h_{i}$ ∈ R^d as
 
-Sal(i) = ||∇_{h_i} s ⊙ h_i||_2      (1)
+Sal(i) = ||∇_{$h_{i}$} s ⊙ $h_{i}$||_2      (1)
 
-where ⊙ denotes element-wise multiplication. This gradient–input formulation captures both the sensitivity of the prediction (via the gradient) and the magnitude of the representation (via h_i), ensuring that high saliency reflects genuine dependence of the model's output on token i. Since raw saliency scores often assign non-trivial weight to function words (e.g., the, is) that carry limited semantic content, we apply a stop-word filter and retain only content-bearing tokens whose saliency exceeds a predefined threshold. The surviving tokens constitute our textual anchors, i.e., the semantics that the model implicitly treats as pivotal to its reasoning (e.g., objects, attributes, or spatial relations). These anchors subsequently serve as queries for visual grounding.
+where ⊙ denotes element-wise multiplication. This gradient–input formulation captures both the sensitivity of the prediction (via the gradient) and the magnitude of the representation (via $h_{i}$), ensuring that high saliency reflects genuine dependence of the model's output on token i. Since raw saliency scores often assign non-trivial weight to function words (e.g., the, is) that carry limited semantic content, we apply a stop-word filter and retain only content-bearing tokens whose saliency exceeds a predefined threshold. The surviving tokens constitute our textual anchors, i.e., the semantics that the model implicitly treats as pivotal to its reasoning (e.g., objects, attributes, or spatial relations). These anchors subsequently serve as queries for visual grounding.
 
 > 💡 **Eq (1) 批读 — 梯度显著性公式**:
-> - ∇_{h_i} s: 预测目标 s 对 token i 的 embedding 的梯度。物理意义：如果轻微扰动这个 token 的 embedding，预测结果会变多少。
+> - ∇_{$h_{i}$} s: 预测目标 s 对 token i 的 embedding 的梯度。物理意义：如果轻微扰动这个 token 的 embedding，预测结果会变多少。
 > - ⊙ $h_i$: 乘以 token 自身的 embedding。物理意义：不仅考虑敏感性，还考虑该 token 的表示本身有多强。
 > - ||·||_2: L2 norm 将向量转化为标量分数。
-> - **与标准 saliency 的区别**: 标准的 gradient saliency 只用 ||∇_{h_i} s||_2，而这里加入了 $h_i$ 的乘法项——这是一个 gradient×input 的变体，更好地反映了 token 对预测的**实际贡献**（而不仅仅是局部敏感性）。
+> - **与标准 saliency 的区别**: 标准的 gradient saliency 只用 ||∇_{$h_{i}$} s||_2，而这里加入了 $h_i$ 的乘法项——这是一个 gradient×input 的变体，更好地反映了 token 对预测的**实际贡献**（而不仅仅是局部敏感性）。
 >
 > **Stop-word 过滤的必要性**: 论文坦诚指出 function words 如 "the", "is" 可能获得非平凡的高显著性——因为这些词在序列中位置靠前、参与了大量 self-attention 计算。不滤波会导致锚点被虚词占据，从而定位到不相关的图像区域。这个设计细节是实际工程中不可或缺的。
 
@@ -115,13 +115,13 @@ where ⊙ denotes element-wise multiplication. This gradient–input formulation
 
 Given the textual anchors, we localize their corresponding visual regions by matching the internal hidden representations of text tokens and image patch tokens within the model's joint multimodal space, where both modalities reside in the same representation space and can therefore be directly compared. Our approach operates on intermediate-layer representations, where cross-modal semantics exhibit more explicit alignment.
 
-Let H^(ℓ) ∈ R^{L×d} denote the hidden states at layer ℓ, for ℓ = 1, ..., L. Prior work has shown that middle layers tend to capture richer semantic representations than either early or later layers Skean et al. [2024, 2025]. We accordingly compute a stabilized representation by averaging middle layer's hidden states with: H̄ = (1/|L_mid|) Σ_{ℓ∈L_mid} H^(ℓ). Both modalities are obtained from the same H̄ by indexing the corresponding token positions. Let X ∈ R^{N×d} denote the patch-token representations and q ∈ R^d the representation of a textual anchor token.
+Let H^(ℓ) ∈ R^{L×d} denote the hidden states at layer ℓ, for ℓ = 1, ..., L. Prior work has shown that middle layers tend to capture richer semantic representations than either early or later layers Skean et al. [2024, 2025]. We accordingly compute a stabilized representation by averaging middle layer's hidden states with: H̄ = (1/|$L_{mid}$|) $Σ_{{ℓ∈L_mid}}$ H^(ℓ). Both modalities are obtained from the same H̄ by indexing the corresponding token positions. Let X ∈ R^{N×d} denote the patch-token representations and q ∈ R^d the representation of a textual anchor token.
 
-To ensure robust similarity computation, we apply mean-centering and ℓ_2 normalization to both the patch tokens and the anchor, yielding normalized vectors {x̂_i} and q̂. We then compute anchor–patch affinity via cosine similarity: s_i = cos(x̂_i, q̂) i = 1, ..., N, and convert the affinities into a temperature-scaled softmax distribution:
+To ensure robust similarity computation, we apply mean-centering and ℓ_2 normalization to both the patch tokens and the anchor, yielding normalized vectors {x̂_i} and q̂. We then compute anchor–patch affinity via cosine similarity: $s_{i}$ = cos(x̂_i, q̂) i = 1, ..., N, and convert the affinities into a temperature-scaled softmax distribution:
 
-w_i = exp(s_i/τ) / Σ_j exp(s_j/τ)      (2)
+$w_{i}$ = exp($s_{i}$/τ) / $Σ_{j}$ exp($s_{j}$/τ)      (2)
 
-We leverage this distribution to extract a spatially coherent region. Specifically, we map patch tokens onto the H×W patch grid and compute each block's score as the maximum similarity within the block: s_b = max_{j∈B_b} w_ij, where B_b denotes the set of patches in block b. We then select the top-K scoring blocks B_i = TopK({s_b}), and expand each selected block by computing the bounding rectangle of the selected patches. We set k to 1, and further discussion it in the B. We evaluate the similarity of these patches with their corresponding textual anchors and retain the highest-scoring one as the expanded block R_i = Expand(B̄_i). The embeddings of patches within each region are then aggregated to form a region-level snapshot: E_i = Concat_{j∈R_i} x_j. The resulting region embeddings are cached as evidence snapshots and stored alongside each training sample. These embeddings constitute reusable visual evidence that can be dynamically inserted into reasoning during the rollout process.
+We leverage this distribution to extract a spatially coherent region. Specifically, we map patch tokens onto the H×W patch grid and compute each block's score as the maximum similarity within the block: $s_{b}$ = max_{j∈$B_{b}$} $w_{ij}$, where $B_{b}$ denotes the set of patches in block b. We then select the top-K scoring blocks $B_{i}$ = TopK({$s_{b}$}), and expand each selected block by computing the bounding rectangle of the selected patches. We set k to 1, and further discussion it in the B. We evaluate the similarity of these patches with their corresponding textual anchors and retain the highest-scoring one as the expanded block $R_{i}$ = Expand(B̄_i). The embeddings of patches within each region are then aggregated to form a region-level snapshot: $E_{i}$ = Concat_{j∈$R_{i}$} $x_{j}$. The resulting region embeddings are cached as evidence snapshots and stored alongside each training sample. These embeddings constitute reusable visual evidence that can be dynamically inserted into reasoning during the rollout process.
 
 > 💡 **跨模态匹配的几点关键设计**:
 >
@@ -139,31 +139,31 @@ We leverage this distribution to extract a spatially coherent region. Specifical
 
 Existing tool-augmented thinking-with-images methods [Zheng et al., 2025, Hong et al., 2025, Zhang et al., 2025b] enlarge the action space with external tool calls and require image re-encoding at every reasoning step. Since SIEVE simply reuses embeddings already produced by the vision encoder and projected into text space, it sidesteps these issues entirely and we can formalize the reasoning as shown in Equation 3, where the policy selects the next action conditioned on the original image and the full interaction history, including both generated text and any previously inserted visual evidence, accumulated up to the current step:
 
-a_t ~ π_θ(· | s_t),   s_t ≜ I || (x_1 || E_1) || ... || (x_{t-1} || E_{t-1})      (3)
+$a_{t}$ ~ $π_{θ}$(· | $s_{t}$),   $s_{t}$ ≜ I || ($x_{1}$ || $E_{1}$) || ... || ($x_{{t-1}}$ || $E_{{t-1}}$)      (3)
 
-Here, I denotes the input image, x_t is the text generated by the model, and E_t is the embeddings of visual evidence inserted at turn t (with E_t = ∅ when no insertion occurs). Thus, s_t represents the accumulated context: the raw image followed by all preceding textual responses and inserted evidence blocks in temporal order. Conditioned on s_t, the policy samples the next action a_t, either terminating with a final answer or triggering insertion of the cached visual evidence. The rollout terminates when a final answer is produced or when a predefined maximum number of turns is reached.
+Here, I denotes the input image, $x_{t}$ is the text generated by the model, and $E_{t}$ is the embeddings of visual evidence inserted at turn t (with $E_{t}$ = ∅ when no insertion occurs). Thus, $s_{t}$ represents the accumulated context: the raw image followed by all preceding textual responses and inserted evidence blocks in temporal order. Conditioned on $s_{t}$, the policy samples the next action $a_{t}$, either terminating with a final answer or triggering insertion of the cached visual evidence. The rollout terminates when a final answer is produced or when a predefined maximum number of turns is reached.
 
 > 💡 **Eq (3) 批读 — 序列决策形式化**:
 > - `I`: 原始图像 (不变的全局上下文)
-> - `x_t`: 模型在 turn t 生成的文本
-> - `E_t`: turn t 注入的 evidence embedding (可能是空集 ∅)
+> - `$x_{t}$`: 模型在 turn t 生成的文本
+> - `$E_{t}$`: turn t 注入的 evidence embedding (可能是空集 ∅)
 > - `||`: 序列拼接
 > - **关键设计**: $E_t$ 是**插入**在 $x_t$ 之后的——它与文本 token 在序列中**交错排列** (interleaved)。这与工具增强方法中 "new view 追加在输入前端" 形成鲜明对比。
 > - **与 CoT 的关系**: $x_t$ 可以包含推理文本 (如 "Let me check the color of the object...")，然后 $E_t$ 提供该对象的 region embedding。这在语义上是自然的——"我想看看 X" → X 的 embedding 被注入 → 继续推理。
 
 Trajectory-level reward design. We design a trajectory-level reward function that holistically evaluates the quality of the complete reasoning path. The reward comprises four complementary components, each yielding a binary score of 1 (satisfied) or 0 (violated). Given a trajectory τ, the total reward is:
 
-R(τ) = λ_1 R_res(τ) + λ_2 R_fmt(τ) + λ_3 R_emb(τ) + λ_4 R_act(τ)      (4)
+R(τ) = $λ_{1}$ $R_{res}$(τ) + $λ_{2}$ $R_{fmt}$(τ) + $λ_{3}$ $R_{emb}$(τ) + $λ_{4}$ $R_{act}$(τ)      (4)
 
-where the λ values are scaling coefficients. In our experiments, we set λ_1 = 0.6, λ_2 = 0.3, λ_3 = 0.5 and λ_4 = 0.2. Each component targets a distinct aspect of the desired behavior:
+where the λ values are scaling coefficients. In our experiments, we set $λ_{1}$ = 0.6, $λ_{2}$ = 0.3, $λ_{3}$ = 0.5 and $λ_{4}$ = 0.2. Each component targets a distinct aspect of the desired behavior:
 
-• Format reward (R_fmt) promotes well-structured outputs. For single-turn trajectories, the full reward is granted only if the model produces a valid reasoning chain followed by a final answer. For multi-turn trajectories, obtaining the full reward additionally requires an explicit embedding selection during an intermediate turn. Any structural violation results in a zero format reward.
+• Format reward ($R_{fmt}$) promotes well-structured outputs. For single-turn trajectories, the full reward is granted only if the model produces a valid reasoning chain followed by a final answer. For multi-turn trajectories, obtaining the full reward additionally requires an explicit embedding selection during an intermediate turn. Any structural violation results in a zero format reward.
 
-• Result reward (R_res) evaluates the correctness of the final answer, serving as the primary learning signal for reasoning quality.
+• Result reward ($R_{res}$) evaluates the correctness of the final answer, serving as the primary learning signal for reasoning quality.
 
-• Embedding reward (R_emb) is activated exclusively when the model produces a correct final answer and invokes embedding insertion at least once during intermediate reasoning steps. This bonus incentivizes the model to actively leverage visual evidence when it is beneficial for task resolution, rather than bypassing the available evidence.
+• Embedding reward ($R_{emb}$) is activated exclusively when the model produces a correct final answer and invokes embedding insertion at least once during intermediate reasoning steps. This bonus incentivizes the model to actively leverage visual evidence when it is beneficial for task resolution, rather than bypassing the available evidence.
 
-• Action reward (R_act) improves training stability in two ways: (i) it penalizes overly short reasoning traces that could hack the reward, and (ii) it provides a small positive reward for committing to an action, either retrieving an embedding or producing an answer, which discourages the policy from collapsing into "non-committal" outputs that avoid taking actions.
+• Action reward ($R_{act}$) improves training stability in two ways: (i) it penalizes overly short reasoning traces that could hack the reward, and (ii) it provides a small positive reward for committing to an action, either retrieving an embedding or producing an answer, which discourages the policy from collapsing into "non-committal" outputs that avoid taking actions.
 
 > 💡 **Eq (4) 批读 — 四维 Reward 设计的精妙之处**:
 >

@@ -45,7 +45,7 @@ To solve these challenges, we first introduce VisualPRM400K, a dataset comprisin
 
 > **机制拆解 — VisualPRM400K 自动数据管线**: 核心思路借鉴 Math-Shepherd [79] 的 Monte Carlo 方法：
 > 1. 从 MMPR v1.1 收集 (Image, Question)
-> 2. 用 InternVL2.5 采样逐步解答 s = {$s_0$, ..., s_n}
+> 2. 用 InternVL2.5 采样逐步解答 s = {$s_0$, ..., $s_{n}$}
 > 3. 对每个步骤 $s_i$，从前缀 $s_{≤i}$ 出发采样 16 条续写 (completions)
 > 4. m$c_i$ = correc$t_completions$ / 16（expected accuracy）
 > 5. 如果 m$c_i$ > 0，标记为正确步骤

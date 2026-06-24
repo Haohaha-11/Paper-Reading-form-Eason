@@ -14,11 +14,11 @@ We introduce foundational concepts and notations used throughout this paper: the
 
 ### Vision-Language Models
 
-A vision-language model (VLM) accepts multimodal input, typically an image v and a text query q, and generates the text output o, denoted as π_θ(o | q, v). For reasoning tasks, the text output is generally a chain of language reasoning steps. Typical architecture combines a visual encoder (e.g. ViT) to embed I and a large language model (LLM) to decode the output. Typically, the two modalities are linked via a connection layer.
+A vision-language model (VLM) accepts multimodal input, typically an image v and a text query q, and generates the text output o, denoted as $π_{θ}$(o | q, v). For reasoning tasks, the text output is generally a chain of language reasoning steps. Typical architecture combines a visual encoder (e.g. ViT) to embed I and a large language model (LLM) to decode the output. Typically, the two modalities are linked via a connection layer.
 
 ### Reinforcement Learning with Verifiable Rewards
 
-RL with verifiable rewards (RLVR) has become the key technique to improve the performance of VLMs in reasoning tasks [45]. It aims to train the VLM to not only generate plausible outputs but also satisfy measurable criteria (e.g. correctness, spatial consistency). One algorithm is Group Relative Policy Optimization (GRPO) [33]: given the input prompt q and image v, a reference policy π_θ(o | q, v) samples multiple responses {o_i}. Each response will be assigned with a scalar reward R_i from the verified function or reward model. The advantage of the i-th response is calculated by normalizing its reward relative to the group:
+RL with verifiable rewards (RLVR) has become the key technique to improve the performance of VLMs in reasoning tasks [45]. It aims to train the VLM to not only generate plausible outputs but also satisfy measurable criteria (e.g. correctness, spatial consistency). One algorithm is Group Relative Policy Optimization (GRPO) [33]: given the input prompt q and image v, a reference policy $π_{θ}$(o | q, v) samples multiple responses {$o_{i}$}. Each response will be assigned with a scalar reward $R_{i}$ from the verified function or reward model. The advantage of the i-th response is calculated by normalizing its reward relative to the group:
 
 $\hat{A}_i = \frac{R_i - \text{mean}(\{R_j\}_{j=1}^G)}{\text{std}(\{R_j\}_{j=1}^G)}$ (1)
 
@@ -28,11 +28,11 @@ $\hat{A}_i = \frac{R_i - \text{mean}(\{R_j\}_{j=1}^G)}{\text{std}(\{R_j\}_{j=1}^
 > - **直观理解**: 在同一个问题的一组回复中，"比平均好的"得到正 advantage，"比平均差的"得到负 advantage
 > - **关键局限**: Eq.1 输出的 Â_i 是一个**标量**，对响应 i 中的所有 token 都是同一个值。这意味着正确和错误的 token 被"一视同仁"地对待。
 
-Note that this advantage Â_i is a sequence-level signal, which is constant for all tokens within the i-th response. Hence, GRPO optimizes a clipped surrogate objective to update the policy π_θ based on the advantage:
+Note that this advantage Â_i is a sequence-level signal, which is constant for all tokens within the i-th response. Hence, GRPO optimizes a clipped surrogate objective to update the policy $π_{θ}$ based on the advantage:
 
-$$J(\theta) = E_{(q, \{o_i\}) \sim \pi_\theta} \left[ \frac{1}{G} \sum_{i=1}^G \sum_{t=1}^{|o_i|} \min \Big( r_{i,t}(\theta) \hat{A}_i, \ \text{clip}(r_{i,t}(\theta), 1-\epsilon, 1+\epsilon) \hat{A}_i \Big) - \beta D_{KL}(\pi_\theta || \pi_{ref}) \right] \ \ (2)$$
+$J(\theta) = E_{(q, \{o_i\}) \sim \pi_\theta} \left[ \frac{1}{G} \sum_{i=1}^G \sum_{t=1}^{|o_i|} \min \Big( r_{i,t}(\theta) \hat{A}_i, \ \text{clip}(r_{i,t}(\theta), 1-\epsilon, 1+\epsilon) \hat{A}_i \Big) - \beta D_{KL}(\pi_\theta || \pi_{ref}) \right] \ \ (2)$
 
-where ε is the clipping hyperparameter and r_{i,t}(θ) is the importance sampling ratio for token t.
+where ε is the clipping hyperparameter and $r_{{i,t}}$(θ) is the importance sampling ratio for token t.
 
 > 💡 **公式批读 — GRPO 目标函数 (Eq.2)**:
 > - **外层期望**: 对由当前策略 π_θ 生成的 prompt-响应组取期望
@@ -63,7 +63,7 @@ A key limitation of reinforcement learning with verifiable rewards (RLVR) is rew
 
 ## 三、Summary
 
-- **VLM 架构**: Vision Encoder + Connection Layer + LLM Decoder → π_θ(o | q, v)
+- **VLM 架构**: Vision Encoder + Connection Layer + LLM Decoder → $π_{θ}$(o | q, v)
 - **GRPO 核心**: 组内标准化 advantage (Eq.1) + clipped surrogate objective (Eq.2)
 - **核心局限**: sequence-level Â_i 对一个响应中所有 token 都相同 → 无法区分正确/错误 token
 - **方案方向**: 设计 perception-centric PRM 输出 structured verification，替代/增强序列级 advantage

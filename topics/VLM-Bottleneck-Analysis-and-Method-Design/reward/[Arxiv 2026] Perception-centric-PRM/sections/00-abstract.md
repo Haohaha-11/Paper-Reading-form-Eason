@@ -19,7 +19,7 @@ Recent advancements in reinforcement learning with verifiable rewards (RLVR) hav
 > 💡 **机制拆解 — Perceval 的核心工作流**:
 >
 > ```
-> [Policy 模型生成回复 o_i]
+> [Policy 模型生成回复 $o_{i}$]
 >         ↓
 > [Perceval 提取 image-related claims，逐条与图像比对比对]  ← 核心步骤：claim-by-claim 校验
 >         ↓

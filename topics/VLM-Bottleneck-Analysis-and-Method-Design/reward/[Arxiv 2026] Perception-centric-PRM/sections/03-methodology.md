@@ -71,11 +71,11 @@ To overcome the sparse supervision issue, we propose PERCEVAL (Perception-centri
 
 Building on PERCEVAL, we revise the GRPO objective to support process-level supervision by replacing the coarse sequence-level advantage Â_i (Eq. 1) with a token-level advantage Â'_{i,t}. The key change is to let advantage computation accept per-token signals so that perceptual errors within a response are directly penalized during learning. To achieve it, for each response, we use PERCEVAL to identify the token spans that realize perception-induced hallucinations, and then re-assign advantages for those tokens to provide a reduced (or more negative) learning signal.
 
-Given a response o_i of length L_i and the PERCEVAL verification, we parse the <answer> content and select the identified problematic substrings. We locate each substring in o_i via exact string match to obtain its token span [j_k, l_k] and define U_i = ⋃_{k=1}^K [j_k, l_k]. From U_i we construct a binary mask M_i = [m_{i,1}, ..., m_{i,L_i}] with m_{i,t} = 1 if t ∈ U_i and 0 otherwise. Then, we modulate the sequence-level signal with this mask to form the token-level advantage:
+Given a response $o_{i}$ of length $L_{i}$ and the PERCEVAL verification, we parse the <answer> content and select the identified problematic substrings. We locate each substring in $o_{i}$ via exact string match to obtain its token span [$j_{k}$, $l_{k}$] and define $U_{i}$ = ⋃_{k=1}^K [$j_{k}$, $l_{k}$]. From $U_{i}$ we construct a binary mask $M_{i}$ = [$m_{{i,1}}$, ..., m_{i,$L_{i}$}] with $m_{{i,t}}$ = 1 if t ∈ $U_{i}$ and 0 otherwise. Then, we modulate the sequence-level signal with this mask to form the token-level advantage:
 
 $\hat{A}'_{i,t} := \hat{A}_i - \alpha \cdot m_{i,t} \cdot |\hat{A}_i|$ (3)
 
-where α ∈ [0, 1] controls penalty strength. Thus, correct tokens (m_{i,t} = 0) keep Â'_{i,t} = Â_i, while hallucination tokens (m_{i,t} = 1) are downweighted: when Â_i > 0, Â'_{i,t} = Â_i(1 - α); when Â_i < 0, Â'_{i,t} = Â_i(1 + α), making the penalty stronger. Finally, we substitute Â'_{i,t} into the GRPO objective in Eq. 2 to add the process supervision. Such a way injects direct, token-level corrective pressure into GRPO, which preserve sequence-level preferences while explicitly suppressing ungrounded content.
+where α ∈ [0, 1] controls penalty strength. Thus, correct tokens ($m_{{i,t}}$ = 0) keep Â'_{i,t} = Â_i, while hallucination tokens ($m_{{i,t}}$ = 1) are downweighted: when Â_i > 0, Â'_{i,t} = Â_i(1 - α); when Â_i < 0, Â'_{i,t} = Â_i(1 + α), making the penalty stronger. Finally, we substitute Â'_{i,t} into the GRPO objective in Eq. 2 to add the process supervision. Such a way injects direct, token-level corrective pressure into GRPO, which preserve sequence-level preferences while explicitly suppressing ungrounded content.
 
 > 💡 **公式批读 — Token-level Advantage 重分配 (Eq.3)**:
 >
@@ -165,6 +165,6 @@ Beyond training-time use, PERCEVAL (our perception-centric PRM) enables test-tim
 
 - **Perceval 设计**: think-then-answer schema（<think>claim-by-claim 分析</think> + <answer>错误子串 Python list</answer>）
 - **PRM 训练**: 四阶段流水线——Query → Rollout → Auto Annotation → SFT
-- **Token-level Advantage**: Eq.3 = Â'_i,t = Â_i - α · m_i,t · |Â_i|，核心洞察：幻觉 token 的正确 advantage 被打折，错误的 advantage 被打折+"加热"
+- **Token-level Advantage**: Eq.3 = Â'_i,t = Â_i - α · $m_{i}$,t · |Â_i|，核心洞察：幻觉 token 的正确 advantage 被打折，错误的 advantage 被打折+"加热"
 - **Test-time Scaling**: Truncate（基于前缀重新生成）优于 Truncate-Thinking（反思提示），因为前者更接近模型训练分布
 - **整体数据流**: Policy 生成 → Perceval 检测 → Mask 构建 → Advantage 重分配 → GRPO 更新

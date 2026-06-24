@@ -14,7 +14,7 @@ We propose FUTURE-L1, an interleaved latent visual reasoning framework for VEP. 
 
 ### 3.1 Interleaved Latent Visual Reasoning
 
-**Autoregressive Reasoning with Latent Visual Spans.** FUTURE-L1 augments a standard MLLM backbone (Bai et al., 2025a) with a latent visual reasoning channel using three special tokens: `<|latent_start|>`, `<|latent|>`, and `<|latent_end|>`. Generation begins in textual mode. Once `<|latent_start|>` is emitted, each following `<|latent|>` position produces a hidden state h_t that is fed back as the next input embedding rather than projected to the vocabulary. These continuous states act as latent visual thoughts and remain in the KV cache to condition later textual reasoning. Generation returns to text when `<|latent_end|>` is emitted.
+**Autoregressive Reasoning with Latent Visual Spans.** FUTURE-L1 augments a standard MLLM backbone (Bai et al., 2025a) with a latent visual reasoning channel using three special tokens: `<|latent_start|>`, `<|latent|>`, and `<|latent_end|>`. Generation begins in textual mode. Once `<|latent_start|>` is emitted, each following `<|latent|>` position produces a hidden state $h_{t}$ that is fed back as the next input embedding rather than projected to the vocabulary. These continuous states act as latent visual thoughts and remain in the KV cache to condition later textual reasoning. Generation returns to text when `<|latent_end|>` is emitted.
 
 > 💡 **机制拆解 — 潜视觉 span 的工作原理**:
 >
@@ -29,13 +29,13 @@ We propose FUTURE-L1, an interleaved latent visual reasoning framework for VEP. 
 >
 > **为什么这个设计对 VEP 特别重要**：因为动态视觉状态需要在时间维度上累积和更新。每次潜状态更新都留在 KV cache 中 → 后来的文本 token 可以 "attend to" 之前所有的想象视觉状态。
 
-**Dynamic Latent Budget at Inference.** Latent span length is not fixed: a span ends when the model emits `<|latent_end|>`. We cap each span by L_max to avoid run-on latent decoding, and a response may contain multiple spans, allowing the model to allocate latent computation adaptively across reasoning stages.
+**Dynamic Latent Budget at Inference.** Latent span length is not fixed: a span ends when the model emits `<|latent_end|>`. We cap each span by $L_{max}$ to avoid run-on latent decoding, and a response may contain multiple spans, allowing the model to allocate latent computation adaptively across reasoning stages.
 
 > 💡 **设计细节 — 自适应潜预算**:
 > - **不受控的灵活性**: span 长度由模型自己决定（通过生成 `<|latent_end|>`），无强制固定长度
 > - **可控的安全性**: $L_{max}$ 上界防止潜在的无休止潜解码（类似于 LLM 生成中的 max_new_tokens）
 > - **多处分配**: 一个回答可有多个 span → 模型可以在推理的不同阶段动态分配潜计算
-> - **实验发现 (Section 4.3)**: L_max=4 效果最优；模型确实会在更难的问题上使用更多 span（1-Hop: 1.79 → 3-Hop: 2.52）
+> - **实验发现 (Section 4.3)**: $L_{max}$=4 效果最优；模型确实会在更难的问题上使用更多 span（1-Hop: 1.79 → 3-Hop: 2.52）
 
 ### 3.2 SFT with FUTURE-L1-50K
 
@@ -49,7 +49,7 @@ SFT provides a necessary cold start for latent reasoning by training on curated 
 
 However, not every TwiFF sample provides useful supervision for VEP. Some examples are already easy to solve from the observed prefix alone, where extra future-frame hints add little value. Others remain ambiguous or uninformative even when a reasoning frame is provided. Training on them dilutes the signal that latent visual states should carry. We therefore filter examples by the marginal utility of their intermediate reasoning frames.
 
-For each candidate, we evaluate Qwen3-VL-8B-Instruct under two conditions: (1) a text-only input with the observed video prefix and question; and (2) a hinted input that additionally includes the intermediate reasoning frames. Each condition uses 8 independent rollouts judged by Qwen3.5-397B-A17B. Let p_t, p_v ∈ [0, 8] be the correct-rollout counts; we retain samples with p_t ≤ 6, so the text-only setting is not saturated, and p_v - p_t ≥ 2, so the visual hint provides measurable lift. We rank retained samples by descending p_v - p_t, and take the top 50,000 items as FUTURE-L1-50K. All retained samples are reformatted into the interleaved trajectory shown in Figure 3.
+For each candidate, we evaluate Qwen3-VL-8B-Instruct under two conditions: (1) a text-only input with the observed video prefix and question; and (2) a hinted input that additionally includes the intermediate reasoning frames. Each condition uses 8 independent rollouts judged by Qwen3.5-397B-A17B. Let $p_{t}$, $p_{v}$ ∈ [0, 8] be the correct-rollout counts; we retain samples with $p_{t}$ ≤ 6, so the text-only setting is not saturated, and $p_{v}$ - $p_{t}$ ≥ 2, so the visual hint provides measurable lift. We rank retained samples by descending $p_{v}$ - $p_{t}$, and take the top 50,000 items as FUTURE-L1-50K. All retained samples are reformatted into the interleaved trajectory shown in Figure 3.
 
 > 💡 **机制拆解 — Visual-Gain 筛选的完整流程**:
 >
@@ -66,25 +66,25 @@ For each candidate, we evaluate Qwen3-VL-8B-Instruct under two conditions: (1) a
 > ```
 >
 > **为什么这个指标设计合理**:
-> - `p_t`：衡量问题本身的难度（文本条件下正确 rollout 数越低 = 越难 = 越需要视觉线索）
-> - `p_v - p_t`：衡量未来视觉线索的**边际效用**——增量越大说明这些帧确实提供了关键信息
+> - `$p_{t}$`：衡量问题本身的难度（文本条件下正确 rollout 数越低 = 越难 = 越需要视觉线索）
+> - `$p_{v}$ - $p_{t}$`：衡量未来视觉线索的**边际效用**——增量越大说明这些帧确实提供了关键信息
 > - 筛选出"需要未来视觉线索且未来视觉线索确实有帮助"的样本 → 训练信号质量最大化
 
 > 💡 **关键设计 — 为什么"visual gain > 0"不够，要 ≥ 2？**: 8 次 rollout 中 1 次的增量可能是随机波动。≥2 的阈值提供了统计显著性保障。同时也不取太大（如 ≥5）以免过度筛选导致样本量不足。
 
 **Training Objective.** SFT optimizes a joint objective over discrete text tokens and continuous latent visual states:
 
-L_SFT = L_CE + λ L_Latent
+$L_{SFT}$ = $L_{CE}$ + λ $L_{Latent}$
 
 where λ controls the strength of latent supervision.
 
 For discrete positions (textual reasoning, answer tokens, special control tokens), standard next-token prediction:
 
-L_CE = -∑ log p_θ(w_t | w_<t, V, q)
+$L_{CE}$ = -∑ log $p_{θ}$($w_{t}$ | w_<t, V, q)
 
-For latent positions, each hidden state h_t is aligned with the visual embedding e*_t of the corresponding future reasoning frame, extracted by the Qwen3-VL vision encoder:
+For latent positions, each hidden state $h_{t}$ is aligned with the visual embedding e*_t of the corresponding future reasoning frame, extracted by the Qwen3-VL vision encoder:
 
-L_Latent = (1/|S|) ∑ ||h_t - e*_t||²₂
+$L_{Latent}$ = (1/|S|) ∑ ||$h_{t}$ - e*_t||²₂
 
 This anchors latent spans to the future-frame manifold while preserving standard language modeling over the textual channel.
 
@@ -106,23 +106,23 @@ SFT provides a grounded but teacher-forced initialization: each latent state is 
 
 > 💡 **LA-DAPO 的核心价值**: RL 阶段不需要中间帧标注——signal 完全来自 answer correctness 和潜状态结构。这使得 LA-DAPO 可以在大规模无标注视频上进行 RL，而不受 SFT 阶段需要未来帧的限制。这是一个**监督信号解耦**的设计：SFT 用未来帧 embedding（强监督）、RL 用 answer reward（弱监督）——前者保证初始化，后者保证泛化。
 
-**Outcome-Contrastive Latent Reward.** Answer rewards provide only a sequence-level scalar, leaving latent states weakly supervised. We introduce an outcome-contrastive reward R_ctr that structures latent trajectories by group outcomes: correct rollouts are pulled together, while incorrect rollouts serve as negatives. Because the signal depends only on final-answer correctness, it does not require intermediate-frame annotations.
+**Outcome-Contrastive Latent Reward.** Answer rewards provide only a sequence-level scalar, leaving latent states weakly supervised. We introduce an outcome-contrastive reward $R_{ctr}$ that structures latent trajectories by group outcomes: correct rollouts are pulled together, while incorrect rollouts serve as negatives. Because the signal depends only on final-answer correctness, it does not require intermediate-frame annotations.
 
 > 💡 **问题动机 — 为什么需要 $R_ctr$**: DAPO 的 answer reward 是一个 sequence-level 标量——所有 token 位置共享同一个 reward 信号。这意味着潜状态收到的梯度信号非常弱（特别是当序列中潜状态占比较小时）。$R_ctr$ 为潜状态提供了一种**结构化的轨迹级反馈**：正确的推理路径上的潜状态应该是相似的（它们在做相似的未来想象），而错误的路径上的潜状态应该不同。
 
-Let Z_i = [z_{i,1}, ..., z_{i,T_i}] be the normalized latent trajectory of rollout i, with correctness a_i ∈ {0, 1}. We define trajectory similarity as:
+Let $Z_{i}$ = [$z_{{i,1}}$, ..., z_{i,$T_{i}$}] be the normalized latent trajectory of rollout i, with correctness $a_{i}$ ∈ {0, 1}. We define trajectory similarity as:
 
-s_ij = (1/T) ∑ (1 + ⟨z_{i,t}, z_{j,t}⟩) / 2
+$s_{ij}$ = (1/T) ∑ (1 + ⟨$z_{{i,t}}$, $z_{{j,t}}$⟩) / 2
 
-where T = min(T_i, T_j). Let P_i = {j ≠ i : a_j = 1}, N_i = {j ≠ i : a_j = 0}, and s_i^+ = max_{j∈P_i} s_ij. We use a hardest-positive InfoNCE reward:
+where T = min($T_{i}$, $T_{j}$). Let $P_{i}$ = {j ≠ i : $a_{j}$ = 1}, $N_{i}$ = {j ≠ i : $a_{j}$ = 0}, and $s_{i}$^+ = max_{j∈$P_{i}$} $s_{ij}$. We use a hardest-positive InfoNCE reward:
 
-R_ctr(i) = exp(s_i^+ / τ) / (exp(s_i^+ / τ) + ∑_{j∈N_i} exp(s_ij / τ))
+$R_{ctr}$(i) = exp($s_{i}$^+ / τ) / (exp($s_{i}$^+ / τ) + ∑_{j∈$N_{i}$} exp($s_{ij}$ / τ))
 
 > 💡 **公式批读 — $R_ctr$ 的对比学习设计**:
 >
 > **轨迹相似度 $s_ij$**: 按时间步对齐后计算余弦相似度，取平均。相似度在 [0, 1] 范围（1 代表完全相同）。
 >
-> **Hardest-positive**: s_i^+ = max($s_ij$ over all correct rollouts) —— 只与最相似的正确 rollout 比较，而不是平均。这样鼓励"至少有一条正确的潜轨迹与你相似"，给模型更多灵活性。
+> **Hardest-positive**: $s_{i}$^+ = max($s_ij$ over all correct rollouts) —— 只与最相似的正确 rollout 比较，而不是平均。这样鼓励"至少有一条正确的潜轨迹与你相似"，给模型更多灵活性。
 >
 > **InfoNCE**: 对比学习标准形式 —— 分子是正例相似度的指数，分母是正例 + 所有反例相似度的指数和。最大化 $R_ctr$ 等价于最大化正例相对反例的区分度。
 >
@@ -130,9 +130,9 @@ R_ctr(i) = exp(s_i^+ / τ) / (exp(s_i^+ / τ) + ∑_{j∈N_i} exp(s_ij / τ))
 
 > 💡 **设计细节 — hardest-positive 的选择**: 使用 hardest-positive 而非 closest-positive 或 average-positive：(1) closest-positive 可能引入噪音（可能是随机猜对但潜轨迹不相似的 rollout）；(2) average-positive 可能过于宽松，允许大量低质量潜轨迹；hardest-positive 取最大值确保至少有一条高质量正确的潜轨迹作为正锚点。
 
-**Temporal Diversity Reward.** R_ctr aligns trajectories across rollouts but imposes no structure within a rollout: a policy can still earn a high answer reward by emitting near-identical latent states at consecutive spans, collapsing the latent channel into a single visual thought repeated over time. Although SFT discourages this through frame-distinct supervision, this constraint is no longer present during RL. We therefore add a temporal diversity reward R_div that encourages adjacent latent spans to represent distinct future updates. For a response with M latent spans, we mean-pool the latent vectors within span m into a representative b_m, and penalize adjacent-span similarity:
+**Temporal Diversity Reward.** $R_{ctr}$ aligns trajectories across rollouts but imposes no structure within a rollout: a policy can still earn a high answer reward by emitting near-identical latent states at consecutive spans, collapsing the latent channel into a single visual thought repeated over time. Although SFT discourages this through frame-distinct supervision, this constraint is no longer present during RL. We therefore add a temporal diversity reward $R_{div}$ that encourages adjacent latent spans to represent distinct future updates. For a response with M latent spans, we mean-pool the latent vectors within span m into a representative $b_{m}$, and penalize adjacent-span similarity:
 
-R_div = - (1/(M-1)) ∑ cos²(b_m, b_{m+1})
+$R_{div}$ = - (1/(M-1)) ∑ cos²($b_{m}$, $b_{{m+1}}$)
 
 This reward is maximized at 0 when adjacent span representatives are orthogonal and decreases as they become redundant.
 
@@ -148,9 +148,9 @@ This reward is maximized at 0 when adjacent span representatives are orthogonal 
 
 **Final Rewards.** The total target combines answer/format rewards and two latent terms:
 
-R = λ_a R_acc + λ_f R_fmt + λ_c R_ctr + λ_d R_div
+R = $λ_{a}$ $R_{acc}$ + $λ_{f}$ $R_{fmt}$ + $λ_{c}$ $R_{ctr}$ + $λ_{d}$ $R_{div}$
 
-where λ_c and λ_d are ablated in Section 4.
+where $λ_{c}$ and $λ_{d}$ are ablated in Section 4.
 
 > 💡 **奖励权重设计**: $λ_a$=0.9, $λ_f$=0.1 (标准 DAPO 配置), $λ_c$=0.2, $λ_d$=0.1 (实验 4.2 消融得到的最优值)。注意 $λ_c$ > $λ_d$ —— 这反映了 outcome-contrastive 比 temporal-diversity 更核心：先保证"潜轨迹和答案正确性相关"，再保证"潜轨迹内部有时序多样性"。
 
@@ -158,7 +158,7 @@ where λ_c and λ_d are ablated in Section 4.
 
 ![](../images/afbdf6eb60eb85e4239fb6adce23a343de3fb87377b148220b727ec7d6befdfb.jpg)
 
-*Figure 2: Overview of FUTURE-L1. (Left) FUTURE-L1-50K is built by ranking TwiFF candidates by visual gain p_v - p_t. (Center) SFT trains interleaved text-latent trajectories, aligning latent spans with future visual states. (Right) LA-DAPO further optimizes sampled trajectories with outcome-contrastive and temporal-diversity rewards.*
+*Figure 2: Overview of FUTURE-L1. (Left) FUTURE-L1-50K is built by ranking TwiFF candidates by visual gain $p_{v}$ - $p_{t}$. (Center) SFT trains interleaved text-latent trajectories, aligning latent spans with future visual states. (Right) LA-DAPO further optimizes sampled trajectories with outcome-contrastive and temporal-diversity rewards.*
 
 > 💡 **Figure 2 批读**: 这张 overview 图展示了完整的三阶段 pipeline：
 >
@@ -179,5 +179,5 @@ where λ_c and λ_d are ablated in Section 4.
 ## 三、Summary
 
 - **3.1 推理机制**: 三个特殊 token 控制边界，潜状态跳过 LM head 直接作为下一输入的 embedding，保留在 KV cache 中持续影响后续 token
-- **3.2 SFT + 数据**: visual-gain 筛选 (pv - pt ≥ 2, pt ≤ 6) → top 50K → L_CE (文本) + λ * L_Latent (潜状态 MSE 对齐未来帧 embedding)，λ=0.1
-- **3.3 LA-DAPO**: R_ctr = hardest-positive InfoNCE (跨 rollout 潜轨迹对齐)，R_div = -cos² 惩罚 (相邻 span 时序多样性)，不需要 RL 阶段的中间帧标注
+- **3.2 SFT + 数据**: visual-gain 筛选 (pv - pt ≥ 2, pt ≤ 6) → top 50K → $L_{CE}$ (文本) + λ * $L_{Latent}$ (潜状态 MSE 对齐未来帧 embedding)，λ=0.1
+- **3.3 LA-DAPO**: $R_{ctr}$ = hardest-positive InfoNCE (跨 rollout 潜轨迹对齐)，$R_{div}$ = -cos² 惩罚 (相邻 span 时序多样性)，不需要 RL 阶段的中间帧标注

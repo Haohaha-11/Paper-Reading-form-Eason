@@ -83,7 +83,7 @@ The causal counterfactual reward quantifies the causal contribution of $M$ throu
 
 ![Equation 5](../images/0f3bfed002ee22b717e7ac45872669d1cc6005d09b07f109c9c133961dc35e32.jpg)
 
-$r_{causal} > 0$ indicates that the original memory encodes information with causal contribution to diagnosis; $r_{causal} \le 0$ indicates that the corresponding prior is causally irrelevant to the current decision. This design follows the principle of interventional effect estimation in causal inference, ensuring that the memory retained after refinement is causally consistent with clinical decision logic.
+$r_{causal} \gt  0$ indicates that the original memory encodes information with causal contribution to diagnosis; $r_{causal} \le 0$ indicates that the corresponding prior is causally irrelevant to the current decision. This design follows the principle of interventional effect estimation in causal inference, ensuring that the memory retained after refinement is causally consistent with clinical decision logic.
 
 > **核心创新 — Causal Counterfactual Reward 的三层理解**:
 >

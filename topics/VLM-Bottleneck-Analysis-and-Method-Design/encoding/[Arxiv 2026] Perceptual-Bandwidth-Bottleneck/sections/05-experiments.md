@@ -29,7 +29,7 @@ Baselines. We compare FOVEA against three groups of baselines. Proprietary model
 > 2. **Prior visual agents**: Thyme (RL-based), RAP (Retrieval-Augmented Perception) —— 展示现有主动感知方法的水平
 > 3. **Controlled comparisons**: Direct（纯 passive encoding）和 ReAct（heuristic tool use）—— 用于隔离 FOVEA 的 S-BOED refinement 贡献
 
-Implementation Details. Our primary results in Table 1 use the efficient greedy instantiation of FOVEA. For each initial crop proposal d_seed, we generate two local perturbations, yielding a threecandidate pool {d_seed, d_small, d_large}, and perform K = 3 stochastic probes per candidate to estimate Î(d). The final action d*_t is selected greedily (Algorithm 1).
+Implementation Details. Our primary results in Table 1 use the efficient greedy instantiation of FOVEA. For each initial crop proposal $d_{seed}$, we generate two local perturbations, yielding a threecandidate pool {$d_{seed}$, $d_{small}$, $d_{large}$}, and perform K = 3 stochastic probes per candidate to estimate Î(d). The final action d*_t is selected greedily (Algorithm 1).
 
 > 💡 **Greedy 配置**: 候选池 = {seed (1.0x), large (1.5x, coverage), small (0.8x, resolution)} × 3 probes each = 9 次 VLM 调用。这种精简配置使得主实验可以在全量 benchmark 上保持计算可行性，而更昂贵的 MCMC/Lookahead 策略保留给 challenging subsets。
 

@@ -14,7 +14,7 @@
 
 > 💡 **Benchmark 选择逻辑**: FutureBench (多选题) 评估预测准确性；TwiFF-Bench (开放题) 评估推理过程质量 + 答案真实性。两者互补——前者控制评估难度（标准化答案），后者评估推理链的真实质量（不容易被 guess 或 shortcut 欺骗）。
 
-**Implementation Details.** We use Qwen3-VL-8B-Instruct (Bai et al., 2025a) as the backbone. SFT trains for 1 epoch on FUTURE-L1-50K with global batch size 128, peak learning rate 1×10⁻⁵, MSE weight λ=0.1, and maximum latent budget L_max = 4 unless otherwise specified. RL starts from the SFT checkpoint with group size G=8 and uses Qwen3.6-27B as the LLM-as-judge for the accuracy reward. All experiments run on 8×NVIDIA H200 GPUs, and all checkpoints are evaluated with lmms-eval (Zhang et al., 2024a).
+**Implementation Details.** We use Qwen3-VL-8B-Instruct (Bai et al., 2025a) as the backbone. SFT trains for 1 epoch on FUTURE-L1-50K with global batch size 128, peak learning rate 1×10⁻⁵, MSE weight λ=0.1, and maximum latent budget $L_{max}$ = 4 unless otherwise specified. RL starts from the SFT checkpoint with group size G=8 and uses Qwen3.6-27B as the LLM-as-judge for the accuracy reward. All experiments run on 8×NVIDIA H200 GPUs, and all checkpoints are evaluated with lmms-eval (Zhang et al., 2024a).
 
 ### 4.1 Main Results
 
@@ -59,7 +59,7 @@
 
 ### 4.2 Ablation Study
 
-**SFT Hyperparameters.** Table 3 sweeps the latent MSE weight λ and the maximum latent budget L_max. With L_max = 4 fixed, λ = 0.1 is optimal (73.2); both weaker (λ=0.01, 69.1) and stronger (λ=1.0, 69.5) alignment weights cost 3-4 points, indicating that latent positions need explicit but not dominant supervision. With λ=0.1 fixed, accuracy peaks at L_max = 4 and degrades to 67.4 at L_max = 64, suggesting that an overly long latent span dilutes useful signal. This indicates that latent reasoning benefits from short, explicitly supervised spans rather than simply allocating more continuous tokens.
+**SFT Hyperparameters.** Table 3 sweeps the latent MSE weight λ and the maximum latent budget $L_{max}$. With $L_{max}$ = 4 fixed, λ = 0.1 is optimal (73.2); both weaker (λ=0.01, 69.1) and stronger (λ=1.0, 69.5) alignment weights cost 3-4 points, indicating that latent positions need explicit but not dominant supervision. With λ=0.1 fixed, accuracy peaks at $L_{max}$ = 4 and degrades to 67.4 at $L_{max}$ = 64, suggesting that an overly long latent span dilutes useful signal. This indicates that latent reasoning benefits from short, explicitly supervised spans rather than simply allocating more continuous tokens.
 
 > 💡 **SFT 超参数敏感性分析**:
 >
@@ -69,14 +69,14 @@
 > - λ=1.0 (69.5): 潜状态对齐太强 → 挤压了语言建模 → 文本推理质量下降
 >
 > **$L_max$ 消融**:
-> - L_max=2 (70.7): 潜空间容量不足
-> - L_max=4 (73.2): **最优** → 短而精
-> - L_max=16 (71.0): 开始下降
-> - L_max=64 (67.4): 被稀释 → 过多的潜 tokens 缺乏足够的未来帧监督（FUTURE-L1-50K 中只有 4.2% 样本有 3+ 未来帧）
+> - $L_{max}$=2 (70.7): 潜空间容量不足
+> - $L_{max}$=4 (73.2): **最优** → 短而精
+> - $L_{max}$=16 (71.0): 开始下降
+> - $L_{max}$=64 (67.4): 被稀释 → 过多的潜 tokens 缺乏足够的未来帧监督（FUTURE-L1-50K 中只有 4.2% 样本有 3+ 未来帧）
 >
 > **核心教训**: 潜空间推理不是"越多越好"，而是"少而精"——短 span + 明确监督 > 长 span + 弱信号
 
-**RL Objective.** Table 4 ablates the RL objective from FUTURE-L1-SFT. GRPO (82.8) and DePO (81.1) already lift FUTURE-L1-SFT (73.2) by about 9 points, and DAPO further reaches 83.8. Adding latent-aware rewards improves the objective beyond DAPO: the outcome-contrastive reward R_ctr raises performance to 84.5, the temporal-diversity reward R_div reaches 84.8, and using both in FUTURE-L1-RL achieves 85.4. This shows that the gain is not only from stronger RL, but from rewards that directly structure latent visual trajectories.
+**RL Objective.** Table 4 ablates the RL objective from FUTURE-L1-SFT. GRPO (82.8) and DePO (81.1) already lift FUTURE-L1-SFT (73.2) by about 9 points, and DAPO further reaches 83.8. Adding latent-aware rewards improves the objective beyond DAPO: the outcome-contrastive reward $R_{ctr}$ raises performance to 84.5, the temporal-diversity reward $R_{div}$ reaches 84.8, and using both in FUTURE-L1-RL achieves 85.4. This shows that the gain is not only from stronger RL, but from rewards that directly structure latent visual trajectories.
 
 > 💡 **RL 方法对比的关键洞察**:
 >
@@ -89,7 +89,7 @@
 >
 > 注意：即使只用 DAPO（无潜空间 reward），FUTURE-L1-SFT → DAPO 的提升 (+10.6) 已经远大于文本-only SFT → DAPO 的提升 (+11.3-12.3 over 65.0 baseline)。这再次验证了潜空间 SFT 初始化的优势。
 
-**RL Reward Coefficients.** Table 5 examines the latent-reward coefficients. The outcome-contrastive weight peaks at λ_c = 0.2 (85.4), and the temporal-diversity weight peaks at λ_d = 0.1; larger values hurt, dropping to 81.6 at λ_d = 1.0. This suggests that contrastive alignment and temporal diversity are both useful, but excessive pressure can push latent spans off the manifold.
+**RL Reward Coefficients.** Table 5 examines the latent-reward coefficients. The outcome-contrastive weight peaks at $λ_{c}$ = 0.2 (85.4), and the temporal-diversity weight peaks at $λ_{d}$ = 0.1; larger values hurt, dropping to 81.6 at $λ_{d}$ = 1.0. This suggests that contrastive alignment and temporal diversity are both useful, but excessive pressure can push latent spans off the manifold.
 
 > 💡 **奖励系数的"倒 U 型"**: 两个潜空间奖励都存在最优值，过大反而有害——$λ_d$=1.0 时性能骤降至 81.6。这验证了一个重要直觉：过度的多样性约束会迫使潜状态偏离有意义的视觉 manifold → 偏离了 SFT 阶段建立的有效表征区域。这是"正则化强度—表征保真度"之间的经典 trade-off。
 

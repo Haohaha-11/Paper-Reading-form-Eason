@@ -10,13 +10,13 @@
 
 ## 二、原始文本
 
-**Multi-round region-grounded reasoning.** Given an image I and a dialogue of T turns with queries {q_t}_{t=1}^T, a model interacts with the visual scene over multiple turns. Each turn t may include a set of reference boxes B_t^ref = {[x1,y1,x2,y2]} that are propagated from earlier turns or externally provided, specifying regions that subsequent queries should condition on. Let M_{t-1} denote the dialogue memory up to turn t-1 (e.g., previously localized regions or textual context). A policy π_θ produces a turn-level output:
+**Multi-round region-grounded reasoning.** Given an image I and a dialogue of T turns with queries {$q_{t}$}_{t=1}^T, a model interacts with the visual scene over multiple turns. Each turn t may include a set of reference boxes $B_{t}$^ref = {[x1,y1,x2,y2]} that are propagated from earlier turns or externally provided, specifying regions that subsequent queries should condition on. Let $M_{{t-1}}$ denote the dialogue memory up to turn t-1 (e.g., previously localized regions or textual context). A policy $π_{θ}$ produces a turn-level output:
 
 ```
-o_t ~ π_θ( · | I, q_t, B_t^ref, M_{t-1} )
+$o_{t}$ ~ $π_{θ}$( · | I, $q_{t}$, $B_{t}$^ref, $M_{{t-1}}$ )
 ```
 
-where o_t instantiates the task-specific prediction at turn t (e.g., a 2D bounding box for detection, a point/mask for segmentation, or a count). The memory is updated as M_t = M_{t-1} ∪ {(q_t, o_t)} to enable reference propagation across turns. An episode ends at T; evaluation is conducted per turn and aggregated over the dialogue.
+where $o_{t}$ instantiates the task-specific prediction at turn t (e.g., a 2D bounding box for detection, a point/mask for segmentation, or a count). The memory is updated as $M_{t}$ = $M_{{t-1}}$ ∪ {($q_{t}$, $o_{t}$)} to enable reference propagation across turns. An episode ends at T; evaluation is conducted per turn and aggregated over the dialogue.
 
 > 💡 **问题形式化解读**:
 > - **状态**: (I, $q_t$, $B_t^ref$, $M_{t-1}$) —— 图像 + 当前查询 + 参考框集合 + 对话记忆
@@ -24,7 +24,7 @@ where o_t instantiates the task-specific prediction at turn t (e.g., a 2D boundi
 > - **记忆更新**: $M_t$ = $M_{t-1}$ ∪ {($q_t$, $o_t$)} —— 逐步累积对话历史
 > - **评估**: 逐轮评估 → 整体聚合，可以量化和分析误差随轮深累积的情况
 
-**Tasks: detection and segmentation.** We consider two instantiations of o_t: (i) referring detection, where o_t is a 2D box for the referred region; and (ii) referring segmentation, where o_t is a sparse point or mask for the referred region. Later turns may refer to regions predicted earlier via B_t^ref. For detection, we report per-turn AP at IoU=0.5 (AP50) and the average across turns. For segmentation, we report per-turn generalized IoU (gIoU) averaged over images and then over turns.
+**Tasks: detection and segmentation.** We consider two instantiations of $o_{t}$: (i) referring detection, where $o_{t}$ is a 2D box for the referred region; and (ii) referring segmentation, where $o_{t}$ is a sparse point or mask for the referred region. Later turns may refer to regions predicted earlier via $B_{t}$^ref. For detection, we report per-turn AP at IoU=0.5 (AP50) and the average across turns. For segmentation, we report per-turn generalized IoU (gIoU) averaged over images and then over turns.
 
 > 💡 **任务定义**:
 > - **检测**: $o_t$ = 2D bbox, 指标 = per-turn AP50 + avg across turns
@@ -64,6 +64,6 @@ where o_t instantiates the task-specific prediction at turn t (e.g., a 2D boundi
 
 ## 三、Summary
 
-- **问题定义**: 多轮区域定位推理 = policy π_θ 在每轮根据 (I, q_t, B_t^ref, M_{t-1}) 产生 o_t
+- **问题定义**: 多轮区域定位推理 = policy $π_{θ}$ 在每轮根据 (I, $q_{t}$, $B_{t}$^ref, $M_{{t-1}}$) 产生 $o_{t}$
 - **核心挑战**: 跨轮参考传播中的 error propagation
 - **RegionDial-Bench**: 从 RefCOCO+/RefCOCOg 构建的首个多轮参考定位基准，覆盖检测+分割，训练用 GT 参考传播，测试用预测参考传播

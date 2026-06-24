@@ -15,7 +15,7 @@
 In visually grounded thinking, a valid tag must have the form `<obj> name phrase | coordinates </obj>`.
 
 The coordinate format is mode-specific:
-- **Box mode**: expects `[x1, y1, x2, y2]` with $x_1 < x_2$, $y_1 < y_2$
+- **Box mode**: expects `[x1, y1, x2, y2]` with $x_1 \lt  x_2$, $y_1 \lt  y_2$
 - **Point mode**: expects `[x, y]`
 
 Coordinates must fall within the [0, 1000] image coordinate system. A single tag may contain multiple coordinates separated by semicolons, as one object can refer to multiple instances (e.g. "birds in the sky" corresponds to several birds).

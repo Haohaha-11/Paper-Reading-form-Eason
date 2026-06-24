@@ -120,7 +120,7 @@ There remains substantial space for performance optimization. We recognize that 
 
 > 💡 **性能天花板分析**: 论文明确承认"有大量优化空间"——更大的动态分辨率、更精细的超参调优。结合 OCR 的弱表现，动态分辨率可能是更关键的提升方向（而非继续在层级注入上做文章）。
 
-**Recurrence improves the performance.** Figure 4 illustrates the performance scaling of three model variants across varying recurrence steps r: (1) a non-recurrent baseline (trained with r = 1), (2) a recurrent variant without hierarchical cues (r_bar = 32, w/o Hier.), and (3) our full recurrent model with hierarchical visual cues (r_bar = 32, w/ Hier.). The empirical results yield several key insights:
+**Recurrence improves the performance.** Figure 4 illustrates the performance scaling of three model variants across varying recurrence steps r: (1) a non-recurrent baseline (trained with r = 1), (2) a recurrent variant without hierarchical cues ($r_{bar}$ = 32, w/o Hier.), and (3) our full recurrent model with hierarchical visual cues ($r_{bar}$ = 32, w/ Hier.). The empirical results yield several key insights:
 
 - **Iterative Refinement Gains**: While the non-recurrent baseline remains stagnant at a low performance level (averaging 59.0% across all steps), both recurrent variants exhibit a dramatic upward trajectory as r increases. For instance, the hierarchical model climbs from 32.82% at r = 1 to a peak of 91.57% at r = 32 validating that iterative recurrence allows the model to progressively refine its internal representations.
 
@@ -134,7 +134,7 @@ There remains substantial space for performance optimization. We recognize that 
 > - **r=32→r=64**: 收益递减，plateau——representational capacity 饱和。这在 loop transformer 的预期之中：同一组参数做太多次迭代，边际收益递减
 > - **层级注入的增益**: 整条曲线上 w/ Hier 始终略高于 w/o Hier，但差距不大且随 r 增大而收窄
 
-**Hierarchical cues help understanding.** To further examine the role of hierarchical visual cues, we report fine-grained results across six core dimensions in Table 4. Compared with the recurrent baseline (r_bar = 32, w/o Hier.), the hierarchical recurrent variant (r_bar = 32, w/ Hier.) shows generally positive trends in several categories. In particular, HIVE yields moderate gains in Logic Reasoning (LR, +2.54%), Attribute Reasoning (AR, +1.99%), Relation Reasoning (RR, +1.74%), and Coarse Perception (CP, +3.04%), suggesting that hierarchical visual priors can be incorporated effectively into the recurrent framework. Although the differences are limited in instance-level perception (FI), the overall results indicate that hierarchical cues are compatible with loop-based latent reasoning and can provide additional support in complex visual understanding.
+**Hierarchical cues help understanding.** To further examine the role of hierarchical visual cues, we report fine-grained results across six core dimensions in Table 4. Compared with the recurrent baseline ($r_{bar}$ = 32, w/o Hier.), the hierarchical recurrent variant ($r_{bar}$ = 32, w/ Hier.) shows generally positive trends in several categories. In particular, HIVE yields moderate gains in Logic Reasoning (LR, +2.54%), Attribute Reasoning (AR, +1.99%), Relation Reasoning (RR, +1.74%), and Coarse Perception (CP, +3.04%), suggesting that hierarchical visual priors can be incorporated effectively into the recurrent framework. Although the differences are limited in instance-level perception (FI), the overall results indicate that hierarchical cues are compatible with loop-based latent reasoning and can provide additional support in complex visual understanding.
 
 > 💡 **Figure 4 (MMBench 六维度精细分析)**:
 >
@@ -157,9 +157,9 @@ $\text{norm\_diff} = \frac { \| h _ { t } - h _ { t - 1 } \| _ { 2 } } { \| h _ 
 
 To further enhance inference efficiency, Huginn adopts a specialized KV-cache management scheme with a periodic retrieval strategy. For the i-th token during the r-th recurrence step, the latest-m4 mechanism retrieves the KV-cache from the most recent valid step j that aligns with the current block's functional cycle. Specifically:
 
-$j ^ { * } = \left\{ \begin{array} { l l } { \max \{ j \mid j \leq r , j \equiv _ { 4 } r , T _ { j , i } = 1 \} } & { r \geq 2 , } \\ { r } & { r < 2 , } \end{array} \right.$
+$j ^ { * } = \left\{ \begin{array} { l l } { \max \{ j \mid j \leq r , j \equiv _ { 4 } r , T _ { j , i } = 1 \} } & { r \geq 2 , } \\ { r } & { r \lt  2 , } \end{array} \right.$
 
-where T_{j,i} ∈ {0, 1} denotes the validity of the cache at step j for token i, and ≡_4 denotes congruence modulo 4. This periodic reuse of cache states maintains temporal consistency while significantly reducing redundant computations.
+where $T_{{j,i}}$ ∈ {0, 1} denotes the validity of the cache at step j for token i, and ≡_4 denotes congruence modulo 4. This periodic reuse of cache states maintains temporal consistency while significantly reducing redundant computations.
 
 > 💡 **机制拆解 — Latest-m4 KV-Cache**: 每 4 步重用一次 KV-Cache（通过模 4 同余约束），在保持时序一致性的同时减少冗余计算。r < 2 时不重用（因为还没有足够的历史缓存）。这是一个工程优化，与核心方法无关但对推理效率重要。
 
