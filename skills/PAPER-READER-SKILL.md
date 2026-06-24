@@ -389,9 +389,9 @@ sections/
 
 ---
 
-### 规则 8：批注质量必须达到 Eason 风格
+### 规则 8：批注质量必须达到 Hao 风格
 
-批注不是占位解释，必须像 EasonAI-5589/paper-reading 中的成品笔记一样，围绕论文自身机制做具体拆解。
+批注不是占位解释，必须围绕论文自身机制做具体拆解。批注作者标记为 `Hao 批注`。
 
 必须做到：
 1. **批注标题具体**：使用 `问题动机`、`机制拆解`、`公式批读`、`Figure 2 批读`、`消融解读`、`Q&A 批注记录` 等有信息量的标题；不要大量使用只有 `批注` 的泛标题。
@@ -574,15 +574,152 @@ Step 3: Agent 补充详细解释，更新到对应 section 文件
 
 ---
 
+### 规则 13：批注语言必须以中文为主体
+
+所有批注、README section 标题和正文必须是中文。**禁止**生成英文批注或英文 README 标题。
+
+- README section 标题必须使用中文：`## 一句话总结`、`## 核心贡献`、`## 📖 批读导航`、`## 关键数字`、`## 数据流：输入 → 中间表示 → 输出`、`## 优缺点与还能做什么`、`## 阅读 Q&A 记录`、`## 📊 Citation Landscape`
+- 批注标题使用中文：`问题动机`、`机制拆解`、`公式批读`、`Figure X 批读`、`消融解读`、`Q&A 批注记录`
+- 批注作者名使用 `Hao 批注` 而非 `Eason 批注`
+- 原文（英文论文内容）保持原样不动
+
+---
+
+### 规则 14：公式渲染规范（GitHub 兼容）
+
+批读笔记托管在 GitHub 上，必须遵守 GitHub MathJax 的渲染限制。
+
+#### 14.1 行内公式
+- 所有正文中的数学变量必须用 `$...$` 包裹。例如：`$H_v^0$`、`$W_{head}$`、`$τ_{gate}$`、`$Y_{pred}$`
+- **在 subagent prompt 中必须明确要求**：遍历所有 section 文件，确保 `letter_subscript`、`letter_subscript^superscript` 等模式的变量全部包裹在 `$...$` 中
+- 上标必须和下标在同一个 `$` 对内：`$H_{gate}^{(B+R)}$` 而非 `$H_{gate}$^(B+R)`
+
+#### 14.2 行间公式
+- `$$...$$` 块前后必须有空行（否则 MathJax 无法识别）
+- 连续的 `$$` 块之间也要有空行
+- **禁止**在 `$$...$$` 中使用 `\tag{1}`（GitHub MathJax 不支持，会导致公式竖排）
+
+#### 14.3 比较运算符
+- `$$` 内部的 `<` 和 `>` 必须替换为 `\lt` 和 `\gt`，否则被 Markdown 解析为 HTML 标签
+- 例如：`y_{<t}` → `y_{\lt t}`，不要写 `y_{<t}`（会报 "Extra open brace" 错误）
+- 行内公式 `$...$` 中的 `<` `>` 同理处理
+
+#### 14.4 LaTeX 宏兼容性
+- `\operatorname`、`\mathrm`、`\mathbf`、`\mathsf`、`\mathbb`、`\boldsymbol` 通常可渲染，但复杂嵌套时可能失败
+- 优先使用 `\text{}` 替代 `\mathrm{}`
+- 主线程最终 QA 时需检查所有 section 文件是否有未渲染的 LaTeX 宏
+
+---
+
+### 规则 15：图片展示规范
+
+#### 15.1 图片路径
+- Section 文件中引用图片必须使用相对路径：`![Figure N](../images/xxx.jpg)`
+- **禁止**使用绝对路径或 `../../../../paper-name/images/xxx.jpg` 格式
+- README.md 中引用图片使用 `![Figure N](images/xxx.jpg)`
+
+#### 15.2 左右并列图
+如果原文中两张图（如 Figure 2a 和 Figure 2b）共享同一个 caption，则使用 HTML table 左右并列展示：
+
+```markdown
+<table><tr><td width="50%"><img src="../images/fig2a.jpg" alt="Figure 2a" width="100%"></td>
+<td width="50%"><img src="../images/fig2b.jpg" alt="Figure 2b" width="100%"></td></tr>
+<tr><td align="center"><i>Figure 2a</i></td><td align="center"><i>Figure 2b</i></td></tr></table>
+
+*Figure 2: 共享标题描述。*
+```
+
+检测方法：连续两个 `![Figure Na]` `![Figure Nb]` 后面紧跟 `**Fig. N**:` 标题。
+
+#### 15.3 表格
+优先使用 MinerU 提取的表格图片（`images/` 目录），而非 Markdown 表格或 HTML `<table>`。
+
+---
+
+### 规则 16：Data Flow 可视化
+
+README.md 中的数据流部分**必须使用 Mermaid flowchart**，不得使用 ASCII 框图。
+
+#### 规范
+- 使用 ````mermaid` 代码块，GitHub 原生渲染
+- 节点文本精简，用纯中文描述（Mermaid 不支持 LaTeX 渲染）
+- 关键决策点用彩色节点标注
+- 格式示例：
+
+```markdown
+## 数据流：输入 → 中间表示 → 输出
+
+```mermaid
+flowchart TD
+    A["输入: 图片 + 查询"] --> B["阶段1: 特征提取"]
+    B --> C{"阶段2: 决策点"}
+    C -->|"路径A"| D["输出A"]
+    C -->|"路径B"| E["输出B"]
+    style C fill:#f9f,stroke:#333
+    style D fill:#9f9,stroke:#333
+```
+```
+
+#### 流程图中禁止
+- 在节点文本中使用 LaTeX 公式符号
+- 节点文本过长（超过 30 个中文字符）
+- 使用 ASCII 框线图
+
+---
+
+### 规则 17：链接与路径规范
+
+- Topic README 和 Root README 中的链接，**空格必须编码为 `%20`**
+- 例如：`[Q-Zoom](./encoding/%5BArxiv%202025%5D%20Q-Zoom/)`（`[Arxiv 2025]` 和 `Q-Zoom` 之间的空格是 `%20`）
+- 所有链接需在最终 QA 中验证可跳转
+
+---
+
+### 规则 18：Subagent 提示词规范
+
+启动 subagent 进行批读时，提示词必须包含以下指令：
+
+1. **语言要求**：明确规定"所有批注、README section 标题和正文为中文"
+2. **路径规范**：明确 `../images/` 相对路径，禁止绝对路径
+3. **公式规范**：`$$` 块前后空行，`<` `>` 替换为 `\lt` `\gt`，移除 `\tag{}`，行内变量加 `$...$`
+4. **图片规范**：并列图用 HTML table，表格用图片
+5. **数据流规范**：使用 Mermaid flowchart，不用 ASCII 框图
+6. **README 必备 section**：列出 9 个必备 section 并注明中文标题
+7. **禁止修改**：其他论文目录、full.md、原始英文 paper text
+
+---
+
+### 规则 19：主线程最终 QA 检查清单
+
+所有 subagent 完成后，主线程必须逐项检查：
+
+- [ ] 所有 section 文件中 `![...]` 路径是否为 `../images/xxx.jpg` 格式
+- [ ] 所有 `$$` 块前后是否有空行，是否移除了 `\tag{}`
+- [ ] 所有 `$$` 和 `$...$` 内部是否还有 `<` 或 `>`（应为 `\lt` `\gt`）
+- [ ] 行内变量是否包裹在 `$...$` 中（检查 `_` 和 `^` 模式）
+- [ ] Topic README 和 Root README 链接中的空格是否编码为 `%20`
+- [ ] 连续子图是否转换为 HTML table 左右并列
+- [ ] Data flow 是否使用 Mermaid（而非 ASCII 框图）
+- [ ] README section 标题是否为中文
+- [ ] 批注中是否残留 "Eason"（应为 "Hao"）
+- [ ] 是否有其他论文目录被意外修改
+- [ ] `git add -A` 整个论文目录（含 images/、full.md、PDF 等）
+
+---
+
 ## ⚙️ 配置
 
 | 配置项 | 值 |
 |--------|-----|
-| 论文库位置 | `/mnt/eason/paper-reading/` |
+| 论文库位置 | `/data/share/hxd/haojiang/Papers/paper-reading/` |
 | 目录命名 | `[会议 年份] 论文名` |
 | Section 文件命名 | 按论文大分节：`00-abstract.md`、`01-introduction.md`、`02-related-work.md`、`03-methodology.md`、... |
 | 批注标记 | `> 💡 **标题**: 内容` |
-| GitHub 仓库 | `EasonAI-5589/paper-reading` |
+| 批注作者 | `Hao 批注` |
+| GitHub 仓库 | `Haohaha-11/Paper-Reading-form-Eason` |
+| 默认分支 | `main` |
+| MinerU Token | 存储于 `secrets/mineru.env` |
+| GitHub Token | 存储于 `secrets/github.env` |
 
 ---
 
@@ -590,8 +727,8 @@ Step 3: Agent 补充详细解释，更新到对应 section 文件
 
 | 论文 | 位置 |
 |------|------|
-| RoboBrain (CVPR 2025) | `/mnt/eason/paper-reading/VLA/[CVPR 2025] RoboBrain/` |
-| RoboBrain 2.0 | `/mnt/eason/paper-reading/VLA/[Arxiv 2507.02029] RoboBrain-2.0/` |
+| Q-Zoom | `/data/share/hxd/haojiang/Papers/paper-reading/topics/VLM-Bottleneck-Analysis-and-Method-Design/encoding/[Arxiv 2025] Q-Zoom/` |
+| VisualPRM | `/data/share/hxd/haojiang/Papers/paper-reading/topics/VLM-Bottleneck-Analysis-and-Method-Design/reward/[Arxiv 2025] VisualPRM/` |
 
 ---
 
@@ -600,8 +737,10 @@ Step 3: Agent 补充详细解释，更新到对应 section 文件
 1. **每段后面加批注**：读完一段就批注，保持思路连贯
 2. **subsection 有预览和小结**：预览告诉你要讲什么，小结总结关键点
 3. **复杂概念用大白话**：避免术语堆砌，用例子说明
-4. **表格画对比图**：ASCII 树形图很直观
+4. **表格画对比图**：Mermaid flowchart 比 ASCII 更直观
 5. **交互式补充**：看不懂就问，把回答加到批注里
+6. **公式规范**：行内用 `$...$`，行间 `$$...$$` 前后留空行，`<` `>` 写 `\lt` `\gt`
+7. **图片路径**：sections/ 下用 `../images/xxx.jpg`，README 下用 `images/xxx.jpg`
 
 ---
 
