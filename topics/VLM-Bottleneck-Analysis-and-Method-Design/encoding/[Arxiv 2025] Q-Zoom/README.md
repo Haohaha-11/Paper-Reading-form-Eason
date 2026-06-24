@@ -60,13 +60,12 @@ Q-Zoom 提出一种查询感知的自适应高分辨率感知框架，通过轻�
 ## Data Flow: Coarse → Gate → (RoI) → Fusion → Answer
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                       Q-Zoom Data Flow                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  [Input]                                                          │
-│    ├── Raw Image x_v                                              │
-│    └── Text Query x_t (system prompt + user question)            │
+| 阶段 | 描述 |
+|------|------|
+| 1. Q-Zoom Data Flow |  |
+| 2. [Input] |  |
+
+Text Query x_t (system prompt + user question)            │
 │                                                                   │
 │  [Stage 0: Coarse Encoding - Single Prefill]                      │
 │    │                                                              │

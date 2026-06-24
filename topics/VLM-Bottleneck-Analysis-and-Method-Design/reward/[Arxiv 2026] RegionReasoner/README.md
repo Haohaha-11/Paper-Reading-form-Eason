@@ -61,15 +61,12 @@ RegionReasoner 提出了一种面向多轮视觉推理的强化学习框架，�
 ## Data Flow: Input → Structured Trajectory → Reward → Update
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    RegionReasoner Data Flow                               │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                           │
-│  [Input at turn t]                                                        │
-│    ├── Image I                                                           │
-│    ├── Query q_t (可能包含空间关系 + bbox reference)                       │
-│    ├── Reference Boxes B_t^ref = {[x1,y1,x2,y2]}                         │
-│    └── Dialogue Memory M_{t-1} (prior turns' structured outputs)         │
+| 阶段 | 描述 |
+|------|------|
+| 1. RegionReasoner Data Flow |  |
+| 2. [Input at turn t] |  |
+
+Dialogue Memory M_{t-1} (prior turns' structured outputs)         │
 │                                                                           │
 │  [Policy π_θ: Structured Generation]                                     │
 │    ├── <scene> s_t: 全局场景描述                                          │

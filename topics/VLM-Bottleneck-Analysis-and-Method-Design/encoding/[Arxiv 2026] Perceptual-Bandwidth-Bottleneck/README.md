@@ -55,12 +55,12 @@
 ## Framework Overview: S-BOED → Coverage-Resolution → FOVEA
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                  S-BOED Active Visual Reasoning Pipeline              │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                       │
-│  [Problem] Perceptual Bandwidth Bottleneck                            │
-│    └── Fixed token budget B → field-of-view vs. resolution trade-off │
+| 阶段 | 描述 |
+|------|------|
+| 1. S-BOED Active Visual Reasoning Pipeline |  |
+| 2. [Problem] Perceptual Bandwidth Bottleneck |  |
+
+Fixed token budget B → field-of-view vs. resolution trade-off │
 │                                                                       │
 │  [Formulation] S-BOED (Sequential Bayesian Optimal Exp. Design)      │
 │    ├── θ = {ℓ, y} : latent location + semantic target                │

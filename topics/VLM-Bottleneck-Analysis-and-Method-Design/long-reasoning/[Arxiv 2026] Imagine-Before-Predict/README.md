@@ -57,36 +57,32 @@ FUTURE-L1 提出了一种**交错式潜空间视觉推理 (Interleaved Latent Vi
 ## Data Flow: Input → Intermediate → Output
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                      FUTURE-L1 Data Flow                         │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  [Stage 1: Data Curation]                                        │
-│    TwiFF-2.7M → Visual-Gain Probe (pv - pt) → Top 50K           │
-│    → FUTURE-L1-50K (interleaved text-latent format)              │
-│                                                                   │
-│  [Stage 2: SFT]                                                  │
-│    Input: Observed Video V + Question q                          │
-│    Training Format:                                              │
-│      <reason>[Text CoT 0]</reason>                               │
-│      <|latent_start|>[Latent States 1]<|latent_end|>             │
-│      <reason>[Text CoT 1]</reason> ...                           │
-│      <answer>[Prediction]</answer>                                │
-│    Loss: L_CE (text tokens) + λ * L_Latent (MSE to future-frame │
-│          visual embeddings)                                       │
-│                                                                   │
-│  [Stage 3: LA-DAPO RL]                                           │
-│    Group of G=8 rollouts →                                         │
-│      Rewards: λa*Racc + λf*Rfmt + λc*Rctr + λd*Rdiv            │
-│      Rctr: hardest-positive InfoNCE across correct/incorrect     │
-│      Rdiv: -mean(cos²(b_m, b_{m+1})) across latent spans          │
-│                                                                   │
-│  [Inference]                                                     │
-│    Autoregressive decoding alternates:                            │
-│      text tokens → <|latent_start|> → h_t (fed back to input)   │
-│      → ... → <|latent_end|> → text tokens → final answer          │
-│                                                                   │
-└─────────────────────────────────────────────────────────────────┘
+| 阶段 | 描述 |
+|------|------|
+| 1. FUTURE-L1 Data Flow |  |
+| 2. [Stage 1 | Data Curation] |
+| 3. TwiFF-2.7M → Visual-Gain Probe (pv - pt) → Top 50K |  |
+| 4. → FUTURE-L1-50K (interleaved text-latent format) |  |
+| 5. [Stage 2 | SFT] |
+| 6. Input | Observed Video V + Question q |
+| 7. Training Format |  |
+| 8. <reason>[Text CoT 0]</reason> |  |
+| 9. <|latent_start|>[Latent States 1]<|latent_end|> |  |
+| 10. <reason>[Text CoT 1]</reason> ... |  |
+| 11. <answer>[Prediction]</answer> |  |
+| 12. Loss | L_CE (text tokens) + λ * L_Latent (MSE to future-frame |
+| 13. visual embeddings) |  |
+| 14. [Stage 3 | LA-DAPO RL] |
+| 15. Group of G=8 rollouts → |  |
+| 16. Rewards | λa*Racc + λf*Rfmt + λc*Rctr + λd*Rdiv |
+| 17. Rctr | hardest-positive InfoNCE across correct/incorrect |
+| 18. Rdiv | -mean(cos²(b_m, b_{m+1})) across latent spans |
+| 19. [Inference] |  |
+| 20. Autoregressive decoding alternates |  |
+| 21. text tokens → <|latent_start|> → h_t (fed back to input) |  |
+| 22. → ... → <|latent_end|> → text tokens → final answer |  |
+
+┘
 ```
 
 ## Pros/Cons & Future Work

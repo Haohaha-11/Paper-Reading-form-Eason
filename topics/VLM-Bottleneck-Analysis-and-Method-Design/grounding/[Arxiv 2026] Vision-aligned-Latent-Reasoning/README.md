@@ -60,14 +60,12 @@ VaLR 提出了一种视觉对齐的潜空间推理框架，通过在每步 Chain
 ## Data Flow: Input → Intermediate → Output
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        VaLR Data Flow                             │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  [Input]                                                          │
-│    ├── Images I = {I₁, ..., I_Q}                                 │
-│    ├── Question q                                                 │
-│    └── Visual features F_φ from frozen vision encoders (train)   │
+| 阶段 | 描述 |
+|------|------|
+| 1. VaLR Data Flow |  |
+| 2. [Input] |  |
+
+Visual features F_φ from frozen vision encoders (train)   │
 │                                                                   │
 │  [Stage 1: Standard CoT SFT]                                      │
 │    ├── Model: Qwen2.5-VL-7B (frozen vision encoder)              │

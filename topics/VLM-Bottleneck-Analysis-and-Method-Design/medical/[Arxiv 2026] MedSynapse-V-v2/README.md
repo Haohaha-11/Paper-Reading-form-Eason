@@ -61,13 +61,12 @@ MedSynapse-V 提出了一套**三阶段渐进式 latent diagnostic memory evolut
 ## Data Flow: Input --> Intermediate --> Output
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    MedSynapse-V Data Flow                                │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                           │
-│  [Input]                                                                  │
-│    ├── Image X ∈ R^{H×W×3}                                               │
-│    └── Clinical query q                                                   │
+| 阶段 | 描述 |
+|------|------|
+| 1. MedSynapse-V Data Flow |  |
+| 2. [Input] |  |
+
+Clinical query q                                                   │
 │                                                                           │
 │  ═══ Stage I: MQPM Warmup ═══                                             │
 │    │                                                                      │

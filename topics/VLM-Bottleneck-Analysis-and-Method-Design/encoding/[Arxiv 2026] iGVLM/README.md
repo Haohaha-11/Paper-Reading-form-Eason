@@ -61,13 +61,12 @@ iGVLM 提出解耦双分支视觉编码架构（frozen static branch + AdaLN dyn
 ## Architecture Data Flow
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                        iGVLM Data Flow                            │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                    │
-│  [Input]                                                           │
-│    ├── Image I                                                     │
-│    └── Text Instruction T                                          │
+| 阶段 | 描述 |
+|------|------|
+| 1. iGVLM Data Flow |  |
+| 2. [Input] |  |
+
+Text Instruction T                                          │
 │                                                                    │
 │  [Text Encoding]                                                   │
 │    ├── CLIP Text Encoder → [CLS] token embedding c_t              │

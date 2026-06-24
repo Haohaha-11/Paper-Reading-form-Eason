@@ -60,15 +60,13 @@
 ## Data Flow: Distillation → Grounding → Training
 
 ```
-┌──────────────────────────────────────────────────────────────────────┐
-│                Thinking with Visual Grounding Pipeline                │
-├──────────────────────────────────────────────────────────────────────┤
-│                                                                       │
-│  [Stage 1: Reasoning Distillation]                                    │
-│    ├── Input: (Image, Question) from TallyQA, PixMo-Count, VSR,       │
-│    │          MultihopSpatial, SpatialMQA                              │
-│    ├── Model: Qwen3-VL-Plus (1st pass) + Qwen3.5-Plus (2nd pass)      │
-│    └── Output: Correct reasoning traces (filtered by answer match)     │
+| 阶段 | 描述 |
+|------|------|
+| 1. Thinking with Visual Grounding Pipeline |  |
+| 2. [Stage 1 | Reasoning Distillation] |
+| 3. MultihopSpatial, SpatialMQA |  |
+
+Output: Correct reasoning traces (filtered by answer match)     │
 │                                                                       │
 │  [Stage 2: Object Extraction]                                         │
 │    ├── Input: Correct reasoning trace                                  │

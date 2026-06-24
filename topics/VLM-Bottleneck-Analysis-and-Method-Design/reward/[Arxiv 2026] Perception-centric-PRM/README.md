@@ -52,15 +52,12 @@ Perceval 提出以感知为中心的过程奖励模型 (Perception-centric PRM)�
 ## Data Flow: Input → Intermediate → Output
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    Perceval 数据流                                   │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  [Phase 1: PRM Training]                                           │
-│    ├── Query Selection: 感知密集场景 (visual search + grounding)    │
-│    ├── Rollout Generation: 开源 VLM 产生含幻觉的负样本             │
-│    ├── Auto Annotation: 强模型 (Gemini-2.5-Pro) 标注幻觉 span      │
-│    └── SFT: 以标准 SFT 目标微调 Perceval backbone                  │
+| 阶段 | 描述 |
+|------|------|
+| 1. Perceval 数据流 |  |
+| 2. [Phase 1 | PRM Training] |
+
+SFT: 以标准 SFT 目标微调 Perceval backbone                  │
 │                                                                     │
 │  [Phase 2: Training — Process-Supervised GRPO]                     │
 │    │                                                                │

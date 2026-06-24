@@ -60,25 +60,16 @@ SIEVE 提出了一种端到端的自回访 (self-revisit) 框架，完全摒弃�
 ## Data Flow: Input → Intermediate → Output
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        SIEVE Data Flow                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  [Phase I: Visual Evidence Discovery (pre-training)]              │
-│    │                                                              │
-│    ├── 1. Forward pass: Model(I, question) → logits + hidden states
-│    │                                                              │
-│    ├── 2. Gradient Saliency: Sal(i) = ||∇_hi(s) ⊙ hi||_2        │
-│    │      → Select top-k salient tokens as textual anchors A      │
-│    │                                                              │
-│    ├── 3. Cross-modal Matching:                                   │
-│    │      H̄ = mean of middle-layer hidden states                 │
-│    │      For each anchor q_i ∈ A:                               │
-│    │        s_ij = cos(x̂_j, q̂_i)  →  w_ij = softmax(s_ij/τ)    │
-│    │                                                              │
-│    ├── 4. Region Selection: score blocks → TopK → merge → expand │
-│    │                                                              │
-│    └── 5. Cache: E_i = Concat(patch embeddings in region R_i)    │
+| 阶段 | 描述 |
+|------|------|
+| 1. SIEVE Data Flow |  |
+| 2. [Phase I | Visual Evidence Discovery (pre-training)] |
+| 3. → Select top-k salient tokens as textual anchors A |  |
+| 4. H̄ = mean of middle-layer hidden states |  |
+| 5. For each anchor q_i ∈ A |  |
+| 6. s_ij = cos(x̂_j, q̂_i)  →  w_ij = softmax(s_ij/τ) |  |
+
+5. Cache: E_i = Concat(patch embeddings in region R_i)    │
 │                                                                   │
 │  [Phase II: Visually-Grounded RL Training (rollouts)]             │
 │    │                                                              │

@@ -65,14 +65,14 @@
 ## Data Flow: MIMIC Benchmark Construction
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    MIMIC Benchmark Pipeline                       │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  [Input]                                                          │
-│    ├── MS-COCO curated subset (bbox <5% image area filtered)      │
-│    ├── Class-balanced sampling pool                               │
-│    └── Bounding box + class label annotations                     │
+| 阶段 | 描述 |
+|------|------|
+| 1. MIMIC Benchmark Pipeline |  |
+| 2. [Input] |  |
+| 3. Training Pipeline |  |
+| 4. [Data-Centric Strategy] |  |
+
+Bounding box + class label annotations                     │
 │                                                                   │
 │  [Controllable Dimensions]                                        │
 │    ├── k: number of object classes to count/track                 │

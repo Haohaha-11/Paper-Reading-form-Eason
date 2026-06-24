@@ -48,11 +48,9 @@ Table I 的数据揭示了关键洞察：将输入从 2048 约束到 512 tokens�
 
 ### Figure 2: 框架总览
 
-![Figure 2a](../images/9e37e84f7832da45aeca3cfdfd4547e4b71c9c5595fa6e39b5d95089f10e0779.jpg)
+<table><tr><td width="50%"><img src="../images/9e37e84f7832da45aeca3cfdfd4547e4b71c9c5595fa6e39b5d95089f10e0779.jpg" alt="Figure 2a" width="100%"></td><td width="50%"><img src="../images/a746320632afca702b87c981a0c66c7c6faa0ec59c2e7fdbae92d74eb46a1a5c.jpg" alt="Figure 2b" width="100%"></td></tr><tr><td align="center"><i>Figure 2a</i></td><td align="center"><i>Figure 2b</i></td></tr></table>
 
-![Figure 2b](../images/a746320632afca702b87c981a0c66c7c6faa0ec59c2e7fdbae92d74eb46a1a5c.jpg)
-
-**Fig. 2**: Overview of the proposed Adaptive High-Resolution Perception Framework. (a) 通过 consistency-aware generation 生成鲁棒监督信号训练门控模块。(b) 推理时门控动态评估文本 query，路由简单 query 直接用粗粒度特征生成，复杂 query 触发 SD-RPN 提取定向高分辨率区域。
+*Figure 2: Overview of the proposed Adaptive High-Resolution Perception Framework. (a) 通过 consistency-aware generation 生成鲁棒监督信号训练门控模块。(b) 推理时门控动态评估文本 query，路由简单 query 直接用粗粒度特征生成，复杂 query 触发 SD-RPN 提取定向高分辨率区域。*
 
 ---
 

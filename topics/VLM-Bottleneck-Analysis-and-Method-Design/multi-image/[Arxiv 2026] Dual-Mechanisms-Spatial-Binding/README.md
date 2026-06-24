@@ -58,18 +58,16 @@
 ## Data Flow: Visual Encoding → Dual Ordering → Intervention
 
 ```
-┌──────────────────────────────────────────────────────────────────────┐
-│                  Spatial Variable Binding Data Flow                    │
-├──────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│  [Input: Image + Spatial Query]                                        │
-│    e.g., "The color of the square to the left of the green square is"  │
-│                                                                        │
-│  ┌─────────────────────────────────────────────────────────┐          │
-│  │  Vision Encoder                                          │          │
-│  │    ├── Produces visual token embeddings                   │          │
-│  │    ├── Encodes GLOBAL spatial layout (strip patterns)     │          │
-│  │    └── Ordering info distributed across object + BG tokens│          │
+| 阶段 | 描述 |
+|------|------|
+| 1. Spatial Variable Binding Data Flow |  |
+| 2. [Input | Image + Spatial Query] |
+| 3. e.g., "The color of the square to the left of the green square is" |  |
+| 4. Vision Encoder |  |
+| 5. LM Backbone (intermediate layers, ~11-20) |  |
+| 6. LM Backbone (later layers, ~23-27) |  |
+
+Ordering info distributed across object + BG tokens│          │
 │  └──────────────────────────┬──────────────────────────────┘          │
 │                              ↓                                        │
 │  ┌─────────────────────────────────────────────────────────┐          │

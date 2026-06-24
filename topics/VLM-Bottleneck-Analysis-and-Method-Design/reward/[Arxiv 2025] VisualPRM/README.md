@@ -62,19 +62,16 @@ VisualPRM 提出首个多模态过程奖励模型 (PRM, 8B)，构建了约 400K 
 ## Data Flow: VisualPRM400K Construction + VisualPRM Training + BoN Evaluation
 
 ```
-┌──────────────────────────────────────────────────────────────────────┐
-│                    VisualPRM Pipeline                                 │
-├──────────────────────────────────────────────────────────────────────┤
-│                                                                       │
-│  [Phase 1: VisualPRM400K Construction]                                │
-│    ├── Question Collection: MMPR v1.1 → (Image I, Question q)        │
-│    ├── Solution Sampling: InternVL2.5 → Step-by-step solution s       │
-│    │     s = {s₀, s₁, ..., sₙ}, max 12 steps                         │
-│    ├── Monte Carlo Estimation:                                        │
-│    │     For each step s_≤i: sample 16 continuations                  │
-│    │     mc_i = num(correct completions) / num(sampled completions)  │
-│    │     Label: correct if mc_i > 0                                  │
-│    └── Output: ~400K samples, ~2M steps with process supervision     │
+| 阶段 | 描述 |
+|------|------|
+| 1. VisualPRM Pipeline |  |
+| 2. [Phase 1 | VisualPRM400K Construction] |
+| 3. s = {s₀, s₁, ..., sₙ}, max 12 steps |  |
+| 4. For each step s_≤i | sample 16 continuations |
+| 5. mc_i = num(correct completions) / num(sampled completions) |  |
+| 6. Label | correct if mc_i > 0 |
+
+Output: ~400K samples, ~2M steps with process supervision     │
 │                                                                       │
 │  [Phase 2: VisualPRM Training]                                        │
 │    ├── Input Format: Multi-turn chat                                  │

@@ -81,11 +81,9 @@
 
 ### Figure 7: Qualitative Comparison
 
-![Figure 7a](../images/387a8336168acc23e50856abfd25a3f7010646272b7ee968bf790dcfafeace27.jpg)
+<table><tr><td width="50%"><img src="../images/387a8336168acc23e50856abfd25a3f7010646272b7ee968bf790dcfafeace27.jpg" alt="Figure 7a" width="100%"></td><td width="50%"><img src="../images/8a362002335ed44bc08a5d1a7f942a842bec2fccba6dba4a0a1cfa55abd7d0ec.jpg" alt="Figure 7b" width="100%"></td></tr><tr><td align="center"><i>Figure 7a</i></td><td align="center"><i>Figure 7b</i></td></tr></table>
 
-![Figure 7b](../images/8a362002335ed44bc08a5d1a7f942a842bec2fccba6dba4a0a1cfa55abd7d0ec.jpg)
-
-**Fig. 7**: Qualitative comparisons on TextVQA (left) and V* Bench (right).
+*Figure 7: Qualitative comparisons on TextVQA (left) and V* Bench (right).*
 
 > **左侧 (TextVQA)**: Baseline 因压缩将 "Philadelphia" 幻觉为 "Pittsburgh"。SD-RPN 预测出微观文本上的集中 heatmap，Q-Zoom 准确读取。
 > **右侧 (V* Bench)**: Baseline 盲目猜测被遮挡扫帚颜色为 "Gray"。Q-Zoom 定位物体，将高分辨率裁剪路由至正确答案 "Black"。
@@ -94,11 +92,9 @@
 
 ### Figure 8: Accuracy vs Efficiency Pareto Frontiers
 
-![Figure 8a](../images/b3d69a52c3e39a8101000accdc6e5ae916dee40562e6c476b042b91cbcd744ce.jpg)
+<table><tr><td width="50%"><img src="../images/b3d69a52c3e39a8101000accdc6e5ae916dee40562e6c476b042b91cbcd744ce.jpg" alt="Figure 8a" width="100%"></td><td width="50%"><img src="../images/bcf1c1ed1f7daa1adcd172899e802689c50eef0a5c6210292e1e1a9cf772c7f3.jpg" alt="Figure 8b" width="100%"></td></tr><tr><td align="center"><i>Figure 8a</i></td><td align="center"><i>Figure 8b</i></td></tr></table>
 
-![Figure 8b](../images/bcf1c1ed1f7daa1adcd172899e802689c50eef0a5c6210292e1e1a9cf772c7f3.jpg)
-
-**Fig. 8**: (a) Document & OCR, (b) High-Resolution & Vision-Centric.
+*Figure 8: (a) Document & OCR, (b) High-Resolution & Vision-Centric.*
 
 > 在 Qwen2.5-VL-7B 上扫描 visual token 限制 256-4096：
 
@@ -219,11 +215,9 @@
 
 ### Figure 9: Consistency-aware Training Ablation
 
-![Figure 9a](../images/09bcb9240025f68fc31ef434eb843a7777be9676066b6d5fb2af30bc3669caf0.jpg)
+<table><tr><td width="50%"><img src="../images/09bcb9240025f68fc31ef434eb843a7777be9676066b6d5fb2af30bc3669caf0.jpg" alt="Figure 9a" width="100%"></td><td width="50%"><img src="../images/8ef833cecec467ccea176cf2219f10849cb5d6e7cff82a37d198a35426868dec.jpg" alt="Figure 9b" width="100%"></td></tr><tr><td align="center"><i>Figure 9a</i></td><td align="center"><i>Figure 9b</i></td></tr></table>
 
-![Figure 9b](../images/8ef833cecec467ccea176cf2219f10849cb5d6e7cff82a37d198a35426868dec.jpg)
-
-**Fig. 9**: (上) 门控网络训练 loss 曲线。(下) 准确率 vs No-RoI Ratio 的 Pareto 前沿。
+*Figure 9: (上) 门控网络训练 loss 曲线。(下) 准确率 vs No-RoI Ratio 的 Pareto 前沿。*
 
 - **Naive labeling**（基于单分辨率正确性）：优化极不稳定，收敛到高 loss 下界
 - **Consistency-aware**：平滑优化，更快收敛到更低 loss 下界

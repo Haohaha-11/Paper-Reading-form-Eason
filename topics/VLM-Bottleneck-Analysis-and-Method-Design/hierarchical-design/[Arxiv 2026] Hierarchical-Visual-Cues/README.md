@@ -63,13 +63,12 @@ HIVE 是首个将 loop transformer 架构与层级化视觉线索注入相结合
 ## Data Flow: Input → Intermediate → Output
 
 ```
-┌──────────────────────────────────────────────────────────────────────┐
-│                       HIVE Data Flow                                  │
-├──────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│  [Input]                                                               │
-│    ├── Text Sequence x ∈ V^n                                          │
-│    └── Image X_v → ViT (InternViT) → Hierarchical Features            │
+| 阶段 | 描述 |
+|------|------|
+| 1. HIVE Data Flow |  |
+| 2. [Input] |  |
+
+Image X_v → ViT (InternViT) → Hierarchical Features            │
 │                                                                        │
 │  [Feature Extraction & Projection]                                     │
 │    ├── Text: e_t = E(x)                              [Embedding Block] │
