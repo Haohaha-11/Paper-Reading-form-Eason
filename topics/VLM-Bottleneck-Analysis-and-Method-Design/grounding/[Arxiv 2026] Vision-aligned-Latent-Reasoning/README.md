@@ -5,8 +5,8 @@
 | 项目 | 内容 |
 |------|------|
 | **Title** | Vision-aligned Latent Reasoing for Multi-modal Large Language Model |
-| **Authors** | Byungwoo Jeon<sup>1</sup>, Yoonwoo Jeong<sup>2</sup>, Hyunseok Lee<sup>1</sup>, Minsu Cho<sup>2,3,*</sup>, Jinwoo Shin<sup>1,3,*</sup> |
-| **Affiliations** | <sup>1</sup>KAIST, <sup>2</sup>POSTECH, <sup>3</sup>KRAFTON |
+| **Authors** | Byungwoo Jeon¹, Yoonwoo Jeong², Hyunseok Lee¹, Minsu Cho²'³'*, Jinwoo Shin¹'³'* |
+| **Affiliations** | ¹KAIST, ²POSTECH, ³KRAFTON |
 | **Venue** | arXiv 2026 |
 | **Project Page** | Code available at project page |
 | **Base Model** | Qwen2.5-VL-7B |

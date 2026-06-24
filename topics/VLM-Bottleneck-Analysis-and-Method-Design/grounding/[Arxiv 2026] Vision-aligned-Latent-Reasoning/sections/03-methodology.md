@@ -24,24 +24,18 @@ Formally, given an input text sequence **x** = (x₁, ..., x_T) and images I, we
 
 Specifically, the native vision encoder first extracts image tokens from images I, i.e., **v** = (v₁, v₂, ..., v_S) = ViT(I). Subsequently, the transformer decoder processes input text-token embeddings, E_T = [v₁, ..., v_S, e(x₁), ..., e(x_T)], to yield the last hidden state H_T = Transformer(E_T), where e is the token embedding function. During inference, the model enters the latent mode by predicting a special token `<latent>` and reverts to the language mode by predicting another special token `</latent>`. In the latent mode, the model leverages the previous hidden state, h_t = H_t[t, :], as input for the next prediction, whereas in the language mode, the model uses the token embedding, e(x_{t+1}), as input for the next prediction, as formulated below:
 
-$$
-E_{t+1} = \begin{cases}
+$E_{t+1} = \begin{cases}
 [E_t; h_t] & \text{if latent mode}, \\
 [E_t; e(x_{t+1})] & \text{if language mode},
-\end{cases}
-$$
+\end{cases}$
 
-$$
-H_{t+1} = \text{Transformer}(E_{t+1}),
-$$
+$H_{t+1} = \text{Transformer}(E_{t+1}),$
 
 where t > T. This recursive process repeats until the model predicts the `<EOS>` token. Upon entering the latent mode, the model is constrained to remain in this state for a fixed number K of steps. After K latent steps, the model reverts to the language mode and resumes generating text tokens from the current hidden state h_t, using the language model head, LM-Head:
 
-$$
-\mathcal{M}(x_t | v, x_{<t}) = \text{LM-Head}(h_t),
-$$
+$M(x_t | v, x_{<t}) = \text{LM-Head}(h_t),$
 
-where $\mathcal{M}$ denotes the standard MLLM. This alternation strategy allows MLLMs to broaden its reasoing capability without explicit linguistic reasoing steps.
+where $M$ denotes the standard MLLM. This alternation strategy allows MLLMs to broaden its reasoing capability without explicit linguistic reasoing steps.
 
 > 💡 **机制拆解 — Latent Mode vs Language Mode**:
 >
@@ -65,15 +59,11 @@ To effectively leverage latent reasoing for visual grounding, we align hidden st
 
 **Alignment objective.** For each reasoing stage i, we first select an image I⁽ⁱ⁾ ∈ I (details in Appendix B). We then extract patch-wise visual features from pre-trained vision encoder, φ, i.e., **F**\_φ⁽ⁱ⁾ = φ(I⁽ⁱ⁾) ∈ ℝ^{P×D}, where P is the number of patches and D is the feature dimension. Afterward, we extract features from the intermediate layer of MLLM, i.e., **F**\_MLLM⁽ⁱ⁾ = [f₁⁽ⁱ⁾, ..., f_K⁽ⁱ⁾]. We project these intermediate features through a learnable MLP ψ to match the dimension of vision encoder features:
 
-$$
-\mathbf{\hat{F}}_{MLLM}^{(i)} = \psi(\text{Upsample}(\mathbf{F}_{MLLM}^{(i)})) \in \mathbb{R}^{P \times D},
-$$
+$\hat{F}_{MLLM}^{(i)} = \psi(\text{Upsample}(F_{MLLM}^{(i)})) \in R^{P \times D},$
 
-where the 'Upsample' denotes an operation that aligns the image feature resolution of the MLLM with that of the pre-trained vision encoder. The representation alignment loss, i.e., $\mathcal{L}_{REPA}$, encourages these projected latent features to align with the visual features using patch-wise cosine similarity throughout all latent reasoing stages:
+where the 'Upsample' denotes an operation that aligns the image feature resolution of the MLLM with that of the pre-trained vision encoder. The representation alignment loss, i.e., $L_{REPA}$, encourages these projected latent features to align with the visual features using patch-wise cosine similarity throughout all latent reasoing stages:
 
-$$
-\mathcal{L}_{REPA} := -\frac{1}{NP} \sum_{i=1}^{N} \sum_{p=1}^{P} \text{sim}(\mathbf{\hat{F}}_{MLLM}^{(i)}[p, :], \mathbf{F}_{\phi}^{(i)}[p, :]),
-$$
+$L_{REPA} := -\frac{1}{NP} \sum_{i=1}^{N} \sum_{p=1}^{P} \text{sim}(\hat{F}_{MLLM}^{(i)}[p, :], F_{\phi}^{(i)}[p, :]),$
 
 where sim(·,·) denotes the conventional cosine similarity function. By aligning with visual features, each latent token learns to encode visual information inherent in the image, thereby enabling comprehensive visual reasoing. Note that the alignment is applied only during training, while at inference time the model performs latent mode reasoing without REPA supervision, relying on learned visual grounding.
 
@@ -91,17 +81,13 @@ where sim(·,·) denotes the conventional cosine similarity function. By alignin
 
 Let {φ₁, ..., φ_M} denotes a set of M frozen vision encoders. We extract features from each vision encoder for each reasoing stage i:
 
-$$
-\mathbf{F}_{\phi_m}^{(i)} = \phi_m(I^{(i)}) \in \mathbb{R}^{P_m \times D_m} \quad \text{for } m = 1, \cdots, M,
-$$
+$F_{\phi_m}^{(i)} = \phi_m(I^{(i)}) \in R^{P_m \times D_m} \quad \text{for } m = 1, \cdots, M,$
 
 where P_m and D_m denote the varying number of patches and feature dimension across different vision encoders, respectively. For each vision encoder, we employ a separate learnable projection head ψ_m to match its feature dimension. The multi-encoder alignment loss is computed as the average of individual REPA losses:
 
-$$
-\mathcal{L}_{REPA}^{multi} := \frac{1}{M} \sum_{m=1}^{M} \mathcal{L}_{REPA}^{(m)},
-$$
+$L_{REPA}^{multi} := \frac{1}{M} \sum_{m=1}^{M} L_{REPA}^{(m)},$
 
-where each $\mathcal{L}_{REPA}^{(m)}$ follows the same formulation as the single-encoder case but uses features from the m-th vision encoder, φ_m, and its corresponding projection head ψ_m. This multi-encoder approach allows the model to distill diverse visual knowledge into its latent reasoing space, enhancing both spatial awareness and general visual understanding.
+where each $L_{REPA}^{(m)}$ follows the same formulation as the single-encoder case but uses features from the m-th vision encoder, φ_m, and its corresponding projection head ψ_m. This multi-encoder approach allows the model to distill diverse visual knowledge into its latent reasoing space, enhancing both spatial awareness and general visual understanding.
 
 > 💡 **多编码器协同设计分析**:
 >
@@ -120,9 +106,7 @@ We adopt a two-stage curriculum learning strategy to progressively foster latent
 
 **Stage 1: Standard SFT on CoT datasets.** We perform standard SFT on pre-trained MLLMs using 450K samples from existing CoT datasets, endowing MLLMs with language-based reasoing capabilities. Concretely, given a training sample with an input image set I, a question q, and ground-truth language CoT reasoing **y** = [r¹, r², ..., r^N, a] where rⁱ represents the i-th reasoing step and a is the final answer, we optimize the model using the standard autoregressive language modeling objective:
 
-$$
-\mathcal{L}_{CE} := -\mathbb{E}_{(I, q, y)} \left[ \sum_{t} \log \mathcal{M}(y_t | v, q, y_{<t}) \right],
-$$
+$L_{CE} := -E_{(I, q, y)} \left[ \sum_{t} \log M(y_t | v, q, y_{<t}) \right],$
 
 where y_t denotes the t-th token in the reasoing sequence. This stage establishes the fundamental ability to decompose complex visual questions into intermediate linguistic reasoing steps. During this stage, we only train the decoder of MLLM while freezing the native vision encoder.
 
@@ -132,17 +116,13 @@ where y_t denotes the t-th token in the reasoing sequence. This stage establishe
 
 Specifically, each sample from existing CoT datasets consists of visual information v, a question q conditioned on visual input, a sequence of intermediate reasoing steps {r⁽ⁱ⁾}ᴺ_{i=1}, where N denotes the number of reasoing steps, and the corresponding answer a, i.e.,
 
-$$
-v, q \to (r^{(i)})_{i=1}^{N} \to a.
-$$
+$v, q \to (r^{(i)})_{i=1}^{N} \to a.$
 
 To adapt these datasets for latent reasoing, we insert K latent tokens, {ℓ\_k⁽ⁱ⁾}^K_{k=1}, before each language reasoing step r⁽ⁱ⁾. To inform the model when the latent mode should be initialized or terminated, we set the first and last tokens of each latent segment to special control tokens, i.e., ℓ\_1⁽ⁱ⁾ = `<latent>` and ℓ\_K⁽ⁱ⁾ = `</latent>`. This transformation yields a latent-augmented reasoing sequence, which can be expressed as follows:
 
-$$
-v, q \to (\ell_{[1:K]}^{(i)}, r^{(i)})_{i=1}^{N} \to a.
-$$
+$v, q \to (\ell_{[1:K]}^{(i)}, r^{(i)})_{i=1}^{N} \to a.$
 
-In this stage, we extend the Stage 1 training objective with a REPA loss, i.e., $\mathcal{L} := \mathcal{L}_{CE} + \lambda \mathcal{L}_{REPA}$. When we use multiple encoders for training, we apply the multi-REPA loss instead of the single-REPA loss, i.e., $\mathcal{L} := \mathcal{L}_{CE} + \lambda \mathcal{L}_{REPA}^{multi}$. We freeze the vision encoder and train only the MLLM decoder. Remark that the REPA loss ensures that the hidden states remain grounded in visual information.
+In this stage, we extend the Stage 1 training objective with a REPA loss, i.e., $L := L_{CE} + \lambda L_{REPA}$. When we use multiple encoders for training, we apply the multi-REPA loss instead of the single-REPA loss, i.e., $L := L_{CE} + \lambda L_{REPA}^{multi}$. We freeze the vision encoder and train only the MLLM decoder. Remark that the REPA loss ensures that the hidden states remain grounded in visual information.
 
 > 💡 **Stage 2 数据构造策略**:
 > - 对每个推理步 r⁽ⁱ⁾，在其前面插入 K=16 个 latent tokens
@@ -150,7 +130,7 @@ In this stage, we extend the Stage 1 training objective with a REPA loss, i.e., 
 > - 对于多视图数据，用 GPT-4o 为每个推理步匹配最相关的目标图像（详见 Appendix B）
 > - 对于交错数据（interleaved），在交错图像出现的位置初始化 latent mode
 >
-> 总损失 $\mathcal{L} = \mathcal{L}_{CE} + \lambda \mathcal{L}_{REPA}$ 中的 λ=0.5 是最优值（Table 11），说明**语言语义保持（CE）和视觉对齐（REPA）需要均衡**——过大的 λ 会破坏语言生成质量。
+> 总损失 $L = L_{CE} + \lambda L_{REPA}$ 中的 λ=0.5 是最优值（Table 11），说明**语言语义保持（CE）和视觉对齐（REPA）需要均衡**——过大的 λ 会破坏语言生成质量。
 
 > 💡 **训练效率**: Stage 2 中只训练 MLLM decoder + MLP ψ，冻结视觉编码器（原生 + 外部）。450K 数据，4×A100，1 epoch，每 GPU batch size 2，gradient accumulation 16。Stage 2 的学习率（2e-6）明显低于 Stage 1（1e-5），避免破坏 Stage 1 学到的推理能力。
 
