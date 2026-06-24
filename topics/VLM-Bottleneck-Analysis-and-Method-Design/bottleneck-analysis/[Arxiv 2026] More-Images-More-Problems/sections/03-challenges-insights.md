@@ -10,7 +10,7 @@
 
 ## 二、原始文本
 
-Herein, we systematically investigate the current LVLMs limitations in multi-image scenarios across six complementary dimensions: information distribution, query complexity, reasoning patterns, robustness to visual distractors, scalability with the number of images, and multi-concept tracking. For this purpose, we introduce MIMIC, a controlled testbed synthesized from a curated subset of MS-COCO. Using the manually annotated bounding boxes and labels, MIMIC generates multi-image sequences that allow precise control over information spread, distractor presence, object-instance distributions, and sequence length. This design enables decorrelated, fine-grained analyses of the model's behavior. Beyond these dimensions, our framework scrutinizes the models' mechanisms for aggregating and reasoning over distributed visual information. Through this controlled analysis, we aim to isolate the specific limitations and offer actionable insights for the next generation of visual understanding models.
+Herein, we systematically investigate the current LVLMs limitations in multi-image scenarios across six complementary dimensions: information distribution, query complexity, reasoing patterns, robustness to visual distractors, scalability with the number of images, and multi-concept tracking. For this purpose, we introduce MIMIC, a controlled testbed synthesized from a curated subset of MS-COCO. Using the manually annotated bounding boxes and labels, MIMIC generates multi-image sequences that allow precise control over information spread, distractor presence, object-instance distributions, and sequence length. This design enables decorrelated, fine-grained analyses of the model's behavior. Beyond these dimensions, our framework scrutinizes the models' mechanisms for aggregating and reasoing over distributed visual information. Through this controlled analysis, we aim to isolate the specific limitations and offer actionable insights for the next generation of visual understanding models.
 
 > **MIMIC 的 6 个可控维度**:
 >
@@ -18,7 +18,7 @@ Herein, we systematically investigate the current LVLMs limitations in multi-ima
 > |------|---------|---------|-------------|
 > | 信息分布 (Information spread) | s: 实例分布的图像数 | 跨图聚合能力 | Finding 3 |
 > | 查询复杂度 (Query complexity) | k: 目标类别数 | 多概念追踪能力 | Finding 5 |
-> | 推理模式 (Reasoning patterns) | 任务类型 (Count/List/Common/Odd) | 聚合 vs 比较推理 | — |
+> | 推理模式 (Reasoing patterns) | 任务类型 (Count/List/Common/Odd) | 聚合 vs 比较推理 | — |
 > | 干扰鲁棒性 (Distractor robustness) | d: 干扰图像数 | 注意力聚焦能力 | Finding 4 |
 > | 图像数量扩展 (Scalability) | N: 总图像数 | 序列长度处理 | Finding 1, 2 |
 > | 多概念追踪 (Multi-concept tracking) | k++ + s variation | 并行概念维护 | Finding 5 |
@@ -42,7 +42,7 @@ Herein, we systematically investigate the current LVLMs limitations in multi-ima
 >         └── Odd-One: N 张图, "找出只在少数图中出现的物体"
 > ```
 
-We build the probing dataset by procedurally generating multi-image, open-ended question-answering tasks that target distinct aspects of cross-image reasoning. To this end, we sample a curated subset from MS-COCO by filtering images with object bounding boxes less than 5% of the image in order to ensure visual recognizability at common LVLM input resolutions (e.g. LLaVA-OV's 384x384px). To minimize the impact of potential class imbalance, we first select a pool of classes and then sample from this pool, ensuring that each class is chosen with an equal probability. This ensures that the distributions of classes and instances remain consistent across settings.
+We build the probing dataset by procedurally generating multi-image, open-ended question-answering tasks that target distinct aspects of cross-image reasoing. To this end, we sample a curated subset from MS-COCO by filtering images with object bounding boxes less than 5% of the image in order to ensure visual recognizability at common LVLM input resolutions (e.g. LLaVA-OV's 384x384px). To minimize the impact of potential class imbalance, we first select a pool of classes and then sample from this pool, ensuring that each class is chosen with an equal probability. This ensures that the distributions of classes and instances remain consistent across settings.
 
 > **为什么用开放式问答而非多选题？** 三个原因：(1) 多选题的固定选项集可能引入 shortcut（模型通过选项排除而非真正理解图像）；(2) 干扰项选择难以校准——干扰项的好坏直接影响评测公平性；(3) 开放式问答更贴近实际使用场景。为减少 prompt bias，每个任务使用多套随机采样的 prompt 模板。
 
@@ -70,7 +70,7 @@ To account for potential biases caused by the long-tail distribution of object i
 
 **Listing**: The model is presented with a set of N images and asked to list all object classes belonging to a given category (e.g.: animals, vehicles, etc.) that it can identify. This task evaluates the model's ability to exhaustively extract information in a dense manner from multiple images. As a byproduct, it also measures the model's visual perception ability to recognize and categorize multiple objects, as well as its capacity to aggregate this information into a coherent list. Similar to the Counting task, we vary the number of images and the distribution of object instances to assess the model's robustness in multi-image understanding. The model's response is evaluated on the completeness and accuracy of the list, using F1-score as metric.
 
-**Common and Odd-One**: The two tasks are designed to assess the model's ability to identify shared or unique elements across multiple images. Importantly, while previous tasks focus on aggregating information, these tasks require comparative reasoning across images, hence the model must first implicitly identify all objects before performing cross-image analysis. In the Common task, the model has to determine which object class is present in all provided images, while in the Odd-One case, it must identify the object class that is present in a minority of images. For simplicity, we ensure by design that the answers are unique. The model's answers are evaluated based on their correctness, with binary accuracy as the metric.
+**Common and Odd-One**: The two tasks are designed to assess the model's ability to identify shared or unique elements across multiple images. Importantly, while previous tasks focus on aggregating information, these tasks require comparative reasoing across images, hence the model must first implicitly identify all objects before performing cross-image analysis. In the Common task, the model has to determine which object class is present in all provided images, while in the Odd-One case, it must identify the object class that is present in a minority of images. For simplicity, we ensure by design that the answers are unique. The model's answers are evaluated based on their correctness, with binary accuracy as the metric.
 
 > **Common vs Odd-One 的认知差异**: Common 需要跨图信息聚合——找出"共性"；Odd-One 更依赖局部差异定位——找出"特殊者"。后文跨任务泛化实验（Section 5.2）证实了这个区别：仅在 Common 上训练的模型在 Odd-One 上表现差（3.7%），反之亦然。
 
@@ -162,7 +162,7 @@ This has a series of consequences:
 
 (3) The architecture and training objectives may not sufficiently encourage cross-image integration, leading to a default behavior of treating images independently.
 
-(4) The observed attention patterns may reflect inherent biases in the training data, where the multi-image tasks don't require deep cross-image reasoning, leading the model to learn shortcuts that prioritize single-image understanding.
+(4) The observed attention patterns may reflect inherent biases in the training data, where the multi-image tasks don't require deep cross-image reasoing, leading the model to learn shortcuts that prioritize single-image understanding.
 
 > **Finding 6 的四大推论——将它们与 Finding 1-5 串联起来**:
 >

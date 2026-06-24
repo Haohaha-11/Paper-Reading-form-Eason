@@ -4,7 +4,7 @@
 
 ### 背景：MLLMs 的感知演进
 
-> MLLMs have demonstrated unprecedented capabilities in visual reasoning, document understanding, and vision-language-action (VLA) modeling. The bedrock of these sophisticated reasoning capabilities lies in the model's foundational visual perception.
+> MLLMs have demonstrated unprecedented capabilities in visual reasoing, document understanding, and vision-language-action (VLA) modeling. The bedrock of these sophisticated reasoing capabilities lies in the model's foundational visual perception.
 
 早期架构（如原始 LLaVA 系列）依赖冻结的低分辨率 Vision Transformer（224x224 或 336x336），虽然对粗粒度图像描述有效，但严重压缩和模糊了关键的局部细节。
 
@@ -12,7 +12,7 @@
 - **AnyRes 策略** [14, 21]: 将高分辨率输入空间分割为多个局部 patch，独立编码后拼接
 - **Native Dynamic Resolution** [20, 22]: 原生适配视觉编码器处理可变高分辨率（如 Qwen2-VL 的 NaViT 架构）
 
-> **Eason 批注**: 这一段交代了 MLLM 视觉感知的发展脉络：固定低分辨率 → AnyRes 分块 → 原生动态分辨率。Q-Zoom 要解决的问题正是这些方案引入的效率瓶颈。
+> **Hao 批注**: 这一段交代了 MLLM 视觉感知的发展脉络：固定低分辨率 → AnyRes 分块 → 原生动态分辨率。Q-Zoom 要解决的问题正是这些方案引入的效率瓶颈。
 
 ---
 
@@ -29,7 +29,7 @@
 **冗余二：忽视 Spatial Sparsity**
 - 全局缩放整张图像 → 数千个视觉上无用的背景 token 涌入 LLM 的二次自注意力机制
 
-> **Eason 批注**: 这两个冗余是整篇论文的 motivation 核心。Table I（见下文）的数据非常直观——把 token 从 2048 砍到 512，吞吐翻倍，精度只掉了 ~7%，说明大部分 query 根本不需要那么多 token。但现有方案选择"一律给满"，造成了巨大的算力浪费。
+> **Hao 批注**: 这两个冗余是整篇论文的 motivation 核心。Table I（见下文）的数据非常直观——把 token 从 2048 砍到 512，吞吐翻倍，精度只掉了 ~7%，说明大部分 query 根本不需要那么多 token。但现有方案选择"一律给满"，造成了巨大的算力浪费。
 
 ---
 
@@ -46,13 +46,13 @@
 - 虽然有效减少了 visual token 使用，但将计算负担转移到了语言模型
 - **问题**: 依赖冗长 CoT 解码 → 大幅增加推理延迟；RL 优化昂贵、数据饥渴、高度不稳定
 
-> **Eason 批注**: 这是 Fig.1 对应的核心分析。两种主流范式各有致命缺陷——training-free 慢在前传次数多，RL 慢在解码步骤多。Q-Zoom 的解法是：让感知模块直接操作在中间特征空间，在单次 prefill 中完成判断和定位。
+> **Hao 批注**: 这是 Fig.1 对应的核心分析。两种主流范式各有致命缺陷——training-free 慢在前传次数多，RL 慢在解码步骤多。Q-Zoom 的解法是：让感知模块直接操作在中间特征空间，在单次 prefill 中完成判断和定位。
 
 ---
 
 ### Figure 1: 三种范式对比
 
-![Figure 1](../../../../encoding/[Arxiv%202025]%20Q-Zoom/images/60277866c869d1ea142a1d0927f831c9e5f84d7db9e0be5672316edfe7cd56d9.jpg)
+![Figure 1](../images/60277866c869d1ea142a1d0927f831c9e5f84d7db9e0be5672316edfe7cd56d9.jpg)
 
 **Fig. 1**: Comparison of adaptive high-resolution perception paradigms.
 
@@ -78,7 +78,7 @@
 - 连续时空 MRoPE 编码方案解决粗粒度全局图像与细粒度局部 RoI 的空间失准
 - 定向 Post-SFT 在显式挖掘的硬失败案例上微调 LLM，恢复鲁棒的空间推理
 
-> **Eason 批注**: 第三阶段是 Q-Zoom 相比原始 SD-RPN 的核心增量之一。裁剪 RoI 后如果不做对齐，模型会丢失全局空间上下文，导致"看得清但看不懂在哪"的问题。连续时空位置编码 + 硬样本定向微调是一个优雅的解决方案。
+> **Hao 批注**: 第三阶段是 Q-Zoom 相比原始 SD-RPN 的核心增量之一。裁剪 RoI 后如果不做对齐，模型会丢失全局空间上下文，导致"看得清但看不懂在哪"的问题。连续时空位置编码 + 硬样本定向微调是一个优雅的解决方案。
 
 ---
 
@@ -99,4 +99,4 @@
 
 3. **时空对齐与定向微调**: 连续时空位置编码 + 定向 Post-SFT，将 dense local RoI 与 coarse global layout 无缝融合
 
-> **Eason 批注**: 本文是 SD-RPN (ICLR 2026) 的扩展。原工作成功展示了自蒸馏区域提议的可行性，但 pipeline 是刚性的（无 query-aware routing）且存在空间失准问题。Q-Zoom 将这套方案从"可工作"推进到了"全面优化"的完整框架。
+> **Hao 批注**: 本文是 SD-RPN (ICLR 2026) 的扩展。原工作成功展示了自蒸馏区域提议的可行性，但 pipeline 是刚性的（无 query-aware routing）且存在空间失准问题。Q-Zoom 将这套方案从"可工作"推进到了"全面优化"的完整框架。

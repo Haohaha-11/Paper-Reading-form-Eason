@@ -124,7 +124,7 @@ Point mode 的这种离散性使 reward 更难优化：在 mask 内部任意移�
 
 ### Unmatched Grounding Objects: 为什么不做惩罚？
 
-We **intentionally do not penalize unmatched grounding objects** in the rollout. The grounding objects extracted by the data synthesis pipeline are not a complete enumeration of all visual cues. During thinking, the model may identify additional visual evidence that is useful and reasonable to ground. Therefore, unmatched rollout grounding objects neither increase nor decrease the grounding quality.
+We **intentionally do not penalize unmatched grounding objects** in the rollout. The grounding objects extracted by the data synthesis pipeline are not a complete enumeration of all visual cues. During thinking, the model may identify additional visual evidence that is useful and reasoable to ground. Therefore, unmatched rollout grounding objects neither increase nor decrease the grounding quality.
 
 We only apply a **hard-coded cap** on the number of grounding tags to prevent the model from over-emitting them.
 

@@ -113,7 +113,7 @@ iGVLM 提出解耦双分支视觉编码架构（frozen static branch + AdaLN dyn
 3. **仅验证图像模态**: 实验限定在静态图像 + 文本，对视频、音频等模态的扩展性未知
 4. **MM4 规模有限**: 180 图 x 4 问 = 720 QA，可能不足以代表真实世界问题多样性和难度
 5. **单指令嵌入假设**: 所有 4 个问题的指令嵌入使用相同的 CLIP text encoder 独立编码，未考虑问题间的语义关联
-6. **与 reasoning 模型未结合**: 仅在非 reasoning LLM 上验证（Vicuna, Qwen2.5），如果结合 reasoning 能力（如 R1-OneVision, Qwen3-VL），效果可能更显著
+6. **与 reasoing 模型未结合**: 仅在非 reasoing LLM 上验证（Vicuna, Qwen2.5），如果结合 reasoing 能力（如 R1-OneVision, Qwen3-VL），效果可能更显著
 
 ### Future Work
 
@@ -121,7 +121,7 @@ iGVLM 提出解耦双分支视觉编码架构（frozen static branch + AdaLN dyn
 2. 多轮对话中的指令调制持续性：跨轮次的 instruction modulation persistence
 3. 扩展到视频/音频模态的时序 AdaLN 调制
 4. 结合 test-time adaptation 实现 training-free 的指令调制
-5. 在更大规模 reasoning 模型（72B+）上验证 scaling 上限
+5. 在更大规模 reasoing 模型（72B+）上验证 scaling 上限
 6. 探索动态 branch 数量的自适应机制（部分问题可能不需要指令调制）
 
 ## Reading Q&A Record

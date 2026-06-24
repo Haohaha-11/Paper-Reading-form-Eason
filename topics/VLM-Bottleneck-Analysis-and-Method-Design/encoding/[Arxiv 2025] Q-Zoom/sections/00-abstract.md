@@ -19,13 +19,13 @@ Extensive experiments demonstrate that Q-Zoom establishes a dominant Pareto fron
 | Document & OCR | 2.52x | 53.0% | +1.1% |
 | High-Resolution | 4.39x | 73.2% | +8.1% |
 
-> **Eason 批注**: 这两个数字是整篇论文最核心的卖点。注意这里的加速是相对于 brute-force 4096-token baseline，且 Q-Zoom 自己只用 max 1024 tokens 就超越了 4096-token 的峰值。这是一种典型的"少即是多"——通过精准的空间注意力聚焦，用更少的 token 获得更好的效果。
+> **Hao 批注**: 这两个数字是整篇论文最核心的卖点。注意这里的加速是相对于 brute-force 4096-token baseline，且 Q-Zoom 自己只用 max 1024 tokens 就超越了 4096-token 的峰值。这是一种典型的"少即是多"——通过精准的空间注意力聚焦，用更少的 token 获得更好的效果。
 
 ---
 
 ## Figure 1: 三种 Adaptive High-Resolution Perception 范式对比
 
-![Figure 1](../../../../encoding/[Arxiv%202025]%20Q-Zoom/images/60277866c869d1ea142a1d0927f831c9e5f84d7db9e0be5672316edfe7cd56d9.jpg)
+![Figure 1](../images/60277866c869d1ea142a1d0927f831c9e5f84d7db9e0be5672316edfe7cd56d9.jpg)
 
 **Fig. 1**: Comparison of adaptive high-resolution perception paradigms.
 
@@ -37,7 +37,7 @@ Extensive experiments demonstrate that Q-Zoom establishes a dominant Pareto fron
 | **RL-Based** | Thyme [5], DeepEyes [4] | LLM 自回归生成 code/坐标定位 RoI | 依赖冗长 CoT 解码，训练昂贵不稳定 |
 | **Q-Zoom (Ours)** | - | 在中间特征空间单次 prefill 直接操作 | - |
 
-> **Eason 批注**: 这是论文的核心定位——Q-Zoom 不是 training-free 也不依赖 RL，而是在中间特征空间上做轻量级可学习模块。这个定位让它同时避开了 training-free 的多次前传开销和 RL 的 CoT 解码延迟。Fig.1 清晰地展示了三种范式在 prefill/decode 流程上的差异。
+> **Hao 批注**: 这是论文的核心定位——Q-Zoom 不是 training-free 也不依赖 RL，而是在中间特征空间上做轻量级可学习模块。这个定位让它同时避开了 training-free 的多次前传开销和 RL 的 CoT 解码延迟。Fig.1 清晰地展示了三种范式在 prefill/decode 流程上的差异。
 
 ---
 
@@ -61,7 +61,7 @@ Extensive experiments demonstrate that Q-Zoom establishes a dominant Pareto fron
 - LLM-as-a-Judge 硬样本挖掘 → 定向 Post-SFT
 - 消除裁剪 RoI 与全局布局的空间失准，恢复空间推理能力
 
-> **Eason 批注**: 这三个贡献层层递进：贡献 1 定义了"做什么"，贡献 2 解决了"怎么训练（不用标注数据）"，贡献 3 修复了"做完之后的副作用（空间失准）"。这是一个完整的端到端解决方案。
+> **Hao 批注**: 这三个贡献层层递进：贡献 1 定义了"做什么"，贡献 2 解决了"怎么训练（不用标注数据）"，贡献 3 修复了"做完之后的副作用（空间失准）"。这是一个完整的端到端解决方案。
 
 ---
 
@@ -79,4 +79,4 @@ Extensive experiments demonstrate that Q-Zoom establishes a dominant Pareto fron
 
 Multimodal large language models, Region of interest, High-resolution perception.
 
-> **Eason 批注**: 这三个关键词精准地概括了论文的技术主线——在大模型中做自适应感知，核心手段是 RoI 定位和高分辨率重编码。
+> **Hao 批注**: 这三个关键词精准地概括了论文的技术主线——在大模型中做自适应感知，核心手段是 RoI 定位和高分辨率重编码。

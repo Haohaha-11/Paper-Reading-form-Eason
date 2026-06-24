@@ -164,9 +164,9 @@ Q-Zoom 提出一种查询感知的自适应高分辨率感知框架，通过轻�
 - SFT-based: Token-Efficient VLM [56]
 - RL-based: DeepEyes [4, 70], Thyme [5], Mini-o3 [6], AdaptVision [69], VisionThink [68]
 
-**Thinking-with-Image & Latent Reasoning**:
-- OpenAI Thinking with Images [26], Pixel Reasoner [8], ZwZ [36]
-- MoNet [61], Latent Visual Reasoning [62]
+**Thinking-with-Image & Latent Reasoing**:
+- OpenAI Thinking with Images [26], Pixel Reasoer [8], ZwZ [36]
+- MoNet [61], Latent Visual Reasoing [62]
 
 **Visual Grounding & Attention Analysis**:
 - Vision Function Layer [27], Attention Heads for Grounding [28]

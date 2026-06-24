@@ -10,11 +10,11 @@
 
 ## 二、原始文本
 
-We provide an empirical evaluation of Vision-aligned Latent Reasoning (VaLR) by investigating following questions:
+We provide an empirical evaluation of Vision-aligned Latent Reasoing (VaLR) by investigating following questions:
 
 - Does VaLR improve the performance on VQA datasets? (Table 1, Table 2)
-- Does VaLR retain performance during long-context reasoning? (Figure 2)
-- Does the latent token component really contribute to long-context reasoning? (Table 3)
+- Does VaLR retain performance during long-context reasoing? (Figure 2)
+- Does the latent token component really contribute to long-context reasoing? (Table 3)
 - Can VaLR be adapted to various vision models and tasks in a model-agnostic manner? (Table 4, Table 5)
 
 > 💡 **实验设计逻辑**: 四个研究问题构成了一个完整的验证链条：有效性（Q1）→ 长上下文特性（Q2）→ 组件贡献（Q3）→ 通用性（Q4）。这种从整体到组件、从特定到通用的实验设计非常经典。
@@ -25,36 +25,36 @@ We provide an empirical evaluation of Vision-aligned Latent Reasoning (VaLR) by 
 
 **Evaluation Setup.** Following the evaluation setup of previous benchmarks, we mainly report the accuracy (%) across all benchmarks. For response generation, we apply greedy sampling. The models are evaluated on various VQA benchmarks, including VSI-Bench, BLINK, MMVP, MMStar, MathVision, and more.
 
-**Baselines.** We compare VaLR with API, reasoning, supervised finetuned, and latent reasoning models in MLLMs, namely, GPT-4o, Claude-4-Sonnet, R1-OneVision-7B, Ocean-R1-7B, LVT, CoVT, and Monet.
+**Baselines.** We compare VaLR with API, reasoing, supervised finetuned, and latent reasoing models in MLLMs, namely, GPT-4o, Claude-4-Sonnet, R1-OneVision-7B, Ocean-R1-7B, LVT, CoVT, and Monet.
 
-### 4.2. 3D Spatial Reasoning Tasks
+### 4.2. 3D Spatial Reasoing Tasks
 
-We examine VaLR's effectiveness in long-context reasoning by comparing performance on 3D multi-view benchmark, VSI-Bench (Yang et al., 2025b), which requires long-context reasoning ability to integrate spatial information across multiple viewpoints. We report accuracy on 8 sub-tasks and the average accuracy. We train the VaLR with two different setups: (i) VaLR-S, which aligns a single encoder using DINOv3 and (ii) VaLR-M, which aligns multiple encoders using DINOv3, SigLIPv2, and π³.
+We examine VaLR's effectiveness in long-context reasoing by comparing performance on 3D multi-view benchmark, VSI-Bench (Yang et al., 2025b), which requires long-context reasoing ability to integrate spatial information across multiple viewpoints. We report accuracy on 8 sub-tasks and the average accuracy. We train the VaLR with two different setups: (i) VaLR-S, which aligns a single encoder using DINOv3 and (ii) VaLR-M, which aligns multiple encoders using DINOv3, SigLIPv2, and π³.
 
-**Results.** As shown in Table 1, VaLR-S achieves an average accuracy of 41.5%, substantially outperforming the base model, Qwen2.5-VL (33.0%). In contrast, previous latent reasoning methods struggle on this benchmark requiring multi-view understanding. For example, Monet reaches 14% in average accuracy, and other models (LVR, CoVT) also collapse (see more details in Appendix C.1). This performance gap between VaLR-S and other latent reasoning methods provides strong evidence that latent reasoning without visual recall fails to maintain visual grounding during long reasoning traces, confirming the effectiveness of dynamic visual re-injection.
+**Results.** As shown in Table 1, VaLR-S achieves an average accuracy of 41.5%, substantially outperforming the base model, Qwen2.5-VL (33.0%). In contrast, previous latent reasoing methods struggle on this benchmark requiring multi-view understanding. For example, Monet reaches 14% in average accuracy, and other models (LVR, CoVT) also collapse (see more details in Appendix C.1). This performance gap between VaLR-S and other latent reasoing methods provides strong evidence that latent reasoing without visual recall fails to maintain visual grounding during long reasoing traces, confirming the effectiveness of dynamic visual re-injection.
 
 > 💡 **Table 1 深度分析 — VSI-Bench 结果**:
 >
 > | 方法组 | 代表 | Avg. Accuracy | 关键特征 |
 > |--------|------|--------------|---------|
 > | API Models | GPT-4o | 34.0% | 大模型但非专用 |
-> | Reasoning Models | Ocean-R1-7B | 30.5% | RL 训练推理，但无视觉检查点 |
+> | Reasoing Models | Ocean-R1-7B | 30.5% | RL 训练推理，但无视觉检查点 |
 > | Base Model | Qwen2.5-VL-7B | 33.0% | 标准 MLLM |
-> | Latent Reasoning | Monet / LVR / CoVT | 14.0%-18.6% | **在多视图上崩溃** |
+> | Latent Reasoing | Monet / LVR / CoVT | 14.0%-18.6% | **在多视图上崩溃** |
 > | VaLR-S (Ours) | 单编码器 DINOv3 | 41.5% | +8.5%p over base |
 > | VaLR-M (Ours) | 多编码器 | **52.9%** | +19.9%p over base! |
 >
-> Monet/LVR/CoVT 在 VSI-Bench 上的崩溃是最有力的反面证据：**这些方法仅支持单视图或对多视图扩展有限，在需要长期视觉记忆的多视图任务上，缺乏动态视觉重注入机制的潜推理必然失败**。这不仅是 VaLR 的性能优势证明，更是对 latent reasoning 设计空间的重要启示：**潜推理本身不够，必须在推理过程中持续保持视觉信息**。
+> Monet/LVR/CoVT 在 VSI-Bench 上的崩溃是最有力的反面证据：**这些方法仅支持单视图或对多视图扩展有限，在需要长期视觉记忆的多视图任务上，缺乏动态视觉重注入机制的潜推理必然失败**。这不仅是 VaLR 的性能优势证明，更是对 latent reasoing 设计空间的重要启示：**潜推理本身不够，必须在推理过程中持续保持视觉信息**。
 
-In addition, VaLR-M even achieves state-of-the-art performance (52.9%) over previous baselines, e.g., GPT-4o (34.0%) and Ocean-R1 (30.5%), highlighting that the combination of different vision encoders produces the synergistic effect. In particular, VaLR-M achieves remarkable performance on spatial understanding tasks, such as relative (50.0%) and absolute (40.6%) distance prediction. These results validate our hypothesis that latent reasoning with visual alignment prevents the visual information decay observed in standard reasoning approaches.
+In addition, VaLR-M even achieves state-of-the-art performance (52.9%) over previous baselines, e.g., GPT-4o (34.0%) and Ocean-R1 (30.5%), highlighting that the combination of different vision encoders produces the synergistic effect. In particular, VaLR-M achieves remarkable performance on spatial understanding tasks, such as relative (50.0%) and absolute (40.6%) distance prediction. These results validate our hypothesis that latent reasoing with visual alignment prevents the visual information decay observed in standard reasoing approaches.
 
 > 💡 **VaLR-M 的子任务分析**: 在 8 个子任务中，VaLR-M 在 Object Count（66.4%）、Object Size（64.2%）、Room Size（56.6%）、Relative Direction（51.8%）上表现尤为突出。这些子任务高度依赖精确的空间感知，恰好验证了 π³ 编码 3D 空间结构的价值。相比之下，Route Plan（35.1%）提升相对有限，可能是因为路径规划还需要时序推理能力，超出了纯视觉对齐的范围。
 
 ### 4.3. Perception Tasks
 
-We further present that VaLR also improves performance on moderate-length reasoning tasks beyond long-context by evaluating it on five perception benchmarks. We report accuracy on BLINK, MMVP, MMStar, V*, and CVBench.
+We further present that VaLR also improves performance on moderate-length reasoing tasks beyond long-context by evaluating it on five perception benchmarks. We report accuracy on BLINK, MMVP, MMStar, V*, and CVBench.
 
-**Results.** As shown in Table 2, VaLR achieves substantial improvements over the base model. These results reveal that the learned visual grounding capability generalizes to improve short-context perception as well. The consistent advantages over other latent reasoning methods are particularly informative: VaLR-M outperforms CoVT by 8.7%p on BLINK and 8.9%p on V*, and significantly surpasses Monet and LVR across all benchmarks. Interestingly, reasoning models such as R1-OneVision and Ocean-R1 show inconsistent results, with Ocean-R1 achieving strong V* performance (78.0%) while underperforming on BLINK (56.8%) and MMVP (58.0%), suggesting that their reasoning enhancement overfit to specific task patterns rather than developing robust visual understanding. In contrast, VaLR's consistent improvements across diverse perception tasks validate that our visual alignment strategy during latent reasoning provides a general mechanism for maintaining high-quality visual representations throughout the reasoning process, regardless of reasoning length.
+**Results.** As shown in Table 2, VaLR achieves substantial improvements over the base model. These results reveal that the learned visual grounding capability generalizes to improve short-context perception as well. The consistent advantages over other latent reasoing methods are particularly informative: VaLR-M outperforms CoVT by 8.7%p on BLINK and 8.9%p on V*, and significantly surpasses Monet and LVR across all benchmarks. Interestingly, reasoing models such as R1-OneVision and Ocean-R1 show inconsistent results, with Ocean-R1 achieving strong V* performance (78.0%) while underperforming on BLINK (56.8%) and MMVP (58.0%), suggesting that their reasoing enhancement overfit to specific task patterns rather than developing robust visual understanding. In contrast, VaLR's consistent improvements across diverse perception tasks validate that our visual alignment strategy during latent reasoing provides a general mechanism for maintaining high-quality visual representations throughout the reasoing process, regardless of reasoing length.
 
 > 💡 **Table 2 深度分析 — 感知 Benchmark**:
 >
@@ -69,11 +69,11 @@ We further present that VaLR also improves performance on moderate-length reason
 >
 > 关键观察：(1) VaLR 在所有 5 个 benchmark 上都超越所有开源 baseline；(2) Ocean-R1 表现不一致（V* 78% vs BLINK 56.8%），说明 RL 推理训练可能导致过拟合；(3) VaLR 的跨任务一致提升说明视觉对齐提供的是通用的视觉表征改善机制，而非针对特定任务的优化。
 
-### 4.4. Reasoning Length Analysis
+### 4.4. Reasoing Length Analysis
 
-To investigate whether VaLR follows the test-time scaling law, we analyze the performance as a function of reasoning length. We consider Ocean-R1 and LVR as baselines and evaluate on MathVista, MathVision, MMhalu, and MMVP, grouping samples by generated reasoning length to observe performance trends.
+To investigate whether VaLR follows the test-time scaling law, we analyze the performance as a function of reasoing length. We consider Ocean-R1 and LVR as baselines and evaluate on MathVista, MathVision, MMhalu, and MMVP, grouping samples by generated reasoing length to observe performance trends.
 
-**Results.** As illustrated in Figure 2, while all baseline methods peak at intermediate reasoning lengths and subsequently degrade, VaLR shows monotonic improvement across all benchmarks. In particular, on MMVP, VaLR sustains strong performance across all reasoning lengths while Ocean-R1 dramatically collapses from 62.7% to 56.5% at 300 tokens. This divergent behavior provides compelling evidence that models trained for language reasoning or naive latent reasoning progressively lose visual priors as they generate longer reasoning chains. These results validate that VaLR successfully maintain visual grounding during extended reasoning, enabling the model to benefit from longer thinking time rather than suffer from it. We thereby achieve true test-time scaling in the multi-modal domain as widely demonstrated for language models.
+**Results.** As illustrated in Figure 2, while all baseline methods peak at intermediate reasoing lengths and subsequently degrade, VaLR shows monotonic improvement across all benchmarks. In particular, on MMVP, VaLR sustains strong performance across all reasoing lengths while Ocean-R1 dramatically collapses from 62.7% to 56.5% at 300 tokens. This divergent behavior provides compelling evidence that models trained for language reasoing or naive latent reasoing progressively lose visual priors as they generate longer reasoing chains. These results validate that VaLR successfully maintain visual grounding during extended reasoing, enabling the model to benefit from longer thinking time rather than suffer from it. We thereby achieve true test-time scaling in the multi-modal domain as widely demonstrated for language models.
 
 > 💡 **Figure 2 深入解读 — Test-time Scaling Law 的证据**:
 >

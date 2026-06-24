@@ -1,10 +1,10 @@
-# Reasoning Within the Mind: Dynamic Multimodal Interleaving in Latent Space (DMLR)
+# Reasoing Within the Mind: Dynamic Multimodal Interleaving in Latent Space (DMLR)
 
 ## Paper Metadata
 
 | 项目 | 内容 |
 |------|------|
-| **Title** | Reasoning Within the Mind: Dynamic Multimodal Interleaving in Latent Space |
+| **Title** | Reasoing Within the Mind: Dynamic Multimodal Interleaving in Latent Space |
 | **Authors** | Chengzhi Liu\*, Yuzhe Yang\*, Yue Fan, Qingyue Wei, Sheng Liu†, Xin Eric Wang† |
 | **Affiliations** | UC Santa Barbara, Stanford University, UC Santa Cruz |
 | **Venue** | arXiv 2025 |
@@ -44,7 +44,7 @@ DMLR 提出了一种训练自由 (training-free) 的测试时动态多模态潜�
 | 指标 | 数值 |
 |------|------|
 | Benchmark 数量 | 7 (MathVista mini, MathVision mini, MM Math, HallusionBench, MMVP, MMStar, ScienceQA) |
-| Backbone 模型数 | 6 (2 reasoning + 4 non-reasoning) |
+| Backbone 模型数 | 6 (2 reasoing + 4 non-reasoing) |
 | 对比方法数 | 4 (Vanilla, Multimodal CoT, CCoT, ICoT) |
 | DMLR 最优任务比例 | >95% |
 | 推理模型（R1-OneVision）平均提升 | +4.5% (数学), +3.45% (视觉) |
@@ -96,7 +96,7 @@ DMLR 提出了一种训练自由 (training-free) 的测试时动态多模态潜�
 ### Strengths
 
 1. **Training-free**: 不需要额外的训练阶段，完全在测试时进行优化，即插即用
-2. **跨模型泛化**: 在 6 种不同架构的 MLLM 上（包括 reasoning 和 non-reasoning 模型）都一致有效
+2. **跨模型泛化**: 在 6 种不同架构的 MLLM 上（包括 reasoing 和 non-reasoing 模型）都一致有效
 3. **双向提升**: 同时提升推理能力和感知能力（数学 + 视觉推理），不像很多方法存在 trade-off
 4. **高效率**: 潜空间优化不产生额外 token 生成开销，DVI 只选择必要的视觉信息
 5. **自适应**: 置信度驱动的优化自动决定何时、注入多少视觉信息，无需人工规则
@@ -132,7 +132,7 @@ DMLR 提出了一种训练自由 (training-free) 的测试时动态多模态潜�
 ## Citation Landscape
 
 ### Semantic Scholar TLDR
-> "DMLR is proposed, a test-time Dynamic Multimodal Latent Reasoning framework that employs confidence-guided latent policy gradient optimization to refine latent think tokens for in-depth reasoning and significantly improves reasoning and perception performance while maintaining high inference efficiency."
+> "DMLR is proposed, a test-time Dynamic Multimodal Latent Reasoing framework that employs confidence-guided latent policy gradient optimization to refine latent think tokens for in-depth reasoing and significantly improves reasoing and perception performance while maintaining high inference efficiency."
 
 ### Citation Statistics
 - **Reference Count**: 53
@@ -147,23 +147,23 @@ See related papers at: https://www.connectedpapers.com/main/2512.12623
 **MLLM Backbones & Architectures**:
 - Qwen2.5-VL [1, 42], InternVL3.5 [2], GLM-4.5V [3], LLaVA-OneVision [4]
 
-**Explicit CoT Reasoning**:
+**Explicit CoT Reasoing**:
 - Kam-CoT [5], Vision-R1 [7], CCoT [51], Multimodal-CoT [52]
 
 **Thinking with Images**:
-- Pixel Reasoner [8], DeepEyes [9], ReFocus [10], GRiT [11], MVoT [12], Latent Sketchpad [13], OpenThinkImg [26], Visual Sketchpad [27], DeepEyesV2 [28], Chain-of-Focus [29], Memory-Space Visual Retracing [30]
+- Pixel Reasoer [8], DeepEyes [9], ReFocus [10], GRiT [11], MVoT [12], Latent Sketchpad [13], OpenThinkImg [26], Visual Sketchpad [27], DeepEyesV2 [28], Chain-of-Focus [29], Memory-Space Visual Retracing [30]
 
-**Latent Reasoning (Training-based)**:
-- COCONUT [14], Fractional Reasoning [31], ThinkAct [32], MILR [33], Vocabulary-Space Superposition [34], Token Perception RL [35]
+**Latent Reasoing (Training-based)**:
+- COCONUT [14], Fractional Reasoing [31], ThinkAct [32], MILR [33], Vocabulary-Space Superposition [34], Token Perception RL [35]
 
-**Latent Reasoning (Training-free)**:
+**Latent Reasoing (Training-free)**:
 - LatentSeek [15], Soft Thinking [36], Soft Tokens Hard Truths [37], Thinking on the Fly [38], Feature Extraction & Steering [39]
 
-**Latent Visual Reasoning**:
-- Latent Visual Reasoning [16], Machine Mental Imagery [17], Multimodal CoCT [18], MemGen [19], Latent CoT for Visual [40], ICoT [41], Reasoning in the Dark [44]
+**Latent Visual Reasoing**:
+- Latent Visual Reasoing [16], Machine Mental Imagery [17], Multimodal CoCT [18], MemGen [19], Latent CoT for Visual [40], ICoT [41], Reasoing in the Dark [44]
 
 **Confidence & Uncertainty**:
-- Seeing and Reasoning with Confidence [45], LatentEvolve [46]
+- Seeing and Reasoing with Confidence [45], LatentEvolve [46]
 
 **Benchmarks**:
 - MathVista [53], MathVision [54], MM Math [55], HallusionBench [56], MMVP [24], MMStar [57], ScienceQA [58]

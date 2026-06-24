@@ -10,7 +10,7 @@
 
 ## 二、原始文本
 
-In this work, we analyze how MLLMs utilize visual information and confidence during reasoning. Based on these observations, we introduce DMLR, a test-time multimodal latent reasoning framework that integrates confidence-guided latent optimization with dynamic visual injection. This method enables models to refine their reasoning, retrieve visual evidence only when needed without training. Extensive experiments across various tasks show that DMLR consistently boosts both reasoning and perception tasks, offering a stable and training-free alternative to other methods.
+In this work, we analyze how MLLMs utilize visual information and confidence during reasoing. Based on these observations, we introduce DMLR, a test-time multimodal latent reasoing framework that integrates confidence-guided latent optimization with dynamic visual injection. This method enables models to refine their reasoing, retrieve visual evidence only when needed without training. Extensive experiments across various tasks show that DMLR consistently boosts both reasoing and perception tasks, offering a stable and training-free alternative to other methods.
 
 > 💡 **全文回顾**:
 >

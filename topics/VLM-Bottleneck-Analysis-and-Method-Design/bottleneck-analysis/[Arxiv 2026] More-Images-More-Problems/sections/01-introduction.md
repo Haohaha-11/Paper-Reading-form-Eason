@@ -27,7 +27,7 @@ Our in-depth analysis is performed on the newly introduced MIMIC benchmark. Buil
 
 > **MIMIC 的核心设计哲学**: 程序化控制 (procedural control)。不是从已有数据集中采样，而是根据标注"程序化生成"多图序列。这使得每个可控维度可以独立变化，做到了传统 benchmark 无法实现的"解耦分析 (decorrelated analysis)"。类比：MIMIC 对多图 LVLM 的意义，类似于单元测试对软件开发的意义。
 
-Using both quantitative and qualitative assessments, our study reveals that current state-of-the-art LVLMs struggle to effectively aggregate information across multiple images, are unable to track/attend to multiple concepts simultaneously, while being susceptible to distractors. We attribute these shortcomings to a combination of factors, including limitations in multi-image sequence modeling, training data biases, poor inter-image communication induced by the causal attention and the inherent complexity of multi-image reasoning tasks.
+Using both quantitative and qualitative assessments, our study reveals that current state-of-the-art LVLMs struggle to effectively aggregate information across multiple images, are unable to track/attend to multiple concepts simultaneously, while being susceptible to distractors. We attribute these shortcomings to a combination of factors, including limitations in multi-image sequence modeling, training data biases, poor inter-image communication induced by the causal attention and the inherent complexity of multi-image reasoing tasks.
 
 > **Failure mode 的四个根因层次**:
 > 1. **序列建模局限**: causal attention 机制下，后续图像的 token 可能累积来自前面图像的噪声/错误信息

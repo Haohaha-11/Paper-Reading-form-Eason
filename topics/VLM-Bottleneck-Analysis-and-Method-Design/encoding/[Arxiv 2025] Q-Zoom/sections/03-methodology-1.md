@@ -34,7 +34,7 @@ $$P(y_t | x_v, x_t, y_{<t}) = \mathrm{Softmax}(W_{head} \, h_t^L) \tag{2}$$
 
 其中 h_t^L 是第 L 层在第 t 步的隐藏状态，W_head 是语言建模头。
 
-> **Eason 批注**: 这里强调了一个关键前提——由于高度并行化的矩阵运算，**prefilling 阶段比自回归解码快得多**（对同等 token 数量而言）。Q-Zoom 的核心设计原则之一就是将所有的感知决策（门控 + RoI 定位）都放在 prefill 阶段完成，避免进入慢速的 decode 阶段。这也是它比 RL 方法快得多的根本原因。
+> **Hao 批注**: 这里强调了一个关键前提——由于高度并行化的矩阵运算，**prefilling 阶段比自回归解码快得多**（对同等 token 数量而言）。Q-Zoom 的核心设计原则之一就是将所有的感知决策（门控 + RoI 定位）都放在 prefill 阶段完成，避免进入慢速的 decode 阶段。这也是它比 RL 方法快得多的根本原因。
 
 ---
 
@@ -44,13 +44,13 @@ $$P(y_t | x_v, x_t, y_{<t}) = \mathrm{Softmax}(W_{head} \, h_t^L) \tag{2}$$
 
 Table I 的数据揭示了关键洞察：将输入从 2048 约束到 512 tokens，吞吐翻倍，精度仅从 83.1% 降到 76.5%。这意味着**大多数 query 可以用粗粒度上下文解决**，全域高分辨率处理极度浪费。
 
-> **Eason 批注**: 这里作者将高分辨率感知重新表述为一个 **条件路由问题（conditional routing problem）**——二元分类器动态预测特定 query (x_v, x_t) 是否需要高分辨率细化。这个 formulation 很巧妙，将一个连续的感知保真度问题转化为了离散的路由决策。
+> **Hao 批注**: 这里作者将高分辨率感知重新表述为一个 **条件路由问题（conditional routing problem）**——二元分类器动态预测特定 query (x_v, x_t) 是否需要高分辨率细化。这个 formulation 很巧妙，将一个连续的感知保真度问题转化为了离散的路由决策。
 
 ### Figure 2: 框架总览
 
-![Figure 2a](../../../../encoding/[Arxiv%202025]%20Q-Zoom/images/9e37e84f7832da45aeca3cfdfd4547e4b71c9c5595fa6e39b5d95089f10e0779.jpg)
+![Figure 2a](../images/9e37e84f7832da45aeca3cfdfd4547e4b71c9c5595fa6e39b5d95089f10e0779.jpg)
 
-![Figure 2b](../../../../encoding/[Arxiv%202025]%20Q-Zoom/images/a746320632afca702b87c981a0c66c7c6faa0ec59c2e7fdbae92d74eb46a1a5c.jpg)
+![Figure 2b](../images/a746320632afca702b87c981a0c66c7c6faa0ec59c2e7fdbae92d74eb46a1a5c.jpg)
 
 **Fig. 2**: Overview of the proposed Adaptive High-Resolution Perception Framework. (a) 通过 consistency-aware generation 生成鲁棒监督信号训练门控模块。(b) 推理时门控动态评估文本 query，路由简单 query 直接用粗粒度特征生成，复杂 query 触发 SD-RPN 提取定向高分辨率区域。
 
@@ -72,7 +72,7 @@ Table I 的数据揭示了关键洞察：将输入从 2048 约束到 512 tokens�
 2. **接受有效转移**: 模型在低分辨率失败但在高分辨率成功
 3. **丢弃不稳定案例**: 模型在低分辨率成功但在高分辨率失败
 
-> **Eason 批注**: 这里的核心思想是——如果分辨率真的是决定正确性的因素，那么正确性应该随分辨率单调递增。如果低分对高分错，那说明正确与否跟分辨率无关（可能是幻觉等其他因素），这些样本不应该用于训练门控。这个过滤策略非常聪明，本质上是利用多分辨率作为"因果推断"的工具来消除混淆因子。
+> **Hao 批注**: 这里的核心思想是——如果分辨率真的是决定正确性的因素，那么正确性应该随分辨率单调递增。如果低分对高分错，那说明正确与否跟分辨率无关（可能是幻觉等其他因素），这些样本不应该用于训练门控。这个过滤策略非常聪明，本质上是利用多分辨率作为"因果推断"的工具来消除混淆因子。
 
 #### 标签生成
 
@@ -103,7 +103,7 @@ Table I 的数据揭示了关键洞察：将输入从 2048 约束到 512 tokens�
 - Causal attention 保证此 token "看到"了所有之前的 visual + text 上下文
 - 通过线性投影头 LP_gate + sigmoid → 连续细化概率 Y_pred
 
-> **Eason 批注**: 用最后一个 query token 作为路由决策的依据是一个经典且合理的设计。在 causal attention 下，这个 token 的 hidden state 聚合了问题语义 + 视觉证据的完整上下文。相比用 [CLS] token 或平均 pooling，使用末 token 能更好地捕捉 query 的意图。
+> **Hao 批注**: 用最后一个 query token 作为路由决策的依据是一个经典且合理的设计。在 causal attention 下，这个 token 的 hidden state 聚合了问题语义 + 视觉证据的完整上下文。相比用 [CLS] token 或平均 pooling，使用末 token 能更好地捕捉 query 的意图。
 
 #### 训练与推理
 
@@ -120,4 +120,4 @@ $$\mathcal{L}_{gate} = \mathrm{BCE}(Y^{pred}, Y^{label}) \tag{3}$$
 - **Y_pred < τ_gate**: 粗粒度输入足够 → 旁路门控分支 → LLM 通过剩余冻结层继续标准前向
 - **Y_pred >= τ_gate**: 检测到关键视觉不足 → 暂停标准生成 → 触发 SD-RPN 模块
 
-> **Eason 批注**: τ_gate 是一个可以手动调节的"旋钮"，控制精度与速度的 trade-off。这也是 Fig.8 中 Pareto 曲线图的来源——不同的 τ_gate 对应曲线上不同的点。在实际部署中可以按需调整这个阈值。
+> **Hao 批注**: τ_gate 是一个可以手动调节的"旋钮"，控制精度与速度的 trade-off。这也是 Fig.8 中 Pareto 曲线图的来源——不同的 τ_gate 对应曲线上不同的点。在实际部署中可以按需调整这个阈值。

@@ -16,7 +16,7 @@ In this section, we introduce iGVLM, a decoupled instruction-guided vision encod
 
 An overview of the proposed framework is illustrated in Figure 2(a). Given an image–text pair, iGVLM conditions visual feature generation on the textual instruction through a dedicated conditioning pathway, while preserving the original perceptual capacity of the pretrained vision backbone. Specifically, the textual instruction is first encoded into a compact semantic representation, which serves as a global guidance signal for visual modulation. This instruction embedding conditions a pretrained vision encoder, enabling visual features to be selectively modulated according to task-specific linguistic cues.
 
-To explicitly separate representation preservation from instruction-conditioned adaptation, iGVLM adopts a dualbranch architecture. A static branch retains a frozen vision encoder to preserve task-agnostic visual priors, while a dynamic branch generates instruction-adapted visual features through lightweight modulation modules. The outputs of these two branches are fused to obtain a balanced visual representation that combines general-purpose perceptual semantics with task-specific adaptation. The fused visual features are subsequently projected into the language embedding space and provided, together with the instruction tokens, to a large language model (LLM) for multimodal reasoning and response generation.
+To explicitly separate representation preservation from instruction-conditioned adaptation, iGVLM adopts a dualbranch architecture. A static branch retains a frozen vision encoder to preserve task-agnostic visual priors, while a dynamic branch generates instruction-adapted visual features through lightweight modulation modules. The outputs of these two branches are fused to obtain a balanced visual representation that combines general-purpose perceptual semantics with task-specific adaptation. The fused visual features are subsequently projected into the language embedding space and provided, together with the instruction tokens, to a large language model (LLM) for multimodal reasoing and response generation.
 
 > 💡 **架构核心 — Figure 2(a) 数据流解析**:
 > ```
@@ -70,7 +70,7 @@ $$
 
 where Z is a learnable linear projection initialized to zero. This initialization ensures that the fused representation initially matches the pretrained visual features, allowing instruction-conditioned adaptation to be introduced gradually and safely during training.
 
-Following the LLaVA-1.5 framework, the fused visual features $y _ { I }$ are projected into the input embedding space of the LLM via a learnable linear transformation. Training proceeds in two stages: first, the instruction-guided vision encoder and projection layers are optimized while keeping the pretrained vision backbone and LLM frozen; second, all components are jointly optimized to enable coherent multimodal reasoning.
+Following the LLaVA-1.5 framework, the fused visual features $y _ { I }$ are projected into the input embedding space of the LLM via a learnable linear transformation. Training proceeds in two stages: first, the instruction-guided vision encoder and projection layers are optimized while keeping the pretrained vision backbone and LLM frozen; second, all components are jointly optimized to enable coherent multimodal reasoing.
 
 > 💡 **Zero-FFN 的关键设计意图 — 渐进式安全初始化**:
 > - 公式 (3) 中的 $\mathcal{Z}$ 被零初始化。这意味着在训练开始时，$y_I = 0 + y_0 = y_0$，模型的输出与原始 LLaVA-1.5 **完全一致**。
@@ -84,9 +84,9 @@ Following the LLaVA-1.5 framework, the fused visual features $y _ { I }$ are pro
 
 ### 3.4. MM4: A Diagnostic Benchmark for Question-Aware Visual Perception
 
-To complement existing multimodal benchmarks such as MMStar (Chen et al., 2024b), which primarily assess general-purpose multimodal reasoning, we introduce MM4, a controlled diagnostic benchmark designed to evaluate question-aware and multi-query visual perception. MM4 consists of 180 images and 720 manually verified question–answer pairs, with annotations curated by domain experts to ensure quality and consistency.
+To complement existing multimodal benchmarks such as MMStar (Chen et al., 2024b), which primarily assess general-purpose multimodal reasoing, we introduce MM4, a controlled diagnostic benchmark designed to evaluate question-aware and multi-query visual perception. MM4 consists of 180 images and 720 manually verified question–answer pairs, with annotations curated by domain experts to ensure quality and consistency.
 
-Each image in MM4 is associated with four semantically distinct questions, constructed according to three design principles: (i) robustness through answer reversal, (ii) multiperspective semantic diversity, and (iii) balanced answer distribution. This design enables MM4 to jointly assess intra-image consistency and inter-question diversity. To evaluate multi-query reasoning, MM4 adopts a hierarchical scoring protocol that credits a model only if it correctly answers at least n of the four questions per image, encouraging consistent instruction-aware reasoning rather than isolated accuracy.
+Each image in MM4 is associated with four semantically distinct questions, constructed according to three design principles: (i) robustness through answer reversal, (ii) multiperspective semantic diversity, and (iii) balanced answer distribution. This design enables MM4 to jointly assess intra-image consistency and inter-question diversity. To evaluate multi-query reasoing, MM4 adopts a hierarchical scoring protocol that credits a model only if it correctly answers at least n of the four questions per image, encouraging consistent instruction-aware reasoing rather than isolated accuracy.
 
 > 💡 **MM4 三大设计原则**:
 >

@@ -16,32 +16,32 @@
 
 ## 二、原始文本
 
-As shown in Figure 12, existing reasoning paradigms commonly suffer from insufficient visual grounding, unstable tool invocation, and high computational overhead. These limitations motivate a fundamental question: why can't MLLMs reason like humans do, dynamically deciding how to reason and which visual information to pay attention on during the thinking process? To this end, we organize the section around two research questions: (RQ1) Whether multimodal models require visual perception at every step of reasoning? (RQ2) If not, can their internal representations indicate when visual perception and reasoning is required?
+As shown in Figure 12, existing reasoing paradigms commonly suffer from insufficient visual grounding, unstable tool invocation, and high computational overhead. These limitations motivate a fundamental question: why can't MLLMs reaso like humans do, dynamically deciding how to reaso and which visual information to pay attention on during the thinking process? To this end, we organize the section around two research questions: (RQ1) Whether multimodal models require visual perception at every step of reasoing? (RQ2) If not, can their internal representations indicate when visual perception and reasoing is required?
 
 > 💡 **问题动机**: 本节的驱动问题——现有推理范式都有各自的短板，根源在于它们没有像人类一样动态地决定"何时推理"和"关注什么"。RQ1 和 RQ2 的设计非常巧妙，直指问题的本质。
 
-### 3.1 Dynamic Perception-Reasoning is Necessary
+### 3.1 Dynamic Perception-Reasoing is Necessary
 
 Definition 3.1 (Visual Dependency Score). Let the visual input be denoted as I, and its perturbed version as I~. Given a query q*, the model's dependence on visual information can be quantified by measuring the output discrepancy between the original and perturbed visual inputs. Specifically, for the i-th generated sequence Xi = {xi,1, xi,2, ..., xi,t}, the visual dependency score at position t is defined as:
 
 ![Equation: Visual Dependency Score](../images/210199b84239e2b17a6a2f712346c94ed352a91a07e847ee7ae961301d010f77.jpg)
 
-where pi_theta(*) denotes the token-level conditional probability distribution of the model. A larger Si,t indicates a stronger dependency of the generated token on visual information. Building upon the above metric, we analyze visual dependency on the Math-Vision benchmark using the Qwen2.5-VL-7B [42] at two levels. First, for individual reasoning chains, we compute token-level visual dependency scores, capturing how much each generated token relies on visual information, as illustrated in Figure 2(a). Second, as shown in Figure 2(b), we aggregate these
+where pi_theta(*) denotes the token-level conditional probability distribution of the model. A larger Si,t indicates a stronger dependency of the generated token on visual information. Building upon the above metric, we analyze visual dependency on the Math-Vision benchmark using the Qwen2.5-VL-7B [42] at two levels. First, for individual reasoing chains, we compute token-level visual dependency scores, capturing how much each generated token relies on visual information, as illustrated in Figure 2(a). Second, as shown in Figure 2(b), we aggregate these
 
 > 💡 **公式批读 — Visual Dependency Score**: 定义 I 为原始图像，I~ 为扰动版本。S = log pi(x|I) - log pi(x|I~)。直观理解：如果模型对该 token 的预测严重依赖视觉信息，那么扰动图像后预测概率会大幅下降，导致 S 很大。这是一个巧妙的无参量化方法——通过"消融"视觉信息来测量其贡献。
 
 ![Figure 2](../images/7f9abab2feb7d772dc4bb2d00ceb66838534ac87a159fd2562e3310834768535.jpg)
 
-*Figure 2: Analysis of visual dependency in reasoning. (A) Token-level distribution shows visual sensitivity is concentrated in a few tokens. (B) Chain-level distribution reveals large variation in visual reliance across reasoning trajectories.*
+*Figure 2: Analysis of visual dependency in reasoing. (A) Token-level distribution shows visual sensitivity is concentrated in a few tokens. (B) Chain-level distribution reveals large variation in visual reliance across reasoing trajectories.*
 
 > 💡 **Figure 2 批读**: (A) Token-level：在单条推理链中，视觉依赖高度集中在少数 token 上，大部分 token 对视觉信息不敏感。(B) Chain-level：不同推理链之间视觉依赖的分布差异很大。这直接回答了 RQ1——**推理并不是每一步都需要视觉感知，而是只有少数关键步骤需要**。
-> 注：这里不再看单个 token，而是看一整条 reasoning chain 的视觉依赖程度。作者把一条推理链中多个 token 的视觉依赖分数聚合起来，得到这条链整体的 Reasoning Chains Visual Dependency。柱状图表示不同视觉依赖程度的推理链数量；红色折线表示这些推理链对应的准确率。可以看到一个趋势：视觉依赖越高，准确率整体越高。右侧红框里虽然样本数量少，但准确率更高。
+> 注：这里不再看单个 token，而是看一整条 reasoing chain 的视觉依赖程度。作者把一条推理链中多个 token 的视觉依赖分数聚合起来，得到这条链整体的 Reasoing Chains Visual Dependency。柱状图表示不同视觉依赖程度的推理链数量；红色折线表示这些推理链对应的准确率。可以看到一个趋势：视觉依赖越高，准确率整体越高。右侧红框里虽然样本数量少，但准确率更高。
 
-scores across full reasoning trajectories to obtain chain-level visual dependency, which reveals how different reasoning paths vary in their reliance on visual perception. These results reveal that:
+scores across full reasoing trajectories to obtain chain-level visual dependency, which reveals how different reasoing paths vary in their reliance on visual perception. These results reveal that:
 
-Takeaway 1. The dependency on visual input across the reasoning process is highly uneven: only a small subset of tokens show strong sensitivity to visual features, while the majority operate independently of the image.
+Takeaway 1. The dependency on visual input across the reasoing process is highly uneven: only a small subset of tokens show strong sensitivity to visual features, while the majority operate independently of the image.
 
-Takeaway 2. Across reasoning chains sampled from the same model, visual dependency varies substantially.
+Takeaway 2. Across reasoing chains sampled from the same model, visual dependency varies substantially.
 Chains exhibiting stronger visual reliance consistently yield higher accuracy.
 
 > 💡 **机制拆解 — Takeaway 解读**:
@@ -49,21 +49,21 @@ Chains exhibiting stronger visual reliance consistently yield higher accuracy.
 > - Takeaway 2 → 设计启示：视觉依赖更强的链有更高准确率 → 增强视觉 grounding 应该能提升推理质量
 > - 这两个 Takeaway 共同指向：**动态、自适应的视觉注入是关键**
 
-### 3.2 Internal Confidence Affects Multimodal Reasoning
+### 3.2 Internal Confidence Affects Multimodal Reasoing
 
-Definition 3.2 (Confidence Gain). Let I denote the visual input, q the query, and Tt denotes the reasoning at step t. The Confidence Gain at step t is defined as the change in the probability of the ground-truth answer Ygt after adding step xt. A positive Gt suggests that step xt strengthens the confidence, whereas a negative value indicates the opposite.
+Definition 3.2 (Confidence Gain). Let I denote the visual input, q the query, and Tt denotes the reasoing at step t. The Confidence Gain at step t is defined as the change in the probability of the ground-truth answer Ygt after adding step xt. A positive Gt suggests that step xt strengthens the confidence, whereas a negative value indicates the opposite.
 
 ![Equation: Confidence Gain](../images/d839dcf4be8c1768b8d91ca486503145be316a40c384e5467c84eb49218c609e.jpg)
 
 > 💡 **公式批读 — Confidence Gain**: Gt = log pi(Y_gt | I, q, T<=t) - log pi(Y_gt | I, q, T<t)。衡量加入第 t 步推理后，模型对正确答案置信度的变化。正 Gt 表示该推理步骤"有用"，增强了模型得出正确答案的信心。这是后续 Confidence-Guided Reward 设计的核心预热。
 
-Observation 1: Higher Confidence Tends to Indicate Higher Reasoning Accuracy. We analyze reasoning chains generated by various reasoning models across four benchmarks, where all chains are partitioned into a correct set T+ and an incorrect set T- based on their answer correctness. We then compute the proportion of reasoning steps for each chain that obtain a positive confidence reward. As shown in Figure 3(a), reasoning chains in T+ exhibit a substantially higher proportion of positive confidence increments compared to those in T-, indicating that the reasoning leading to correct answers tends to exhibit more stable and higher confidence.
+Observation 1: Higher Confidence Tends to Indicate Higher Reasoing Accuracy. We analyze reasoing chains generated by various reasoing models across four benchmarks, where all chains are partitioned into a correct set T+ and an incorrect set T- based on their answer correctness. We then compute the proportion of reasoing steps for each chain that obtain a positive confidence reward. As shown in Figure 3(a), reasoing chains in T+ exhibit a substantially higher proportion of positive confidence increments compared to those in T-, indicating that the reasoing leading to correct answers tends to exhibit more stable and higher confidence.
 
-Observation 2: Confidence Reflects Reasoning Chains Quality. We investigate whether confidence dynamics reflect reasoning quality by evaluating reasoning chains within the correct set T+ using the evaluator GPT-4o [43]. Each chain is assessed for logical validity and factual consistency, and categorized into Faithful and Spurious groups. As shown in Figure 3(b), faithful reasoning chains exhibit a higher proportion of positive confidence increments, suggesting that confidence improvement not only correlates with answer accuracy but also reveals the intrinsic quality of the reasoning process.
+Observation 2: Confidence Reflects Reasoing Chains Quality. We investigate whether confidence dynamics reflect reasoing quality by evaluating reasoing chains within the correct set T+ using the evaluator GPT-4o [43]. Each chain is assessed for logical validity and factual consistency, and categorized into Faithful and Spurious groups. As shown in Figure 3(b), faithful reasoing chains exhibit a higher proportion of positive confidence increments, suggesting that confidence improvement not only correlates with answer accuracy but also reveals the intrinsic quality of the reasoing process.
 
 ![Figure 3](../images/8b03a5807361e0b58c300c41c7dbfc5cca41a235ad632a27017ee71c48207f0a.jpg)
 
-*Figure 3: Analysis of the relationship between confidence and reasoning quality. (A) Correct reasoning chains exhibit substantially higher frequencies of positive confidence gains than incorrect ones. (B) Faithful reasoning shows consistently stronger confidence improvement than spurious reasoning.*
+*Figure 3: Analysis of the relationship between confidence and reasoing quality. (A) Correct reasoing chains exhibit substantially higher frequencies of positive confidence gains than incorrect ones. (B) Faithful reasoing shows consistently stronger confidence improvement than spurious reasoing.*
 
 > 💡 **Figure 3 批读**: (A) 正确推理链中正面置信度增量的比例显著高于错误链 → 置信度可以作为推理正确性的有效代理信号。(B) 即使都是正确的推理链，"忠实推理 (Faithful)"比"虚假推理 (Spurious)"有更高的正面置信度比例 → 置信度不仅反映答案对错，还反映推理过程的内在质量。这为用置信度作为 reward 来优化推理过程提供了实证支持。
 
@@ -73,7 +73,7 @@ Observation 2: Confidence Reflects Reasoning Chains Quality. We investigate whet
 
 > 💡 **Figure 4 批读**: (A) 幻觉步骤 (hallucinated steps) 的置信度显著低于非幻觉步骤。(B) 幻觉步骤的图像相关性 (image relevancy) 也更弱。这个结果将**置信度、幻觉、视觉 grounding** 三者联系起来：低置信度 → 视觉 grounding 不足 → 幻觉。因此，通过提升置信度可以间接加强 visual grounding，从而减少幻觉。
 
-Observation 3: High Confidence Aligns with Stronger Visual Grounding. We further evaluate various reasoning models on the perception benchmark to analyze the relationship between confidence and visual grounding. Each step in the reasoning chain is categorized as hallucinated or non-hallucination based on whether it refers to an object actually present in the image. As shown in Figure 4, hallucinated steps exhibit lower confidence and weaker visual grounding, while non-hallucinatory steps maintain higher and more stable confidence with stronger visual alignment. The results indicate that confidence acts as an intrinsic signal of visual faithfulness, with higher confidence consistently associated with more reliable reasoning.
+Observation 3: High Confidence Aligns with Stronger Visual Grounding. We further evaluate various reasoing models on the perception benchmark to analyze the relationship between confidence and visual grounding. Each step in the reasoing chain is categorized as hallucinated or non-hallucination based on whether it refers to an object actually present in the image. As shown in Figure 4, hallucinated steps exhibit lower confidence and weaker visual grounding, while non-hallucinatory steps maintain higher and more stable confidence with stronger visual alignment. The results indicate that confidence acts as an intrinsic signal of visual faithfulness, with higher confidence consistently associated with more reliable reasoing.
 
 > 💡 **机制拆解 — 从 Motivation 到 Method 的逻辑链**:
 >

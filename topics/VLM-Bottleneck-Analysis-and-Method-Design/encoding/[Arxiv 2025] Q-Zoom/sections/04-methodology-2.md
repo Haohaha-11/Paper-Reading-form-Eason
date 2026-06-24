@@ -8,11 +8,11 @@
 
 当门控网络触发细化路径（Y_pred >= τ_gate）时，缩放整张图像会导致严重的二次计算瓶颈。SD-RPN 的任务是**在空间上隔离关键视觉证据**。
 
-> **Eason 批注**: 门控解决了"需不需要高分辨率"的问题，SD-RPN 解决的是"高分辨率放在哪里"的问题。两者配合完成从"要不要"到"放哪里"的完整决策链。
+> **Hao 批注**: 门控解决了"需不需要高分辨率"的问题，SD-RPN 解决的是"高分辨率放在哪里"的问题。两者配合完成从"要不要"到"放哪里"的完整决策链。
 
 ### Figure 3: SD-RPN 架构总览
 
-![Figure 3](../../../../encoding/[Arxiv%202025]%20Q-Zoom/images/55b940a48566040a8396a7a0e1e775d771b28334487c102a79742780546bfe19.jpg)
+![Figure 3](../images/55b940a48566040a8396a7a0e1e775d771b28334487c102a79742780546bfe19.jpg)
 
 **Fig. 3**: Overview of the conditional Region-of-Interest extraction pipeline. (上) 当动态门控模块触发时，SD-RPN 利用冻结 backbone 共享的中间特征高效生成密集空间 heatmap。(下) 训练阶段通过自蒸馏范式优化——利用 denoised cross-modal attention maps 作为监督伪标签。
 
@@ -45,7 +45,7 @@ $$K_v = LP_k(\mathrm{Norm}(H_v^{B+R-1})) \tag{4}$$
 
 $$\hat{M}_{RoI} = Q_{RoI} K_v^\top \tag{5}$$
 
-> **Eason 批注**: 这个设计非常优雅。核心思路是将 query token 作为"查询"，将 visual tokens 作为"键"，计算它们的注意力分数作为 RoI heatmap。这本质上是在问"哪些视觉位置与当前问题最相关？"——不需要引入任何新的随机初始化参数，完全复用了注意力层的预训练投影矩阵。
+> **Hao 批注**: 这个设计非常优雅。核心思路是将 query token 作为"查询"，将 visual tokens 作为"键"，计算它们的注意力分数作为 RoI heatmap。这本质上是在问"哪些视觉位置与当前问题最相关？"——不需要引入任何新的随机初始化参数，完全复用了注意力层的预训练投影矩阵。
 
 **步骤 4**: 热力图后处理：
 
@@ -59,7 +59,7 @@ $$b_{roi} = \mathrm{bbox}(B), \quad H_{v_{roi}}^0 = \mathcal{P}(\mathcal{E}_v(x_
 
 #### KV-Cache 前缀复用优化
 
-> **Eason 批注**: 这是 Q-Zoom 高效率的关键工程优化。因为高分辨率 RoI token 插入在文本 query 之前，系统提示和粗粒度视觉特征的 prefix 上下文到第 B 层为止在数学上保持不变。直接检索缓存的 H_sys^B 和 H_v^B，仅对新 RoI 和位移后的 user token 进行前 B 层前向：
+> **Hao 批注**: 这是 Q-Zoom 高效率的关键工程优化。因为高分辨率 RoI token 插入在文本 query 之前，系统提示和粗粒度视觉特征的 prefix 上下文到第 B 层为止在数学上保持不变。直接检索缓存的 H_sys^B 和 H_v^B，仅对新 RoI 和位移后的 user token 进行前 B 层前向：
 
 $$[H_{v_{roi}}^B, H_{user}^B] = \mathcal{L}_{1:B}([H_{v_{roi}}^0, H_{user}^0]) \tag{8}$$
 
@@ -89,7 +89,7 @@ $$M_{RoI}^l = \frac{1}{N_t} \sum_{i=1}^{N_t} A_i^l, \quad \text{where} \quad A^l
 
 **Figure 4: 伪标签生成 Pipeline**
 
-![Figure 4](../../../../encoding/[Arxiv%202025]%20Q-Zoom/images/7e0b99f9ad8e1e31576c3ad513d43481b8ceec5ef654a750a99d1646b51c2b07.jpg)
+![Figure 4](../images/7e0b99f9ad8e1e31576c3ad513d43481b8ceec5ef654a750a99d1646b51c2b07.jpg)
 
 **Fig. 4**: Pseudo-label generation pipeline. 通过移除 sink token 去噪原始 attention map，再进行三态标签分配——隔离高置信前景 (FG) 和背景 (BG) token，忽略模糊中间区域。
 
@@ -103,11 +103,11 @@ $$(M_{RoI}')_j = \begin{cases} 0, & \text{if } \|(H_v)_j\|_2 > \tau_{norm} \\ (M
 
 **Figure 5: Attention Magnitude vs Localization Accuracy**
 
-![Figure 5](../../../../encoding/[Arxiv%202025]%20Q-Zoom/images/f15f2ee16b40bd8d8aa3d1d84d806b6785156c33a19cbaf69d12ede0c870b67d.jpg)
+![Figure 5](../images/f15f2ee16b40bd8d8aa3d1d84d806b6785156c33a19cbaf69d12ede0c870b67d.jpg)
 
 **Fig. 5**: 在 TextVQA 上，具有极端相对 attention score (a_j / a_max) 的 token 与 ground-truth 前/背景可靠相关，但大量 token 落入高度模糊的中间范围。
 
-> **Eason 批注**: Fig.5 是理解三态标签设计的关键。横轴是相对 attention score，纵轴可能展示了前景/背景的分类准确率。核心发现：两端（极低和极高 attention）是干净的信号，中间是一片"灰色地带"——这些 token 既可能属于前景也可能属于背景，强行分类只会引入噪声。
+> **Hao 批注**: Fig.5 是理解三态标签设计的关键。横轴是相对 attention score，纵轴可能展示了前景/背景的分类准确率。核心发现：两端（极低和极高 attention）是干净的信号，中间是一片"灰色地带"——这些 token 既可能属于前景也可能属于背景，强行分类只会引入噪声。
 
 **噪声源二：前景-背景边缘模糊**
 
@@ -123,7 +123,7 @@ $$(M_{RoI}')_j = \begin{cases} 0, & \text{if } \|(H_v)_j\|_2 > \tau_{norm} \\ (M
 
 $$(\bar{M}_{RoI})_j = \begin{cases} 1, & \text{if token } j \in S_{fg} \\ 0, & \text{if token } j \in S_{bg} \\ -1, & \text{otherwise (ignored)} \end{cases} \tag{12}$$
 
-> **Eason 批注**: 三态标签设计是本方法最精巧的部分之一。它承认了 attention-based 伪标签的内在模糊性，并通过 ignore 机制避免了在不确定区域上施加 hard supervision。这在标签噪声管理上是一个成熟且有效的策略。
+> **Hao 批注**: 三态标签设计是本方法最精巧的部分之一。它承认了 attention-based 伪标签的内在模糊性，并通过 ignore 机制避免了在不确定区域上施加 hard supervision。这在标签噪声管理上是一个成熟且有效的策略。
 
 #### 多轮对话处理
 
@@ -150,11 +150,11 @@ $$\mathcal{L}_{RPN} = \mathrm{BCE}(\hat{M}_{RoI}, \bar{M}_{RoI})$$
 
 虽然高分辨率 RoI 有效隔离了细粒度视觉细节，但裁剪区域脱离了其更广泛的空间上下文。对于配备 MRoPE 的 MLLM，将粗粒度源图像和局部 RoI 作为两个独立视觉序列处理会**导致空间错位**，使模型无法将 RoI 映射回其原始物理位置。
 
-> **Eason 批注**: 想象一个场景——问题是"左边桌子上红色的杯子是什么牌子？"。SD-RPN 精准定位了杯子区域，裁剪后重编码能清晰看到品牌文字。但裁剪丢失了"左边桌子"的空间参照，模型可能答出品牌但无法正确描述位置关系。这就是空间失准的典型表现。
+> **Hao 批注**: 想象一个场景——问题是"左边桌子上红色的杯子是什么牌子？"。SD-RPN 精准定位了杯子区域，裁剪后重编码能清晰看到品牌文字。但裁剪丢失了"左边桌子"的空间参照，模型可能答出品牌但无法正确描述位置关系。这就是空间失准的典型表现。
 
 ### Figure 6: 时空对齐与 Post-SFT 流程
 
-![Figure 6](../../../../encoding/[Arxiv%202025]%20Q-Zoom/images/34c50d92653f42328662bfbaff1b28e4334c0cbbd2002d734b80d7bd69ddf37f.jpg)
+![Figure 6](../images/34c50d92653f42328662bfbaff1b28e4334c0cbbd2002d734b80d7bd69ddf37f.jpg)
 
 **Fig. 6**: Overview of the Spatio-Temporal Alignment and Targeted Post-SFT pipeline.
 
@@ -184,7 +184,7 @@ $$p_{roi}^{(i,j)} = \mathrm{Embed}\left(t_{src} + \delta, \ y_1 + \frac{i}{H'-1}
 
 其中 i ∈ {0, ..., H'-1}, j ∈ {0, ..., W'-1}。**保证密集 RoI token 保持在其原始全局坐标中的显式锚定**。
 
-> **Eason 批注**: 这个设计非常精妙。Temporal Shift 避免了位置 ID 冲突（相同空间位置但不同来源的 token 获得不同的 t 坐标），Spatial Interpolation 保持了空间连续性（RoI token 知道自己在全局图像中的位置）。两个操作合在一起，实现了"看得清（高分辨率）且知道在哪（全局定位）"。
+> **Hao 批注**: 这个设计非常精妙。Temporal Shift 避免了位置 ID 冲突（相同空间位置但不同来源的 token 获得不同的 t 坐标），Spatial Interpolation 保持了空间连续性（RoI token 知道自己在全局图像中的位置）。两个操作合在一起，实现了"看得清（高分辨率）且知道在哪（全局定位）"。
 
 ---
 
@@ -206,7 +206,7 @@ $$p_{roi}^{(i,j)} = \mathrm{Embed}\left(t_{src} + \delta, \ y_1 + \frac{i}{H'-1}
    - 仅更新 **LLM backbone**，使用挖掘的 ~7K 硬样本
    - 教导 LLM 如何动态平衡和集成高分辨率 RoI 特征与粗粒度全局上下文
 
-> **Eason 批注**: 这里有三个关键设计选择：
+> **Hao 批注**: 这里有三个关键设计选择：
 > 1. **只微调 LLM backbone**——视觉编码器和投影器保持冻结，避免改变视觉表示空间
 > 2. **只选硬样本**——不是所有 RoI 增强的样本都需要微调，只有那些"加了 RoI 反而答错"的才需要修正
 > 3. **LLM-as-a-Judge**——自动化筛选，不需要人工标注。这个策略的数据效率极高（仅 7K 样本），且不会引入灾难性遗忘

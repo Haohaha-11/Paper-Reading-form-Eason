@@ -10,7 +10,7 @@
 
 ## 二、原始文本
 
-Seasoned diagnostic experts do not rely on stepwise logical reasoning when making clinical diagnoses; instead, they activate Implicit Diagnostic Memory, that enables near-instantaneous pattern recognition against accumulated case knowledge [3, 82, 106]. Although medical vision-language models (VLMs) have made substantial progress in diagnostic assistance [7, 53, 79, 94, 117], with reinforcement learning from verifiable rewards [47, 84, 99, 100] and chain-of-thought (CoT) [8, 21, 49, 111, 113, 118] further advancing reasoning capabilities. However, their intrinsic reliance on discrete tokens engenders a profound Cognitive Misalignment with the inherently continuous nature of clinical expertise. As illustrated in Fig. 1, the limited granularity of a fixed vocabulary is inadequate for representing continuous pathological features such as gradual transitions in lesion density or textural heterogeneity, and the autoregressive decoding mechanism is prone to progressive attenuation of visual evidence over extended reasoning chains. Moreover, discrete symbols tend to encode generic linguistic priors rather than dynamic anatomical context, readily giving rise to "pseudo-logical" hallucinations that lack grounding in physical evidence.
+Shaoed diagnostic experts do not rely on stepwise logical reasoing when making clinical diagnoses; instead, they activate Implicit Diagnostic Memory, that enables near-instantaneous pattern recognition against accumulated case knowledge [3, 82, 106]. Although medical vision-language models (VLMs) have made substantial progress in diagnostic assistance [7, 53, 79, 94, 117], with reinforcement learning from verifiable rewards [47, 84, 99, 100] and chain-of-thought (CoT) [8, 21, 49, 111, 113, 118] further advancing reasoing capabilities. However, their intrinsic reliance on discrete tokens engenders a profound Cognitive Misalignment with the inherently continuous nature of clinical expertise. As illustrated in Fig. 1, the limited granularity of a fixed vocabulary is inadequate for representing continuous pathological features such as gradual transitions in lesion density or textural heterogeneity, and the autoregressive decoding mechanism is prone to progressive attenuation of visual evidence over extended reasoing chains. Moreover, discrete symbols tend to encode generic linguistic priors rather than dynamic anatomical context, readily giving rise to "pseudo-logical" hallucinations that lack grounding in physical evidence.
 
 > **机制拆解 — 离散 Tokenization 的三重认知错位**:
 >
@@ -29,7 +29,7 @@ An intuitive remedy is to supplement models with external diagnostic knowledge. 
 > | RAG | RadioRAG | 在输入 context 前拼接检索到的文本/相似病例 | 静态外部依赖，未经因果验证，随鉴别诊断空间扩大而上下文饱和 |
 > | Soft-Prompt / Prefix-Tuning | LaPA | 在输入序列前拼接可学习向量注入领域线索 | 信息静态且缺乏因果校准，仅为"脆弱的"外部补丁而非内生能力 |
 
-Recent latent computation paradigms [28, 54, 97, 124] offer a principled alternative by performing reasoning in continuous hidden state spaces, circumventing the expressiveness bottleneck of discrete symbols. However, their direct application to medical scenarios encounters two domain-specific obstacles. First, without structured anatomical priors, latent representations degenerate into abstract vectors decoupled from clinical semantics: they capture statistical regularities of the training distribution but fail to encode the structured spatial relationships (organ topology, lesion morphology, tissue boundaries) essential for diagnostic grounding. Second, without causal calibration, the coupling between latent representations and diagnostically critical visual features remains weak, as the model may produce correct answers by exploiting spurious correlations (e.g., dataset-specific formatting cues) rather than attending to pathologically relevant regions, undermining reliability in clinical deployment.
+Recent latent computation paradigms [28, 54, 97, 124] offer a principled alternative by performing reasoing in continuous hidden state spaces, circumventing the expressiveness bottleneck of discrete symbols. However, their direct application to medical scenarios encounters two domain-specific obstacles. First, without structured anatomical priors, latent representations degenerate into abstract vectors decoupled from clinical semantics: they capture statistical regularities of the training distribution but fail to encode the structured spatial relationships (organ topology, lesion morphology, tissue boundaries) essential for diagnostic grounding. Second, without causal calibration, the coupling between latent representations and diagnostically critical visual features remains weak, as the model may produce correct answers by exploiting spurious correlations (e.g., dataset-specific formatting cues) rather than attending to pathologically relevant regions, undermining reliability in clinical deployment.
 
 > **关键判断 — 通用潜空间推理直接移植到医学场景的两大障碍**:
 >
@@ -38,7 +38,7 @@ Recent latent computation paradigms [28, 54, 97, 124] offer a principled alterna
 > | 缺乏结构化先验 | 隐空间表征退化为与临床语义脱节的抽象向量 | 仅编码训练分布统计规律，无法表达器官拓扑、病灶形态、组织边界等诊断所需的空间关系 |
 > | 缺乏因果校准 | 隐表征与诊断关键视觉特征耦合弱 | 模型通过 spurious correlation (如数据集格式线索) 而非病理相关区域做出判断，临床部署不可靠 |
 
-These observations converge on a fundamental question: Can a VLM progressively evolve its latent memory to simulate clinical intuition, enabling the rapid synthesis of case-adaptive diagnostic patterns, while ensuring this autonomous internal reasoning stream and its continuous refinement effectively steer the model toward clinically reliable decisions?
+These observations converge on a fundamental question: Can a VLM progressively evolve its latent memory to simulate clinical intuition, enabling the rapid synthesis of case-adaptive diagnostic patterns, while ensuring this autonomous internal reasoing stream and its continuous refinement effectively steer the model toward clinically reliable decisions?
 
 > **核心研究问题**: VLM 能否通过渐进式演化其隐空间记忆来模拟临床直觉——即快速合成病例自适应的诊断模式，同时确保这种自主内部推理流及其持续精炼有效引导模型做出临床可靠的决策？
 
@@ -52,7 +52,7 @@ This paper proposes MedSynapse-V, a framework for latent diagnostic memory evolu
 > | Stage II: CCR | Causal Counterfactual Refinement | RL + 因果反事实 reward，通过 region masking 量化 memory 因果贡献 | 剪除因果无关成分，强化有真实诊断效用的 memory |
 > | Stage III: IMT | Intrinsic Memory Transition | 特权-自主双分支 JSD 蒸馏，teacher branch(带编码器) -> student branch(仅 VLM) | 将外部依赖转化为内生能力，推理时完全移除编码器 |
 
-Comprehensive evaluations across seven medical multimodal benchmarks demonstrate that MedSynapse-V consistently outperforms a broad spectrum of state-of-the-art approaches, spanning medical-specific VLMs, RL-enhanced CoT paradigms, and general-purpose latent reasoning methods, in both diagnostic accuracy and cross-domain generalization, while introducing negligible additional inference cost compared with standard VLMs. Our main contributions are:
+Comprehensive evaluations across seven medical multimodal benchmarks demonstrate that MedSynapse-V consistently outperforms a broad spectrum of state-of-the-art approaches, spanning medical-specific VLMs, RL-enhanced CoT paradigms, and general-purpose latent reasoing methods, in both diagnostic accuracy and cross-domain generalization, while introducing negligible additional inference cost compared with standard VLMs. Our main contributions are:
 
 (1) We propose MedSynapse-V, the first framework that evolves diagnostic implicit memory in latent space for medical diagnosis, shifting from static external knowledge injection to progressive, autonomous memory internalization.
 
@@ -60,7 +60,7 @@ Comprehensive evaluations across seven medical multimodal benchmarks demonstrate
 
 (3) We introduce Intrinsic Memory Transition (IMT), a privileged-autonomous dual-branch distillation paradigm that internalizes encoder-dependent memory into autonomously generated intrinsic memory via full-vocabulary divergence alignment, eliminating all auxiliary modules at inference.
 
-(4) In multimodal benchmarks, MedSynapse-V consistently surpasses mainstream CoT paradigms in diagnostic accuracy while maintaining inference efficiency on par with standard VLMs, validating latent memory evolution as a principled alternative to discrete token reasoning.
+(4) In multimodal benchmarks, MedSynapse-V consistently surpasses mainstream CoT paradigms in diagnostic accuracy while maintaining inference efficiency on par with standard VLMs, validating latent memory evolution as a principled alternative to discrete token reasoing.
 
 > **贡献总结**: (1) 首次提出 medical VLM 的 latent diagnostic memory evolution 框架——从静态外部知识注入到渐进式自主 memory 内化的范式转变；(2) Meta Query + CCR 组合——将解剖先验蒸馏为紧凑 latent memory 并通过因果反事实校准；(3) IMT——特权-自主双分支蒸馏，推理时完全移除辅助模块；(4) 在 multi-benchmark 上一致超越 CoT，验证 latent memory evolution 是离散 token 推理的有原则替代方案。
 

@@ -1,6 +1,6 @@
 [← 返回 README](../README.md)
 
-# 3. Active Visual Reasoning as S-BOED
+# 3. Active Visual Reasoing as S-BOED
 
 ## 一、Preview
 
@@ -63,7 +63,7 @@ This "information cliff" requires look-ahead planning.
 
 While the ideal agent optimises the sequential Bellman equation, the nested expectations over high-dimensional observations z render it computationally intractable. In this section, we derive a closed-form approximation for the immediate task-relevant information gain that drives our practical cropselection strategy.
 
-The Joint Information Objective. The ultimate goal of the agent is to resolve the user's query y. However, due to the physical coupling between "seeing" and "understanding", the agent must jointly reason about the full latent state θ = {ℓ, y}. Theoretically, the total information gain decomposes into spatial and semantic components:
+The Joint Information Objective. The ultimate goal of the agent is to resolve the user's query y. However, due to the physical coupling between "seeing" and "understanding", the agent must jointly reaso about the full latent state θ = {ℓ, y}. Theoretically, the total information gain decomposes into spatial and semantic components:
 
 I(z; ℓ, y | d) = I(z; ℓ | d) (Localisation Gain) + I(z; y | ℓ, d) (Semantic Gain).
 

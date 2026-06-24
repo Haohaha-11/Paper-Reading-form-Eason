@@ -43,7 +43,7 @@ Perceval 提出以感知为中心的过程奖励模型 (Perception-centric PRM)�
 | Backbone | Qwen2.5-VL 3B / 7B |
 | PRM 版本 | Perceval 3B / 7B |
 | Benchmark 数量 | 8 (V\*, MME-RealWorld-Lite, BLINK, MMStar, RealWorldQA, MathVista, MATH-Vision, ChartQA) |
-| Baselines | 12 (VLM-R1, LMM-R1, R1-VL, Perception-R1, Jigsaw-R1, DeepEyes, PixelReasoner, Vision-R1, VL-Rethinker, VLAA-Thinker, OpenVLThinker, MM-Eureka) |
+| Baselines | 12 (VLM-R1, LMM-R1, R1-VL, Perception-R1, Jigsaw-R1, DeepEyes, PixelReasoer, Vision-R1, VL-Rethinker, VLAA-Thinker, OpenVLThinker, MM-Eureka) |
 | 3B 平均提升 vs GRPO | Visual Search ~+4%, Math&Chart ~+3%, Perception-intensive ~+1% |
 | 最佳 α (penalty strength) | 0.1 |
 | PRM 训练流水线 | 4 阶段：Query Selection → Rollout Generation → Auto Annotation → SFT |
@@ -119,7 +119,7 @@ Perceval 提出以感知为中心的过程奖励模型 (Perception-centric PRM)�
 | 3 | α=0.1 为什么是最优的？ | Section 4.3, Table 3 | α 太小 (0.03) 惩罚力度不够，对幻觉的纠正效果有限。α 太大 (0.3) 则"一棍子打死"整个标记的 span（包括句法必要但非幻觉的功能词），引入训练噪声。0.1 在两者之间取得平衡。 |
 | 4 | 为什么仅对感知数据做 PRM 干预，复杂推理也能受益？ | Section 4.2, Table 1 | Math & Chart 类任务（如 MathVision、ChartQA）本质上依赖于精确的细粒度感知能力（如定位图表上的数据点、读取数值）。增强模型的底层感知精度，这一提升自然泛化到依赖感知的复杂推理任务。 |
 | 5 | Truncate 和 Truncate-Thinking 哪个更好？ | Section 4.2, Table 2 | Truncate 整体更稳定，尤其在 k 较大时。作者认为 Truncate-Thinking 中的反思提示与模型训练分布不完全对齐，导致指令跟随质量下降。Truncate 让模型基于自己的上下文重新生成，更接近原始分布。 |
-| 6 | 与 DeepEyes/PixelReasoner 的关系是什么？ | Section 4.2 讨论部分 | DeepEyes 和 PixelReasoner 依赖外部工具操作（zoom/crop）来辅助 object grounding。Perceval 的目标是增强模型的内在感知能力，在不依赖外部工具的情况下达到接近甚至超越的效果。 |
+| 6 | 与 DeepEyes/PixelReasoer 的关系是什么？ | Section 4.2 讨论部分 | DeepEyes 和 PixelReasoer 依赖外部工具操作（zoom/crop）来辅助 object grounding。Perceval 的目标是增强模型的内在感知能力，在不依赖外部工具的情况下达到接近甚至超越的效果。 |
 | 7 | Perceval 的训练数据从哪里来？ | Section 3.1 | 四阶段流水线：(1) 从 visual search 数据集 + 少量通用领域数据选 queries；(2) 用开源 VLM rollout 产生含幻觉的回复；(3) 用 Gemini-2.5-Pro 等强模型做 hallucination-focused 标注；(4) 标准 SFT 微调。 |
 | 8 | GRPO vs 本方法的最本质差异是什么？ | Section 3.2, Eq.3 | GRPO: 每个 token 共享同一个序列级 advantage Â_i。本方法: hallucinated token 获得衰减后的 advantage Â'_i,t = Â_i - α · |Â_i|，正确 token 保持原始 advantage。本质上是将"一人犯错全队受罚"改为"谁犯错谁受罚"。 |
 
@@ -134,7 +134,7 @@ Perceval 提出以感知为中心的过程奖励模型 (Perception-centric PRM)�
 - DeepSeek-R1 [13], DeepSeekMath [33], Kimi K2 [35]
 
 **VLM 训练 / RL for VLM**:
-- VLM-R1 [34], LMM-R1 [30], R1-VL [47], Perception-R1 [45], Jigsaw-R1 [41], DeepEyes [56], PixelReasoner [37], Vision-R1 [14], VL-Rethinker [36], VLAA-Thinker [5], OpenVLThinker [8], MM-Eureka [28]
+- VLM-R1 [34], LMM-R1 [30], R1-VL [47], Perception-R1 [45], Jigsaw-R1 [41], DeepEyes [56], PixelReasoer [37], Vision-R1 [14], VL-Rethinker [36], VLAA-Thinker [5], OpenVLThinker [8], MM-Eureka [28]
 
 **Process Reward Models (LLM 侧)**:
 - Math-Shepherd [39], Let's Verify Step by Step [21], Lessons of Developing PRMs [54]

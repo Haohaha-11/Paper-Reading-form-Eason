@@ -1,10 +1,10 @@
-# Imagine Before You Predict: Interleaved Latent Visual Reasoning for Video Event Prediction (FUTURE-L1)
+# Imagine Before You Predict: Interleaved Latent Visual Reasoing for Video Event Prediction (FUTURE-L1)
 
 ## Paper Metadata
 
 | 项目 | 内容 |
 |------|------|
-| **Title** | Imagine Before You Predict: Interleaved Latent Visual Reasoning for Video Event Prediction |
+| **Title** | Imagine Before You Predict: Interleaved Latent Visual Reasoing for Video Event Prediction |
 | **Authors** | Tianxiang Jiang\*, Linquan Wu\*, Sheng Xia, Songze Li, Ziang Yan, Haoyu Yang, Yu Qiao, Yi Wang\* |
 | **Affiliations** | USTC, Shanghai AI Laboratory, CityU HK, Nanjing University, Fudan University, Zhejiang University, UESTC |
 | **Venue** | arXiv 2026 |
@@ -13,7 +13,7 @@
 
 ## One-Sentence Summary
 
-FUTURE-L1 提出了一种**交错式潜空间视觉推理 (Interleaved Latent Visual Reasoning)** 框架，在自回归解码过程中交替生成文本 token 和连续潜视觉 span，并通过 visual-gain 数据筛选 (FUTURE-L1-50K) 和潜空间感知 RL (LA-DAPO) 进行两阶段训练，在 FutureBench 和 TwiFF-Bench 上大幅刷新 SOTA——核心思想是：**对未来动态视觉结构进行推理时，不应将每一个中间步骤都转换为文本，而应在潜空间中保留连续的动态视觉语义**。
+FUTURE-L1 提出了一种**交错式潜空间视觉推理 (Interleaved Latent Visual Reasoing)** 框架，在自回归解码过程中交替生成文本 token 和连续潜视觉 span，并通过 visual-gain 数据筛选 (FUTURE-L1-50K) 和潜空间感知 RL (LA-DAPO) 进行两阶段训练，在 FutureBench 和 TwiFF-Bench 上大幅刷新 SOTA——核心思想是：**对未来动态视觉结构进行推理时，不应将每一个中间步骤都转换为文本，而应在潜空间中保留连续的动态视觉语义**。
 
 ## Core Contributions
 
@@ -68,9 +68,9 @@ FUTURE-L1 提出了一种**交错式潜空间视觉推理 (Interleaved Latent Vi
 │  [Stage 2: SFT]                                                  │
 │    Input: Observed Video V + Question q                          │
 │    Training Format:                                              │
-│      <reason>[Text CoT 0]</reason>                               │
+│      <reaso>[Text CoT 0]</reaso>                               │
 │      <|latent_start|>[Latent States 1]<|latent_end|>             │
-│      <reason>[Text CoT 1]</reason> ...                           │
+│      <reaso>[Text CoT 1]</reaso> ...                           │
 │      <answer>[Prediction]</answer>                                │
 │    Loss: L_CE (text tokens) + λ * L_Latent (MSE to future-frame │
 │          visual embeddings)                                       │
@@ -146,13 +146,13 @@ FUTURE-L1 提出了一种**交错式潜空间视觉推理 (Interleaved Latent Vi
 - MVBench [Li et al., 2024], Video-MME [Fu et al., 2024], Video-MME-v2 [Fu et al., 2026], TempCompass [Liu et al., 2024], ExpVid [Xu et al., 2025], River [Shi et al., 2026]
 - InternVideo2 [Wang et al., 2024], Flexible Video Models [Wang et al., 2025a]
 
-**Latent Space Reasoning (LLM)**:
+**Latent Space Reasoing (LLM)**:
 - COCONUT [Hao et al., 2024], CODI [Shen et al., 2025], SIM-CoT [Wei et al., 2025], The Latent Space Survey [Yu et al., 2026b]
 
-**Latent Visual Reasoning (MLLM)**:
+**Latent Visual Reasoing (MLLM)**:
 - LVR [Li et al., 2025a], Mirage/Machine Mental Imagery [Yang et al., 2025b], Monet [Wang et al., 2025c], SkiLa [Tong et al., 2025], SwimBird [Tong et al., 2026], LaViT [Wu et al., 2026], OneVL [Lu et al., 2026a]
 - Chain-of-Visual-Thought [Qin et al., 2025], Multimodal CoCT [Pham and Ngo, 2025]
-- Hybrid Latent Reasoning with DePO [Cheng et al., 2026]
+- Hybrid Latent Reasoing with DePO [Cheng et al., 2026]
 
 **Video Event Prediction (VEP)**:
 - NEP [Wang et al., 2025b], Video-CoE [Su et al., 2026], TwiFF (Think with Future Frames) [Liu et al., 2026a]
@@ -161,7 +161,7 @@ FUTURE-L1 提出了一种**交错式潜空间视觉推理 (Interleaved Latent Vi
 - Future Frame Prediction [Ranzato et al., 2014; Vondrick et al., 2016b]
 - Next-Event Prediction [Lei et al., 2020; Jiang et al., 2025; Liang et al., 2025; Su et al., 2025]
 
-**Video Reasoning (Text-CoT)**:
+**Video Reasoing (Text-CoT)**:
 - Video-RFT [Wang et al., 2026], Video-R1 [Feng et al., 2026], VideoAuto-R1 [Liu et al., 2026b], Video-o3 [Zeng et al., 2026], VideoChat-R1 [Li et al., 2025d]
 - VideoEspresso [Han et al., 2025], DeepEyes [Zheng et al., 2025b]
 - Thinking with Visual Primitives [Lu et al., 2026b]

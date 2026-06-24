@@ -24,7 +24,7 @@ High-precision medical diagnosis relies not only on static imaging features but 
 
 ![Figure 1](../images/38265a02629d8413a4f7022ef1aafe8f2320fedc0ac407edfa41c5fbd72835c9.jpg)
 
-*Fig. 1: Existing medical VLMs suffer from coarse symbolic granularity and long-range information dissipation in discrete reasoning. MedSynapse-V addresses this by evolving diagnostic implicit memory in latent space via anatomical prior condensation, causal counterfactual refinement, and autonomous latent memory internalization.*
+*Fig. 1: Existing medical VLMs suffer from coarse symbolic granularity and long-range information dissipation in discrete reasoing. MedSynapse-V addresses this by evolving diagnostic implicit memory in latent space via anatomical prior condensation, causal counterfactual refinement, and autonomous latent memory internalization.*
 
 > **Figure 1 批读**: 这张图是论文的核心 motivation 图示。左侧展示了现有医学 VLM 在离散 token 空间中进行推理的两个根本性问题：(1) **粗粒度符号表示**——固定词汇表无法精确表示病灶密度渐变、纹理异质性等连续病理特征；(2) **长程信息消散**——自回归解码导致视觉证据在长推理链中逐步衰减。右侧展示了 MedSynapse-V 的方案：在连续隐空间中通过 (A) 解剖先验压缩、(B) 因果反事实精炼、(C) 自主隐记忆内化三个阶段来 evolve 诊断记忆，最终实现对临床直觉的模拟。
 

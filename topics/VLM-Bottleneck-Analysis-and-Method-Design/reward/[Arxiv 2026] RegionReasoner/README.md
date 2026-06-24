@@ -1,19 +1,19 @@
-# RegionReasoner: Region-Grounded Multi-Round Visual Reasoning
+# RegionReasoer: Region-Grounded Multi-Round Visual Reasoing
 
 ## Paper Metadata
 
 | 项目 | 内容 |
 |------|------|
-| **Title** | RegionReasoner: Region-Grounded Multi-Round Visual Reasoning |
+| **Title** | RegionReasoer: Region-Grounded Multi-Round Visual Reasoing |
 | **Authors** | Wenfang Sun\*, Hao Chen\*, Yingjun Du, Yefeng Zheng†, Cees G. M. Snoek |
 | **Affiliations** | University of Amsterdam, Anhui University, Westlake University |
 | **Venue** | arXiv 2026 |
-| **Project Page** | RegionReasoner (code available) |
+| **Project Page** | RegionReasoer (code available) |
 | **\*** | Equal contribution. † Corresponding author. |
 
 ## One-Sentence Summary
 
-RegionReasoner 提出了一种面向多轮视觉推理的强化学习框架，通过强制每轮推理显式引用参考边界框（reference-grounded thinking）和全局-局部语义一致性奖励（global--local consistency reward），在检测和分割任务上显著提升多轮推理的准确性、空间定位精度和跨轮语义连贯性，并同步发布了多轮基准 RegionDial-Bench。
+RegionReasoer 提出了一种面向多轮视觉推理的强化学习框架，通过强制每轮推理显式引用参考边界框（reference-grounded thinking）和全局-局部语义一致性奖励（global--local consistency reward），在检测和分割任务上显著提升多轮推理的准确性、空间定位精度和跨轮语义连贯性，并同步发布了多轮基准 RegionDial-Bench。
 
 ## Core Contributions
 
@@ -30,8 +30,8 @@ RegionReasoner 提出了一种面向多轮视觉推理的强化学习框架，�
 | 章节 | 文件 | 核心内容 |
 |------|------|---------|
 | Abstract | [00-abstract.md](sections/00-abstract.md) | 论文概述、核心方法图示 (Figure 1) |
-| 1. Introduction | [01-introduction.md](sections/01-introduction.md) | 研究动机、VisionReasoner/SegLLM 的局限、三点贡献 |
-| 2. Related Work | [02-related-work.md](sections/02-related-work.md) | Post-training、RL for multimodal reasoning、Multi-round visual understanding |
+| 1. Introduction | [01-introduction.md](sections/01-introduction.md) | 研究动机、VisionReasoer/SegLLM 的局限、三点贡献 |
+| 2. Related Work | [02-related-work.md](sections/02-related-work.md) | Post-training、RL for multimodal reasoing、Multi-round visual understanding |
 | 3. Problem Formulation | [03-problem-formulation.md](sections/03-problem-formulation.md) | 多轮区域定位问题定义、RegionDial-Bench 构建 |
 | 4. Methodology | [04-methodology.md](sections/04-methodology.md) | Pipeline、模型架构、Reward 设计、GRPO 训练 |
 | 5. Experiments | [05-experiments.md](sections/05-experiments.md) | 检测/分割主实验、消融分析、深度鲁棒性 |
@@ -53,16 +53,16 @@ RegionReasoner 提出了一种面向多轮视觉推理的强化学习框架，�
 | 训练时间 | ~10 hours |
 | Batch size | 16 (global), K=8 rollout per prompt |
 | Learning rate | 1e-6 |
-| 检测 RefCOCO+ Avg AP 提升 | +5.9 over VisionReasoner, +7.6 over Seg-Zero |
-| 检测 RefCOCOg Avg AP 提升 | +4.6 over VisionReasoner, +7.1 over Seg-Zero |
-| 分割 RefCOCO+ Avg gIoU 提升 | +5.3 over VisionReasoner, +8.9 over SegLLM |
-| 分割 RefCOCOg Avg gIoU 提升 | +6.6 over VisionReasoner, +9.8 over SegLLM |
+| 检测 RefCOCO+ Avg AP 提升 | +5.9 over VisionReasoer, +7.6 over Seg-Zero |
+| 检测 RefCOCOg Avg AP 提升 | +4.6 over VisionReasoer, +7.1 over Seg-Zero |
+| 分割 RefCOCO+ Avg gIoU 提升 | +5.3 over VisionReasoer, +8.9 over SegLLM |
+| 分割 RefCOCOg Avg gIoU 提升 | +6.6 over VisionReasoer, +9.8 over SegLLM |
 
 ## Data Flow: Input → Structured Trajectory → Reward → Update
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    RegionReasoner Data Flow                               │
+│                    RegionReasoer Data Flow                               │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                           │
 │  [Input at turn t]                                                        │
@@ -125,7 +125,7 @@ RegionReasoner 提出了一种面向多轮视觉推理的强化学习框架，�
 5. 探索在更多 backbone 上的泛化训练
 6. 引入自适应深度控制（动态决定何时终止对话）
 
-## Core Mechanism: Why RegionReasoner Works?
+## Core Mechanism: Why RegionReasoer Works?
 
 ```
 核心机制闭环：
@@ -153,8 +153,8 @@ RegionReasoner 提出了一种面向多轮视觉推理的强化学习框架，�
 
 | # | 问题 | 答案位置 | 解答 |
 |---|------|---------|------|
-| 1 | RegionReasoner 与 VisionReasoner 的核心区别是什么？ | Section 1, 4.2 | VisionReasoner 是单轮结构化感知-推理框架，使用 format/geometry 基础奖励；RegionReasoner 将其扩展到多轮设定，并新增两个关键机制：reference-grounded thinking（强制 <think> 显式引用参考框）和 global--local consistency reward（对齐全局/局部描述与推理）。 |
-| 2 | 为什么不能直接把 VisionReasoner 堆叠成多轮？ | Section 1 | (i) VisionReasoner 不要求推理显式引用前轮定位的区域，导致跨轮参考传播不可靠（credit assignment 模糊、坐标幻觉难检测）；(ii) 其奖励主要针对最终输出（boxes/points）和 tag 有效性，缺乏稳定推理轨迹自身的信号，导致随对话上下文累积出现语义漂移。 |
+| 1 | RegionReasoer 与 VisionReasoer 的核心区别是什么？ | Section 1, 4.2 | VisionReasoer 是单轮结构化感知-推理框架，使用 format/geometry 基础奖励；RegionReasoer 将其扩展到多轮设定，并新增两个关键机制：reference-grounded thinking（强制 <think> 显式引用参考框）和 global--local consistency reward（对齐全局/局部描述与推理）。 |
+| 2 | 为什么不能直接把 VisionReasoer 堆叠成多轮？ | Section 1 | (i) VisionReasoer 不要求推理显式引用前轮定位的区域，导致跨轮参考传播不可靠（credit assignment 模糊、坐标幻觉难检测）；(ii) 其奖励主要针对最终输出（boxes/points）和 tag 有效性，缺乏稳定推理轨迹自身的信号，导致随对话上下文累积出现语义漂移。 |
 | 3 | Reference citation reward 如何处理 hallucination？ | Section 4.3, Eq.4 | 奖励包含两部分：正确引用奖励（λ·kν(h_t) + μ·|S(h_t)∩B_t^ref|/|S(h_t)|）和幻觉惩罚（若 S(h_t) 中存在不在 B_t^ref 中的坐标，reward 乘以 η=0.5 衰减因子）。这使模型学会区分"需要的引用"和"不该出现的坐标"。 |
 | 4 | Global--local consistency 的关键词提取是如何工作的？ | Section 4.2, 4.3 | 轻量级确定性流水线：lowercasing → stop-word removal → lemmatization → noun/object filter。提取后计算非对称重叠 Ov(X,Y) = |κ(X)∩κ(Y)|/|κ(X)|，奖励 <think> 包含来自 <scene> 和 <focus> 的关键实体。 |
 | 5 | 为什么多轮比单轮难？ | Section 5.3 | 单轮只需解释一个 query 对一张图；多轮中后期轮次必须同时解释当前 query 并正确复用/传播前轮预测的 bbox 作为参考。任何早期轮次的定位误差都会被前向传播并在后续轮次中复合放大，因此有效难度随轮深递增。 |
@@ -171,11 +171,11 @@ RegionReasoner 提出了一种面向多轮视觉推理的强化学习框架，�
 **VLM Backbones & Post-training**:
 - Qwen2.5-VL [Bai et al.], Qwen2-VL [Wang et al.], LLaVA [Liu et al.], LLaVA-OV [Li et al.], Infinity-MM [Gu et al.], MAmmoTH-VL [Guo et al.]
 
-**RL for Multimodal Reasoning**:
-- Vision-R1 [Huang et al.], Video-R1 [Feng et al.], VLM-R1 [Shen et al.], Pixel Reasoner [Su et al.], Visionary-R1 [Xia et al.], Self-Rewarding VLM [Li et al.], OpenVLThinker [Deng et al.], LMM-R1 [Peng et al.], VL-Rethinker [Wang et al.]
+**RL for Multimodal Reasoing**:
+- Vision-R1 [Huang et al.], Video-R1 [Feng et al.], VLM-R1 [Shen et al.], Pixel Reasoer [Su et al.], Visionary-R1 [Xia et al.], Self-Rewarding VLM [Li et al.], OpenVLThinker [Deng et al.], LMM-R1 [Peng et al.], VL-Rethinker [Wang et al.]
 
-**Multi-round & Structured Reasoning**:
-- SegLLM [Wang et al.] (multi-round segmentation), VisionReasoner [Liu et al.] (single-turn structured reasoning)
+**Multi-round & Structured Reasoing**:
+- SegLLM [Wang et al.] (multi-round segmentation), VisionReasoer [Liu et al.] (single-turn structured reasoing)
 
 **Referring & Grounding**:
 - LISA [Lai et al.], PixelLM [Ren et al.], GLAMM [Rasheed et al.], Seg-Zero [Liu et al.]

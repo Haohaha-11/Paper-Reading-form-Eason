@@ -10,7 +10,7 @@
 
 ## 二、原始文本
 
-**Multi-round region-grounded reasoning.** Given an image I and a dialogue of T turns with queries {q_t}_{t=1}^T, a model interacts with the visual scene over multiple turns. Each turn t may include a set of reference boxes B_t^ref = {[x1,y1,x2,y2]} that are propagated from earlier turns or externally provided, specifying regions that subsequent queries should condition on. Let M_{t-1} denote the dialogue memory up to turn t-1 (e.g., previously localized regions or textual context). A policy π_θ produces a turn-level output:
+**Multi-round region-grounded reasoing.** Given an image I and a dialogue of T turns with queries {q_t}_{t=1}^T, a model interacts with the visual scene over multiple turns. Each turn t may include a set of reference boxes B_t^ref = {[x1,y1,x2,y2]} that are propagated from earlier turns or externally provided, specifying regions that subsequent queries should condition on. Let M_{t-1} denote the dialogue memory up to turn t-1 (e.g., previously localized regions or textual context). A policy π_θ produces a turn-level output:
 
 ```
 o_t ~ π_θ( · | I, q_t, B_t^ref, M_{t-1} )

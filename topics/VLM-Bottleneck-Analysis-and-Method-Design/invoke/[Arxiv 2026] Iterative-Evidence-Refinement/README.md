@@ -1,10 +1,10 @@
-# Improving Visual Reasoning with Iterative Evidence Refinement (SIEVE)
+# Improving Visual Reasoing with Iterative Evidence Refinement (SIEVE)
 
 ## Paper Metadata
 
 | 项目 | 内容 |
 |------|------|
-| **Title** | Improving Visual Reasoning with Iterative Evidence Refinement |
+| **Title** | Improving Visual Reasoing with Iterative Evidence Refinement |
 | **Authors** | Zeru Shi\*, Kai Mei\*, Yihao Quan, Dimitris N. Metaxas, Ruixiang Tang† |
 | **Affiliations** | Department of Computer Science, Rutgers University |
 | **Venue** | arXiv 2026 |
@@ -15,7 +15,7 @@
 
 ## One-Sentence Summary
 
-SIEVE 提出了一种端到端的自回访 (self-revisit) 框架，完全摒弃外部工具调用与图像重编码，通过挖掘 VLM 内部隐状态中的梯度显著性锚点来发现与定位视觉证据 (visual evidence)，并在 GRPO 强化学习训练中学习"何时"及"如何"将这些 region embedding 注入推理链 (reasoning chain)，从而在无需任何外部工具的前提下实现 grounded visual reasoning。
+SIEVE 提出了一种端到端的自回访 (self-revisit) 框架，完全摒弃外部工具调用与图像重编码，通过挖掘 VLM 内部隐状态中的梯度显著性锚点来发现与定位视觉证据 (visual evidence)，并在 GRPO 强化学习训练中学习"何时"及"如何"将这些 region embedding 注入推理链 (reasoing chain)，从而在无需任何外部工具的前提下实现 grounded visual reasoing。
 
 > 💡 **核心定位**: SIEVE 的核心理念是"模型已经看到了，只是没看对地方"——VLM 在首次编码时已经提取了足够丰富的视觉信息，问题不在于信息缺失，而在于模型在长链推理中不会**回访** (revisit) 这些信息。SIEVE 用训练的方式教会模型如何从自己的隐状态中"翻找"关键视觉证据并动态注入。
 
@@ -86,7 +86,7 @@ SIEVE 提出了一种端到端的自回访 (self-revisit) 框架，完全摒弃�
 │    │   a_t ~ π_θ(· | s_t), s_t = I || (x_1||E_1) || ... || (x_{t-1}||E_{t-1})
 │    │   │                                                          │
 │    │   ├── Action: produce text OR trigger embedding insertion    │
-│    │   ├── If trigger: inject cached E into reasoning stream      │
+│    │   ├── If trigger: inject cached E into reasoing stream      │
 │    │   └── Terminate: final answer or max turns reached           │
 │    │                                                              │
 │    ├── Reward: R(τ) = 0.6·R_res + 0.3·R_fmt + 0.5·R_emb + 0.2·R_act
@@ -145,15 +145,15 @@ SIEVE 提出了一种端到端的自回访 (self-revisit) 框架，完全摒弃�
 **VLM Backbones & Architectures**:
 - Qwen3-VL [Yang et al., 2025a], Qwen2.5-VL [Bai et al., 2025a], Kimi-VL [Team et al., 2025b], Seed1.5-VL [Guo et al., 2025]
 
-**Tool-Augmented Visual Reasoning**:
+**Tool-Augmented Visual Reasoing**:
 - DyFo [Li et al., 2025e], ZoomEye [Shen et al., 2024], Zoom-Refine [Yu et al., 2025c]
 - VisualToolAgent [Huang et al., 2025b], OpenThinkImg [Su et al., 2025a], GRiT [Fan et al., 2025]
-- DeepEyes [Zheng et al., 2025], Omni-R1 [Zhong et al., 2025], Pixel Reasoner [Su et al., 2025b]
+- DeepEyes [Zheng et al., 2025], Omni-R1 [Zhong et al., 2025], Pixel Reasoer [Su et al., 2025b]
 - Perception-R1 [Yu et al., 2025a], SifThinker [Chen et al., 2025]
 - SAM-R1 [Huang et al., 2025a], UnivG-R1 [Bai et al., 2025b]
 
-**Latent Space Reasoning / Thinking with Images**:
-- Latent Visual Reasoning [Li et al., 2025c], Machine Mental Imagery [Yang et al., 2025b]
+**Latent Space Reasoing / Thinking with Images**:
+- Latent Visual Reasoing [Li et al., 2025c], Machine Mental Imagery [Yang et al., 2025b]
 - DeepSketcher [Zhang et al., 2025a], Visual Planning [Xu et al., 2025]
 - Thinking with Generated Images [Chern et al., 2025], MVoT [Li et al., 2025b]
 - Visual Sketchpad [Hu et al.], Interactive Sketchpad [Lee et al., 2025]

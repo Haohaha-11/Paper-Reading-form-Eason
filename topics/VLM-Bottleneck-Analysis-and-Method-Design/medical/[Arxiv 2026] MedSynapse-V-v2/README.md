@@ -165,11 +165,11 @@ MedSynapse-V 提出了一套**三阶段渐进式 latent diagnostic memory evolut
 - HuatuoGPT-Vision [7], LLaVA-Med [53], RadFM [117], GMAI-VL [59], BiMediX2 [81], MedMO [14]
 - VQA-RAD [48], SLAKE [71], PathVQA [29], PMC-VQA [137], OmniMedVQA [35], MMMU [132], MedXpertQA-MM [160], GMAI-MMBench [127]
 
-**RL for Medical Reasoning**:
+**RL for Medical Reasoing**:
 - MedVLM-R1 [84], Med-R1 [47], MediX-R1 [80], MMedExpert-R1 [15], GMAI-VL-R1 [99], Chiron-O1 [100]
 
-**Latent Computation & Reasoning**:
-- COCONUT [28], CoDi [97], Heima (native latent reasoning) [101], Fractional Reasoning [31], MCOUT-Multi [85], IVT-LR [4]
+**Latent Computation & Reasoing**:
+- COCONUT [28], CoDi [97], Heima (native latent reasoing) [101], Fractional Reasoing [31], MCOUT-Multi [85], IVT-LR [4]
 
 **Causal Inference & Counterfactuals**:
 - Counterfactual explanation for RL agents [10], causal dynamics of modality arbitration [142]

@@ -39,7 +39,7 @@
 
 | 指标 | 数值 |
 |------|------|
-| SFT 数据量 | 19,909 reasoning traces |
+| SFT 数据量 | 19,909 reasoing traces |
 | Grounding 标注数 | 107,613 个 <obj> 标签 |
 | 唯一 grounded objects | 72,381 个 |
 | 平均每样本 grounded objects | 3.64 个 |
@@ -64,14 +64,14 @@
 │                Thinking with Visual Grounding Pipeline                │
 ├──────────────────────────────────────────────────────────────────────┤
 │                                                                       │
-│  [Stage 1: Reasoning Distillation]                                    │
+│  [Stage 1: Reasoing Distillation]                                    │
 │    ├── Input: (Image, Question) from TallyQA, PixMo-Count, VSR,       │
 │    │          MultihopSpatial, SpatialMQA                              │
 │    ├── Model: Qwen3-VL-Plus (1st pass) + Qwen3.5-Plus (2nd pass)      │
-│    └── Output: Correct reasoning traces (filtered by answer match)     │
+│    └── Output: Correct reasoing traces (filtered by answer match)     │
 │                                                                       │
 │  [Stage 2: Object Extraction]                                         │
-│    ├── Input: Correct reasoning trace                                  │
+│    ├── Input: Correct reasoing trace                                  │
 │    ├── Model: LLM (DeepSeek-V4-Flash)                                  │
 │    └── Output: (name, disambiguating context) pairs                    │
 │                                                                       │
@@ -84,13 +84,13 @@
 │  [Stage 4: Supervision Writing]                                        │
 │    ├── Box mode: <obj> name | [x1,y1,x2,y2] </obj>                    │
 │    ├── Point mode: <obj> name | [x,y] </obj>                          │
-│    ├── Both share the same reasoning trace + SAM3 masks                │
+│    ├── Both share the same reasoing trace + SAM3 masks                │
 │    └── Output: Aligned SFT data in two grounding modes                  │
 │                                                                       │
 │  [Stage 5: SFT Cold-Start]                                             │
 │    ├── Base Model: Gemma3-4B-IT                                        │
 │    ├── 3 variants: non-grounded / box-grounded / point-grounded         │
-│    └── Same images, questions, answers, reasoning traces                │
+│    └── Same images, questions, answers, reasoing traces                │
 │                                                                       │
 │  [Stage 6: RL with Grounding Reward]                                   │
 │    ├── Algorithm: GRPO (8 rollouts/prompt)                             │
@@ -121,7 +121,7 @@
 2. **SAM3 依赖**: 数据合成的质量高度依赖 SAM3 的 mask 精度，对于某些复杂场景或罕见物体可能存在 grounding 失败
 3. **Object router 开销**: RL 训练中每个 rollout 都需要 VLM object router (Qwen3.5-4B) 进行匹配，增加了计算负担
 4. **仅验证 Gemma3 系列**: 只在 Gemma3-4B-IT 上实验，未在其他模型家族（如 Qwen-VL、LLaVA）上验证泛化性
-5. **数据范围有限**: 仅在 counting 和 spatial reasoning 任务上验证，未涵盖更广泛的视觉推理任务（如 VQA、hallucination detection）
+5. **数据范围有限**: 仅在 counting 和 spatial reasoing 任务上验证，未涵盖更广泛的视觉推理任务（如 VQA、hallucination detection）
 
 ### Future Work
 
@@ -129,7 +129,7 @@
 2. 探索将 visually grounded thinking 扩展到其他视觉任务（visual grounding、referring expression、visual entailment）
 3. 减少 object router 的计算开销（如使用 embedding-based matching 替代 VLM-based routing）
 4. 在更多 backbone 模型和更大规模上验证 visually grounded thinking 的泛化性
-5. 结合 latent-space reasoning 方法（如 DMLR），在潜空间中进行 visually grounded thinking
+5. 结合 latent-space reasoing 方法（如 DMLR），在潜空间中进行 visually grounded thinking
 
 ## Reading Q&A Record
 
@@ -158,7 +158,7 @@
 - SAM3 [Carion et al., 2026], GRPO [Shao et al., 2024b]
 - Gemma3 [Team et al., 2025], verl [Sheng et al., 2024], SGLang [Zheng et al., 2024]
 
-**Reasoning & R1-style RL**:
+**Reasoing & R1-style RL**:
 - DeepSeek-R1 [Guo et al., 2025], OpenVLThinker [Deng et al., 2025], OpenVLThinkerV2 [Hu et al., 2026]
 
 **Benchmarks**:
