@@ -6,7 +6,7 @@
 
 ## C. Self-Distilled Region Proposal Network (SD-RPN)
 
-当门控网络触发细化路径（$Y_{pred}$ >= $τ_{gate}$）时，缩放整张图像会导致严重的二次计算瓶颈。SD-RPN 的任务是**在空间上隔离关键视觉证据**。
+当门控网络触发细化路径（Y_pred >= τ_gate）时，缩放整张图像会导致严重的二次计算瓶颈。SD-RPN 的任务是**在空间上隔离关键视觉证据**。
 
 > **Hao 批注**: 门控解决了"需不需要高分辨率"的问题，SD-RPN 解决的是"高分辨率放在哪里"的问题。两者配合完成从"要不要"到"放哪里"的完整决策链。
 
@@ -30,12 +30,12 @@
 
 #### 密集 RoI 热力图预测
 
-**步骤 1**: 在初始 prefill 阶段，RPN 继承冻结 backbone 计算的 **$H_{context}$^B**，通过前 R-1 个可调层产生 **$H_{rpn}$^(B+R-1)**
+**步骤 1**: 在初始 prefill 阶段，RPN 继承冻结 backbone 计算的 **H_context^B**，通过前 R-1 个可调层产生 **H_rpn^(B+R-1)**
 
 **步骤 2**: 将最后（第 R）个 block 的自注意力机制复用为专门的空间预测头：
 
-- 从序列中隔离最后一个 user query token: **$H_{u}$^(B+R-1)[-1]** ∈ R^(1×d)
-- 提取密集视觉特征序列: **$H_{v}$^(B+R-1)** ∈ R^(HW×d)
+- 从序列中隔离最后一个 user query token: **H_u^(B+R-1)[-1]** ∈ R^(1×d)
+- 提取密集视觉特征序列: **H_v^(B+R-1)** ∈ R^(HW×d)
 - 通过 RPN 第 R 个注意力层的原生投影矩阵 (LP_q 和 LP_k) 映射到共享潜空间：
 
 $$Q_{RoI} = LP_q(\mathrm{Norm}(H_u^{B+R-1}[-1]))$$
@@ -44,13 +44,13 @@ $$K_v = LP_k(\mathrm{Norm}(H_v^{B+R-1})) $$
 
 **步骤 3**: 通过内积计算空间热力图：
 
-$\hat{M}_{RoI} = Q_{RoI} K_v^\top $
+$$\hat{M}_{RoI} = Q_{RoI} K_v^\top $$
 
-\gt  **Hao 批注**: 这个设计非常优雅。核心思路是将 query token 作为"查询"，将 visual tokens 作为"键"，计算它们的注意力分数作为 RoI heatmap。这本质上是在问"哪些视觉位置与当前问题最相关？"——不需要引入任何新的随机初始化参数，完全复用了注意力层的预训练投影矩阵。
+> **Hao 批注**: 这个设计非常优雅。核心思路是将 query token 作为"查询"，将 visual tokens 作为"键"，计算它们的注意力分数作为 RoI heatmap。这本质上是在问"哪些视觉位置与当前问题最相关？"——不需要引入任何新的随机初始化参数，完全复用了注意力层的预训练投影矩阵。
 
 **步骤 4**: 热力图后处理：
 
-- Sigmoid 激活 → 重塑为 2D 空间网格 → 高斯滤波平滑 → 二值化（阈值 $τ_{roi}$）
+- Sigmoid 激活 → 重塑为 2D 空间网格 → 高斯滤波平滑 → 二值化（阈值 τ_roi）
 
 $$\mathcal{B}(x,y) = \begin{cases} 1, & \text{if } \mathcal{G}(\gamma(\sigma(\hat{M}_{RoI})))(x,y) \gt  \tau_{roi} \\ 0, & \text{otherwise} \end{cases} $$
 
@@ -60,7 +60,7 @@ $$b_{roi} = \mathrm{bbox}(B), \quad H_{v_{roi}}^0 = \mathcal{P}(\mathcal{E}_v(x_
 
 #### KV-Cache 前缀复用优化
 
-\gt  **Hao 批注**: 这是 Q-Zoom 高效率的关键工程优化。因为高分辨率 RoI token 插入在文本 query 之前，系统提示和粗粒度视觉特征的 prefix 上下文到第 B 层为止在数学上保持不变。直接检索缓存的 $H_{sys}$^B 和 $H_{v}$^B，仅对新 RoI 和位移后的 user token 进行前 B 层前向：
+> **Hao 批注**: 这是 Q-Zoom 高效率的关键工程优化。因为高分辨率 RoI token 插入在文本 query 之前，系统提示和粗粒度视觉特征的 prefix 上下文到第 B 层为止在数学上保持不变。直接检索缓存的 H_sys^B 和 H_v^B，仅对新 RoI 和位移后的 user token 进行前 B 层前向：
 
 $$[H_{v_{roi}}^B, H_{user}^B] = \mathcal{L}_{1:B}([H_{v_{roi}}^0, H_{user}^0]) $$
 
@@ -82,11 +82,11 @@ MLLM 的内部交叉注意力机制天然具有强大的视觉定位能力。通
 
 $$M_{RoI}^l = \frac{1}{N_t} \sum_{i=1}^{N_t} A_i^l, \quad \text{where} \quad A^l = \mathrm{softmax}\left(\frac{Q_t^l (K_v^l)^\top}{\sqrt{d}}\right) $$
 
-\gt  每个 visual token 对文本响应的聚合重要性编码为 RoI map。
+> 每个 visual token 对文本响应的聚合重要性编码为 RoI map。
 
 #### (b) Robust Pseudo-Label Construction
 
-\gt  Directly utilizing M_{RoI} as a dense supervisory signal is suboptimal because raw attention distributions are notoriously noisy.
+> Directly utilizing M_{RoI} as a dense supervisory signal is suboptimal because raw attention distributions are notoriously noisy.
 
 **Figure 4: 伪标签生成 Pipeline**
 
@@ -98,7 +98,7 @@ $$M_{RoI}^l = \frac{1}{N_t} \sum_{i=1}^{N_t} A_i^l, \quad \text{where} \quad A^l
 
 某些 visual token 尽管缺乏与定位对象的语义相关性，却累积了不成比例的 attention mass。这些 token 在特征表示中一致地显示出异常大的 L2-norm。
 
-过滤策略（Eq.11）：对 L2-norm 超过阈值 $τ_{norm}$ 的 token 将 attention 置零：
+过滤策略（Eq.11）：对 L2-norm 超过阈值 τ_norm 的 token 将 attention 置零：
 
 $$(M_{RoI}')_j = \begin{cases} 0, & \text{if } \|(H_v)_j\|_2 \gt  \tau_{norm} \\ (M_{RoI})_j, & \text{otherwise} \end{cases} $$
 
@@ -106,25 +106,25 @@ $$(M_{RoI}')_j = \begin{cases} 0, & \text{if } \|(H_v)_j\|_2 \gt  \tau_{norm} \\
 
 ![Figure 5](../images/f15f2ee16b40bd8d8aa3d1d84d806b6785156c33a19cbaf69d12ede0c870b67d.jpg)
 
-**Fig. 5**: 在 TextVQA 上，具有极端相对 attention score ($a_{j}$ / $a_{max}$) 的 token 与 ground-truth 前/背景可靠相关，但大量 token 落入高度模糊的中间范围。
+**Fig. 5**: 在 TextVQA 上，具有极端相对 attention score (a_j / a_max) 的 token 与 ground-truth 前/背景可靠相关，但大量 token 落入高度模糊的中间范围。
 
-\gt  **Hao 批注**: Fig.5 是理解三态标签设计的关键。横轴是相对 attention score，纵轴可能展示了前景/背景的分类准确率。核心发现：两端（极低和极高 attention）是干净的信号，中间是一片"灰色地带"——这些 token 既可能属于前景也可能属于背景，强行分类只会引入噪声。
+> **Hao 批注**: Fig.5 是理解三态标签设计的关键。横轴是相对 attention score，纵轴可能展示了前景/背景的分类准确率。核心发现：两端（极低和极高 attention）是干净的信号，中间是一片"灰色地带"——这些 token 既可能属于前景也可能属于背景，强行分类只会引入噪声。
 
 **噪声源二：前景-背景边缘模糊**
 
 **选择性三态分类策略**：
 
-1. **高置信前景集** $S_{fg}$ = {j | $a_{j}$ \gt = $τ_{fg}$ · $a_{max}$}
-   - 构建包围这些前景 token 的最小边界框 $B_{fg}$
-2. **Ignore 区域**: $B_{fg}$ 内但不属于 $S_{fg}$ 的 token 设为 ignore (-1)
+1. **高置信前景集** S_fg = {j | a_j >= τ_fg · a_max}
+   - 构建包围这些前景 token 的最小边界框 B_fg
+2. **Ignore 区域**: B_fg 内但不属于 S_fg 的 token 设为 ignore (-1)
    - 防止不完整的对象激活错误惩罚网络
-3. **背景集** $S_{bg}$: $B_{fg}$ 外且 attention 低于 $τ_{bg}$ · $a_{max}$ 的 token (严格约束)
+3. **背景集** S_bg: B_fg 外且 attention 低于 τ_bg · a_max 的 token (严格约束)
 
 最终离散伪标签：
 
 $$(\bar{M}_{RoI})_j = \begin{cases} 1, & \text{if token } j \in S_{fg} \\ 0, & \text{if token } j \in S_{bg} \\ -1, & \text{otherwise (ignored)} \end{cases} $$
 
-\gt  **Hao 批注**: 三态标签设计是本方法最精巧的部分之一。它承认了 attention-based 伪标签的内在模糊性，并通过 ignore 机制避免了在不确定区域上施加 hard supervision。这在标签噪声管理上是一个成熟且有效的策略。
+> **Hao 批注**: 三态标签设计是本方法最精巧的部分之一。它承认了 attention-based 伪标签的内在模糊性，并通过 ignore 机制避免了在不确定区域上施加 hard supervision。这在标签噪声管理上是一个成熟且有效的策略。
 
 #### 多轮对话处理
 
@@ -133,7 +133,7 @@ $$(\bar{M}_{RoI})_j = \begin{cases} 1, & \text{if token } j \in S_{fg} \\ 0, & \
 - 从 SD-RPN 的倒数第二层 (l = B+R-1) 提取隐藏状态
 - 跨 n 轮对话拼接：系统提示 + 视觉 + 多轮 query/response
 
-$H^l = [H_{sys}^l, H_v^l, H_{u(1)}^l, H_{r(1)}^l, \ldots, H_{u(n)}^l, H_{r(n)}^l] $
+$$H^l = [H_{sys}^l, H_v^l, H_{u(1)}^l, H_{r(1)}^l, \ldots, H_{u(n)}^l, H_{r(n)}^l] $$
 
 每个用户 query 的末 token 拼接为聚合 query tensor：
 
@@ -151,7 +151,7 @@ $$\mathcal{L}_{RPN} = \mathrm{BCE}(\hat{M}_{RoI}, \bar{M}_{RoI})$$
 
 虽然高分辨率 RoI 有效隔离了细粒度视觉细节，但裁剪区域脱离了其更广泛的空间上下文。对于配备 MRoPE 的 MLLM，将粗粒度源图像和局部 RoI 作为两个独立视觉序列处理会**导致空间错位**，使模型无法将 RoI 映射回其原始物理位置。
 
-\gt  **Hao 批注**: 想象一个场景——问题是"左边桌子上红色的杯子是什么牌子？"。SD-RPN 精准定位了杯子区域，裁剪后重编码能清晰看到品牌文字。但裁剪丢失了"左边桌子"的空间参照，模型可能答出品牌但无法正确描述位置关系。这就是空间失准的典型表现。
+> **Hao 批注**: 想象一个场景——问题是"左边桌子上红色的杯子是什么牌子？"。SD-RPN 精准定位了杯子区域，裁剪后重编码能清晰看到品牌文字。但裁剪丢失了"左边桌子"的空间参照，模型可能答出品牌但无法正确描述位置关系。这就是空间失准的典型表现。
 
 ### Figure 6: 时空对齐与 Post-SFT 流程
 
@@ -168,7 +168,7 @@ $$\mathcal{L}_{RPN} = \mathrm{BCE}(\hat{M}_{RoI}, \bar{M}_{RoI})$$
 **1. Temporal Shift（时间位移）**
 
 - 目的：在逻辑上区分密集 RoI token 和共享相同空间足迹的粗粒度源 token，防止位置冲突
-- 操作：为 RoI token 分配偏移时间索引 $t_{roi}$ = $t_{src}$ + δ
+- 操作：为 RoI token 分配偏移时间索引 t_roi = t_src + δ
 - δ = min(H, W)：将高分辨率 RoI 投影到源图像上方的"辅助时间层"
 - 效果：遵循 MRoPE 的 (t, h, w) 三维位置编码体系
 
@@ -179,7 +179,7 @@ $$\mathcal{L}_{RPN} = \mathrm{BCE}(\hat{M}_{RoI}, \bar{M}_{RoI})$$
 
 #### 形式化定义
 
-令 b = [$x_{1}$, $y_{1}$, $x_{2}$, $y_{2}$] 表示归一化到源坐标空间的 RoI 精确边界框，RoI token 在网格索引 (i, j) 处的连续时空位置嵌入：
+令 b = [x_1, y_1, x_2, y_2] 表示归一化到源坐标空间的 RoI 精确边界框，RoI token 在网格索引 (i, j) 处的连续时空位置嵌入：
 
 $$p_{roi}^{(i,j)} = \mathrm{Embed}\left(t_{src} + \delta, \ y_1 + \frac{i}{H'-1}(y_2 - y_1), \ x_1 + \frac{j}{W'-1}(x_2 - x_1)\right) $$
 

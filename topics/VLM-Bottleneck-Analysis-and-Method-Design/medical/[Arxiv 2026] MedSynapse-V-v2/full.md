@@ -10,7 +10,7 @@ Keywords: VLMs · Implicit Diagnostic Memory · Latent Space Memory · Causal Co
 
 ## 1 Introduction
 
-Shaoed diagnostic experts do not rely on stepwise logical reasoning when making clinical diagnoses; instead, they activate Implicit Diagnostic Memory,
+Seasoned diagnostic experts do not rely on stepwise logical reasoning when making clinical diagnoses; instead, they activate Implicit Diagnostic Memory,
 
 ⋆ Corresponding author.
 
@@ -425,7 +425,7 @@ Medical Image Understanding and Eficient Deployment. The anatomical encoder in M
 
 27. Han, X., Hu, P., Lu, C., Ding, J.E., Liu, F., Ning, Y.: No black boxes: Interpretable and interactable predictive healthcare with knowledge-enhanced agentic causal discovery. In: Findings of the Association for Computational Linguistics: EMNLP 2025. pp. 23415–23427 (2025)
 
-28. Hao, S., Sukhbaatar, S., Su, D., Li, X., Hu, Z., Weston, J., Tian, Y.: Training large language models to reaso in a continuous latent space. arXiv preprint arXiv:2412.06769 (2024)
+28. Hao, S., Sukhbaatar, S., Su, D., Li, X., Hu, Z., Weston, J., Tian, Y.: Training large language models to reason in a continuous latent space. arXiv preprint arXiv:2412.06769 (2024)
 
 29. He, X., Zhang, Y., Mou, L., Xing, E., Xie, P.: Pathvqa: 30000+ questions for medical visual question answering. arXiv preprint arXiv:2003.10286 (2020)
 
@@ -501,7 +501,7 @@ Medical Image Understanding and Eficient Deployment. The anatomical encoder in M
 
 65. Lin, H., Bai, T., Zhang, J., Chang, X., Lu, S., Gu, F., Hu, Z., Zhang, W.: Tag: Thinking with action unit grounding for facial expression recognition. arXiv preprint arXiv:2602.18763 (2026)
 
-66. Lin, H., Liu, Z., Zhu, Y., Qin, C., Lin, J., Shang, X., He, C., Zhang, W., Wu, L.: Mmfinereaso: Closing the multimodal reasoning gap via open data-centric methods. arXiv preprint arXiv:2601.21821 (2026)
+66. Lin, H., Liu, Z., Zhu, Y., Qin, C., Lin, J., Shang, X., He, C., Zhang, W., Wu, L.: Mmfinereason: Closing the multimodal reasoning gap via open data-centric methods. arXiv preprint arXiv:2601.21821 (2026)
 
 67. Lin, J.: Divergence measures based on the shannon entropy. IEEE Transactions on Information theory 37(1), 145–151 (2002)
 
@@ -605,7 +605,7 @@ Medical Image Understanding and Eficient Deployment. The anatomical encoder in M
 
 117. Wu, C., Zhang, X., Zhang, Y., Hui, H., Wang, Y., Xie, W.: Towards generalist foundation model for radiology by leveraging web-scale 2d&3d medical data. Nature Communications 16(1), 7866 (2025)
 
-118. Wu, J., Deng, W., Li, X., Liu, S., Mi, T., Peng, Y., Xu, Z., Liu, Y., Cho, H., Choi, C.I., et al.: Medreaso: Eliciting factual medical reasoning steps in llms via knowledge graphs. arXiv preprint arXiv:2504.00993 (2025)
+118. Wu, J., Deng, W., Li, X., Liu, S., Mi, T., Peng, Y., Xu, Z., Liu, Y., Cho, H., Choi, C.I., et al.: Medreason: Eliciting factual medical reasoning steps in llms via knowledge graphs. arXiv preprint arXiv:2504.00993 (2025)
 
 119. Wu, J., Zhu, J., Qi, Y., Chen, J., Xu, M., Menolascina, F., Grau, V.: Medical graph rag: Towards safe medical large language model via graph retrieval-augmented generation. arXiv preprint arXiv:2408.04187 (2024)
 

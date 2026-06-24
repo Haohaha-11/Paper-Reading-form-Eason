@@ -23,13 +23,13 @@ $\pmb { \otimes }$ Extensive evaluations show that DMLR consistently outperforms
 
 # 2. Related Work
 
-Explicit Reasoning. Many prior works have explored visual reasoning. Early approaches mainly relied on semantic CoT, where the model performs all inference in the text space after a one-time visual encoding [5, 4, 20, 21]. However, this separation between perception and reasoning often leads to misalignment and hallucination [6, 22, 23, 24, 22, 25]. To address these limitations, recent studies adopt a Thinking-with-Images paradigm, where the model can draw auxiliary elements [13, 26, 27], zoom or crop regions [11, 8, 28, 29], or generate intermediate visual cues [30, 10, 9], enabling it to reaso directly over visual structures.
+Explicit Reasoning. Many prior works have explored visual reasoning. Early approaches mainly relied on semantic CoT, where the model performs all inference in the text space after a one-time visual encoding [5, 4, 20, 21]. However, this separation between perception and reasoning often leads to misalignment and hallucination [6, 22, 23, 24, 22, 25]. To address these limitations, recent studies adopt a Thinking-with-Images paradigm, where the model can draw auxiliary elements [13, 26, 27], zoom or crop regions [11, 8, 28, 29], or generate intermediate visual cues [30, 10, 9], enabling it to reason directly over visual structures.
 
 Latent Reasoning. Recently, an increasing number of studies have begun to shift reasoning from the explicit token space to the model’s latent representation space. Some methods introduce dedicated training frameworks that optimize latent representations to support more effective internal reasoning [31, 14, 32, 33, 34, 35], while others propose training-free approaches that manipulate latent activations during inference to refine the reasoning process [15, 36, 37, 38, 39]. In addition, several recent works explore injecting visual information into the latent space [16, 17, 40, 41, 18], enabling models to iteratively operate over both latent semantic features and latent visual cues, thereby supporting a more flexible form of interleaved multimodal reasoning.
 
 # 3. Preliminary and Motivation
 
-As shown in Figure 12, existing reasoning paradigms commonly suffer from insufficient visual grounding, unstable tool invocation, and high computational overhead. These limitations motivate a fundamental question: why can’t MLLMs reaso like humans do, dynamically deciding how to reaso and which visual information to pay attention on during the thinking process? To this end, we organize the section around two research questions: (RQ1) Whether multimodal models require visual perception at every step of reasoning? (RQ2) If not, can their internal representations indicate when visual perception and reasoning is required?
+As shown in Figure 12, existing reasoning paradigms commonly suffer from insufficient visual grounding, unstable tool invocation, and high computational overhead. These limitations motivate a fundamental question: why can’t MLLMs reason like humans do, dynamically deciding how to reason and which visual information to pay attention on during the thinking process? To this end, we organize the section around two research questions: (RQ1) Whether multimodal models require visual perception at every step of reasoning? (RQ2) If not, can their internal representations indicate when visual perception and reasoning is required?
 
 # 3.1 Dynamic Perception-Reasoning is Necessary
 
@@ -250,7 +250,7 @@ Yanwei Li, Ziwei Liu, et al. Llava-onevision: Easy visual task transfer. arXiv p
 
 [13] Huanyu Zhang, Wenshan Wu, Chengzu Li, Ning Shang, Yan Xia, Yangyu Huang, Yifan Zhang, Li Dong, Zhang Zhang, Liang Wang, Tieniu Tan, and Furu Wei. Latent sketchpad: Sketching visual thoughts to elicit multimodal reasoning in mllms, 2025. URL https://arxiv.org/abs/2510.24514.
 
-[14] Shibo Hao, Sainbayar Sukhbaatar, DiJia Su, Xian Li, Zhiting Hu, Jason Weston, and Yuandong Tian. Training large language models to reaso in a continuous latent space, 2025. URL https://arxiv. org/abs/2412.06769.
+[14] Shibo Hao, Sainbayar Sukhbaatar, DiJia Su, Xian Li, Zhiting Hu, Jason Weston, and Yuandong Tian. Training large language models to reason in a continuous latent space, 2025. URL https://arxiv. org/abs/2412.06769.
 
 [15] Hengli Li, Chenxi Li, Tong Wu, Xuekai Zhu, Yuxuan Wang, Zhaoxin Yu, Eric Hanchen Jiang, Song-Chun Zhu, Zixia Jia, Ying Nian Wu, and Zilong Zheng. Seek in the dark: Reasoning via test-time instance-level policy gradient in latent space, 2025. URL https://arxiv.org/abs/2505.13308.
 

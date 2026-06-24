@@ -16,9 +16,9 @@
 
 **Training details.** We train CARES on the curated data described in 3.2 for 6 epochs using a learning rate of 1e-3 and a batch size of 32. We optimize the standard cross-entropy loss over the fixed resolution labels:
 
-L(theta) = CE($f_{theta}$(z), r*)
+L(theta) = CE(f_theta(z), r*)
 
-Where $f_{theta}$(z) is CARES composed of a frozen VLM and the lightweight classifier. In addition, we apply label smoothing of 0.05 to support continuous resolutions at inference time.
+Where f_theta(z) is CARES composed of a frozen VLM and the lightweight classifier. In addition, we apply label smoothing of 0.05 to support continuous resolutions at inference time.
 
 > 💡 **批注**: label smoothing = 0.05 的作用是在离散训练的背景下软化类别边界，为连续推理提供概率基础。Table 6 的消融验证了它的效果（OCRBench: 0.821 vs 0.811 without smoothing）。
 
@@ -56,7 +56,7 @@ Fig. 3 shows the accuracy–latency frontier: CARES matches near-native accuracy
 
 > 💡 **批注**: Fig.3 的 Pareto 分析是评估 CARES 质量最直观的方式——如果 CARES 不能在相同的 accuracy 下提供更低的 compute，那它就只是 naive downscaling。而 Fig.3 清楚地显示 CARES 处于固定分辨率的 Pareto frontier 之上。
 
-Finally, the distribution of predicted continuous resolutions $r_{tilde}$ (Fig. 4) and the comparison in Table 5 indicate that continuous routing adapts per instance, matches or slightly improves accuracy over a discrete menu, and saves additional compute without quality loss.
+Finally, the distribution of predicted continuous resolutions r_tilde (Fig. 4) and the comparison in Table 5 indicate that continuous routing adapts per instance, matches or slightly improves accuracy over a discrete menu, and saves additional compute without quality loss.
 
 ## 4.3 Cross-Teacher Agreement for Resolution Labels
 

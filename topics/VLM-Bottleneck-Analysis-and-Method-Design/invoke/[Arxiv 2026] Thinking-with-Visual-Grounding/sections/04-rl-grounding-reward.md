@@ -15,7 +15,7 @@
 In visually grounded thinking, a valid tag must have the form `<obj> name phrase | coordinates </obj>`.
 
 The coordinate format is mode-specific:
-- **Box mode**: expects `[x1, y1, x2, y2]` with $x_1 \lt  x_2$, $y_1 \lt  y_2$
+- **Box mode**: expects `[x1, y1, x2, y2]` with $x_1 < x_2$, $y_1 < y_2$
 - **Point mode**: expects `[x, y]`
 
 Coordinates must fall within the [0, 1000] image coordinate system. A single tag may contain multiple coordinates separated by semicolons, as one object can refer to multiple instances (e.g. "birds in the sky" corresponds to several birds).
@@ -48,8 +48,8 @@ The model, however, may name the same object with different wording, and the sam
 >
 > **Router 的设计选择**:
 > - 轻量 VLM: Qwen3.5-4B（保证 RL 训练效率）
-> - 输入: image + (g$t_name$, g$t_context$) + [list of model-generated objects]
-> - 输出: 与 g$t_object$ 匹配的 model-generated objects 子集
+> - 输入: image + (gt_name, gt_context) + [list of model-generated objects]
+> - 输出: 与 gt_object 匹配的 model-generated objects 子集
 > - 多个 model objects 匹配同一 gt object 时，只保留最早出现的那个
 
 ### Box Grounding Quality (IoU-based)
@@ -58,11 +58,15 @@ Each saved object $i$ is associated with a set of ground-truth boxes $G_i$. Afte
 
 We treat each set of boxes as a union of regions and compute their intersection-over-union (IoU):
 
-$\text{IoU}_i = \frac{I_i}{U_i}$
+$$
+
+\mathrm{IoU}_i = \frac{I_i}{U_i}
+
+$$
 
 where $I_i$ is the area covered by both $P_i$ and $G_i$, and $U_i$ is the area covered by either $P_i$ or $G_i$.
 
-If no model-generated grounding object is matched to ground-truth object $i$, we set $\text{IoU}_i = 0$.
+If no model-generated grounding object is matched to ground-truth object $i$, we set $\mathrm{IoU}_i = 0$.
 
 **Final box grounding quality** = mean score over all $T$ ground-truth objects.
 
@@ -83,11 +87,23 @@ We form a **one-to-one assignment** between generated points and ground-truth ma
 
 For each object:
 
-$\text{TP}_i = \text{number of masks matched by the assignment}$
+$$
 
-$\text{FP}_i = |P_i| - \text{TP}_i, \quad \text{FN}_i = |M_i| - \text{TP}_i$
+\mathrm{TP}_i = \text{number of masks matched by the assignment}
 
-$F1_i = \frac{2\text{TP}_i}{2\text{TP}_i + \text{FP}_i + \text{FN}_i}$
+$$
+
+$$
+
+\mathrm{FP}_i = |P_i| - \mathrm{TP}_i, \quad \mathrm{FN}_i = |M_i| - \mathrm{TP}_i
+
+$$
+
+$$
+
+F1_i = \frac{2\mathrm{TP}_i}{2\mathrm{TP}_i + \mathrm{FP}_i + \mathrm{FN}_i}
+
+$$
 
 If no rollout grounding object is matched to ground-truth object $i$, set $F1_i = 0$.
 
@@ -118,7 +134,7 @@ Point mode 的这种离散性使 reward 更难优化：在 mask 内部任意移�
 
 ### Unmatched Grounding Objects: 为什么不做惩罚？
 
-We **intentionally do not penalize unmatched grounding objects** in the rollout. The grounding objects extracted by the data synthesis pipeline are not a complete enumeration of all visual cues. During thinking, the model may identify additional visual evidence that is useful and reasoable to ground. Therefore, unmatched rollout grounding objects neither increase nor decrease the grounding quality.
+We **intentionally do not penalize unmatched grounding objects** in the rollout. The grounding objects extracted by the data synthesis pipeline are not a complete enumeration of all visual cues. During thinking, the model may identify additional visual evidence that is useful and reasonable to ground. Therefore, unmatched rollout grounding objects neither increase nor decrease the grounding quality.
 
 We only apply a **hard-coded cap** on the number of grounding tags to prevent the model from over-emitting them.
 
@@ -141,11 +157,19 @@ For each rollout $i$, the total reward includes:
 
 Because dense grounding reward and sparse rewards have different scales, we **normalize them separately**:
 
-$R_i^{\text{base}} = w_{\text{ans}} r_i^{\text{ans}} + w_{\text{think}} r_i^{\text{think}} + w_{\text{gfmt}} r_i^{\text{gfmt}} + r_i^{\text{trunc}}$
+$$
 
-$R_i = N_B(R^{\text{base}})_i + w_{\text{ground}} N_B(r^{\text{ground}})_i$
+R_i^{\text{base}} = w_{\text{ans}} r_i^{\text{ans}} + w_{\text{think}} r_i^{\text{think}} + w_{\text{gfmt}} r_i^{\text{gfmt}} + r_i^{\text{trunc}}
 
-where $N_B(\cdot)$ is batch-wise normalization over batch $B$.
+$$
+
+$$
+
+R_i = \mathcal{N}_{\mathcal{B}}(R^{\text{base}})_i + w_{\text{ground}} \mathcal{N}_{\mathcal{B}}(r^{\text{ground}})_i
+
+$$
+
+where $\mathcal{N}_{\mathcal{B}}(\cdot)$ is batch-wise normalization over batch $\mathcal{B}$.
 
 **Hyperparameters**:
 - $w_{\text{ans}} = 1.0$

@@ -157,7 +157,7 @@ $\text{norm\_diff} = \frac { \| h _ { t } - h _ { t - 1 } \| _ { 2 } } { \| h _ 
 
 To further enhance inference efficiency, Huginn adopts a specialized KV-cache management scheme with a periodic retrieval strategy. For the i-th token during the r-th recurrence step, the latest-m4 mechanism retrieves the KV-cache from the most recent valid step j that aligns with the current block's functional cycle. Specifically:
 
-$j ^ { * } = \left\{ \begin{array} { l l } { \max \{ j \mid j \leq r , j \equiv _ { 4 } r , T _ { j , i } = 1 \} } & { r \geq 2 , } \\ { r } & { r \lt  2 , } \end{array} \right.$
+$j ^ { * } = \left\{ \begin{array} { l l } { \max \{ j \mid j \leq r , j \equiv _ { 4 } r , T _ { j , i } = 1 \} } & { r \geq 2 , } \\ { r } & { r <  2 , } \end{array} \right.$
 
 where $T_{{j,i}}$ ∈ {0, 1} denotes the validity of the cache at step j for token i, and ≡_4 denotes congruence modulo 4. This periodic reuse of cache states maintains temporal consistency while significantly reducing redundant computations.
 

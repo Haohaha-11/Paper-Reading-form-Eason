@@ -23,7 +23,7 @@ In this work, we propose HIVE, the first multimodal latent reasoning framework t
 
 • We introduce hierarchical visual cue injection into the recurrent blocks, which allows the model to perform iterative reasoning guided by structural visual information.
 
-Table 1. Comparison of Latent Space Reasoning Approaches. Coconut/Heima progressively abstract CoT text into learnable tokens without altering model architecture; Heima is the first to include multimodal input. Huginn/HIVE utilize a Loop Transformer architecture to reaso via iterations, reducing dependency on CoT tokens. HIVE further introduces hierarchical visual features.
+Table 1. Comparison of Latent Space Reasoning Approaches. Coconut/Heima progressively abstract CoT text into learnable tokens without altering model architecture; Heima is the first to include multimodal input. Huginn/HIVE utilize a Loop Transformer architecture to reason via iterations, reducing dependency on CoT tokens. HIVE further introduces hierarchical visual features.
 <table><tr><td>Method</td><td>Visual</td><td>Text</td><td>Hierarchical</td><td>CoT Data Requirement</td></tr><tr><td>Training-induced Recurrence</td><td></td><td></td><td></td><td></td></tr><tr><td>Coconut</td><td>X</td><td></td><td></td><td>High</td></tr><tr><td>Heima</td><td></td><td></td><td>X</td><td>High</td></tr><tr><td>Loop Transformer Recurrence</td><td></td><td></td><td></td><td></td></tr><tr><td>Huginn</td><td>X</td><td></td><td></td><td>Low</td></tr><tr><td>HIVE (Ours)</td><td></td><td></td><td></td><td>Low</td></tr></table>
 
 • Extensive evaluations demonstrate that test-time scaling remains effective when incorporating vision knowledge, and that hierarchical visual cue injection works effectively within the loop-transformer framework on complex scene understanding.
@@ -302,7 +302,7 @@ Geiping, J., McLeish, S., Jain, N., Kirchenbauer, J., Singh, S., Bartoldson, B. 
 
 Geiping, J., McLeish, S., Jain, N., Kirchenbauer, J., Singh, S., Bartoldson, B. R., Kailkhura, B., Bhatele, A., and Goldstein, T. Scaling up test-time compute with latent reasoning: A recurrent depth approach. CoRR, abs/2502.05171, 2025b.
 
-Hao, S., Sukhbaatar, S., Su, D., Li, X., Hu, Z., Weston, J., and Tian, Y. Training large language models to reaso in t-Conference.a continuous latent space. CoRR, abs/2412.06769, 2024.
+Hao, S., Sukhbaatar, S., Su, D., Li, X., Hu, Z., Weston, J., and Tian, Y. Training large language models to reason in t-Conference.a continuous latent space. CoRR, abs/2412.06769, 2024.
 
 He, M., Liu, Y., Wu, B., Yuan, J., Wang, Y., Huang, T., and Zhao, B. Efficient multimodal learning from datacentric perspective. CoRR, abs/2402.11530, 2024. doi: 10.48550/ARXIV.2402.11530. URL https://doi. org/10.48550/arXiv.2402.11530.
 
@@ -402,9 +402,9 @@ CoRR, abs/2409.18869, 2024c. doi: 10.48550/ARXIV. 2409.18869. URL https://doi.or
 
 Xie, Y., Yang, K., An, X., Wu, K., Zhao, Y., Deng, W., Ran, Z., Wang, Y., Feng, Z., Miles, R., Elezi, I., and Deng, J. Region-based cluster discrimination for visual representation learning. In ICCV, 2025.
 
-Xu, G., Jin, P., Wu, Z., Li, H., Song, Y., Sun, L., and Yuan, L. Llava-cot: Let vision language models reaso stepby-step. In Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV), pp. 2087–2098, October 2025a.
+Xu, G., Jin, P., Wu, Z., Li, H., Song, Y., Sun, L., and Yuan, L. Llava-cot: Let vision language models reason stepby-step. In Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV), pp. 2087–2098, October 2025a.
 
-Xu, G., Jin, P., Wu, Z., Li, H., Song, Y., Sun, L., and Yuan, L. Llava-cot: Let vision language models reaso stepby-step. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pp. 2087–2098, 2025b.
+Xu, G., Jin, P., Wu, Z., Li, H., Song, Y., Sun, L., and Yuan, L. Llava-cot: Let vision language models reason stepby-step. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pp. 2087–2098, 2025b.
 
 Xu, Y., Guo, X., Zeng, Z., and Miao, C. Softcot: Soft chainof-thought for efficient reasoning with llms. In ACL (1), pp. 23336–23351. Association for Computational Linguistics, 2025c.
 

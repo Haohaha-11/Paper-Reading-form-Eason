@@ -24,7 +24,7 @@ During Best-of-N (BoN) evaluation, a critic model is required to estimate the qu
 
 **Process Supervision Generation.** Given an image I, a question q, and a solution s = {$s_{0}$, $s_{1}$, ..., $s_{n}$}, we annotate the correctness of each step $s_{i}$ using an automatic data pipeline. The key idea is to estimate the expected accuracy of given steps $s_{{≤i}}$ based on Monte Carlo sampling. Specifically, the model is required to complete the solution as follows:
 
-$\tilde{s}_{\gt i} \sim M(\tilde{s}_{\gt i} \mid I, q, s_{\leq i})$,
+$\tilde{s}_{> i} \sim M(\tilde{s}_{> i} \mid I, q, s_{\leq i})$,
 
 where s̃_{>i} is the completion of $s_{{≤i}}$. Besides, the expected accuracy of $s_{i}$ is defined as:
 

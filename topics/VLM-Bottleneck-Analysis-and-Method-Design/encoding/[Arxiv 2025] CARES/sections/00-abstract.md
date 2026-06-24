@@ -10,11 +10,11 @@
 
 # CARES: Context-Aware Resolution Selector for VLMs
 
-Moshe Kimhi(1,2)*, Nimrod Shabtay(2,3)*, Raja Giryes(3), Chaim Baskin(4†), Eli Schwartz(2†)
+Moshe Kimhi<sup>1,2</sup>\* Nimrod Shabtay<sup>2,3</sup>\* Raja Giryes<sup>3</sup> Chaim Baskin<sup>4†</sup> Eli Schwartz<sup>2†</sup>
 
-(1)Technion  (2)IBM Research
+<sup>1</sup>Technion <sup>2</sup>IBM Research
 
-(3)Tel-Aviv University  (4)Ben-Gurion University
+<sup>3</sup>Tel-Aviv University <sup>4</sup>Ben-Gurion University
 
 Project Page: https://mkimhi.github.io/CARES/
 

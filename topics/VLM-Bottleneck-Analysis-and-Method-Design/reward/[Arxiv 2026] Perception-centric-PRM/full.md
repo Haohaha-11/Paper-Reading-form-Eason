@@ -103,7 +103,7 @@ Truncate–Thinking–then–Regenerate. To further encourage self-correction, w
 
 Benchmarks. We select multiple visual reasoning benchmarks, covering visual search, perception-intensive reasoning, mathematical and chart-based reasoning.
 
-1. V\* (V-Star) [42]: introduces an LLM-guided visual search mechanism and a dedicated benchmark, to assess models’ ability to localize and reaso about small, target objects within information-dense images. It contains 191 high-resolution images with two subtasks, i.e. attribute recognition and spatial-relation reasoning that require precise grounding before reasoning.
+1. V\* (V-Star) [42]: introduces an LLM-guided visual search mechanism and a dedicated benchmark, to assess models’ ability to localize and reason about small, target objects within information-dense images. It contains 191 high-resolution images with two subtasks, i.e. attribute recognition and spatial-relation reasoning that require precise grounding before reasoning.
 
 2. MME-RealWorld [50]: targets practical applications across five domains (OCR-in-the-wild, remote sensing, diagrams/tables, monitoring, autonomous driving). We use its subset MME-RealWorld-Lite for testing.
 
@@ -300,7 +300,7 @@ Visual instruction tuning. Advances in neural information processing systems, 36
 
 [46] Yuhang Zang, Xiaoyi Dong, Pan Zhang, Yuhang Cao, Ziyu Liu, Shengyuan Ding, Shenxi Wu, Yubo Ma, Haodong Duan, Wenwei Zhang, Kai Chen, Dahua Lin, and Jiaq Wang. Internlm-xcomposer2.5-reward: A simple yet effec tive multi-modal reward model, 2025. 8
 
-[47] Jingyi Zhang, Jiaxing Huang, Huanjin Yao, Shunyu Liu, Xikun Zhang, Shijian Lu, and Dacheng Tao. R1-vl: Learning to reaso with multimodal large language models via step wise group relative policy optimization, 2025. 5, 6
+[47] Jingyi Zhang, Jiaxing Huang, Huanjin Yao, Shunyu Liu, Xikun Zhang, Shijian Lu, and Dacheng Tao. R1-vl: Learning to reason with multimodal large language models via step wise group relative policy optimization, 2025. 5, 6
 
 [48] Jipeng Zhang, Kehao Miao, Renjie Pi, Zhaowei Wang, Run tao Liu, Rui Pan, and Tong Zhang. Vl-genrm: Enhancing vision-language verification via vision experts and iterative training. arXiv preprint arXiv:2506.13888, 2025. 1
 

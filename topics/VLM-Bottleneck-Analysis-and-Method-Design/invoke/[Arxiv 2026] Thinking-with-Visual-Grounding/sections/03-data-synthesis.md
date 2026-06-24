@@ -84,9 +84,9 @@ Importantly, the agent **cannot directly write coordinates**; all geometric supe
 > ┌──────────────────────────────────────────────────┐
 > │        SAM3 Agent Tool Actions                     │
 > ├──────────────────────────────────────────────────┤
-> │ 1. query(nou$n_phrase$) → [(mask, confidence), ...] │
-> │ 2. verify(mas$k_id$) → accept / reject               │
-> │ 3. select(mas$k_ids$) → final masks                  │
+> │ 1. query(noun_phrase) → [(mask, confidence), ...] │
+> │ 2. verify(mask_id) → accept / reject               │
+> │ 3. select(mask_ids) → final masks                  │
 > │ 4. report_no_detection() → fail                    │
 > └──────────────────────────────────────────────────┘
 > ```

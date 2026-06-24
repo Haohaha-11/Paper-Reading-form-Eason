@@ -130,7 +130,7 @@ VisMem 给 VLM 加一套可在自回归生成中按需插入的短期/长期 lat
 #### Medical VLM / Medical Imaging
 - **MMMU: A Massive Multi-Discipline Multimodal Understanding and Reasoning Benchmark for Expert AGI** (2023) — 2023 citations [arXiv](https://arxiv.org/abs/2311.16502)
 - **ExpeL: LLM Agents Are Experiential Learners** (2023) — 477 citations [arXiv](https://arxiv.org/abs/2308.10144)
-- **Training Large Language Models to Reaso in a Continuous Latent Space** (2024) — 468 citations [arXiv](https://arxiv.org/abs/2412.06769)
+- **Training Large Language Models to Reason in a Continuous Latent Space** (2024) — 468 citations [arXiv](https://arxiv.org/abs/2412.06769)
 - **BLINK: Multimodal Large Language Models Can See but Not Perceive** (2024) — 433 citations [arXiv](https://arxiv.org/abs/2404.12390)
 - **MemoryBank: Enhancing Large Language Models with Long-Term Memory** (2023) — 388 citations [arXiv](https://arxiv.org/abs/2305.10250)
 
@@ -163,7 +163,7 @@ VisMem 给 VLM 加一套可在自回归生成中按需插入的短期/长期 lat
 | 论文 | 年份 | 引用数 |
 |------|------|--------|
 | [Persistent Visual Memory: Sustaining Perception for Deep Generation in LVLMs](https://arxiv.org/abs/2605.00814) | 2026 | 0 |
-| [Decompose, Look, and Reaso: Reinforced Latent Reasoning for VLMs](https://arxiv.org/abs/2604.07518) | 2026 | 0 |
+| [Decompose, Look, and Reason: Reinforced Latent Reasoning for VLMs](https://arxiv.org/abs/2604.07518) | 2026 | 0 |
 | [VLA-Thinker: Boosting Vision-Language-Action Models through Thinking-with-Image Reasoning](https://arxiv.org/abs/2603.14523) | 2026 | 1 |
 | [LanteRn: Latent Visual Structured Reasoning](https://arxiv.org/abs/2603.25629) | 2026 | 0 |
 | [CoVFT: Context-aware Visual Fine-tuning for Multimodal Large Language Models](https://arxiv.org/abs/2603.21077) | 2026 | 0 |

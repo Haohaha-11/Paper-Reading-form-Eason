@@ -10,7 +10,7 @@
 
 ## 3.1 Problem Definition
 
-Given an image x and query q, let R = [$r_{min}$, $r_{max}$] subset of R+ denote the range of valid input resolutions and let F be a fixed VLM. For any resolution r in R, we denote by x^(r) the image x resized such that its largest dimension equals r. Feeding x^(r) and q into F yields an output y = F(x^(r), q). The VLM forms T(r) visual tokens at resolution r (including AnyRes/tiling effects). Our goal is to learn a selector $f_{theta}$ that predicts, from a single inexpensive low-resolution pass at $r_{min}$, the minimal sufficient resolution $r_{s}$ in R for accurately answering the query q given image x.
+Given an image x and query q, let R = [r_min, r_max] subset of R+ denote the range of valid input resolutions and let F be a fixed VLM. For any resolution r in R, we denote by x^(r) the image x resized such that its largest dimension equals r. Feeding x^(r) and q into F yields an output y = F(x^(r), q). The VLM forms T(r) visual tokens at resolution r (including AnyRes/tiling effects). Our goal is to learn a selector f_theta that predicts, from a single inexpensive low-resolution pass at r_min, the minimal sufficient resolution r_s in R for accurately answering the query q given image x.
 
 > 💡 **批注**: 问题定义为后续所有设计选择提供了 formal ground。关键约束：(1) 只需要一次 cheap low-res pass 就能做预测；(2) 目标是"最小充分分辨率"（minimal sufficient），不是"使 accuracy 最高的分辨率"；(3) T(r) 考虑了 AnyRes/tiling 效应——不同 VLM 在相同 r 下可能产生不同数量的 visual tokens。
 
@@ -18,23 +18,23 @@ Given an image x and query q, let R = [$r_{min}$, $r_{max}$] subset of R+ denote
 
 ## 3.2 Labeling Strategy for Training CARES
 
-Since searching for the optimal r* in R is prohibitively expensive, we chose to use a small, discrete set of valid resolutions for the annotation Rd = {$r_{1}$, ..., $r_{K}$} subset of R. For each sample, we render the image at the fixed resolutions Rd, and use a pretrained VLM to generate predictions at each resolution. The predictions are evaluated against the ground-truth annotations using the ANLS metric. The supervision label is assigned as the lowest resolution whose ANLS score exceeds a threshold, without significant improvement at higher resolutions. The procedure yields a discrete sufficiency label r* in Rd per example. We emphasize that discretization is only used for supervision efficiency; at inference, we deploy a continuous finer-grained selector (§3.4). Algorithm 1 outlines the data generation process, and Table 1 visualizes the concept.
+Since searching for the optimal r* in R is prohibitively expensive, we chose to use a small, discrete set of valid resolutions for the annotation Rd = {r_1, ..., r_K} subset of R. For each sample, we render the image at the fixed resolutions Rd, and use a pretrained VLM to generate predictions at each resolution. The predictions are evaluated against the ground-truth annotations using the ANLS metric. The supervision label is assigned as the lowest resolution whose ANLS score exceeds a threshold, without significant improvement at higher resolutions. The procedure yields a discrete sufficiency label r* in Rd per example. We emphasize that discretization is only used for supervision efficiency; at inference, we deploy a continuous finer-grained selector (§3.4). Algorithm 1 outlines the data generation process, and Table 1 visualizes the concept.
 
 > 💡 **批注**: 标注策略的三个关键设计：(1) 离散化只为降低标注成本（否则需要搜索连续空间）；(2) 用目标 VLM 自身来定义"充分性"——这保证了标签和部署的一致性；(3) "无显著提升"（delta <= 0.1）避免为 trivial improvement 升级分辨率。
 
 Formally, we compute the ANLS score for each resolution:
 
-$u_{k}$ = ANLS(F(x^($r_{k}$), q), gt) in [0, 1]
+u_k = ANLS(F(x^(r_k), q), gt) in [0, 1]
 
 and select the minimal sufficient resolution as:
 
-r* = min{ $r_{k}$ | $u_{k}$ >= tau, max_{l > k}($u_{l}$ - $u_{k}$) <= delta }
+r* = min{ r_k | u_k >= tau, max_{l > k}(u_l - u_k) <= delta }
 
-where we default to $r_{K}$ if no resolution satisfies the condition. We set tau = 0.85 and use a small margin delta (e.g., 0.1) to prevent rewarding negligible performance improvements. We define the full resolution range as R = [384, 1024], and use a discrete set Rd = {384, 768, 1024} for annotation.
+where we default to r_K if no resolution satisfies the condition. We set tau = 0.85 and use a small margin delta (e.g., 0.1) to prevent rewarding negligible performance improvements. We define the full resolution range as R = [384, 1024], and use a discrete set Rd = {384, 768, 1024} for annotation.
 
-> 💡 **公式批读**: 收敛规则的数学表达有两部分：(1) $u_{k}$ >= tau——当前分辨率已足够好；(2) max_{l>k}($u_{l}$ - $u_{k}$) <= delta——更高分辨率没有显著提升。两个条件缺一不可：条件(1)保证充分性，条件(2)保证"最小"性。
+> 💡 **公式批读**: 收敛规则的数学表达有两部分：(1) u_k >= tau——当前分辨率已足够好；(2) max_{l>k}(u_l - u_k) <= delta——更高分辨率没有显著提升。两个条件缺一不可：条件(1)保证充分性，条件(2)保证"最小"性。
 
-> 💡 **批注**: tau=0.85 和 delta=0.1 的选择值得关注。tau 太低会过早标记为"充分"（可能导致 CARES 过于激进地降分辨率），tau 太高会导致大多数样本都被标注为 $r_{K}$（失去 routing 效果）。delta 控制对微小提升的容忍度。这两个超参数在论文中没有做详细消融，是潜在的风险点。
+> 💡 **批注**: tau=0.85 和 delta=0.1 的选择值得关注。tau 太低会过早标记为"充分"（可能导致 CARES 过于激进地降分辨率），tau 太高会导致大多数样本都被标注为 r_K（失去 routing 效果）。delta 控制对微小提升的容忍度。这两个超参数在论文中没有做详细消融，是潜在的风险点。
 
 **Algorithm 1: Labeling via multi-resolution sufficiency rollouts.**
 
@@ -42,11 +42,11 @@ where we default to $r_{K}$ if no resolution satisfies the condition. We set tau
 Input: (x, q); resolutions R; VLM F; utility U; threshold tau; margin delta
 Output: Label r* in R
 for k <- 1 to K do
-    $y_{k}$ <- F(x^($r_{k}$), q); $u_{k}$ <- U($y_{k}$, gt)
+    y_k <- F(x^(r_k), q); u_k <- U(y_k, gt)
 for k <- 1 to K do
-    if $u_{k}$ >= tau and max_{l > k}($u_{l}$ - $u_{k}$) <= delta then
-        return r* = $r_{k}$
-return r* = $r_{K}$
+    if u_k >= tau and max_{l > k}(u_l - u_k) <= delta then
+        return r* = r_k
+return r* = r_K
 ```
 
 > 💡 **批注**: Algorithm 1 简单但优雅。它体现了"first-satisfaction"原则——从低分辨率开始扫描，第一个满足条件的就被选中。这意味着在低分辨率下已经能正确回答的样本不会被标注为高分辨率。
@@ -67,7 +67,7 @@ We design CARES as a lightweight resolution selector that can be deployed in fro
 
 To implement these principles, we use a compact frozen VLM backbone as a joint vision–text feature extractor, followed by a lightweight classifier head.
 
-Specifically, we adopt the pretrained SmolVLM-500M model (Marafioti et al., 2025), with layers 17–32 removed, as the backbone. Given an image at resolution $r_{min}$ and a text query, we feed both into the model and extract the hidden state of the final token at layer 16. This representation encodes the joint image–query context and is passed to a classifier that outputs a soft distribution over target resolutions. This design is motivated by recent findings showing that intermediate layer activations in LLMs and VLMs encode rich perceptual and semantic information that may not be surfaced at the output layer (Orgad et al., 2024; Zhang et al., 2025a). In addition to being more informative, as also evidenced by the performance gap in Table 3 where using intermediate features outperforms last-layer features by about 1%, this choice substantially reduces computation since only roughly half of the LLM is used for feature extraction.
+Specifically, we adopt the pretrained SmolVLM-500M model (Marafioti et al., 2025), with layers 17–32 removed, as the backbone. Given an image at resolution r_min and a text query, we feed both into the model and extract the hidden state of the final token at layer 16. This representation encodes the joint image–query context and is passed to a classifier that outputs a soft distribution over target resolutions. This design is motivated by recent findings showing that intermediate layer activations in LLMs and VLMs encode rich perceptual and semantic information that may not be surfaced at the output layer (Orgad et al., 2024; Zhang et al., 2025a). In addition to being more informative, as also evidenced by the performance gap in Table 3 where using intermediate features outperforms last-layer features by about 1%, this choice substantially reduces computation since only roughly half of the LLM is used for feature extraction.
 
 > 💡 **批注**: 使用中间层（layer 16）而非最后层（layer 32）是 CARES 的一个关键设计选择。两个理由：(1) 中间层包含更丰富的感知信息（已有文献支持）；(2) 计算量减半。Table 3 的消融显示中间层比最后层高约 1% 准确率，同时少用约 150M 参数。这是一个用更少计算获得更好性能的纯增益。
 
@@ -85,15 +85,15 @@ At inference time, we read the first-step logits over the resolution tokens, app
 
 ## 3.4 From Discrete Supervision to a Continuous Resolution
 
-Although CARES is trained as a K-way classifier over a discrete set of resolutions Rd = {$r_{1}$ < ... < $r_{K}$}, we deploy it as a continuous selector over R = [$r_{min}$, $r_{max}$]. Given features z from the low-resolution image and query, compute logits l(z) in R^K and class probabilities
+Although CARES is trained as a K-way classifier over a discrete set of resolutions Rd = {r_1 < ... < r_K}, we deploy it as a continuous selector over R = [r_min, r_max]. Given features z from the low-resolution image and query, compute logits l(z) in R^K and class probabilities
 
 p = softmax(l)
 
 We use the probability-weighted expectation over Rd:
 
-$r_{tilde}$ = SUM_{k=1}^{|Rd|} $p_{k}$ * $r_{k}$
+r_tilde = SUM_{k=1}^{|Rd|} p_k * r_k
 
-This yields a continuous resolution that varies smoothly with confidence and is insensitive to the specific discretization used for labeling. In practice, $r_{tilde}$ preserves the routing behavior of the classifier while allowing finer control.
+This yields a continuous resolution that varies smoothly with confidence and is insensitive to the specific discretization used for labeling. In practice, r_tilde preserves the routing behavior of the classifier while allowing finer control.
 
 > 💡 **公式批读**: Eq. 3 是整个 continuous inference 的核心。预期值比 argmax 有更多信息——当模型在两个分辨率之间犹豫时（如 p_384=0.6, p_768=0.4），预期值会给一个中间值（~538），实现更平滑的 routing。
 
@@ -102,15 +102,15 @@ This yields a continuous resolution that varies smoothly with confidence and is 
 **Algorithm 2: Continuous resolution selection.**
 
 ```
-Input: (x, q); low-res $r_{1}$; logits l.
-Output: Continuous resolution $r_{tilde}$ in [$r_{1}$, $r_{K}$].
-z <- features from proxy VLM at $r_{1}$
+Input: (x, q); low-res r_1; logits l.
+Output: Continuous resolution r_tilde in [r_1, r_K].
+z <- features from proxy VLM at r_1
 p <- softmax(l(z))
-$r_{tilde}$ <- SUM_{k=1}^{K} $p_{k}$ * $r_{k}$
-return $r_{tilde}$
+r_tilde <- SUM_{k=1}^{K} p_k * r_k
+return r_tilde
 ```
 
-**Deployment.** The target VLM receives x with the largest dimension resized to $r_{tilde}$ (or to the nearest supported side length to avoid under-allocation). For backbones that only accept a discrete set of input sizes, we round up to the next supported size.
+**Deployment.** The target VLM receives x with the largest dimension resized to r_tilde (or to the nearest supported side length to avoid under-allocation). For backbones that only accept a discrete set of input sizes, we round up to the next supported size.
 
 > 💡 **批注**: "round up to the next supported size" 是一个实用的工程决策——避免因分辨率不足导致性能退化。但这个 rounding 也会削弱连续分辨率的优势，尤其是在离散支持的尺寸之间有大 gap 的模型中。
 

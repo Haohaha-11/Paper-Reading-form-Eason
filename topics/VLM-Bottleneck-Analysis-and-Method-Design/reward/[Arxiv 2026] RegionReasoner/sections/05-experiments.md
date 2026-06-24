@@ -159,7 +159,7 @@ We study the contribution of each signal using Tables 3 and 4, which report sing
 >
 > **误差累积机制**:
 > ```
-> Round 1 error (ε₁) → 传播到 Round 2 作为 $B_2^ref$
+> Round 1 error (ε₁) → 传播到 Round 2 作为 B_2^ref
 > → Round 2 基于错误参考推理 → 产生 ε₂ > ε₁
 > → ... → Round N 误差被复合放大
 > ```

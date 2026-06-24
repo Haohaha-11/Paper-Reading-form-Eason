@@ -67,9 +67,9 @@ where W and b are learned parameters. Successful probing that generalizes to tes
 > | Probe 准确率高 ≠ 有因果作用 | 本文将 probe 作为定位工具，然后用 interchange intervention 验证因果性 |
 > | Probe 可能学到 shortcut | 在训练集外的背景 token 上测试 probe 的泛化，发现 strip 模式，说明 probe 的泛化模式是有意义的 |
 
-Causal Mediation Analysis Interchange intervention is a technique for testing causal relationships between a model's internal representations and its behavior [35, 27]. Let f(·) denote the model, and let $h_{ℓ}$(x) denote the internal representation at component or layer ℓ produced during a forward pass on input x. Given an original input x and a corresponding counterfactual input x', an interchange intervention replaces $h_{ℓ}$(x) with h̄_ℓ(x') while keeping the remainder of the computation unchanged. This yields an intervened output
+Causal Mediation Analysis Interchange intervention is a technique for testing causal relationships between a model's internal representations and its behavior [35, 27]. Let f(·) denote the model, and let h_ℓ(x) denote the internal representation at component or layer ℓ produced during a forward pass on input x. Given an original input x and a corresponding counterfactual input x', an interchange intervention replaces h_ℓ(x) with h̄_ℓ(x') while keeping the remainder of the computation unchanged. This yields an intervened output
 
-ŷ_int = f(x; $h_{ℓ}$ ← $h_{ℓ}$(x'))
+ŷ_int = f(x; h_ℓ ← h_ℓ(x'))
 
 a procedure commonly referred to as activation patching. If the intervened output ŷ_int matches the target outcome associated with the counterfactual input, this provides evidence that the intervened representation h plays a causal role in the model's computation. We quantify this effect using interchange intervention accuracy (IIA) [13]. In our setting, rather than measuring binary agreement with the intervention target as in the original definition of IIA, we measure the average probability assigned to the target intervention outcome token.
 

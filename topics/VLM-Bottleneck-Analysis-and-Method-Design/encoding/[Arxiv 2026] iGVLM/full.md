@@ -305,7 +305,7 @@ What detail is noticeable about the ground surrounding the flowers? (Type: FP)
 
 Options: A: It is fully paved, B: It is covered in grass, , D: It is sandy
 
-What might be a practical reaso for the arrangement of flowers? (Type: IR)
+What might be a practical reason for the arrangement of flowers? (Type: IR)
 
 Options: , B: To prevent erosion, C: To block noise, D: To create shade
 

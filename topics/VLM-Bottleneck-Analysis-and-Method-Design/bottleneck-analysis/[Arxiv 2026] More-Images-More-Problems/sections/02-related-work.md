@@ -28,7 +28,7 @@ Early LVLMs such as Flamingo and PaLM-E pioneered the integration of pre-trained
 
 ### Evaluation of LVLMs:
 
-Early evaluation efforts focused on narrower domains with benchmarks such as MS-COCO, VQA, DocVQA, GQA and AI2D, primarily assessing single-image understanding and using templatized questions with limited diversity. Later work introduced more comprehensive benchmarks to evaluate a wider range of skills, e.g. SEED-Bench, MMBench and MME, which feature diverse question types and require complex reasoning abilities. Similarly, video benchmarks such as MMVU and VideoMME require models to understand temporal dynamics and to reaso across multiple frames.
+Early evaluation efforts focused on narrower domains with benchmarks such as MS-COCO, VQA, DocVQA, GQA and AI2D, primarily assessing single-image understanding and using templatized questions with limited diversity. Later work introduced more comprehensive benchmarks to evaluate a wider range of skills, e.g. SEED-Bench, MMBench and MME, which feature diverse question types and require complex reasoning abilities. Similarly, video benchmarks such as MMVU and VideoMME require models to understand temporal dynamics and to reason across multiple frames.
 
 > **评测发展轨迹**: 单图 VQA (MS-COCO/VQA) -> 综合单图评测 (SEED-Bench/MMBench/MME) -> 视频评测 (MMVU/VideoMME) -> 多图评测 (MuirBench/Blink)。这条脉络揭示一个 gap：从单图到多图，评测的复杂度在提升，但分析深度在下降。本文正是要在"多图评测"这个环节补充深度分析。
 

@@ -68,9 +68,9 @@ FUTURE-L1 提出了一种**交错式潜空间视觉推理 (Interleaved Latent Vi
 │  [Stage 2: SFT]                                                  │
 │    Input: Observed Video V + Question q                          │
 │    Training Format:                                              │
-│      <reaso>[Text CoT 0]</reaso>                               │
+│      <reason>[Text CoT 0]</reason>                               │
 │      <|latent_start|>[Latent States 1]<|latent_end|>             │
-│      <reaso>[Text CoT 1]</reaso> ...                           │
+│      <reason>[Text CoT 1]</reason> ...                           │
 │      <answer>[Prediction]</answer>                                │
 │    Loss: L_CE (text tokens) + λ * L_Latent (MSE to future-frame │
 │          visual embeddings)                                       │

@@ -77,7 +77,7 @@ where $v_{l}$ ∈ R^{n×h} represents the projected visual cues ready for recurr
 
 The injection schedule is defined as:
 
-${ \hat { e } } _ { v } = { \left\{ \begin{array} { l l } { v _ { i } } & { \text{if } t \lt  K , } \\ { 0 } & { \text{if } t \geq K . } \end{array} \right. } \quad \text{where } i = L[ t ] $
+${ \hat { e } } _ { v } = { \left\{ \begin{array} { l l } { v _ { i } } & { \text{if } t <  K , } \\ { 0 } & { \text{if } t \geq K . } \end{array} \right. } \quad \text{where } i = L[ t ] $
 
 > 💡 **公式批读 — Eq.6（注入调度）**:
 > - 只在前 K 次迭代中注入视觉线索（K 通常是 4，因为视觉层级数为 4）

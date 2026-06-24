@@ -7,8 +7,8 @@
 | 项目 | 内容 |
 |------|------|
 | **标题** | Vision-aligned Latent Reasoning for Multi-modal Large Language Model |
-| **作者** | Byungwoo Jeon¹, Yoonwoo Jeong², Hyunseok Lee¹, Minsu Cho²'³'*, Jinwoo Shin¹'³'* |
-| **单位** | ¹KAIST, ²POSTECH, ³KRAFTON |
+| **作者** | Byungwoo Jeon<sup>1</sup>, Yoonwoo Jeong<sup>2</sup>, Hyunseok Lee<sup>1</sup>, Minsu Cho<sup>2,3,*</sup>, Jinwoo Shin<sup>1,3,*</sup> |
+| **单位** | <sup>1</sup>KAIST, <sup>2</sup>POSTECH, <sup>3</sup>KRAFTON |
 | **发表** | arXiv 2026 |
 | **代码** | Available at project page |
 
@@ -18,7 +18,7 @@
 
 Abstract:
 
-Despite recent advancements in Multi-modal Large Language Models (MLLMs) on diverse understanding tasks, these models struggle to solve problems which require extensive multistep reasoning. This is primarily due to the progressive dilution of visual information during long-context generation, which hinders their ability to fully exploit test-time scaling. To address this issue, we introduce Vision-aligned Latent Reasoning (VaLR), a simple, yet effective reasoning framework that dynamically generates vision-aligned latent tokens before each Chain-of-Thought reasoning step, guiding the model to reaso based on perceptual cues in the latent space. Specifically, VaLR is trained to preserve visual knowledge during reasoning by aligning intermediate embeddings of MLLM with those from vision encoders. Empirical results demonstrate that VaLR consistently outperforms existing approaches across a wide range of benchmarks requiring long-context understanding or precise visual perception, while exhibiting test-time scaling behavior not observed in prior MLLMs. In particular, VaLR improves the performance significantly from 33.0% to 52.9% on VSI-Bench, achieving a 19.9%p gain over Qwen2.5-VL. Code is available at project page.
+Despite recent advancements in Multi-modal Large Language Models (MLLMs) on diverse understanding tasks, these models struggle to solve problems which require extensive multistep reasoning. This is primarily due to the progressive dilution of visual information during long-context generation, which hinders their ability to fully exploit test-time scaling. To address this issue, we introduce Vision-aligned Latent Reasoning (VaLR), a simple, yet effective reasoning framework that dynamically generates vision-aligned latent tokens before each Chain-of-Thought reasoning step, guiding the model to reason based on perceptual cues in the latent space. Specifically, VaLR is trained to preserve visual knowledge during reasoning by aligning intermediate embeddings of MLLM with those from vision encoders. Empirical results demonstrate that VaLR consistently outperforms existing approaches across a wide range of benchmarks requiring long-context understanding or precise visual perception, while exhibiting test-time scaling behavior not observed in prior MLLMs. In particular, VaLR improves the performance significantly from 33.0% to 52.9% on VSI-Bench, achieving a 19.9%p gain over Qwen2.5-VL. Code is available at project page.
 
 > 💡 **一句话概括**: VaLR 通过在每步 Chain-of-Thought 推理前动态生成与视觉编码器对齐的 latent tokens，解决了 MLLM 在长上下文生成中视觉信息逐渐稀释的问题，首次在 MLLM 上实现了 test-time scaling 行为，在 VSI-Bench 上取得 19.9%p 的巨大提升。
 

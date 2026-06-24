@@ -8,9 +8,9 @@ Visual perception in modern Vision-Language Models (VLMs) is constrained by a pe
 
 ## 1. Introduction
 
-Vision-Language Models (VLMs) have significantly advanced general visual understanding, demonstrating a remarkable ability to reaso about holistic scene context (Bai et al., 2025; Comanici et al., 2025). However, a critical performance gap remains: despite their high-level reasoning capabilities, these models often exhibit “perceptual blindness” in tasks requiring fine-grained resolution (Campbell et al., 2024; Li et al., 2025b). Current state-of-the-art models frequently struggle with small-scale object counting, optical character recognition (OCR), and precise spatial localisation, failing even when the underlying logic of the task is straightforward (Zhang et al., 2024; Tong et al., 2024). We argue that such failures are not only failures of semantic reasoning but also failures of evidence acquisition under limited perceptual bandwidth.
+Vision-Language Models (VLMs) have significantly advanced general visual understanding, demonstrating a remarkable ability to reason about holistic scene context (Bai et al., 2025; Comanici et al., 2025). However, a critical performance gap remains: despite their high-level reasoning capabilities, these models often exhibit “perceptual blindness” in tasks requiring fine-grained resolution (Campbell et al., 2024; Li et al., 2025b). Current state-of-the-art models frequently struggle with small-scale object counting, optical character recognition (OCR), and precise spatial localisation, failing even when the underlying logic of the task is straightforward (Zhang et al., 2024; Tong et al., 2024). We argue that such failures are not only failures of semantic reasoning but also failures of evidence acquisition under limited perceptual bandwidth.
 
-The Perceptual Bandwidth Bottleneck. We identify this limitation as a perceptual bandwidth bottleneck. Most standard vision encoders, such as ViT-based models, project an input image into a fixed number of visual tokens regardless of its original resolution (Dosovitskiy, 2020; Liu et al., 2023). This fixed budget induces an unavoidable field-ofview–resolution trade-off: a global view preserves broad spatial context but compresses fine-grained details, while a local crop preserves details but sacrifices coverage. When processing a high-resolution scene globally, each token must aggregate a large spatial area, causing small objects, text, and local spatial relations to vanish before reasoning begins. Consequently, the model cannot reaso about evidence that is absent from its visual representation.
+The Perceptual Bandwidth Bottleneck. We identify this limitation as a perceptual bandwidth bottleneck. Most standard vision encoders, such as ViT-based models, project an input image into a fixed number of visual tokens regardless of its original resolution (Dosovitskiy, 2020; Liu et al., 2023). This fixed budget induces an unavoidable field-ofview–resolution trade-off: a global view preserves broad spatial context but compresses fine-grained details, while a local crop preserves details but sacrifices coverage. When processing a high-resolution scene globally, each token must aggregate a large spatial area, causing small objects, text, and local spatial relations to vanish before reasoning begins. Consequently, the model cannot reason about evidence that is absent from its visual representation.
 
 The Need for an Active Strategy. Alleviating this bottleneck requires the model to act, not merely to perceive. Instead of passively encoding a single downsampled image, the agent must engage in information foraging (Pirolli & Card, 1999): it must decide where to allocate highresolution visual bandwidth in order to acquire task-relevant evidence. Passive scanning strategies, such as sliding windows, are computationally prohibitive and introduce large amounts of distractor evidence. Recent latent Chain-of-Thought (Li et al., 2025a; Sun et al., 2025) and tool-based methods (Ma et al., 2025; Zhang et al., 2025b; Su et al., 2025a; Gao et al., 2025) show that visual agents can benefit from iterative perception, but their crop or tool-selection policies often remain heuristic. They lack a decisiontheoretic objective for deciding which observation is most valuable when the target is not immediately visible.
 
@@ -76,7 +76,7 @@ $$
 
 Discussion. This approximation reduces complexity from the joint product space $\mathcal { L } \times \mathcal { V }$ to separate spatial and semantic factors, at the cost of ignoring higher-order spatial– semantic correlations. We use this factorisation only as a planning approximation, not as a claim that the true posterior is independent. The sequential feedback loop can partially mitigate this bias, since new observations reshape both the spatial and semantic beliefs through the context.
 
-Under this assumption, we maintain two distinct belief maps: (1) A spatial belief $p _ { t } ( \ell )$ over the image coordinate space Ω, representing the agent’s uncertainty regarding the object’s location. (2) A semantic belief $p _ { t } ( y )$ , representing the uncertainty regarding the target’s identity (e.g., class distribution), initialised by the linguistic priors in Q. This separation allows the agent to explicitly reaso about “where to look” (spatial uncertainty reduction) as a distinct objective from “what it $\mathrm { i } \mathrm { s } ^ { \flat }$ (semantic identification), enabling the tractable EIG derivation in Section 3.
+Under this assumption, we maintain two distinct belief maps: (1) A spatial belief $p _ { t } ( \ell )$ over the image coordinate space Ω, representing the agent’s uncertainty regarding the object’s location. (2) A semantic belief $p _ { t } ( y )$ , representing the uncertainty regarding the target’s identity (e.g., class distribution), initialised by the linguistic priors in Q. This separation allows the agent to explicitly reason about “where to look” (spatial uncertainty reduction) as a distinct objective from “what it $\mathrm { i } \mathrm { s } ^ { \flat }$ (semantic identification), enabling the tractable EIG derivation in Section 3.
 
 The core physical constraint is that semantic information is inaccessible unless the target is physically captured. This interaction is modelled by the visibility event S, which acts as a latent bottleneck between the world state and the sensor.
 
@@ -136,7 +136,7 @@ This “information cliff” requires look-ahead planning.
 
 While the ideal agent optimises the sequential Bellman equation, the nested expectations over high-dimensional observations z render it computationally intractable. In this section, we derive a closed-form approximation for the immediate task-relevant information gain that drives our practical cropselection strategy.
 
-The Joint Information Objective. The ultimate goal of the agent is to resolve the user’s query y. However, due to the physical coupling between “seeing” and “understanding”, the agent must jointly reaso about the full latent state $\pmb \theta =$ $\{ \ell , y \}$ . Theoretically, the total information gain decomposes into spatial and semantic components:
+The Joint Information Objective. The ultimate goal of the agent is to resolve the user’s query y. However, due to the physical coupling between “seeing” and “understanding”, the agent must jointly reason about the full latent state $\pmb \theta =$ $\{ \ell , y \}$ . Theoretically, the total information gain decomposes into spatial and semantic components:
 
 $$
 \begin{array} { r } { \mathbf { \mathcal { T } } ( \mathbf { z } ; \ell , y \mid \mathbf { d } ) = \underbrace { \mathbf { \mathcal { T } } ( \mathbf { z } ; \ell \mid \mathbf { d } ) } _ { \mathrm { L o c a l i z a t i o n G a i n } } + \underbrace { \mathcal { T } ( \mathbf { z } ; y \mid \ell , \mathbf { d } ) } _ { \mathrm { S e m a n t i c G a i n } } . } \end{array}
@@ -337,7 +337,7 @@ Table 1 presents a comparative analysis across all evaluated benchmarks. On the 
 
 To isolate the contribution of our search strategy from the VLM’s semantic reasoning capabilities, we conduct a focused ablation on the Remote Sensing subset of MME-RealWorld-lite (Zhang et al., 2024). This setting is searchdominated: images are extremely large, targets are sparse, and task-relevant regions are often nearly invisible in the downsampled global view. We compare Direct, ReAct, and FOVEA variants against an oracle-crop baseline, where the VLM is given a human-annotated crop. The oracle does not represent perfect answering; rather, it separates search failures from recognition failures.
 
-Analysis. As visualised in Figure 3, ReAct improves over the base model by enabling active tool use, but remains limited by noisy crop proposals. FOVEA-Greedy and FOVEA-MCMC further improve accuracy by refining local foveations, while FOVEA-Lookahead reaches 54.7%, compared with 45.1% for ReAct. The remaining gap to the oracle-crop baseline shows that evidence acquisition and backbone recognition are distinct bottlenecks: even with task-relevant crops, the VLM can still misrecognise or misreaso. We analyse token costs in Appendix D.5, recognition failures in Appendix H.3, and qualitative cases in Appendix I.
+Analysis. As visualised in Figure 3, ReAct improves over the base model by enabling active tool use, but remains limited by noisy crop proposals. FOVEA-Greedy and FOVEA-MCMC further improve accuracy by refining local foveations, while FOVEA-Lookahead reaches 54.7%, compared with 45.1% for ReAct. The remaining gap to the oracle-crop baseline shows that evidence acquisition and backbone recognition are distinct bottlenecks: even with task-relevant crops, the VLM can still misrecognise or misreason. We analyse token costs in Appendix D.5, recognition failures in Appendix H.3, and qualitative cases in Appendix I.
 
 ## 5.3. Compute–Accuracy Scaling of Search Strategies
 
@@ -750,7 +750,7 @@ It is pertinent to address why the human-annotated Oracle saturates at an accura
 
 We assumed that successful foveation $( S = 1 )$ causes the conditional entropy to collapse to zero: $H ( y \mid \mathbf { z } , S = 1 , \mathbf { d } ) \approx 0$ However, in information-theoretic terms, this collapse implies certainty regarding the posterior distribution, but not necessarily correctness relative to the ground truth. The residual 32% error rate indicates that even when the perceptua bandwidth bottleneck is fully resolved, the agent remains constrained by the intrinsic reasoning capabilities of the underlying backbone model.
 
-Figure 8 illustrates a representative failure case. The query requires counting light orange rectangular structures. Although the “golden crop” renders these features with high fidelity (clearly showing four distinct structures), the model confidently reasos: By carefully counting them, we can identify exactly three such structures... and outputs an incorrect answer. In these failure modes, the model effectively hallucinates a confident but incorrect answer $( y _ { \mathrm { p r e d } } \neq y _ { \mathrm { G T } } )$ despite high-fidelity observation. This distinction clarifies that while S-BOED-guided search improves the acquisition of visual evidence, final answering accuracy remains bounded by the recognition and reasoning limits of the underlying foundation model.
+Figure 8 illustrates a representative failure case. The query requires counting light orange rectangular structures. Although the “golden crop” renders these features with high fidelity (clearly showing four distinct structures), the model confidently reasons: By carefully counting them, we can identify exactly three such structures... and outputs an incorrect answer. In these failure modes, the model effectively hallucinates a confident but incorrect answer $( y _ { \mathrm { p r e d } } \neq y _ { \mathrm { G T } } )$ despite high-fidelity observation. This distinction clarifies that while S-BOED-guided search improves the acquisition of visual evidence, final answering accuracy remains bounded by the recognition and reasoning limits of the underlying foundation model.
 
 ![](images/36ef735ba2d70f07ce3c7f617a4fd00ca988f524b8bc2ad65c6ea8672c11ff20.jpg)  
 Figure 8. Oracle failure case. Even with a perfect “golden crop” that clearly resolves the target (four orange rectangular structures), the VLM hallucinates a count of “three”, demonstrating that visual resolvability does not guarantee reasoning correctness.
@@ -796,7 +796,7 @@ You will be shown three images (or two after deduplication):
 
 • MUST NOT answer anything other than “Yes” and “No”; you don’t need to answer the original question.
 
-• MUST use the thinking section to reaso about the relationships between images and the question, and give a thorough analysis.
+• MUST use the thinking section to reason about the relationships between images and the question, and give a thorough analysis.
 
 • ALWAYS output reasoning under \*\*Thinking:\*\* and “Yes” or “No” within <answer>.
 
@@ -805,7 +805,7 @@ You will be shown three images (or two after deduplication):
 <sub>\*\*</sub>Thinking:<sub>\*\*</sub>   
 1. Analyze the correlation:   
 2. Identify mismatch: ...   
-3. Thorough analysis (Reaso about if you can answer the question correctly given the cropped region based on the   
+3. Thorough analysis (Reason about if you can answer the question correctly given the cropped region based on the   
 previous thinking): ...   
 <sub>\*\*</sub>Answer:<sub>\*\*</sub>   
 <answer>[Your Answer]</answer>
@@ -852,7 +852,7 @@ Your objective is to provide accurate answers to user questions regarding a prov
 
 • If the question provides the approximate location, zoom in that area to locate the object.
 
-• If not, reaso about what particular regions it can be located in. For example, a boat is most likely in the water. Make a list and zoom in each candidate in the decreasing order of possibility.
+• If not, reason about what particular regions it can be located in. For example, a boat is most likely in the water. Make a list and zoom in each candidate in the decreasing order of possibility.
 
 • If you have no clue at all, scan through the whole picture, from top to bottom and from left to right. Sometimes the choices provided by the question can suggest some locations as well.
 
