@@ -30,7 +30,7 @@
 
 #### 密集 RoI 热力图预测
 
-**步骤 1**: 在初始 prefill 阶段，RPN 继承冻结 backbone 计算的 **$H_{context}^B$**，通过前 R-1 个可调层产生 **H_rpn^(B+R-1)**
+**步骤 1**: 在初始 prefill 阶段，RPN 继承冻结 backbone 计算的 **$H_{context}^B$**，通过前 R-1 个可调层产生 **$H_{rpn}^{(B+R-1)}$**
 
 **步骤 2**: 将最后（第 R）个 block 的自注意力机制复用为专门的空间预测头：
 
@@ -38,9 +38,9 @@
 - 提取密集视觉特征序列: **$H_v^{(B+R-1)}$** ∈ R^(HW×d)
 - 通过 RPN 第 R 个注意力层的原生投影矩阵 ($LP_q$ 和 $LP_k$) 映射到共享潜空间：
 
-$$Q_{RoI} = LP_q(\mathrm{Norm}(H_u^{B+R-1}[-1]))$$
+$$Q_{RoI} = LP_q(\mathrm{Norm}($H_{u}^{{B+R-1}}$[-1]))$$
 
-$$K_v = LP_k(\mathrm{Norm}(H_v^{B+R-1})) $$
+$$K_v = LP_k(\mathrm{Norm}($H_{v}^{{B+R-1}}$)) $$
 
 **步骤 3**: 通过内积计算空间热力图：
 
@@ -60,13 +60,13 @@ $$b_{roi} = \mathrm{bbox}(B), \quad H_{v_{roi}}^0 = \mathcal{P}(\mathcal{E}_v(x_
 
 #### KV-Cache 前缀复用优化
 
-> **Hao 批注**: 这是 Q-Zoom 高效率的关键工程优化。因为高分辨率 RoI token 插入在文本 query 之前，系统提示和粗粒度视觉特征的 prefix 上下文到第 B 层为止在数学上保持不变。直接检索缓存的 H_sys^B 和 H_v^B，仅对新 RoI 和位移后的 user token 进行前 B 层前向：
+> **Hao 批注**: 这是 Q-Zoom 高效率的关键工程优化。因为高分辨率 RoI token 插入在文本 query 之前，系统提示和粗粒度视觉特征的 prefix 上下文到第 B 层为止在数学上保持不变。直接检索缓存的 $H_{sys}^{B}$ 和 $H_{v}^{B}$，仅对新 RoI 和位移后的 user token 进行前 B 层前向：
 
 $$[H_{v_{roi}}^B, H_{user}^B] = \mathcal{L}_{1:B}([H_{v_{roi}}^0, H_{user}^0]) $$
 
 拼接后通过剩余层生成最终响应：
 
-$$H_{context}^L = \mathcal{L}_{B+1:L}([H_{sys}^B, H_v^B, H_{v_{roi}}^B, H_{user}^B]) $$
+$$H_{context}^L = \mathcal{L}_{B+1:L}([H_{sys}^B, $H_{v}^{B}$, H_{v_{roi}}^B, H_{user}^B]) $$
 
 这种缓存策略避免了粗粒度视觉上下文的冗余重编码，显著加速二次 prefill 阶段。
 
@@ -80,7 +80,7 @@ MLLM 的内部交叉注意力机制天然具有强大的视觉定位能力。通
 
 从指定的中间层 l 提取交叉模态注意力权重。对于单个注意力头：
 
-$$M_{RoI}^l = \frac{1}{N_t} \sum_{i=1}^{N_t} A_i^l, \quad \text{where} \quad A^l = \mathrm{softmax}\left(\frac{Q_t^l (K_v^l)^\top}{\sqrt{d}}\right) $$
+$$M_{RoI}^l = \frac{1}{N_t} \sum_{i=1}^{N_t} $A_{i}^{l}$, \quad \text{where} \quad A^l = \mathrm{softmax}\left(\frac{$Q_{t}^{l}$ ($K_{v}^{l}$)^\top}{\sqrt{d}}\right) $$
 
 > 每个 visual token 对文本响应的聚合重要性编码为 RoI map。
 
@@ -106,7 +106,7 @@ $$(M_{RoI}')_j = \begin{cases} 0, & \text{if } \|(H_v)_j\|_2 \gt  \tau_{norm} \\
 
 ![Figure 5](../images/f15f2ee16b40bd8d8aa3d1d84d806b6785156c33a19cbaf69d12ede0c870b67d.jpg)
 
-**Fig. 5**: 在 TextVQA 上，具有极端相对 attention score (a_j / a_max) 的 token 与 ground-truth 前/背景可靠相关，但大量 token 落入高度模糊的中间范围。
+**Fig. 5**: 在 TextVQA 上，具有极端相对 attention score ($a_{j}$ / $a_{max}$) 的 token 与 ground-truth 前/背景可靠相关，但大量 token 落入高度模糊的中间范围。
 
 > **Hao 批注**: Fig.5 是理解三态标签设计的关键。横轴是相对 attention score，纵轴可能展示了前景/背景的分类准确率。核心发现：两端（极低和极高 attention）是干净的信号，中间是一片"灰色地带"——这些 token 既可能属于前景也可能属于背景，强行分类只会引入噪声。
 
@@ -114,11 +114,11 @@ $$(M_{RoI}')_j = \begin{cases} 0, & \text{if } \|(H_v)_j\|_2 \gt  \tau_{norm} \\
 
 **选择性三态分类策略**：
 
-1. **高置信前景集** S_fg = {j | a_j >= τ_fg · a_max}
-   - 构建包围这些前景 token 的最小边界框 B_fg
-2. **Ignore 区域**: B_fg 内但不属于 S_fg 的 token 设为 ignore (-1)
+1. **高置信前景集** $S_{fg}$ = {j | $a_{j}$ >= $τ_fg$ · $a_{max}$}
+   - 构建包围这些前景 token 的最小边界框 $B_{fg}$
+2. **Ignore 区域**: $B_{fg}$ 内但不属于 $S_{fg}$ 的 token 设为 ignore (-1)
    - 防止不完整的对象激活错误惩罚网络
-3. **背景集** S_bg: B_fg 外且 attention 低于 τ_bg · a_max 的 token (严格约束)
+3. **背景集** $S_{bg}$: $B_{fg}$ 外且 attention 低于 $τ_bg$ · $a_{max}$ 的 token (严格约束)
 
 最终离散伪标签：
 
@@ -133,7 +133,7 @@ $$(\bar{M}_{RoI})_j = \begin{cases} 1, & \text{if token } j \in S_{fg} \\ 0, & \
 - 从 SD-RPN 的倒数第二层 (l = B+R-1) 提取隐藏状态
 - 跨 n 轮对话拼接：系统提示 + 视觉 + 多轮 query/response
 
-$$H^l = [H_{sys}^l, H_v^l, H_{u(1)}^l, H_{r(1)}^l, \ldots, H_{u(n)}^l, H_{r(n)}^l] $$
+$$H^l = [H_{sys}^l, $H_{v}^{l}$, H_{u(1)}^l, H_{r(1)}^l, \ldots, H_{u(n)}^l, H_{r(n)}^l] $$
 
 每个用户 query 的末 token 拼接为聚合 query tensor：
 
@@ -168,7 +168,7 @@ $$\mathcal{L}_{RPN} = \mathrm{BCE}(\hat{M}_{RoI}, \bar{M}_{RoI})$$
 **1. Temporal Shift（时间位移）**
 
 - 目的：在逻辑上区分密集 RoI token 和共享相同空间足迹的粗粒度源 token，防止位置冲突
-- 操作：为 RoI token 分配偏移时间索引 t_roi = t_src + δ
+- 操作：为 RoI token 分配偏移时间索引 $t_{roi}$ = $t_{src}$ + δ
 - δ = min(H, W)：将高分辨率 RoI 投影到源图像上方的"辅助时间层"
 - 效果：遵循 MRoPE 的 (t, h, w) 三维位置编码体系
 

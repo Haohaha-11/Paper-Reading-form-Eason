@@ -78,7 +78,7 @@ Notably, to reduce the data construction costs, we set the max number of steps t
 
 **Overview.** During the training process, we formulate the process supervision problem as a multi-turn chat task so that we can effectively leverage the generation ability of MLLMs. The image I, question q, and the first step $s_{0}$ of the solution to this question are included in the first turn and a new step is presented in each subsequent turn. The model is required to predict the quality of the given step in each turn as follows:
 
-$y_i \sim M(y_i \mid I, q, s_{\leq i}),$
+$y_i \sim M($y_{i}$ \mid I, q, s_{\leq i}),$
 
 where $y_{i}$ denotes the quality of i-th step.
 

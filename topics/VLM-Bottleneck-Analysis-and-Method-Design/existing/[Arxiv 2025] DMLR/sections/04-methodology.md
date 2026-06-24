@@ -45,7 +45,7 @@ In light of the observations in Section 3, DMLR comprises two key processes: dyn
 > 2. **Exploration**: 通过 Gaussian noise 扰动 T → T' (Eq.5)
 > 3. **Reward Computation**: 前向传播得到 token 概率分布 Pi，计算 truncated entropy → 得到 reward R (Eq.6-7)
 > 4. **Policy Gradient Update**: REINFORCE 更新 T (Eq.8-9)
-> 5. **Dynamic Visual Injection**: 根据 attention 选择候选 patch Z_cand，与当前的 best patch V_best 一起注入，计算 reward，如果提升则更新 V_best (Eq.10)
+> 5. **Dynamic Visual Injection**: 根据 attention 选择候选 patch $Z_{cand}$，与当前的 best patch $V_{best}$ 一起注入，计算 reward，如果提升则更新 $V_{best}$ (Eq.10)
 > 6. **迭代 T 步**
 > 7. **Decode**: 将优化后的 T* 与 Q, Z 一起解码输出最终答案
 
@@ -93,7 +93,7 @@ where eta denotes the learning rate. According to the Policy Gradient Theorem an
 > - **实际计算**: 在每次迭代中，采样一个噪声 xi，计算扰动后的 reward，用 R * xi / sigma^2 作为梯度估计来更新 T
 > - **为什么用 REINFORCE**: reward R 不是直接可微的（它来自模型的前向传播输出），需要策略梯度方法来进行优化
 
-**Visual Injection Strategy.** Different from methods that directly inject high-attention regions [41], our strategy updates the most informative visual patches based on the reward at each iteration and injects them as latent visual tokens. As illustrated in Algorithm 1, we first use the initial attention of the latent think token to collect m highly relevant image patches (see Section 5.1), which serve as the initial best patch V_best. At each iteration, the model resamples m candidate patches Z_cand = {Z1, ..., Zm} based on the updated attention and injects them together with the previous best patch into the latent sequence for reward, as formulated in Equation 10. If the reward r > r_best, indicating that the candidate patches provide enhanced visual evidence, the best patch V_best is updated; otherwise, the previous best is retained.
+**Visual Injection Strategy.** Different from methods that directly inject high-attention regions [41], our strategy updates the most informative visual patches based on the reward at each iteration and injects them as latent visual tokens. As illustrated in Algorithm 1, we first use the initial attention of the latent think token to collect m highly relevant image patches (see Section 5.1), which serve as the initial best patch $V_{best}$. At each iteration, the model resamples m candidate patches $Z_{cand}$ = {Z1, ..., Zm} based on the updated attention and injects them together with the previous best patch into the latent sequence for reward, as formulated in Equation 10. If the reward r > $r_{best}$, indicating that the candidate patches provide enhanced visual evidence, the best patch $V_{best}$ is updated; otherwise, the previous best is retained.
 
 ![Equation: Visual injection reward](../images/a67312b4144f126b0010992c888ae6cfb026ddcf43e8601376898c01c6bb58aa.jpg)
 
@@ -102,18 +102,18 @@ As the iterations progress, the best visual patch converges to the regions most 
 > 💡 **机制拆解 — 动态视觉注入策略 (DVI) 的完整流程**:
 >
 > **初始化**:
-> - 用初始 attention 收集 m 个高相关 image patches 作为 V_best
+> - 用初始 attention 收集 m 个高相关 image patches 作为 $V_{best}$
 >
 > **迭代 (L 次)**:
-> 1. 基于当前 T 的 attention，重新选择 m 个候选 patches Z_cand
-> 2. 将 [T, V_best, Z_cand] 拼接，计算 reward r
-> 3. **如果 r > r_best**: 更新 V_best ← V_best U Z_cand, T ← [T, Z_cand, V_best]（接受候选 patches）
-> 4. **否则**: T ← [T, V_best]（保留之前的最佳 patches）
+> 1. 基于当前 T 的 attention，重新选择 m 个候选 patches $Z_{cand}$
+> 2. 将 [T, $V_{best}$, $Z_{cand}$] 拼接，计算 reward r
+> 3. **如果 r > $r_{best}$**: 更新 $V_{best}$ ← $V_{best}$ U $Z_{cand}$, T ← [T, $Z_{cand}$, $V_{best}$]（接受候选 patches）
+> 4. **否则**: T ← [T, $V_{best}$]（保留之前的最佳 patches）
 >
 > **关键设计理念**:
 > - **Attention-based selection**: 用 attention 而非固定规则选择 patch → 自适应
 > - **Reward-gated update**: 只有提升 reward 的 patches 才被保留 → 防止冗余视觉信息
-> - **Cumulative best patch**: V_best 持续累积 → 逐渐收敛到最相关的视觉区域
+> - **Cumulative best patch**: $V_{best}$ 持续累积 → 逐渐收敛到最相关的视觉区域
 > - **与 ICoT 的关键区别**: ICoT 每次注入所有高 attention 区域 → 冗余且不稳定；DMLR 通过 reward-gated 机制只保留真正有用的 patches
 
 ---
@@ -126,15 +126,15 @@ As the iterations progress, the best visual patch converges to the regions most 
 
 > 💡 **算法流程解读**:
 >
-> **Inputs**: image embeddings Z, text embeddings Q, latent tokens T, learning rate eta, iterations T, best visual patch V_best, top-k probability, number of candidate patches m
+> **Inputs**: image embeddings Z, text embeddings Q, latent tokens T, learning rate eta, iterations T, best visual patch $V_{best}$, top-k probability, number of candidate patches m
 >
 > **Phase 1: Latent Policy Gradient Optimization** (for t = 1...T)
 > - Perturbation: xi ~ N(0, sigma^2 I), T' ← T + xi
 > - Update: T ← T + eta * grad_T J(T)  (REINFORCE)
 >
 > **Phase 2: Dynamic Visual Injection** (for l = 1...L)
-> - Initialize V_best from initial attention
-> - Each step: select m candidate patches Z_cand via attention → compute reward → accept/reject based on reward comparison
+> - Initialize $V_{best}$ from initial attention
+> - Each step: select m candidate patches $Z_{cand}$ via attention → compute reward → accept/reject based on reward comparison
 >
 > **Output**: Decode(T*, Z, Q) → final answer X
 
@@ -150,11 +150,11 @@ Theorem 4.1 (Confidence Reflects Reasoning Quality). Let h denote the latent rea
 
 > 💡 **Theorem 4.1 批读**: 定理表述了一个充分必要条件：当且仅当置信度 C(h) 和推理质量 Q(h) 在潜状态 h 处的梯度正对齐 (gradient dot product > 0) 时，沿置信度上升方向更新 h 也会提升推理质量。这为"用置信度作为优化目标"提供了理论保证——前提是梯度的正对齐假设成立。Section 3 的实证分析（Observation 1-3）为这个假设提供了经验支持。
 
-Theorem 4.2. (Visual Injection Enhances Confidence). Let tau be the latent reasoning states, tau_hat denote the updated states after visual injection, and z_v be the visual features. Visual injection in DMLR increases the mutual information between latent states and visual features, thereby enhancing the expected confidence J_conf(T), satisfying:
+Theorem 4.2. (Visual Injection Enhances Confidence). Let tau be the latent reasoning states, tau_hat denote the updated states after visual injection, and $z_{v}$ be the visual features. Visual injection in DMLR increases the mutual information between latent states and visual features, thereby enhancing the expected confidence $J_{conf}$(T), satisfying:
 
 ![Equation: Theorem 4.2](../images/e596e3c5c523bbedc8b8f4b68eaf0e721af8a1f5cace280495811aa21c3d2c82.jpg)
 
-> 💡 **Theorem 4.2 批读**: 视觉注入增加了潜状态 T 和视觉特征 z_v 之间的互信息 I(T; z_v)，从而提升了期望置信度 J_conf(T)。直观理解：引入视觉信息让潜状态与视觉输入建立更强的关联，模型因此对预测更加"确定"→ 置信度提升。这为 DVI 策略提供了信息论层面的理论解释。
+> 💡 **Theorem 4.2 批读**: 视觉注入增加了潜状态 T 和视觉特征 $z_{v}$ 之间的互信息 I(T; $z_{v}$)，从而提升了期望置信度 $J_{conf}$(T)。直观理解：引入视觉信息让潜状态与视觉输入建立更强的关联，模型因此对预测更加"确定"→ 置信度提升。这为 DVI 策略提供了信息论层面的理论解释。
 
 ---
 

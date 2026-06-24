@@ -36,9 +36,9 @@ Definition 2.1 (Perceptual Bandwidth B). The fundamental bottleneck of VLM perce
 
 ρ(d) ≜ B / A(d)
 
-Definition 2.2 (Resolution Probability φ). The probability that fine-grained features are resolved is governed by a saturation function f_sat (e.g., sigmoid) of information density:
+Definition 2.2 (Resolution Probability φ). The probability that fine-grained features are resolved is governed by a saturation function $f_{sat}$ (e.g., sigmoid) of information density:
 
-φ(d) ≜ P(Resolved | d) = f_sat(ρ(d))  (Eq. 1)
+φ(d) ≜ P(Resolved | d) = $f_{sat}$(ρ(d))  (Eq. 1)
 
 This creates a physical trade-off: larger crops (high A) suffer from low density (φ → 0), while smaller crops (low A) achieve high density (φ → 1).
 
@@ -47,7 +47,7 @@ This creates a physical trade-off: larger crops (high A) suffer from low density
 > B = 固定的 visual token 数量 (如 ViT-L/14 的 576 tokens).
 > A(d) = crop 覆盖的图像面积 (归一化).
 > ρ(d) = B / A(d) = 单位面积上的 token 数，代表有效信息密度.
-> φ(d) = f_sat(ρ(d)) = 在给定密度下，fine-grained 特征能被分辨出来的概率.
+> φ(d) = $f_{sat}$(ρ(d)) = 在给定密度下，fine-grained 特征能被分辨出来的概率.
 
 > | 场景 | A(d) | ρ(d) | φ(d) | 能分辨什么 |
 > |------|------|------|------|-----------|
@@ -57,9 +57,9 @@ This creates a physical trade-off: larger crops (high A) suffer from low density
 
 > 这说明 crop 操作本质上是在做 "bandwidth allocation"：通过限制空间区域，将固定 token budget 集中到更小的面积上，从而提高局部信息密度。
 
-Remark 2.3 (Analogy: The Semantic Nyquist Rate). The saturation behavior of f_sat mirrors the classical Nyquist-Shannon Sampling Theorem (Shannon, 1949). We posit the existence of a critical density threshold τ_nyq, termed the semantic Nyquist Rate. When ρ(d) < τ_nyq, the encoder fails to distinguish between distinct local features, rendering fine-grained features indistinguishable. Conversely, once the density exceeds this threshold, the features become recoverable. In our framework, the sigmoid function serves as a differentiable approximation of this critical transition.
+Remark 2.3 (Analogy: The Semantic Nyquist Rate). The saturation behavior of $f_{sat}$ mirrors the classical Nyquist-Shannon Sampling Theorem (Shannon, 1949). We posit the existence of a critical density threshold $τ_nyq$, termed the semantic Nyquist Rate. When ρ(d) < $τ_nyq$, the encoder fails to distinguish between distinct local features, rendering fine-grained features indistinguishable. Conversely, once the density exceeds this threshold, the features become recoverable. In our framework, the sigmoid function serves as a differentiable approximation of this critical transition.
 
-> 💡 **Semantic Nyquist Rate 类比**: 这个类比很深刻——就像 Shannon-Nyquist 定理要求采样率高于信号最高频率的两倍才能无失真重建，semantic Nyquist rate 要求信息密度超过阈值才能分辨 fine-grained 特征。当 ρ < τ_nyq 时，两个相邻但不同的小物体在 token 空间中"混叠"成一个模糊团块，语义区分完全丢失。
+> 💡 **Semantic Nyquist Rate 类比**: 这个类比很深刻——就像 Shannon-Nyquist 定理要求采样率高于信号最高频率的两倍才能无失真重建，semantic Nyquist rate 要求信息密度超过阈值才能分辨 fine-grained 特征。当 ρ < $τ_nyq$ 时，两个相邻但不同的小物体在 token 空间中"混叠"成一个模糊团块，语义区分完全丢失。
 
 ---
 
@@ -71,21 +71,21 @@ Design Space: Foveation Actions (D). Foveation actions are parameterised as spat
 
 Latent Parameters: Semantic & Spatial State (θ). We define the unknown state space as θ ≜ {ℓ, y}, which factorises into two components: the spatial location ℓ of the relevant object and the semantic target y (e.g., the class label or text answer).
 
-Agent's Belief State. At any time step t, the agent's knowledge about the latent parameters θ is captured by the joint posterior p_t(ℓ, y). In real-world visual reasoning, spatial location ℓ and semantic identity y are often coupled (e.g., context implies location). However, maintaining a full highdimensional joint posterior is computationally intractable for real-time inference.
+Agent's Belief State. At any time step t, the agent's knowledge about the latent parameters θ is captured by the joint posterior $p_{t}$(ℓ, y). In real-world visual reasoning, spatial location ℓ and semantic identity y are often coupled (e.g., context implies location). However, maintaining a full highdimensional joint posterior is computationally intractable for real-time inference.
 
 Assumption 2.4 (Factorised Belief Approximation). To ensure tractability during the sequential design process, we adopt a mean-field approximation (Blei et al., 2017), assuming that the spatial search and semantic identification are momentarily decoupled during planning:
 
-p_t(ℓ, y) ≈ p_t(ℓ) · p_t(y).
+$p_{t}$(ℓ, y) ≈ $p_{t}$(ℓ) · $p_{t}$(y).
 
 > 💡 **假设解析 — Factorised Belief**:
 
 > 这个近似将 O(|L| × |V|) 的联合空间降为 O(|L| + |V|) 的独立空间。代价是忽略空间-语义的高阶相关性（如"船通常在水域"这种先验）。但作者明确指出这是 planning 近似，不是声称真实 posterior 真的是独立的。Sequential feedback（通过观测更新的交互历史）可以部分缓解这个 bias。
 
-Under this assumption, we maintain two distinct belief maps: (1) A spatial belief p_t(ℓ) over the image coordinate space Ω, representing the agent's uncertainty regarding the object's location. (2) A semantic belief p_t(y), representing the uncertainty regarding the target's identity (e.g., class distribution), initialised by the linguistic priors in Q. This separation allows the agent to explicitly reason about "where to look" (spatial uncertainty reduction) as a distinct objective from "what it is" (semantic identification), enabling the tractable EIG derivation in Section 3.
+Under this assumption, we maintain two distinct belief maps: (1) A spatial belief $p_{t}$(ℓ) over the image coordinate space Ω, representing the agent's uncertainty regarding the object's location. (2) A semantic belief $p_{t}$(y), representing the uncertainty regarding the target's identity (e.g., class distribution), initialised by the linguistic priors in Q. This separation allows the agent to explicitly reason about "where to look" (spatial uncertainty reduction) as a distinct objective from "what it is" (semantic identification), enabling the tractable EIG derivation in Section 3.
 
 > 💡 **两层 belief 的功能分工**:
-> - p_t(ℓ): "where to look" —— 指导空间搜索，告诉 agent 哪些区域还需要探索
-> - p_t(y): "what it is" —— 指导语义消歧，降低候选答案的 uncertainty
+> - $p_{t}$(ℓ): "where to look" —— 指导空间搜索，告诉 agent 哪些区域还需要探索
+> - $p_{t}$(y): "what it is" —— 指导语义消歧，降低候选答案的 uncertainty
 > - 解耦后，EIG 的计算不再需要 joint (ℓ,y) 的积分，而是可以分别处理
 
 The core physical constraint is that semantic information is inaccessible unless the target is physically captured. This interaction is modelled by the visibility event S, which acts as a latent bottleneck between the world state and the sensor.
@@ -130,7 +130,7 @@ The complete generative process and the resulting decisiontheoretic structure ar
 ## 三、Summary
 
 - **概率系统**: ⟨θ, D, Z⟩ — latent state (ℓ, y), foveation action d, observation z.
-- **感知带宽**: B = 固定 token budget → ρ(d) = B/A(d) → φ(d) = f_sat(ρ(d)) → φ 控制 fine-grained 特征的分辨概率。
+- **感知带宽**: B = 固定 token budget → ρ(d) = B/A(d) → φ(d) = $f_{sat}$(ρ(d)) → φ 控制 fine-grained 特征的分辨概率。
 - **Visibility Event**: S = 1 当且仅当空间覆盖 (ℓ ∈ d) 且感知分辨率 (φ(d) 高) 同时满足。
 - **Observation Model**: mixture of signal (S=1) and noise (S=0), y ⟂ z when S=0.
 - **Factorised Belief (Assump. 2.4)**: p(ℓ,y) ≈ p(ℓ)·p(y)，为 tractable EIG 推导提供前提。

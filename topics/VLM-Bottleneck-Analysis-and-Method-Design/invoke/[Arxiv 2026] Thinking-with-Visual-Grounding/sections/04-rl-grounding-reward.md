@@ -159,7 +159,7 @@ Because dense grounding reward and sparse rewards have different scales, we **no
 
 $$
 
-R_i^{\text{base}} = w_{\text{ans}} r_i^{\text{ans}} + w_{\text{think}} r_i^{\text{think}} + w_{\text{gfmt}} r_i^{\text{gfmt}} + r_i^{\text{trunc}}
+$R_{i}^{{\text{base}}$} = w_{\text{ans}} r_i^{\text{ans}} + w_{\text{think}} r_i^{\text{think}} + w_{\text{gfmt}} r_i^{\text{gfmt}} + r_i^{\text{trunc}}
 
 $$
 

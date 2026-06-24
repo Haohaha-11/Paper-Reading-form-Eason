@@ -41,7 +41,7 @@ Ensure: Evidence snapshot set E
 Run M(I, {$h_{i}$}) to obtain logits $z_{L}$ and hidden states {H^(ℓ)}
 v̂ = argmax_v $z_{L}$[v], s = $z_{L}$[v̂]  // choose prediction target
 Sal(i) = ||∇_{$h_{i}$} s ⊙ $h_{i}$||_2, A = Filter(Sal)  // identify salient textual anchors
-H̄ = (1/|$L_{mid}$|) $Σ_{{ℓ∈L_mid}}$ H^(ℓ)  // stabilize cross-modal representations
+H̄ = (1/|$L_{mid}$|) $Σ_{{ℓ∈$L_{mid}$}}$ H^(ℓ)  // stabilize cross-modal representations
 Extract patch tokens X = {$x_{j}$} and anchor token reps {$q_{i}$} from H̄.
 Normalize x̂_j = $x_{j}$ / ||$x_{j}$||_2, q̂_i = $q_{i}$ / ||$q_{i}$||_2; initialize E = ∅.
 for i ∈ A do
@@ -75,7 +75,7 @@ return E
 > - 在**同一个** H̄ 中提取 anchor 表示 $q_i$ 和 patch 表示 $x_j$，做 cosine similarity + temperature-scaled softmax。
 > - 关键前提：VLM 中 text token 和 image patch token 在**同一个表示空间**中（经过 projector 对齐后），可以直接比较。
 >
-> **步骤 6: 块评分与选择** `S($B_i$) = ma$x_{u,v∈B_i}$ $s_{u,v}$ → B* = TopK({S($B_i$)})`
+> **步骤 6: 块评分与选择** `S($B_i$) = ma$x_{u,v∈$B_{i}$}$ $s_{u,v}$ → B* = TopK({S($B_i$)})`
 > - 将 patch 映射到 H×W 网格，对每个 block 取最大 similarity 作为该 block 的得分。
 > - TopK 选取得分最高的 block(s)。默认 K=1（Section 4.4.2 和 Appendix B 验证了 K=1 最优）。
 >
@@ -115,7 +115,7 @@ where ⊙ denotes element-wise multiplication. This gradient–input formulation
 
 Given the textual anchors, we localize their corresponding visual regions by matching the internal hidden representations of text tokens and image patch tokens within the model's joint multimodal space, where both modalities reside in the same representation space and can therefore be directly compared. Our approach operates on intermediate-layer representations, where cross-modal semantics exhibit more explicit alignment.
 
-Let H^(ℓ) ∈ R^{L×d} denote the hidden states at layer ℓ, for ℓ = 1, ..., L. Prior work has shown that middle layers tend to capture richer semantic representations than either early or later layers Skean et al. [2024, 2025]. We accordingly compute a stabilized representation by averaging middle layer's hidden states with: H̄ = (1/|$L_{mid}$|) $Σ_{{ℓ∈L_mid}}$ H^(ℓ). Both modalities are obtained from the same H̄ by indexing the corresponding token positions. Let X ∈ R^{N×d} denote the patch-token representations and q ∈ R^d the representation of a textual anchor token.
+Let H^(ℓ) ∈ R^{L×d} denote the hidden states at layer ℓ, for ℓ = 1, ..., L. Prior work has shown that middle layers tend to capture richer semantic representations than either early or later layers Skean et al. [2024, 2025]. We accordingly compute a stabilized representation by averaging middle layer's hidden states with: H̄ = (1/|$L_{mid}$|) $Σ_{{ℓ∈$L_{mid}$}}$ H^(ℓ). Both modalities are obtained from the same H̄ by indexing the corresponding token positions. Let X ∈ R^{N×d} denote the patch-token representations and q ∈ R^d the representation of a textual anchor token.
 
 To ensure robust similarity computation, we apply mean-centering and ℓ_2 normalization to both the patch tokens and the anchor, yielding normalized vectors {x̂_i} and q̂. We then compute anchor–patch affinity via cosine similarity: $s_{i}$ = cos(x̂_i, q̂) i = 1, ..., N, and convert the affinities into a temperature-scaled softmax distribution:
 
