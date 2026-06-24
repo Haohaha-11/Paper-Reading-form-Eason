@@ -22,7 +22,7 @@ In Section 3.1, we first revisit the concept of latent reasoning in MLLMs. Then,
 
 Formally, given an input text sequence **x** = (x₁, ..., x_T) and images I, we formulate the task as generating a corresponding text response. During inference with latent reasoning, the model iteratively switches between two distinct modes: latent and language. In detail, in the latent mode, the model produces latent reasoning tokens that are not directly shown as text, while in the language mode, it generates the response with text tokens.
 
-Specifically, the native vision encoder first extracts image tokens from images I, i.e., **v** = (v₁, v₂, ..., v_S) = ViT(I). Subsequently, the transformer decoder processes input text-token embeddings, E_T = [v₁, ..., v_S, e(x₁), ..., e(x_T)], to yield the last hidden state H_T = Transformer(E_T), where e is the token embedding function. During inference, the model enters the latent mode by predicting a special token `<latent>` and reverts to the language mode by predicting another special token `</latent>`. In the latent mode, the model leverages the previous hidden state, h_t = H_t[t, :], as input for the next prediction, whereas in the language mode, the model uses the token embedding, e(x_{t+1}), as input for the next prediction, as formulated below:
+Specifically, the native vision encoder first extracts image tokens from images I, i.e., **v** = (v₁, v₂, ..., v_S) = ViT(I). Subsequently, the transformer decoder processes input text-token embeddings, E_T = [v₁, ..., v_S, e(x₁), ..., e(x_T)], to yield the last hidden state H_T = Transformer(E_T), where e is the token embedding function. During inference, the model enters the latent mode by predicting a special token `<latent>` and reverts to the language mode by predicting another special token `</latent>`. In the latent mode, the model leverages the previous hidden state, $h_t$ = H_t[t, :], as input for the next prediction, whereas in the language mode, the model uses the token embedding, e(x_{t+1}), as input for the next prediction, as formulated below:
 
 $$
 
@@ -39,7 +39,7 @@ H_{t+1} = \text{Transformer}(E_{t+1}),
 
 $$
 
-where t > T. This recursive process repeats until the model predicts the `<EOS>` token. Upon entering the latent mode, the model is constrained to remain in this state for a fixed number K of steps. After K latent steps, the model reverts to the language mode and resumes generating text tokens from the current hidden state h_t, using the language model head, LM-Head:
+where t > T. This recursive process repeats until the model predicts the `<EOS>` token. Upon entering the latent mode, the model is constrained to remain in this state for a fixed number K of steps. After K latent steps, the model reverts to the language mode and resumes generating text tokens from the current hidden state $h_t$, using the language model head, LM-Head:
 
 $$
 
@@ -54,7 +54,7 @@ where $\mathcal{M}$ denotes the standard MLLM. This alternation strategy allows 
 > | 属性 | Latent Mode | Language Mode |
 > |------|------------|---------------|
 > | 触发 token | `<latent>` | `</latent>` |
-> | 输入来源 | 前一步 hidden state h_t | token embedding e(x_{t+1}) |
+> | 输入来源 | 前一步 hidden state $h_t$ | token embedding e(x_{t+1}) |
 > | 输出内容 | 连续潜向量（不可读） | 离散文本 token |
 > | 固定步数 | K=16 步（固定） | 不固定 |
 > | 功能 | 在潜空间中保持视觉信息 | 生成可读的推理文本 |

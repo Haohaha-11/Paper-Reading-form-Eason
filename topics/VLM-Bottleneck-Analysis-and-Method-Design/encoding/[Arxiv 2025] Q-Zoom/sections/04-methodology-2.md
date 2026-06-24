@@ -6,7 +6,7 @@
 
 ## C. Self-Distilled Region Proposal Network (SD-RPN)
 
-当门控网络触发细化路径（Y_pred >= τ_gate）时，缩放整张图像会导致严重的二次计算瓶颈。SD-RPN 的任务是**在空间上隔离关键视觉证据**。
+当门控网络触发细化路径（$Y_{pred}$ >= $τ_{gate}$）时，缩放整张图像会导致严重的二次计算瓶颈。SD-RPN 的任务是**在空间上隔离关键视觉证据**。
 
 > **Hao 批注**: 门控解决了"需不需要高分辨率"的问题，SD-RPN 解决的是"高分辨率放在哪里"的问题。两者配合完成从"要不要"到"放哪里"的完整决策链。
 
@@ -30,13 +30,13 @@
 
 #### 密集 RoI 热力图预测
 
-**步骤 1**: 在初始 prefill 阶段，RPN 继承冻结 backbone 计算的 **H_context^B**，通过前 R-1 个可调层产生 **H_rpn^(B+R-1)**
+**步骤 1**: 在初始 prefill 阶段，RPN 继承冻结 backbone 计算的 **$H_{context}^B$**，通过前 R-1 个可调层产生 **H_rpn^(B+R-1)**
 
 **步骤 2**: 将最后（第 R）个 block 的自注意力机制复用为专门的空间预测头：
 
-- 从序列中隔离最后一个 user query token: **H_u^(B+R-1)[-1]** ∈ R^(1×d)
-- 提取密集视觉特征序列: **H_v^(B+R-1)** ∈ R^(HW×d)
-- 通过 RPN 第 R 个注意力层的原生投影矩阵 (LP_q 和 LP_k) 映射到共享潜空间：
+- 从序列中隔离最后一个 user query token: **$H_u^{(B+R-1)}[-1]$** ∈ R^(1×d)
+- 提取密集视觉特征序列: **$H_v^{(B+R-1)}$** ∈ R^(HW×d)
+- 通过 RPN 第 R 个注意力层的原生投影矩阵 ($LP_q$ 和 $LP_k$) 映射到共享潜空间：
 
 $$Q_{RoI} = LP_q(\mathrm{Norm}(H_u^{B+R-1}[-1]))$$
 
@@ -50,7 +50,7 @@ $$\hat{M}_{RoI} = Q_{RoI} K_v^\top $$
 
 **步骤 4**: 热力图后处理：
 
-- Sigmoid 激活 → 重塑为 2D 空间网格 → 高斯滤波平滑 → 二值化（阈值 τ_roi）
+- Sigmoid 激活 → 重塑为 2D 空间网格 → 高斯滤波平滑 → 二值化（阈值 $τ_{roi}$）
 
 $$\mathcal{B}(x,y) = \begin{cases} 1, & \text{if } \mathcal{G}(\gamma(\sigma(\hat{M}_{RoI})))(x,y) \gt  \tau_{roi} \\ 0, & \text{otherwise} \end{cases} $$
 
@@ -98,7 +98,7 @@ $$M_{RoI}^l = \frac{1}{N_t} \sum_{i=1}^{N_t} A_i^l, \quad \text{where} \quad A^l
 
 某些 visual token 尽管缺乏与定位对象的语义相关性，却累积了不成比例的 attention mass。这些 token 在特征表示中一致地显示出异常大的 L2-norm。
 
-过滤策略（Eq.11）：对 L2-norm 超过阈值 τ_norm 的 token 将 attention 置零：
+过滤策略（Eq.11）：对 L2-norm 超过阈值 $τ_{norm}$ 的 token 将 attention 置零：
 
 $$(M_{RoI}')_j = \begin{cases} 0, & \text{if } \|(H_v)_j\|_2 \gt  \tau_{norm} \\ (M_{RoI})_j, & \text{otherwise} \end{cases} $$
 
