@@ -21,7 +21,7 @@
 **Policy and action space.** RegionReasoner is an auto-regressive VLM policy π_θ that generates a structured text action composed of four tagged blocks $y_{t}$ = ($s_{t}$, $f_{t}$, $h_t$, $a_{t}$) with tags <scene>, <focus>, <think>, <answer>. Let $y_{t}$ = (w_{t,1}, ..., w_{t,$N_{t}$}) denote the token sequence for the whole action; then:
 
 ```
-π_θ($y_{t}$ | I, $q_{t}$, $B_{t}^{ref}$, M_{t-1}) = ∏_{n=1}^{$N_{t}$} π_θ(w_{t,n} | I, $q_{t}$, $B_{t}^{ref}$, M_{t-1}, w_{t,<n})
+$$π_{θ}(y_{t} \mid I, q_{t}, B_{t}^{ref}, M_{t-1}) = \prod_{n=1}^{N_{t}} π_{θ}(w_{t,n} \mid I, q_{t}, B_{t}^{ref}, M_{t-1}, w_{t,\lt n})$$
 ```
 
 Constrained decoding enforces the tag schema and JSON validity for <answer>, while allowing free-form natural language in <scene>, <focus>, and <think>.
