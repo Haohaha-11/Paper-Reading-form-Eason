@@ -61,36 +61,19 @@ VisualPRM 提出首个多模态过程奖励模型 (PRM, 8B)，构建了约 400K 
 
 ## Data Flow: VisualPRM400K Construction + VisualPRM Training + BoN Evaluation
 
-```
-| 阶段 | 描述 |
-|------|------|
-| 1. VisualPRM Pipeline |  |
-| 2. [Phase 1 | VisualPRM400K Construction] |
-| 3. s = {s₀, s₁, ..., sₙ}, max 12 steps |  |
-| 4. For each step s_≤i | sample 16 continuations |
-| 5. mc_i = num(correct completions) / num(sampled completions) |  |
-| 6. Label | correct if mc_i > 0 |
-
-Output: ~400K samples, ~2M steps with process supervision     │
-│                                                                       │
-│  [Phase 2: VisualPRM Training]                                        │
-│    ├── Input Format: Multi-turn chat                                  │
-│    │     Turn 1: (I, q, s₀)                                          │
-│    │     Turn i: (s_i)                                               │
-│    ├── Prediction Target: y_i ∈ {+, -} (value-based)                 │
-│    │     or y_i ∈ {+, =, -} (advantage-based)                        │
-│    ├── Training Strategy: Supervise ALL steps (w/o early stop)       │
-│    └── Model: 8B parameters, 1 epoch, lr=1e-5, AdamW                 │
-│                                                                       │
-│  [Phase 3: Best-of-N Evaluation]                                      │
-│    ├── Policy Model generates N=8 CoT reasoning (temp=0.7)           │
-│    ├── VisualPRM scores each response                                 │
-│    │     Step score: softmax over {+, -} tokens                      │
-│    │     Response score: average of step scores                      │
-│    ├── Select response with highest score                            │
-│    └── Evaluate on 7 multimodal reasoning benchmarks                 │
-│                                                                       │
-└──────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A["📥 输入: 图片 + 问题"] --> B["🔍 阶段1: 数据构建"]
+    B --> B1["MC采样生成多条推理链"]
+    B1 --> B2["每步标注正确性 → PRM训练数据"]
+    B2 --> C["🎯 阶段2: PRM训练"]
+    C --> C1["VisualPRM 评估每步推理质量"]
+    C1 --> D["📊 阶段3: 推理时指导"]
+    D --> D1["对多条路径打分排序"]
+    D1 --> D2["Best-of-N 选择最优推理链"]
+    D2 --> E["📤 输出: 最优答案"]
+    style C fill:#ff9,stroke:#333
+    style D2 fill:#9f9,stroke:#333
 ```
 
 ## Pros/Cons & Future Work

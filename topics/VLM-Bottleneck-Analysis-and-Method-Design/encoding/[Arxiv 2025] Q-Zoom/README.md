@@ -59,36 +59,25 @@ Q-Zoom 提出一种查询感知的自适应高分辨率感知框架，通过轻�
 
 ## Data Flow: Coarse → Gate → (RoI) → Fusion → Answer
 
-**🔍 Stage 0: Coarse Encoding - Single Prefill**  
-  - Encode x_v at coarse resolution → H_v^0
-  - Forward through frozen backbone layers 1→B:
-  - H_context^B = L_1:B([H_sys^0, H_v^0, H_user^0])
-
-**🚦 Stage 1: Dynamic Gating - Query-Level Routing**  
-  - Gate G (layers B+1→B+R) processes H_context^B
-  - Extract last query token → Y_pred via LP_gate + sigmoid
-  - IF Y_pred < τ_gate:
-  - → Route to Coarse Path: directly decode with coarse ctx
-  - → SKIP all below, generate answer
-  - IF Y_pred ≥ τ_gate:
-  - → Trigger RoI Refinement Path (continue below)
-
-**🎯 Stage 2: SD-RPN - Spatial RoI Localization**  
-  - RPN (layers B+1→B+R-1) processes H_context^B
-  - Last query token + visual tokens → Q_RoI · K_v^T
-  - Dense heatmap → sigmoid → gaussian smooth → binarize
-  - Compute minimal bounding box → crop x_v_roi
-  - Re-encode x_v_roi at high resolution → H_v_roi^0
-
-**🔗 Stage 3: KV-Cache Reuse + Spatio-Temporal Alignment**  
-  - Reuse cached H_sys^B and H_v^B from Stage 0
-  - Forward only [H_v_roi^0, H_user^0] through layers 1→B
-  - Apply continuous spatio-temporal MRoPE:
-  - p_roi = Embed(t_src+δ, interpolated spatial coords)
-  - Concatenate: [H_sys^B, H_v^B, H_v_roi^B, H_user^B]
-  - [Output]
-  - Layers B+1→L → Final hidden states → Autoregressive decode
-
+```mermaid
+flowchart TD
+    A["📥 输入: 图片 x_v + 文本查询 x_t"] --> B["🔍 Stage 0: 粗粒度编码 (单次 Prefill)"]
+    B --> B1["编码粗分辨率图片 → H_v^0"]
+    B1 --> B2["冻结层 L₁: B 前向 → H_context^B"]
+    B2 --> C{"🚦 Stage 1: 动态门控"}
+    C -->|"Y_pred < τ_gate"| D["✅ 粗粒度路径: 直接解码输出"]
+    C -->|"Y_pred ≥ τ_gate"| E["🎯 Stage 2: SD-RPN 空间定位"]
+    E --> E1["Cross-attention → 热力图 → 二值化"]
+    E1 --> E2["裁剪高分辨率 RoI → H_v_roi^0"]
+    E2 --> F["🔗 Stage 3: KV-Cache 复用 + 时空对齐"]
+    F --> F1["复用缓存的 H_sys^B + H_v^B"]
+    F1 --> F2["时空位置编码 → 拼接全部token"]
+    F2 --> G["📤 输出: L_B+1:L → 自回归解码"]
+    D --> G
+    style C fill:#f9f,stroke:#333
+    style D fill:#9f9,stroke:#333
+    style E fill:#ff9,stroke:#333
+```
 
 ## Pros/Cons & Future Work
 

@@ -59,27 +59,18 @@ VaLR 提出了一种视觉对齐的潜空间推理框架，通过在每步 Chain
 
 ## Data Flow: Input → Intermediate → Output
 
-**🔍 Stage 1: Standard CoT SFT**  
-  - Model: Qwen2.5-VL-7B (frozen vision encoder)
-  - Data: 450K CoT VQA samples
-  - Loss: L_CE (cross-entropy)
-  - Output: Base MLLM with text reasoning capability
-
-**🚦 Stage 2: Latent Token Training + REPA**  
-  - Insert K=16 latent tokens before each reasoning step
-  - Special tokens: <latent> ... </latent>
-  - Extract intermediate features F_MLLM from MLLM
-  - Project via MLP ψ: F̂_MLLM = ψ(Upsample(F_MLLM))
-  - Compute REPA loss with vision encoder features:
-  - L_REPA = -cos_sim(F̂_MLLM, F_φ)
-  - Total loss: L = L_CE + λ·L_REPA (λ=0.5)
-  - Multi-encoder: average REPA losses across encoders
-  - [Inference (no external encoder needed)]
-  - Model alternates between latent mode and language mode
-  - Latent mode: K=16 steps, input = previous hidden state
-  - Language mode: input = token embedding
-  - Output: Final answer a
-
+```mermaid
+flowchart TD
+    A["📥 输入: 图片 + Query"] --> B["🔍 阶段1: SFT训练"]
+    B --> B1["多编码器 DINOv3/SigLIP/pi3"]
+    B1 --> B2["视觉特征对齐到LLM latent space"]
+    B2 --> C["🎯 阶段2: Latent + REPA对齐"]
+    C --> C1["Latent mode: 纯潜空间推理"]
+    C1 --> C2["REPA: 视觉编码器特征注入"]
+    C2 --> D["📤 输出: 测试时可扩展推理"]
+    style C fill:#ff9,stroke:#333
+    style D fill:#9f9,stroke:#333
+```
 
 ## Pros/Cons & Future Work
 

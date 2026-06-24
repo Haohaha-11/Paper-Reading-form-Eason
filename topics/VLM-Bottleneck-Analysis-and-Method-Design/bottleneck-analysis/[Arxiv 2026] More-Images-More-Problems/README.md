@@ -64,47 +64,35 @@
 
 ## Data Flow: MIMIC Benchmark Construction
 
-```
-| 阶段 | 描述 |
-|------|------|
-| 1. MIMIC Benchmark Pipeline |  |
-| 2. [Input] |  |
-| 3. Training Pipeline |  |
-| 4. [Data-Centric Strategy] |  |
-
-Bounding box + class label annotations                     │
-│                                                                   │
-│  [Controllable Dimensions]                                        │
-│    ├── k: number of object classes to count/track                 │
-│    ├── s: information spread across images                        │
-│    ├── d: number of distractor images                             │
-│    ├── N: total number of images                                  │
-│    └── Query complexity & prompt templates                        │
-│                                                                   │
-│  [Task Generation]                                                │
-│    ├── Counting: "How many {class} are there?"                    │
-│    │   └── Balanced: fixed instances, varied spread               │
-│    │   └── Unbalanced: varied instances, varied images            │
-│    ├── Listing: "List all {category} objects you can identify"    │
-│    ├── Common: "Which class appears in ALL images?"               │
-│    └── Odd-One: "Which class appears in MINORITY of images?"      │
-│                                                                   │
-│  [Output]                                                         │
-│    └── Open-ended QA → Binary accuracy (Counting/Common/Odd-One)  │
-│                       F1-score (Listing)                          │
-│                                                                   │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A["📥 输入: 多图数据集 MIMIC"] --> B["🔍 分析阶段: 6维可控诊断"]
+    B --> B1["图像数量 / 排列 / 干扰物"]
+    B1 --> B2["6个 Findings: 注意力稀释等"]
+    B2 --> C["🛠️ 方法: 双策略改进"]
+    C --> C1["数据侧: 198K 多样化样本"]
+    C --> C2["模型侧: Masked Attention"]
+    C1 --> D["📤 输出: MuirBench +6 Benchmarks 提升"]
+    C2 --> D
+    style B2 fill:#ff9,stroke:#333
+    style D fill:#9f9,stroke:#333
 ```
 
 ## Data Flow: Proposed Method (Training Pipeline)
 
-**🔍 Starting point: LLaVA-OV Single-Image (Stage 2.1)**  
-  - Frozen: Vision encoder
-  - Trained: LLM layers + vision-to-language projector
-  - Batch size: 128 (effective)
-  - LR: 2.5e-6 (full FT), 2.5e-5 (LoRA masked)
-  - Schedule: Cosine LR with 0.03 warmup ratio
-
+```mermaid
+flowchart TD
+    A["📥 输入: 多图数据集 MIMIC"] --> B["🔍 分析阶段: 6维可控诊断"]
+    B --> B1["图像数量 / 排列 / 干扰物"]
+    B1 --> B2["6个 Findings: 注意力稀释等"]
+    B2 --> C["🛠️ 方法: 双策略改进"]
+    C --> C1["数据侧: 198K 多样化样本"]
+    C --> C2["模型侧: Masked Attention"]
+    C1 --> D["📤 输出: MuirBench +6 Benchmarks 提升"]
+    C2 --> D
+    style B2 fill:#ff9,stroke:#333
+    style D fill:#9f9,stroke:#333
+```
 
 ## Pros/Cons & Future Work
 
