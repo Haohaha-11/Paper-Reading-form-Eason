@@ -22,7 +22,7 @@
 
 LLM 将视觉嵌入与文本 token（系统提示 H_sys^0 和用户查询 H_user^0）一同处理：
 
-$$H_{context}^L = \mathcal{L}([H_{sys}^0, H_v^0, H_{user}^0]) \tag{1}$$
+$$H_{context}^L = \mathcal{L}([H_{sys}^0, H_v^0, H_{user}^0]) $$
 
 其中 [·,·] 表示序列拼接。
 
@@ -30,7 +30,7 @@ $$H_{context}^L = \mathcal{L}([H_{sys}^0, H_v^0, H_{user}^0]) \tag{1}$$
 
 模型的逐 token 生成概率分布：
 
-$$P(y_t | x_v, x_t, y_{<t}) = \mathrm{Softmax}(W_{head} \, h_t^L) \tag{2}$$
+$$P(y_t | x_v, x_t, y_{<t}) = \mathrm{Softmax}(W_{head} \, h_t^L) $$
 
 其中 h_t^L 是第 L 层在第 t 步的隐藏状态，W_head 是语言建模头。
 
@@ -113,7 +113,7 @@ $$H_{gate}^{B+R} = \mathcal{G}(H_{context}^B)$$
 
 $$Y^{pred} = \sigma(LP_{gate}(H_{gate}^{B+R}[-1]))$$
 
-$$\mathcal{L}_{gate} = \mathrm{BCE}(Y^{pred}, Y^{label}) \tag{3}$$
+$$\mathcal{L}_{gate} = \mathrm{BCE}(Y^{pred}, Y^{label}) $$
 
 **推理时的自适应路由**：
 

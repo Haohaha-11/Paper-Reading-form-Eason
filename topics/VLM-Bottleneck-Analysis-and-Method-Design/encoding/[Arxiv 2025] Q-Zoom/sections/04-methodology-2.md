@@ -40,11 +40,11 @@
 
 $$Q_{RoI} = LP_q(\mathrm{Norm}(H_u^{B+R-1}[-1]))$$
 
-$$K_v = LP_k(\mathrm{Norm}(H_v^{B+R-1})) \tag{4}$$
+$$K_v = LP_k(\mathrm{Norm}(H_v^{B+R-1})) $$
 
 **步骤 3**: 通过内积计算空间热力图：
 
-$$\hat{M}_{RoI} = Q_{RoI} K_v^\top \tag{5}$$
+$$\hat{M}_{RoI} = Q_{RoI} K_v^\top $$
 
 > **Hao 批注**: 这个设计非常优雅。核心思路是将 query token 作为"查询"，将 visual tokens 作为"键"，计算它们的注意力分数作为 RoI heatmap。这本质上是在问"哪些视觉位置与当前问题最相关？"——不需要引入任何新的随机初始化参数，完全复用了注意力层的预训练投影矩阵。
 
@@ -52,21 +52,21 @@ $$\hat{M}_{RoI} = Q_{RoI} K_v^\top \tag{5}$$
 
 - Sigmoid 激活 → 重塑为 2D 空间网格 → 高斯滤波平滑 → 二值化（阈值 τ_roi）
 
-$$\mathcal{B}(x,y) = \begin{cases} 1, & \text{if } \mathcal{G}(\gamma(\sigma(\hat{M}_{RoI})))(x,y) > \tau_{roi} \\ 0, & \text{otherwise} \end{cases} \tag{6}$$
+$$\mathcal{B}(x,y) = \begin{cases} 1, & \text{if } \mathcal{G}(\gamma(\sigma(\hat{M}_{RoI})))(x,y) > \tau_{roi} \\ 0, & \text{otherwise} \end{cases} $$
 
 **步骤 5**: 计算包围激活前景的最小轴对齐边界框，裁剪局部子图并重编码：
 
-$$b_{roi} = \mathrm{bbox}(B), \quad H_{v_{roi}}^0 = \mathcal{P}(\mathcal{E}_v(x_{v_{roi}})) \tag{7}$$
+$$b_{roi} = \mathrm{bbox}(B), \quad H_{v_{roi}}^0 = \mathcal{P}(\mathcal{E}_v(x_{v_{roi}})) $$
 
 #### KV-Cache 前缀复用优化
 
 > **Hao 批注**: 这是 Q-Zoom 高效率的关键工程优化。因为高分辨率 RoI token 插入在文本 query 之前，系统提示和粗粒度视觉特征的 prefix 上下文到第 B 层为止在数学上保持不变。直接检索缓存的 H_sys^B 和 H_v^B，仅对新 RoI 和位移后的 user token 进行前 B 层前向：
 
-$$[H_{v_{roi}}^B, H_{user}^B] = \mathcal{L}_{1:B}([H_{v_{roi}}^0, H_{user}^0]) \tag{8}$$
+$$[H_{v_{roi}}^B, H_{user}^B] = \mathcal{L}_{1:B}([H_{v_{roi}}^0, H_{user}^0]) $$
 
 拼接后通过剩余层生成最终响应：
 
-$$H_{context}^L = \mathcal{L}_{B+1:L}([H_{sys}^B, H_v^B, H_{v_{roi}}^B, H_{user}^B]) \tag{9}$$
+$$H_{context}^L = \mathcal{L}_{B+1:L}([H_{sys}^B, H_v^B, H_{v_{roi}}^B, H_{user}^B]) $$
 
 这种缓存策略避免了粗粒度视觉上下文的冗余重编码，显著加速二次 prefill 阶段。
 
@@ -80,7 +80,7 @@ MLLM 的内部交叉注意力机制天然具有强大的视觉定位能力。通
 
 从指定的中间层 l 提取交叉模态注意力权重。对于单个注意力头：
 
-$$M_{RoI}^l = \frac{1}{N_t} \sum_{i=1}^{N_t} A_i^l, \quad \text{where} \quad A^l = \mathrm{softmax}\left(\frac{Q_t^l (K_v^l)^\top}{\sqrt{d}}\right) \tag{10}$$
+$$M_{RoI}^l = \frac{1}{N_t} \sum_{i=1}^{N_t} A_i^l, \quad \text{where} \quad A^l = \mathrm{softmax}\left(\frac{Q_t^l (K_v^l)^\top}{\sqrt{d}}\right) $$
 
 > 每个 visual token 对文本响应的聚合重要性编码为 RoI map。
 
@@ -100,7 +100,7 @@ $$M_{RoI}^l = \frac{1}{N_t} \sum_{i=1}^{N_t} A_i^l, \quad \text{where} \quad A^l
 
 过滤策略（Eq.11）：对 L2-norm 超过阈值 τ_norm 的 token 将 attention 置零：
 
-$$(M_{RoI}')_j = \begin{cases} 0, & \text{if } \|(H_v)_j\|_2 > \tau_{norm} \\ (M_{RoI})_j, & \text{otherwise} \end{cases} \tag{11}$$
+$$(M_{RoI}')_j = \begin{cases} 0, & \text{if } \|(H_v)_j\|_2 > \tau_{norm} \\ (M_{RoI})_j, & \text{otherwise} \end{cases} $$
 
 **Figure 5: Attention Magnitude vs Localization Accuracy**
 
@@ -122,7 +122,7 @@ $$(M_{RoI}')_j = \begin{cases} 0, & \text{if } \|(H_v)_j\|_2 > \tau_{norm} \\ (M
 
 最终离散伪标签：
 
-$$(\bar{M}_{RoI})_j = \begin{cases} 1, & \text{if token } j \in S_{fg} \\ 0, & \text{if token } j \in S_{bg} \\ -1, & \text{otherwise (ignored)} \end{cases} \tag{12}$$
+$$(\bar{M}_{RoI})_j = \begin{cases} 1, & \text{if token } j \in S_{fg} \\ 0, & \text{if token } j \in S_{bg} \\ -1, & \text{otherwise (ignored)} \end{cases} $$
 
 > **Hao 批注**: 三态标签设计是本方法最精巧的部分之一。它承认了 attention-based 伪标签的内在模糊性，并通过 ignore 机制避免了在不确定区域上施加 hard supervision。这在标签噪声管理上是一个成熟且有效的策略。
 
@@ -133,11 +133,11 @@ $$(\bar{M}_{RoI})_j = \begin{cases} 1, & \text{if token } j \in S_{fg} \\ 0, & \
 - 从 SD-RPN 的倒数第二层 (l = B+R-1) 提取隐藏状态
 - 跨 n 轮对话拼接：系统提示 + 视觉 + 多轮 query/response
 
-$$H^l = [H_{sys}^l, H_v^l, H_{u(1)}^l, H_{r(1)}^l, \ldots, H_{u(n)}^l, H_{r(n)}^l] \tag{13}$$
+$$H^l = [H_{sys}^l, H_v^l, H_{u(1)}^l, H_{r(1)}^l, \ldots, H_{u(n)}^l, H_{r(n)}^l] $$
 
 每个用户 query 的末 token 拼接为聚合 query tensor：
 
-$$H_{RoI}^l = \mathrm{concat}(H_{u(1)}^l[-1], \dots, H_{u(n)}^l[-1]) \tag{14}$$
+$$H_{RoI}^l = \mathrm{concat}(H_{u(1)}^l[-1], \dots, H_{u(n)}^l[-1]) $$
 
 这些 query 和密集视觉状态通过 Eq.4-5 计算多轮 RoI map，通过**选择性 BCE loss** 优化（仅在有效 token 上计算梯度）：
 
@@ -181,7 +181,7 @@ $$\mathcal{L}_{RPN} = \mathrm{BCE}(\hat{M}_{RoI}, \bar{M}_{RoI})$$
 
 令 b = [x_1, y_1, x_2, y_2] 表示归一化到源坐标空间的 RoI 精确边界框，RoI token 在网格索引 (i, j) 处的连续时空位置嵌入：
 
-$$p_{roi}^{(i,j)} = \mathrm{Embed}\left(t_{src} + \delta, \ y_1 + \frac{i}{H'-1}(y_2 - y_1), \ x_1 + \frac{j}{W'-1}(x_2 - x_1)\right) \tag{15}$$
+$$p_{roi}^{(i,j)} = \mathrm{Embed}\left(t_{src} + \delta, \ y_1 + \frac{i}{H'-1}(y_2 - y_1), \ x_1 + \frac{j}{W'-1}(x_2 - x_1)\right) $$
 
 其中 i ∈ {0, ..., H'-1}, j ∈ {0, ..., W'-1}。**保证密集 RoI token 保持在其原始全局坐标中的显式锚定**。
 

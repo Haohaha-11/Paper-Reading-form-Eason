@@ -36,7 +36,7 @@ To enable instruction-conditioned visual perception, we derive a global textual 
 
 $$
 
-c_t = \mathscr{F}_T(T_{\leq 77}), \quad \hat{c}_t = \mathscr{H}_t(\mathrm{Norm}(c_t)), \tag{1}
+c_t = \mathscr{F}_T(T_{\leq 77}), \quad \hat{c}_t = \mathscr{H}_t(\mathrm{Norm}(c_t)), 
 
 $$
 
@@ -54,7 +54,7 @@ Formally, given an input image I and instruction embedding $\hat { c } _ { t } ,
 
 $$
 
-y_{ct} = \mathscr{F}_{ct}(I, \hat{c}_t; \Theta_{\mathrm{CLIP}}), \tag{2}
+y_{ct} = \mathscr{F}_{ct}(I, \hat{c}_t; \Theta_{\mathrm{CLIP}}), 
 
 $$
 
@@ -70,7 +70,7 @@ Let $y_{ct} \in \mathbb{R}^{N_I \times D_I}$ denote the instruction-guided featu
 
 $$
 
-y_I = \mathcal{Z}(\mathrm{Norm}(y_{ct})) + y_0, \tag{3}
+y_I = \mathcal{Z}(\mathrm{Norm}(y_{ct})) + y_0, 
 
 $$
 
