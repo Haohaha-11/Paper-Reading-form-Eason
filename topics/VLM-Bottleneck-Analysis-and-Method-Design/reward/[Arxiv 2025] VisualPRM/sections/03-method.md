@@ -24,11 +24,11 @@ During Best-of-N (BoN) evaluation, a critic model is required to estimate the qu
 
 **Process Supervision Generation.** Given an image I, a question q, and a solution s = {s_0, s_1, ..., s_n}, we annotate the correctness of each step s_i using an automatic data pipeline. The key idea is to estimate the expected accuracy of given steps s_{≤i} based on Monte Carlo sampling. Specifically, the model is required to complete the solution as follows:
 
-$$\tilde{s}_{>i} \sim M(\tilde{s}_{>i} \mid I, q, s_{\leq i}),$$
+$\tilde{s}_{>i} \sim M(\tilde{s}_{>i} \mid I, q, s_{\leq i})$,
 
 where s̃_{>i} is the completion of s_{≤i}. Besides, the expected accuracy of s_i is defined as:
 
-$$mc_i = \frac{\text{num}(\text{correct completions})}{\text{num}(\text{sampled completions})}.$$
+$mc_i = \frac{\text{num}(\text{correct completions})}{\text{num}(\text{sampled completions})}.$
 
 Notably, to reduce the data construction costs, we set the max number of steps to 12 and evenly merge the steps if the number of current steps exceeds the threshold.
 
@@ -78,7 +78,7 @@ Notably, to reduce the data construction costs, we set the max number of steps t
 
 **Overview.** During the training process, we formulate the process supervision problem as a multi-turn chat task so that we can effectively leverage the generation ability of MLLMs. The image I, question q, and the first step s_0 of the solution to this question are included in the first turn and a new step is presented in each subsequent turn. The model is required to predict the quality of the given step in each turn as follows:
 
-$$y_i \sim M(y_i \mid I, q, s_{\leq i}),$$
+$y_i \sim M(y_i \mid I, q, s_{\leq i}),$
 
 where y_i denotes the quality of i-th step.
 

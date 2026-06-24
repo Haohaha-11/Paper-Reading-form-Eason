@@ -73,7 +73,7 @@ Building on PERCEVAL, we revise the GRPO objective to support process-level supe
 
 Given a response o_i of length L_i and the PERCEVAL verification, we parse the <answer> content and select the identified problematic substrings. We locate each substring in o_i via exact string match to obtain its token span [j_k, l_k] and define U_i = ⋃_{k=1}^K [j_k, l_k]. From U_i we construct a binary mask M_i = [m_{i,1}, ..., m_{i,L_i}] with m_{i,t} = 1 if t ∈ U_i and 0 otherwise. Then, we modulate the sequence-level signal with this mask to form the token-level advantage:
 
-$$ \hat{A}'_{i,t} := \hat{A}_i - \alpha \cdot m_{i,t} \cdot |\hat{A}_i| \tag{3} $$
+$\hat{A}'_{i,t} := \hat{A}_i - \alpha \cdot m_{i,t} \cdot |\hat{A}_i|$ (3)
 
 where α ∈ [0, 1] controls penalty strength. Thus, correct tokens (m_{i,t} = 0) keep Â'_{i,t} = Â_i, while hallucination tokens (m_{i,t} = 1) are downweighted: when Â_i > 0, Â'_{i,t} = Â_i(1 - α); when Â_i < 0, Â'_{i,t} = Â_i(1 + α), making the penalty stronger. Finally, we substitute Â'_{i,t} into the GRPO objective in Eq. 2 to add the process supervision. Such a way injects direct, token-level corrective pressure into GRPO, which preserve sequence-level preferences while explicitly suppressing ungrounded content.
 

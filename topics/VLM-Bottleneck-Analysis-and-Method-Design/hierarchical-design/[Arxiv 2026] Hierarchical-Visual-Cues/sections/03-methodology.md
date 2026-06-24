@@ -14,15 +14,11 @@ Method 分为三个子模块：(3.1) Recurrent Visual-Language Backbone——基
 
 We denote the input sequence length as n, the hidden dimension of the model as h, and the vocabulary as V. Given a recurrent depth R, an iteration step t, an input text sequence x ∈ V^n, and a sequence of flattened image patches X_v, we process the textual and visual modalities separately. For the visual components, we denote the vision transformer and its associated projector as ViT(.) and Proj(.), respectively. The feature extraction and fusion process can be written as:
 
-$$
-e = [ e _ { v } ; e _ { t } ] = { \mathrm { c o n c a t } } ( e _ { v } , e _ { t } ) , \tag{1}
-$$
+$e = [ e _ { v } ; e _ { t } ] = \text{concat}( e _ { v } , e _ { t } ), \tag{1}$
 
 where
 
-$$
-\left\{ { \begin{array} { l l } { e _ { v } = { \mathrm { P r o j } } ( { \mathrm { V i T } } ( \mathbf { X } _ { v } ) ) , } \\ { e _ { t } = E ( x ) , } \end{array} } \right. \tag{2}
-$$
+$\left\{ { \begin{array} { l l } { e _ { v } = \text{Proj}( \text{ViT}( X _ { v } ) ) , } \\ { e _ { t } = E ( x ) , } \end{array} } \right. \tag{2}$
 
 e_v and e_t represent the visual and textual embeddings, respectively.
 
@@ -34,15 +30,11 @@ e_v and e_t represent the visual and textual embeddings, respectively.
 
 We denote s_t as the hidden states after t iterations. To stabilize the recurrent iterations, Huginn utilizes a random vector:
 
-$$
-s _ { 0 } \sim \mathcal { N } ( 0 , \sigma ^ { 2 } I _ { n \cdot h } ) . \tag{3}
-$$
+$s _ { 0 } \sim N( 0 , \sigma ^ { 2 } I _ { n \cdot h } ). \tag{3}$
 
 In the initial iteration, this vector is concatenated with the input embeddings along the channel dimension, which is subsequently mapped back to the original dimensionality by an adapter within the recurrent block R-Block. In subsequent iterations, the hidden states derived from the preceding block are concatenated with the input embeddings. Let hat(e)_v be the fused visual cues:
 
-$$
-s _ { r + 1 } = \mathcal { R } - B l o c k \left( e , \hat { e } _ { v } ; s _ { r } \right) . \tag{4}
-$$
+$s _ { r + 1 } = R\text{-}Block\left( e , \hat { e } _ { v } ; s _ { r } \right). \tag{4}$
 
 > 💡 **公式批读 — Eq.3-4（递归迭代）**:
 > - **s_0**: 随机初始化 hidden state（从高斯分布采样），这是循环的起点。随机性提供探索能力。
@@ -73,9 +65,7 @@ Specifically, we extract hidden states from a set of representative layers L = {
 
 To bridge the modality gap and align the dimensionalities, we employ a set of patch mergers inspired by Qwen3-VL: M = {m_l}_{l∈L} (Bai et al., 2025b). For each selected layer l, the visual features h_v^l are projected as:
 
-$$
-v _ { l } = m _ { l } ( h _ { v } ^ { l } ) , \quad l \in \{ 6 , 1 2 , 1 8 , 2 4 \} , \tag{5}
-$$
+$v _ { l } = m _ { l } ( h _ { v } ^ { l } ), \quad l \in \{ 6 , 1 2 , 1 8 , 2 4 \}, \tag{5}$
 
 where v_l ∈ R^{n×h} represents the projected visual cues ready for recurrent injection. By progressively injecting these features from fine-grained semantics to coarse-grained textures into the initial recurrent iterations, we provide the language backbone with a "curriculum" of visual understanding, stabilizing the hidden state transition during the early stages of reasoing.
 
@@ -87,9 +77,7 @@ where v_l ∈ R^{n×h} represents the projected visual cues ready for recurrent 
 
 The injection schedule is defined as:
 
-$$
-{ \hat { e } } _ { v } = { \left\{ \begin{array} { l l } { v _ { i } } & { { \mathrm { i f ~ } } t < K , } \\ { 0 } & { { \mathrm { i f ~ } } t \geq K . } \end{array} \right. } \quad { \mathrm { w h e r e ~ } } i = { \mathcal { L } } [ t ] \tag{6}
-$$
+${ \hat { e } } _ { v } = { \left\{ \begin{array} { l l } { v _ { i } } & { \text{if } t < K , } \\ { 0 } & { \text{if } t \geq K . } \end{array} \right. } \quad \text{where } i = L[ t ] \tag{6}$
 
 > 💡 **公式批读 — Eq.6（注入调度）**:
 > - 只在前 K 次迭代中注入视觉线索（K 通常是 4，因为视觉层级数为 4）
@@ -148,9 +136,7 @@ def iterate_forward(x, embeds, vis_features):
 
 Finally, after r recurrent iterations, the model decodes the hidden state s_r to produce the output probabilities:
 
-$$
-p = H ( s _ { r } ) . \tag{7}
-$$
+$p = H ( s _ { r } ). \tag{7}$
 
 > 💡 **公式批读 — Eq.7（解码）**: H 是 Huginn 的 Language Head。经过 r 次迭代后，最终的 hidden state s_r 被送入 Head 生成词表上的概率分布。整个过程是标准的自回归语言建模——HIVE 的"新意"不在于解码方式，而在于解码前 hidden state 是如何通过递归 + 层级视觉注入被构建的。
 
@@ -158,9 +144,7 @@ $$
 
 Given an input text sequence x and a set of hierarchical visual features V_hier = {v_(1), v_(2), ..., v_(L)} extracted from multiple encoder layers, the training loss is defined as:
 
-$$
-\mathcal { L } ( \theta ) = \mathbb { E } _ { ( x , \mathbf { V } _ { h i e r } ) \in \mathcal { X } } \mathbb { E } _ { r \sim \Lambda } \left[ \mathcal { L } _ { \mathrm { C E } } \left( { \Gamma } _ { \theta } ( x , \mathbf { V } _ { h i e r } , r ) , x ^ { \prime } \right) \right] ,
-$$
+$L( \theta ) = E _ { ( x , V _ { hier } ) \in X } \; E _ { r \sim \Lambda } \left[ L _ { CE } \left( \Gamma _ { \theta } ( x , V _ { hier } , r ) , x ^ { \prime } \right) \right],$
 
 where θ denotes the trainable parameters, and Γ_θ(x, V_hier, r) represents the model output at the r-th recurrence step. The hierarchical features V_hier are selectively injected into the early layers of the transformer during each recurrent pass. This ensures that the model progressively refines its latent representations by anchoring them to multi-scale visual cues. The recurrence depth r is sampled from a log-normal Poisson distribution Λ with a targeted mean r_bar+1. This stochastic supervision forces the model to maintain semantic consistency across varied computational paths, facilitating the adaptive early-exit mechanism during inference.
 

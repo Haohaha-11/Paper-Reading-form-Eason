@@ -20,7 +20,7 @@ A vision-language model (VLM) accepts multimodal input, typically an image v and
 
 RL with verifiable rewards (RLVR) has become the key technique to improve the performance of VLMs in reasoing tasks [45]. It aims to train the VLM to not only generate plausible outputs but also satisfy measurable criteria (e.g. correctness, spatial consistency). One algorithm is Group Relative Policy Optimization (GRPO) [33]: given the input prompt q and image v, a reference policy π_θ(o | q, v) samples multiple responses {o_i}. Each response will be assigned with a scalar reward R_i from the verified function or reward model. The advantage of the i-th response is calculated by normalizing its reward relative to the group:
 
-$$ \hat{A}_i = \frac{R_i - \mathrm{mean}(\{R_j\}_{j=1}^G)}{\mathrm{std}(\{R_j\}_{j=1}^G)} \tag{1} $$
+$\hat{A}_i = \frac{R_i - \text{mean}(\{R_j\}_{j=1}^G)}{\text{std}(\{R_j\}_{j=1}^G)}$ (1)
 
 > 💡 **公式批读 — GRPO 的 Advantage (Eq.1)**:
 > - **输入**: G 条由同一 prompt 生成的响应，每条响应 i 被赋予一个标量奖励 R_i
@@ -30,7 +30,7 @@ $$ \hat{A}_i = \frac{R_i - \mathrm{mean}(\{R_j\}_{j=1}^G)}{\mathrm{std}(\{R_j\}_
 
 Note that this advantage Â_i is a sequence-level signal, which is constant for all tokens within the i-th response. Hence, GRPO optimizes a clipped surrogate objective to update the policy π_θ based on the advantage:
 
-$$ \begin{array}{rl} J(\theta) = \mathbb{E}_{(q, \{o_i\}) \sim \pi_\theta} \Bigg[ \frac{1}{G} \sum_{i=1}^G \sum_{t=1}^{|o_i|} \min \Big( r_{i,t}(\theta) \hat{A}_i, \mathrm{clip}(r_{i,t}(\theta), 1-\epsilon, 1+\epsilon) \hat{A}_i \Big) - \beta D_{KL}(\pi_\theta || \pi_{ref}) \Bigg] \end{array} \tag{2} $$
+$$J(\theta) = E_{(q, \{o_i\}) \sim \pi_\theta} \left[ \frac{1}{G} \sum_{i=1}^G \sum_{t=1}^{|o_i|} \min \Big( r_{i,t}(\theta) \hat{A}_i, \ \text{clip}(r_{i,t}(\theta), 1-\epsilon, 1+\epsilon) \hat{A}_i \Big) - \beta D_{KL}(\pi_\theta || \pi_{ref}) \right] \ \ (2)$$
 
 where ε is the clipping hyperparameter and r_{i,t}(θ) is the importance sampling ratio for token t.
 

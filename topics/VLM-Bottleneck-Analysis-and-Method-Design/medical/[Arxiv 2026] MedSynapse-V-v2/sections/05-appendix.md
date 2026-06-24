@@ -75,7 +75,7 @@ Table 5: Prefill latency 102ms (与 vanilla 完全一致)，$\mathcal{A}_{\psi}$
 
 #### 8.4 Memory Evolution Across Training Stages
 
-Figure 12: Before MQPM -> 混沌分布，8 种模态完全混合。Stage I (MQPM) -> 引入共享表示基础，但 CT/MRI 仍有重叠，OCT 划分不佳。Stage II (CCR) -> $r_{causal}$ 将流形重塑为紧凑、分离的聚类，放射模态和表面成像形成不同邻域。Stage III (IMT) -> $\mathcal{M}_{auto}$ 忠实内化了这种精炼结构，拓扑结构几乎与 panel (c) 一致，验证了 near-lossless distillation ($\Delta$=1.4 pp)。
+Figure 12: Before MQPM -> 混沌分布，8 种模态完全混合。Stage I (MQPM) -> 引入共享表示基础，但 CT/MRI 仍有重叠，OCT 划分不佳。Stage II (CCR) -> $r_{causal}$ 将流形重塑为紧凑、分离的聚类，放射模态和表面成像形成不同邻域。Stage III (IMT) -> $M_{auto}$ 忠实内化了这种精炼结构，拓扑结构几乎与 panel (c) 一致，验证了 near-lossless distillation ($\Delta$=1.4 pp)。
 
 #### 8.5 Memory Synthesis Design Choices
 
@@ -123,7 +123,7 @@ Closed-ended template (Fig. 15): "You are a helpful medical assistant. Answer th
 
 Open-ended template (Fig. 16): "You are a helpful medical assistant. Provide a concise answer to the question." + image + question + "Answer the question using a single word or phrase."
 
-> **关键**: MedSynapse-V 的 $\mathcal{M}_{auto}$ 在隐空间中自主生成并注入，无需修改 surface-level prompt——无需额外 text token、特殊标记或推理引导指令。这与 CoT 需要添加 "Let's think step by step" 以及 Coconut 需要 `<bot>`/`<eot>` 标记形成对比。
+> **关键**: MedSynapse-V 的 $M_{auto}$ 在隐空间中自主生成并注入，无需修改 surface-level prompt——无需额外 text token、特殊标记或推理引导指令。这与 CoT 需要添加 "Let's think step by step" 以及 Coconut 需要 `<bot>`/`<eot>` 标记形成对比。
 
 ---
 

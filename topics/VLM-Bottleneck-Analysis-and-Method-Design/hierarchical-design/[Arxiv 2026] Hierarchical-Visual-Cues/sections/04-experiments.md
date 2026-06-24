@@ -151,17 +151,13 @@ There remains substantial space for performance optimization. We recognize that 
 
 To optimize the efficiency-performance trade-off, Huginn has implemented an adaptive computation mechanism that dynamically adjusts the number of recurrence iterations during inference. This optional mechanism lets the model determine the termination of recurrence based on the convergence of hidden states. A relative change metric is defined as follows:
 
-$$
-\mathrm { n o r m \_ d i f f } = \frac { \| \mathbf h _ { t } - \mathbf h _ { t - 1 } \| _ { 2 } } { \| \mathbf h _ { t } \| _ { 2 } } .
-$$
+$\text{norm\_diff} = \frac { \| h _ { t } - h _ { t - 1 } \| _ { 2 } } { \| h _ { t } \| _ { 2 } }.$
 
 > 💡 **公式批读 — Norm Diff (收敛度量)**: 连续两次迭代的 hidden state 相对变化量。当变化足够小时，说明 hidden state 已经收敛，继续迭代的边际收益低。这是自适应早停的信号基础。
 
 To further enhance inference efficiency, Huginn adopts a specialized KV-cache management scheme with a periodic retrieval strategy. For the i-th token during the r-th recurrence step, the latest-m4 mechanism retrieves the KV-cache from the most recent valid step j that aligns with the current block's functional cycle. Specifically:
 
-$$
-j ^ { * } = \left\{ \begin{array} { l l } { \operatorname* { m a x } \{ j \mid j \leq r , j \equiv _ { 4 } r , \mathcal { T } _ { j , i } = 1 \} } & { r \geq 2 , } \\ { r } & { r < 2 , } \end{array} \right.
-$$
+$j ^ { * } = \left\{ \begin{array} { l l } { \max \{ j \mid j \leq r , j \equiv _ { 4 } r , T _ { j , i } = 1 \} } & { r \geq 2 , } \\ { r } & { r < 2 , } \end{array} \right.$
 
 where T_{j,i} ∈ {0, 1} denotes the validity of the cache at step j for token i, and ≡_4 denotes congruence modulo 4. This periodic reuse of cache states maintains temporal consistency while significantly reducing redundant computations.
 

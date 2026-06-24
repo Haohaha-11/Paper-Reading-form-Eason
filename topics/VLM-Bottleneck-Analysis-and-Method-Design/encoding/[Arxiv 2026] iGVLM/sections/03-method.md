@@ -35,7 +35,7 @@ To explicitly separate representation preservation from instruction-conditioned 
 To enable instruction-conditioned visual perception, we derive a global textual guidance signal from the instruction. We adopt the text encoder from a pretrained CLIP model and truncate the input text to a maximum length of 77 tokens. The resulting [CLS] token embedding summarizes the semantic intent of the instruction and is mapped into the vision latent space through a lightweight linear projection:
 
 $$
-c _ { t } = \mathscr { F } _ { T } ( T _ { \leq 7 7 } ) , \quad \hat { c } _ { t } = \mathscr { H } _ { t } ( \mathrm { N o r m } ( c _ { t } ) ) ,\tag{1}
+c_t = \mathscr{F}_T(T_{\leq 77}), \quad \hat{c}_t = \mathscr{H}_t(\mathrm{Norm}(c_t)), \tag{1}
 $$
 
 where $\mathcal { F } _ { T } ( \cdot )$ denotes the CLIP text encoder, and $\mathcal { H } _ { t } ( \cdot )$ aligns the text embedding with the vision feature space.
@@ -51,10 +51,10 @@ We incorporate Adaptive Layer Normalization (AdaLN) (Perez et al., 2018) into ea
 Formally, given an input image I and instruction embedding $\hat { c } _ { t } ,$ the instruction-guided vision encoder produces:
 
 $$
-y _ { c t } = \mathscr { F } _ { c t } ( I , \hat { c } _ { t } ; \Theta _ { \mathrm { C L I P } } ) ,\tag{2}
+y_{ct} = \mathscr{F}_{ct}(I, \hat{c}_t; \Theta_{\mathrm{CLIP}}), \tag{2}
 $$
 
-where $y _ { c t } \in \mathbb { R } ^ { N _ { I } \times D _ { I } }$ denotes the instruction-conditioned visual features and $\Theta _ { \mathrm { C L I P } }$ represents the frozen pretrained parameters.
+where $y_{ct} \in \mathbb{R}^{N_I \times D_I}$ denotes the instruction-conditioned visual features and $\Theta_{\mathrm{CLIP}}$ represents the frozen pretrained parameters.
 
 > 💡 **冻结参数 + AdaLN 的可训参数**: CLIP ViT 的原始参数完全冻结，只有 (1) CLIP text encoder 到 vision space 的线性投影 (2) 每层的 AdaLN scale/shift 参数是可训练的。参数量增加极少（Table 4：13.35B → 13.78B），只有约 430M 新增参数，且主要是 AdaLN 的仿射参数。
 
@@ -62,10 +62,10 @@ where $y _ { c t } \in \mathbb { R } ^ { N _ { I } \times D _ { I } }$ denotes t
 
 While instruction-conditioned modulation enables taskspecific adaptation, preserving the original perceptual semantics is essential for stable and generalizable visual understanding. To this end, iGVLM employs a dual-branch fusion mechanism that explicitly combines instruction-guided features with the original frozen visual representations.
 
-Let $y _ { c t } \in \mathbb { R } ^ { N _ { I } \times D _ { I } }$ denote the instruction-guided features from $\mathcal { F } _ { c t }$ , and let $y _ { 0 } = \mathcal { F } _ { I } ( I ; \Theta _ { \mathrm { C L I P } } )$ denote the corresponding frozen features from the original vision encoder. The fused visual representation is computed as:
+Let $y_{ct} \in \mathbb{R}^{N_I \times D_I}$ denote the instruction-guided features from $\mathcal{F}_{ct}$, and let $y_0 = \mathcal{F}_I(I; \Theta_{\mathrm{CLIP}})$ denote the corresponding frozen features from the original vision encoder. The fused visual representation is computed as:
 
 $$
-y _ { I } = \mathcal { Z } ( \mathrm { N o r m } ( y _ { c t } ) ) + y _ { 0 } ,\tag{3}
+y_I = \mathcal{Z}(\mathrm{Norm}(y_{ct})) + y_0, \tag{3}
 $$
 
 where Z is a learnable linear projection initialized to zero. This initialization ensures that the fused representation initially matches the pretrained visual features, allowing instruction-conditioned adaptation to be introduced gradually and safely during training.

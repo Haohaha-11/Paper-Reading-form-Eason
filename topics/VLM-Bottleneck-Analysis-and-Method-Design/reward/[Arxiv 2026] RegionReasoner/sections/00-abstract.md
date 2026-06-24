@@ -22,7 +22,7 @@
 
 ---
 
-![](../images/f0b08bb74fad6be4feb4d53a054a17b8a77baac7ece303a1b234e232fb98566b.jpg)
+![Figure 1](../images/f0b08bb74fad6be4feb4d53a054a17b8a77baac7ece303a1b234e232fb98566b.jpg)
 
 *Figure 1: RegionReasoer in a three-round, region-grounded dialogue. At round t, the user query may refer to a region localized earlier (R1/R2). For each turn, RegionReasoer produces a structured trajectory: <scene> (global context), <focus> (caption restricted to the referenced region with serialized coordinates, e.g., bbox=[x1,y1,x2,y2]), <think> (reasoing that explicitly cites the reference and the required spatial relation), and <answer> (final localization).*
 

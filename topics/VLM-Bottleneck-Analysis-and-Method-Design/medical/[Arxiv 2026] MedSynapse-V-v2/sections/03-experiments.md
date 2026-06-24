@@ -71,7 +71,7 @@ Table 2 reports comprehensive ablation study results.
 > | Direct RL -> IMT (skip MQPM) | 52.9 | **低于 zero-shot**！随机 memory 导致 RL 训练崩溃 |
 > | MQPM -> CCR -> IMT (full) | 67.7 | 完整 pipeline，三阶段缺一不可 |
 
-**(ii) Reward design.** $r_{causal}$ is the dominant reward component (+4.1 pp, 63.6 -> 67.7). Without causal pressure the model bypasses $\mathcal{M}$ via direct shortcuts, treating memory as inert padding; the counterfactual intervention penalizes trajectories insensitive to diagnostic regions. The effect concentrates on radiology benchmarks and persists after IMT, indicating stronger memory utilization transfers more faithfully through distillation.
+**(ii) Reward design.** $r_{causal}$ is the dominant reward component (+4.1 pp, 63.6 -> 67.7). Without causal pressure the model bypasses $M$ via direct shortcuts, treating memory as inert padding; the counterfactual intervention penalizes trajectories insensitive to diagnostic regions. The effect concentrates on radiology benchmarks and persists after IMT, indicating stronger memory utilization transfers more faithfully through distillation.
 
 > **消融解读 — $r_{causal}$ 的核心作用**:
 > - $r_{acc}$ only: 63.6% -> 模型 bypass M 直接走捷径
@@ -117,11 +117,11 @@ As illustrated in Fig. 5, we compare MedSynapse-V with Med-R1 [47] and MMedExper
 > - 大规模 CoT (8B): 49.9-55.7% @ 5.8s
 > - 小规模 CoT (2-3B): 38.9-40.2% @ 更快但性能差距 18-21 pp
 
-**Training dynamics.** Fig. 7 shows the full model (w/ $r_{causal}$) improving steadily to ~0.88 with a transient exploration dip near step 900, where the policy sacrifices reward to explore memory-reliant generation strategies, while the w/o $r_{causal}$ ablation plateaus at ~0.48 throughout the training. This confirms that accuracy-only reward cannot distinguish memory-dependent from shortcut trajectories; without causal pressure the model bypasses $\mathcal{M}$ entirely, treating injected memory as inert padding.
+**Training dynamics.** Fig. 7 shows the full model (w/ $r_{causal}$) improving steadily to ~0.88 with a transient exploration dip near step 900, where the policy sacrifices reward to explore memory-reliant generation strategies, while the w/o $r_{causal}$ ablation plateaus at ~0.48 throughout the training. This confirms that accuracy-only reward cannot distinguish memory-dependent from shortcut trajectories; without causal pressure the model bypasses $M$ entirely, treating injected memory as inert padding.
 
 > **训练动态解读**: w/ $r_{causal}$ 的 reward 从 ~0 爬升至 ~0.88，期间出现 ~step 900 的 transient exploration dip——策略牺牲短期 reward 探索 memory-reliant 生成策略。w/o $r_{causal}$ 的 reward 始终停滞在 ~0.48，因为 accuracy-only reward 无法区分"利用 memory"和"绕过 memory"的轨迹。这直观验证了 causal reward 的必要性。
 
-**Latent space structure.** Fig. 8 visualizes the evolved memory $\mathcal{M}_{auto}$ via t-SNE across three granularities. At the cross-modality level (a), eight imaging types form compact clusters with clinically coherent proximity (e.g., CT and MRI lie adjacent; dermoscopy and fundus form a nearby pair). Within individual modalities (b, c), disease subtypes further segregate: CT memory separates lung nodules, liver lesions, kidney cysts, pneumonia, and aortic aneurysms, while pathology memory distinguishes adenocarcinoma, squamous cell carcinoma, normal tissue, lymphoma, and melanoma. This hierarchical organization confirms that $r_{causal}$ reshapes the latent space into a diagnostically meaningful manifold rather than merely boosting task accuracy.
+**Latent space structure.** Fig. 8 visualizes the evolved memory $M_{auto}$ via t-SNE across three granularities. At the cross-modality level (a), eight imaging types form compact clusters with clinically coherent proximity (e.g., CT and MRI lie adjacent; dermoscopy and fundus form a nearby pair). Within individual modalities (b, c), disease subtypes further segregate: CT memory separates lung nodules, liver lesions, kidney cysts, pneumonia, and aortic aneurysms, while pathology memory distinguishes adenocarcinoma, squamous cell carcinoma, normal tissue, lymphoma, and melanoma. This hierarchical organization confirms that $r_{causal}$ reshapes the latent space into a diagnostically meaningful manifold rather than merely boosting task accuracy.
 
 > **t-SNE 可视化 — 三层结构证明了 $r_{causal}$ 的 manifold shaping 效果**:
 > 1. **跨模态层**: 8 种成像模态形成分离紧凑的聚类，具有临床一致的邻近关系（CT 和 MRI 相邻；皮肤镜和眼底镜相邻）

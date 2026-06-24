@@ -58,13 +58,11 @@ Each saved object $i$ is associated with a set of ground-truth boxes $G_i$. Afte
 
 We treat each set of boxes as a union of regions and compute their intersection-over-union (IoU):
 
-$$
-\mathrm{IoU}_i = \frac{I_i}{U_i}
-$$
+$\text{IoU}_i = \frac{I_i}{U_i}$
 
 where $I_i$ is the area covered by both $P_i$ and $G_i$, and $U_i$ is the area covered by either $P_i$ or $G_i$.
 
-If no model-generated grounding object is matched to ground-truth object $i$, we set $\mathrm{IoU}_i = 0$.
+If no model-generated grounding object is matched to ground-truth object $i$, we set $\text{IoU}_i = 0$.
 
 **Final box grounding quality** = mean score over all $T$ ground-truth objects.
 
@@ -85,15 +83,11 @@ We form a **one-to-one assignment** between generated points and ground-truth ma
 
 For each object:
 
-$$
-\mathrm{TP}_i = \text{number of masks matched by the assignment}
-$$
-$$
-\mathrm{FP}_i = |P_i| - \mathrm{TP}_i, \quad \mathrm{FN}_i = |M_i| - \mathrm{TP}_i
-$$
-$$
-F1_i = \frac{2\mathrm{TP}_i}{2\mathrm{TP}_i + \mathrm{FP}_i + \mathrm{FN}_i}
-$$
+$\text{TP}_i = \text{number of masks matched by the assignment}$
+
+$\text{FP}_i = |P_i| - \text{TP}_i, \quad \text{FN}_i = |M_i| - \text{TP}_i$
+
+$F1_i = \frac{2\text{TP}_i}{2\text{TP}_i + \text{FP}_i + \text{FN}_i}$
 
 If no rollout grounding object is matched to ground-truth object $i$, set $F1_i = 0$.
 
@@ -147,15 +141,11 @@ For each rollout $i$, the total reward includes:
 
 Because dense grounding reward and sparse rewards have different scales, we **normalize them separately**:
 
-$$
-R_i^{\text{base}} = w_{\text{ans}} r_i^{\text{ans}} + w_{\text{think}} r_i^{\text{think}} + w_{\text{gfmt}} r_i^{\text{gfmt}} + r_i^{\text{trunc}}
-$$
+$R_i^{\text{base}} = w_{\text{ans}} r_i^{\text{ans}} + w_{\text{think}} r_i^{\text{think}} + w_{\text{gfmt}} r_i^{\text{gfmt}} + r_i^{\text{trunc}}$
 
-$$
-R_i = \mathcal{N}_{\mathcal{B}}(R^{\text{base}})_i + w_{\text{ground}} \mathcal{N}_{\mathcal{B}}(r^{\text{ground}})_i
-$$
+$R_i = N_B(R^{\text{base}})_i + w_{\text{ground}} N_B(r^{\text{ground}})_i$
 
-where $\mathcal{N}_{\mathcal{B}}(\cdot)$ is batch-wise normalization over batch $\mathcal{B}$.
+where $N_B(\cdot)$ is batch-wise normalization over batch $B$.
 
 **Hyperparameters**:
 - $w_{\text{ans}} = 1.0$
