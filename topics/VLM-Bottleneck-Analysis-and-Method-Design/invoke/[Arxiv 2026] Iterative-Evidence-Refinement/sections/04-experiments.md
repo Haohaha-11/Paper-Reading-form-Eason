@@ -158,7 +158,7 @@ In Section 3.3, we incorporate action-level rewards into the total reward functi
 > - 没有 thought richness reward 时，最大响应长度极其不稳定且出现极端值（可能是重复/循环输出）
 > - 有 thought richness reward 时，最大长度稳定受控
 >
-> **核心教训**: RL 训练中，如果没有精心设计的 auxiliary reward 来激励"好的行为模式"，模型必然会找到 reward function 的 loophole。SIEVE 的四维 reward 设计（尤其是 R_fmt 和 R_act）正是为了防止这些 reward hacking 行为。
+> **核心教训**: RL 训练中，如果没有精心设计的 auxiliary reward 来激励"好的行为模式"，模型必然会找到 reward function 的 loophole。SIEVE 的四维 reward 设计（尤其是 $R_fmt$ 和 $R_act$）正是为了防止这些 reward hacking 行为。
 
 ---
 

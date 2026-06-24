@@ -31,7 +31,7 @@ We presented FUTURE-L1, an interleaved latent visual reasoning framework for vid
 
 *Figure 8: Stage-wise latent representation. t-SNE of FUTURE-L1-RL embeddings on FutureBench; sequential latent spans form distinct clusters.*
 
-> 💡 **潜状态可视化解读**: t-SNE 图展示了 FUTURE-L1-RL 在 FutureBench 上的 token embedding 分布。文本 token 和视觉 token 分别占据不同的模态区域（符合预期）。更重要的是——**不同顺序的潜 span 形成了彼此分离的紧凑簇**，而非重叠或混在一起。这说明模型并非在每个阶段重复相同的视觉思维，而是在进行阶段化的、逐步更新的潜视觉表征过程。这直接验证了 R_div 的有效性。
+> 💡 **潜状态可视化解读**: t-SNE 图展示了 FUTURE-L1-RL 在 FutureBench 上的 token embedding 分布。文本 token 和视觉 token 分别占据不同的模态区域（符合预期）。更重要的是——**不同顺序的潜 span 形成了彼此分离的紧凑簇**，而非重叠或混在一起。这说明模型并非在每个阶段重复相同的视觉思维，而是在进行阶段化的、逐步更新的潜视觉表征过程。这直接验证了 $R_div$ 的有效性。
 
 ### E.2 Reward Dynamics (Figure 9)
 
@@ -50,7 +50,7 @@ We presented FUTURE-L1, an interleaved latent visual reasoning framework for vid
 
 **失败案例 (Figure 18)**: 模型识别到了 "baseball-dog" 高层次语境，但潜轨迹漂向了一个"看似合理"的通用延续，而错过了包含狗在 "BASEBALL" 地毯上、打开冰箱、后续 dugout 场景等细粒度真实序列。这揭示了核心 limitations：(1) 仅仅在正确时机调用潜 span 不够；(2) 潜轨迹必须也保留**细粒度的事件身份**。这正是 LA-DAPO 优化潜轨迹的动机所在。
 
-> 💡 **失败案例的启示**: 这个 failure case 精准揭示了潜空间推理的核心挑战——**语义漂移 (semantic drift)**。潜状态可以维持"高层次的合理场景"，但缺少对细粒度视觉事件身份的保持。在文本推理中，你可以通过单词选择（"dog on carpet" vs "dog in park"）来精确控制语义；但在潜空间中，语义控制更难——连续向量可以平滑地从一个合理状态漂移到另一个。这也解释了为什么 R_ctr 和 R_div 两者都必要：前者通过正确/错误对比来"锚定"潜轨迹到正确结果，后者通过防止重复来迫使时序更新。
+> 💡 **失败案例的启示**: 这个 failure case 精准揭示了潜空间推理的核心挑战——**语义漂移 (semantic drift)**。潜状态可以维持"高层次的合理场景"，但缺少对细粒度视觉事件身份的保持。在文本推理中，你可以通过单词选择（"dog on carpet" vs "dog in park"）来精确控制语义；但在潜空间中，语义控制更难——连续向量可以平滑地从一个合理状态漂移到另一个。这也解释了为什么 $R_ctr$ 和 $R_div$ 两者都必要：前者通过正确/错误对比来"锚定"潜轨迹到正确结果，后者通过防止重复来迫使时序更新。
 
 ---
 

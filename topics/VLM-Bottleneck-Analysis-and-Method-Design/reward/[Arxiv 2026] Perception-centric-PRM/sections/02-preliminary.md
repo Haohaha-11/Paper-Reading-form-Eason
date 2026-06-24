@@ -23,7 +23,7 @@ RL with verifiable rewards (RLVR) has become the key technique to improve the pe
 $\hat{A}_i = \frac{R_i - \text{mean}(\{R_j\}_{j=1}^G)}{\text{std}(\{R_j\}_{j=1}^G)}$ (1)
 
 > 💡 **公式批读 — GRPO 的 Advantage (Eq.1)**:
-> - **输入**: G 条由同一 prompt 生成的响应，每条响应 i 被赋予一个标量奖励 R_i
+> - **输入**: G 条由同一 prompt 生成的响应，每条响应 i 被赋予一个标量奖励 $R_i$
 > - **操作**: 组内标准化 — 减去组内均值，除以组内标准差
 > - **直观理解**: 在同一个问题的一组回复中，"比平均好的"得到正 advantage，"比平均差的"得到负 advantage
 > - **关键局限**: Eq.1 输出的 Â_i 是一个**标量**，对响应 i 中的所有 token 都是同一个值。这意味着正确和错误的 token 被"一视同仁"地对待。
@@ -37,8 +37,8 @@ where ε is the clipping hyperparameter and r_{i,t}(θ) is the importance sampli
 > 💡 **公式批读 — GRPO 目标函数 (Eq.2)**:
 > - **外层期望**: 对由当前策略 π_θ 生成的 prompt-响应组取期望
 > - **内层求和**: 每条响应中的每个 token 都被纳入损失
-> - **Clipping 机制**: 限制 r_{i,t}(θ) = π_θ(token|context) / π_θ_old(token|context) 在 [1-ε, 1+ε] 范围内，稳定训练
-> - **KL 惩罚**: -β × D_KL，防止策略偏离参考策略太多
+> - **Clipping 机制**: 限制 r_{i,t}(θ) = π_θ(token|context) / π_$θ_old$(token|context) 在 [1-ε, 1+ε] 范围内，稳定训练
+> - **KL 惩罚**: -β × $D_KL$，防止策略偏离参考策略太多
 > - **关键问题**: 对于响应 i 的所有 token，Â_i 是**完全相同的**——无论 token t 是"今天的天气真好"还是"那辆车的颜色是蓝色"（但实际上车是红色的），它们接受相同的 advantage 信号。这就是本文要解决的核心痛点。
 
 ### Problem Statement

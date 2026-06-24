@@ -105,7 +105,7 @@
 > | Value (w. early stop) + Average | 40.6 | 61.6 |
 > | **Value (w/o early stop) + Average** | **41.1** | **62.0** |
 >
-> **Value 优于 Advantage 的原因**: 自动数据管线的噪声使得精确估计 mc_i - mc_{i-1}（advantage）比判断 mc_i > 0（value）更困难。想象一个场景：某步骤 mc_i=0.3，上一步 mc_{i-1}=0.4，虽然下降了 0.1，但这可能只是 Monte Carlo 采样的随机波动，而非真正的"退步"。Value-based 只看"是否有正确可能"（>0），对这种噪声更鲁棒。
+> **Value 优于 Advantage 的原因**: 自动数据管线的噪声使得精确估计 m$c_i$ - mc_{i-1}（advantage）比判断 m$c_i$ > 0（value）更困难。想象一个场景：某步骤 mc_i=0.3，上一步 mc_{i-1}=0.4，虽然下降了 0.1，但这可能只是 Monte Carlo 采样的随机波动，而非真正的"退步"。Value-based 只看"是否有正确可能"（>0），对这种噪声更鲁棒。
 
 We also compare two training strategies: supervising all steps (i.e., w/o early stop) versus supervising only up to the first incorrect step (i.e., w. early stop) during training. Experimental results show that the former yields better performance. Regarding different score aggregation methods, we find that selecting the maximum value results in poorer performance compared to averaging or taking the minimum value. Analyzing the generated scores reveals that most responses contain a high-scored step, close to 1, at the beginning of the solution. This phenomenon likely arises because most erroneous steps appear in the middle of the solution. Our statistics of VisualProcessBench presented in Section 8 further demonstrate this conclusion. Furthermore, averaging performs better than selecting the maximum value, likely because the latter relies on a single step's score, while averaging accounts for multiple steps and can be considered as an ensemble approach, which benefits the step quality estimation.
 

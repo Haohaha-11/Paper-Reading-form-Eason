@@ -20,11 +20,11 @@ During Best-of-N (BoN) evaluation, a critic model is required to estimate the qu
 
 **Definition.** As shown in Figure 2, each data sample in our VisualPRM400K consists of an image I, a question q, a step-by-step solution s = {s_0, s_1, ..., s_n}, and the expected accuracy annotation mc = {mc_0, mc_1, ..., mc_n}, mc_i ∈ ℝ_{≥0} for each step, where n is the number of steps of a certain solution and mc_i denotes the expected accuracy of step s_i. The image sets I and question sets Q are collected from MMPR v1.1 [82], while the step-by-step solutions s are sampled using InternVL2.5 series models [15, 82].
 
-> **数据定义**: 每个样本 = (图像 I, 问题 q, 逐步解答 s, expected accuracy mc)。mc_i ∈ [0, 1] 衡量从第 i 步前缀出发采样的续写中正确回答的比例。注意 mc 是**连续值**（Monte Carlo 估计），但训练时会被离散化为二分类标签（正确/错误）。
+> **数据定义**: 每个样本 = (图像 I, 问题 q, 逐步解答 s, expected accuracy mc)。m$c_i$ ∈ [0, 1] 衡量从第 i 步前缀出发采样的续写中正确回答的比例。注意 mc 是**连续值**（Monte Carlo 估计），但训练时会被离散化为二分类标签（正确/错误）。
 
 **Process Supervision Generation.** Given an image I, a question q, and a solution s = {s_0, s_1, ..., s_n}, we annotate the correctness of each step s_i using an automatic data pipeline. The key idea is to estimate the expected accuracy of given steps s_{≤i} based on Monte Carlo sampling. Specifically, the model is required to complete the solution as follows:
 
-$\tilde{s}_{>i} \sim M(\tilde{s}_{>i} \mid I, q, s_{\leq i})$,
+$\tilde{s}_{\gt i} \sim M(\tilde{s}_{\gt i} \mid I, q, s_{\leq i})$,
 
 where s̃_{>i} is the completion of s_{≤i}. Besides, the expected accuracy of s_i is defined as:
 
@@ -36,9 +36,9 @@ Notably, to reduce the data construction costs, we set the max number of steps t
 >
 > Eq.(1): 给定前缀 s_{≤i}（前 i 步），让策略模型从该前缀出发**采样续写** s̃_{>i}。这个过程被称为 "rollout"——模拟在前 i 步正确的前提下，后续推理能到达正确答案的概率。
 >
-> Eq.(2): mc_i = 正确续写数 / 总续写数（每次都采样 16 条）。直观理解：如果从前 i 步出发，16 次续写中有 12 次得到正确答案，则 mc_i = 0.75。
+> Eq.(2): m$c_i$ = 正确续写数 / 总续写数（每次都采样 16 条）。直观理解：如果从前 i 步出发，16 次续写中有 12 次得到正确答案，则 m$c_i$ = 0.75。
 >
-> **关键设计决策 — threshold=0**: mc_i > 0 即标记为正确步骤。这意味着即使只有 1/16 的续写正确，该步骤也被认为是"correct"（有正确的可能）。实验表明提升 threshold 反而降低 PRM 性能（可能因为噪声标签下，宽松的 threshold 提供了更强的鲁棒性）。
+> **关键设计决策 — threshold=0**: m$c_i$ > 0 即标记为正确步骤。这意味着即使只有 1/16 的续写正确，该步骤也被认为是"correct"（有正确的可能）。实验表明提升 threshold 反而降低 PRM 性能（可能因为噪声标签下，宽松的 threshold 提供了更强的鲁棒性）。
 >
 > **步骤合并策略**: 原始解答可能步骤很多（如 30+ 步），但大多数推理步骤不需要精细到那个粒度。限制 max steps=12 并通过均匀合并来减少步骤数——本质上是在过程监督的**粒度**和**数据构建成本**之间的权衡。
 
@@ -64,7 +64,7 @@ Notably, to reduce the data construction costs, we set the max number of steps t
 >
 > **(上) VisualPRM400K (自动标注)**:
 > - 左：图像 + 问题
-> - 中：逐步解答 + Monte Carlo estimation (mc_i)
+> - 中：逐步解答 + Monte Carlo estimation (m$c_i$)
 > - 右：训练格式——多轮对话，模型预测每步正确性
 >
 > **(下) VisualProcessBench (人工标注)**:
@@ -91,14 +91,14 @@ where y_i denotes the quality of i-th step.
 > **Figure 3 批读 — 两种 PRM 建模方式对比**:
 >
 > **Value-based PRM**:
-> - 定义：步骤 s_i 的质量 = expected accuracy mc_i
-> - 输出空间：{+, -}（二分类，mc_i > 0 为 +）
+> - 定义：步骤 $s_i$ 的质量 = expected accuracy $mc_i$
+> - 输出空间：{+, -}（二分类，m$c_i$ > 0 为 +）
 > - 推理分数：P(+) × 1 + P(-) × 0 = P(+)
 > - 类比：强化学习中的**价值函数** V(s)
 > - 直观：这个步骤"好不好"
 >
 > **Advantage-based PRM**:
-> - 定义：步骤 s_i 的质量 = mc_i - mc_{i-1}（accuracy 增量）
+> - 定义：步骤 $s_i$ 的质量 = m$c_i$ - mc_{i-1}（accuracy 增量）
 > - 输出空间：{+, =, -}（三分类，提升/不变/下降）
 > - 推理分数：P(+) × 1 + P(=) × 0 + P(-) × (-1)
 > - 类比：强化学习中的**优势函数** A(s, a)

@@ -68,7 +68,7 @@ After warmup, $M$ possesses basic semantic alignment capability, but directly ap
 
 ![Equation 3](../images/9093a14f0d647dcca730f33bfab7b3ec08b617f01461617d02f86e595d53610d.jpg)
 
-where $\rho_{i,t} = \frac{\pi_{\theta}(\mathbf{o}_{i,t} \mid X, q, M, \mathbf{o}_{i,<t})}{\pi_{\theta_{old}}(\mathbf{o}_{i,t} \mid X, q, M, \mathbf{o}_{i,<t})}$ and $\hat{A}_i = \frac{R(\mathbf{o}_i) - \mu_G}{\sigma_G + \varepsilon_0}$, with $\mu_G$ and $\sigma_G$ denoting the group reward mean and standard deviation, and $\varepsilon_0$ a stability constant. Note that both $\rho_{i,t}$ and $\hat{A}_i$ are conditioned on $M$, allowing gradients to propagate through the attention pathway linking answer tokens with memory, thereby shaping how the VLM attends to the injected diagnostic cues during generation.
+where $\rho_{i,t} = \frac{\pi_{\theta}(\mathbf{o}_{i,t} \mid X, q, M, \mathbf{o}_{i,\lt t})}{\pi_{\theta_{old}}(\mathbf{o}_{i,t} \mid X, q, M, \mathbf{o}_{i,\lt t})}$ and $\hat{A}_i = \frac{R(\mathbf{o}_i) - \mu_G}{\sigma_G + \varepsilon_0}$, with $\mu_G$ and $\sigma_G$ denoting the group reward mean and standard deviation, and $\varepsilon_0$ a stability constant. Note that both $\rho_{i,t}$ and $\hat{A}_i$ are conditioned on $M$, allowing gradients to propagate through the attention pathway linking answer tokens with memory, thereby shaping how the VLM attends to the injected diagnostic cues during generation.
 
 > **机制拆解 — GR\mathcal{P}O 策略梯度**:
 > - **GR\mathcal{P}O (Group Relative \mathcal{P}olicy Optimization)** 替代 \mathcal{P}\mathcal{P}O：在 group 内做 reward normalization，无需额外 value network
@@ -121,7 +121,7 @@ Both branches share the VLM backbone parameters $\theta$, ensuring that alignmen
 
 ![Equation 7](../images/a77ae59ef865935975c20db34122a3733b85a888857f45ff91720eb1c33c3bdd.jpg)
 
-where $\pi^{+}(\cdot \mid \hat{y}_{<n}) \triangleq \pi_{\theta}(\cdot \mid X, q, M_{pri}, \hat{y}_{<n})$ and $\pi^{-}(\cdot \mid \hat{y}_{<n}) \triangleq \pi_{\theta}(\cdot \mid X, q, M_{auto}, \hat{y}_{<n})$ are the full-vocabulary next-token distributions conditioned on privileged and autonomous memory, respectively. The divergence D adopts the generalized Jensen-Shannon divergence $\text{JSD}_{\beta}$ [67]:
+where $\pi^{+}(\cdot \mid \hat{y}_{\lt n}) \triangleq \pi_{\theta}(\cdot \mid X, q, M_{pri}, \hat{y}_{\lt n})$ and $\pi^{-}(\cdot \mid \hat{y}_{\lt n}) \triangleq \pi_{\theta}(\cdot \mid X, q, M_{auto}, \hat{y}_{\lt n})$ are the full-vocabulary next-token distributions conditioned on privileged and autonomous memory, respectively. The divergence D adopts the generalized Jensen-Shannon divergence $\text{JSD}_{\beta}$ [67]:
 
 ![Equation 8](../images/e29c3bb0b97ce9f54af05fc177d1ee2ed7005e288cd1a91ed4e458d3447f9229.jpg)
 

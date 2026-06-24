@@ -21,11 +21,11 @@ We propose FUTURE-L1, an interleaved latent visual reasoning framework for VEP. 
 > 标准的自回归解码中，每个位置输出 hidden state → LM head → 词汇表分布 → 采样 token → token embedding → 作为下一位置的输入。这是"离散符号 → 离散符号"的链。
 >
 > FUTURE-L1 在潜视觉 span 内部做了一个关键的**短路**：
-> - 输入：`<|latent|>` token → 模型前向 → hidden state h_t
-> - 输出处理：**跳过 LM head（不投影到词汇表），直接将 h_t 作为下一位置的输入 embedding**
-> - 下一个输入：`<|latent|>` token + h_t (前一步的 hidden state 作为 embedding 注入)
+> - 输入：`<|latent|>` token → 模型前向 → hidden state $h_t$
+> - 输出处理：**跳过 LM head（不投影到词汇表），直接将 $h_t$ 作为下一位置的输入 embedding**
+> - 下一个输入：`<|latent|>` token + $h_t$ (前一步的 hidden state 作为 embedding 注入)
 >
-> 这样 h_t 在 KV cache 中累积，持续影响后续的所有 token（包括后续的文本 token 和其他潜 span）。
+> 这样 $h_t$ 在 KV cache 中累积，持续影响后续的所有 token（包括后续的文本 token 和其他潜 span）。
 >
 > **为什么这个设计对 VEP 特别重要**：因为动态视觉状态需要在时间维度上累积和更新。每次潜状态更新都留在 KV cache 中 → 后来的文本 token 可以 "attend to" 之前所有的想象视觉状态。
 
@@ -33,7 +33,7 @@ We propose FUTURE-L1, an interleaved latent visual reasoning framework for VEP. 
 
 > 💡 **设计细节 — 自适应潜预算**:
 > - **不受控的灵活性**: span 长度由模型自己决定（通过生成 `<|latent_end|>`），无强制固定长度
-> - **可控的安全性**: L_max 上界防止潜在的无休止潜解码（类似于 LLM 生成中的 max_new_tokens）
+> - **可控的安全性**: $L_{max}$ 上界防止潜在的无休止潜解码（类似于 LLM 生成中的 max_new_tokens）
 > - **多处分配**: 一个回答可有多个 span → 模型可以在推理的不同阶段动态分配潜计算
 > - **实验发现 (Section 4.3)**: L_max=4 效果最优；模型确实会在更难的问题上使用更多 span（1-Hop: 1.79 → 3-Hop: 2.52）
 
@@ -56,12 +56,12 @@ For each candidate, we evaluate Qwen3-VL-8B-Instruct under two conditions: (1) a
 > ```
 > For each TwiFF candidate:
 >   在 Qwen3-VL-8B-Instruct 上做 2 组 × 8 次 rollout:
->     (a) 仅观察前缀 → p_t (correct-rollout count)
->     (b) 观察前缀 + 未来推理帧 → p_v (correct-rollout count)
+>     (a) 仅观察前缀 → $p_t$ (correct-rollout count)
+>     (b) 观察前缀 + 未来推理帧 → $p_v$ (correct-rollout count)
 >   筛选条件:
->     (1) p_t ≤ 6 → 纯文本不能用太多正确（如果文本已饱和，visual hint 无价值）
->     (2) p_v - p_t ≥ 2 → visual hint 必须有可测量提升（至少多对 2 个 rollout）
->   排序: p_v - p_t 降序
+>     (1) $p_t$ ≤ 6 → 纯文本不能用太多正确（如果文本已饱和，visual hint 无价值）
+>     (2) $p_v$ - $p_t$ ≥ 2 → visual hint 必须有可测量提升（至少多对 2 个 rollout）
+>   排序: $p_v$ - $p_t$ 降序
 >   取 top 50K
 > ```
 >
@@ -90,9 +90,9 @@ This anchors latent spans to the future-frame manifold while preserving standard
 
 > 💡 **公式批读 — 联合训练目标的设计逻辑**:
 >
-> **L_CE (交叉熵)**：和标准 LLM 训练一致——对文本 token 位置进行 next-token prediction。这保持了语言建模能力。
+> **$L_CE$ (交叉熵)**：和标准 LLM 训练一致——对文本 token 位置进行 next-token prediction。这保持了语言建模能力。
 >
-> **L_Latent (MSE)**：对潜位置进行隐藏状态到未来帧视觉 embedding 的 L2 对齐。
+> **$L_Latent$ (MSE)**：对潜位置进行隐藏状态到未来帧视觉 embedding 的 L2 对齐。
 > - 使用的视觉 encoder 与 backbone MLLM 相同 (Qwen3-VL vision encoder) → 在相同的表征空间中对齐
 > - 每个潜位置对应一个未来推理帧 → "这个潜状态应该编码该未来帧的视觉语义"
 >
@@ -108,7 +108,7 @@ SFT provides a grounded but teacher-forced initialization: each latent state is 
 
 **Outcome-Contrastive Latent Reward.** Answer rewards provide only a sequence-level scalar, leaving latent states weakly supervised. We introduce an outcome-contrastive reward R_ctr that structures latent trajectories by group outcomes: correct rollouts are pulled together, while incorrect rollouts serve as negatives. Because the signal depends only on final-answer correctness, it does not require intermediate-frame annotations.
 
-> 💡 **问题动机 — 为什么需要 R_ctr**: DAPO 的 answer reward 是一个 sequence-level 标量——所有 token 位置共享同一个 reward 信号。这意味着潜状态收到的梯度信号非常弱（特别是当序列中潜状态占比较小时）。R_ctr 为潜状态提供了一种**结构化的轨迹级反馈**：正确的推理路径上的潜状态应该是相似的（它们在做相似的未来想象），而错误的路径上的潜状态应该不同。
+> 💡 **问题动机 — 为什么需要 $R_ctr$**: DAPO 的 answer reward 是一个 sequence-level 标量——所有 token 位置共享同一个 reward 信号。这意味着潜状态收到的梯度信号非常弱（特别是当序列中潜状态占比较小时）。$R_ctr$ 为潜状态提供了一种**结构化的轨迹级反馈**：正确的推理路径上的潜状态应该是相似的（它们在做相似的未来想象），而错误的路径上的潜状态应该不同。
 
 Let Z_i = [z_{i,1}, ..., z_{i,T_i}] be the normalized latent trajectory of rollout i, with correctness a_i ∈ {0, 1}. We define trajectory similarity as:
 
@@ -118,13 +118,13 @@ where T = min(T_i, T_j). Let P_i = {j ≠ i : a_j = 1}, N_i = {j ≠ i : a_j = 0
 
 R_ctr(i) = exp(s_i^+ / τ) / (exp(s_i^+ / τ) + ∑_{j∈N_i} exp(s_ij / τ))
 
-> 💡 **公式批读 — R_ctr 的对比学习设计**:
+> 💡 **公式批读 — $R_ctr$ 的对比学习设计**:
 >
-> **轨迹相似度 s_ij**: 按时间步对齐后计算余弦相似度，取平均。相似度在 [0, 1] 范围（1 代表完全相同）。
+> **轨迹相似度 $s_ij$**: 按时间步对齐后计算余弦相似度，取平均。相似度在 [0, 1] 范围（1 代表完全相同）。
 >
-> **Hardest-positive**: s_i^+ = max(s_ij over all correct rollouts) —— 只与最相似的正确 rollout 比较，而不是平均。这样鼓励"至少有一条正确的潜轨迹与你相似"，给模型更多灵活性。
+> **Hardest-positive**: s_i^+ = max($s_ij$ over all correct rollouts) —— 只与最相似的正确 rollout 比较，而不是平均。这样鼓励"至少有一条正确的潜轨迹与你相似"，给模型更多灵活性。
 >
-> **InfoNCE**: 对比学习标准形式 —— 分子是正例相似度的指数，分母是正例 + 所有反例相似度的指数和。最大化 R_ctr 等价于最大化正例相对反例的区分度。
+> **InfoNCE**: 对比学习标准形式 —— 分子是正例相似度的指数，分母是正例 + 所有反例相似度的指数和。最大化 $R_ctr$ 等价于最大化正例相对反例的区分度。
 >
 > **为什么不用简单的余弦相似度奖励**：直接的"让所有正确的潜轨迹相似"可能导致模式坍缩（所有正确轨迹变得一模一样）。InfoNCE 通过引入反例的对比迫使潜表示更具区分性，同时允许正确的多一些多样性。
 
@@ -136,15 +136,15 @@ R_div = - (1/(M-1)) ∑ cos²(b_m, b_{m+1})
 
 This reward is maximized at 0 when adjacent span representatives are orthogonal and decreases as they become redundant.
 
-> 💡 **公式批读 — R_div 的设计直觉**:
+> 💡 **公式批读 — $R_div$ 的设计直觉**:
 >
-> **Mean-pooling per span**: 将每个 span 内的所有潜向量取平均得到一个代表向量 b_m。这是合理的——同一 span 内的潜状态应该编码相似时间步的未来状态。
+> **Mean-pooling per span**: 将每个 span 内的所有潜向量取平均得到一个代表向量 $b_m$。这是合理的——同一 span 内的潜状态应该编码相似时间步的未来状态。
 >
 > **cos² 惩罚 (而非 cos)**: 使用平方有两个效果：(1) 始终为正数，避免 cos 为负时的奖励；(2) 对小相似度变化更敏感（导数在 0 附近更大），对已高度相似的惩罚斜率更大。
 >
-> **负号**: 最大化 R_div 等价于最小化相邻 span 的相似度 → 鼓励时序多样性。
+> **负号**: 最大化 $R_div$ 等价于最小化相邻 span 的相似度 → 鼓励时序多样性。
 >
-> **SFT 的对应**: SFT 中不同 span 对应不同时间步的未来帧 embedding——自然保证了多样性。RL 中没有这个约束，所以需要 R_div 显式鼓励。
+> **SFT 的对应**: SFT 中不同 span 对应不同时间步的未来帧 embedding——自然保证了多样性。RL 中没有这个约束，所以需要 $R_div$ 显式鼓励。
 
 **Final Rewards.** The total target combines answer/format rewards and two latent terms:
 
@@ -152,7 +152,7 @@ R = λ_a R_acc + λ_f R_fmt + λ_c R_ctr + λ_d R_div
 
 where λ_c and λ_d are ablated in Section 4.
 
-> 💡 **奖励权重设计**: λ_a=0.9, λ_f=0.1 (标准 DAPO 配置), λ_c=0.2, λ_d=0.1 (实验 4.2 消融得到的最优值)。注意 λ_c > λ_d —— 这反映了 outcome-contrastive 比 temporal-diversity 更核心：先保证"潜轨迹和答案正确性相关"，再保证"潜轨迹内部有时序多样性"。
+> 💡 **奖励权重设计**: $λ_a$=0.9, $λ_f$=0.1 (标准 DAPO 配置), $λ_c$=0.2, $λ_d$=0.1 (实验 4.2 消融得到的最优值)。注意 $λ_c$ > $λ_d$ —— 这反映了 outcome-contrastive 比 temporal-diversity 更核心：先保证"潜轨迹和答案正确性相关"，再保证"潜轨迹内部有时序多样性"。
 
 ---
 
@@ -167,10 +167,10 @@ where λ_c and λ_d are ablated in Section 4.
 > **(Center) SFT 阶段**: 输入观察前缀 V + 问题 q，输出交错式 text-latent 轨迹，用 CE loss (文本部分) + MSE loss (潜状态 → 未来帧 embedding 对齐)
 >
 > **(Right) LA-DAPO 阶段**: 从 SFT checkpoint 出发，sampling 8 rollouts per question，计算：
-> - R_acc: answer correctness (LLM-as-judge)
-> - R_fmt: format validity
-> - R_ctr: hardest-positive InfoNCE (correct → similar, incorrect → dissimilar)
-> - R_div: -mean(cos²(adjacent span representatives))
+> - $R_acc$: answer correctness (LLM-as-judge)
+> - $R_fmt$: format validity
+> - $R_ctr$: hardest-positive InfoNCE (correct → similar, incorrect → dissimilar)
+> - $R_div$: -mean(cos²(adjacent span representatives))
 >
 > 训练动态：SFT 使用 teacher-forcing（每个 token 位置有 ground-truth），LA-DAPO 使用 sampling + reward。数据依赖：SFT 需要未来帧 embedding，LA-DAPO 不需要。
 

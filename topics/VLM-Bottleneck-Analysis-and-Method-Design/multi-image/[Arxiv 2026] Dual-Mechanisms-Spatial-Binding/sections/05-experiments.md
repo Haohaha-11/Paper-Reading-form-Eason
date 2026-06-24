@@ -191,7 +191,7 @@ We evaluate this on the COCO-spatial dataset using a spatial relation task: give
 > **Probe 放大干预的优雅之处**:
 >
 > ```
-> emb_t = emb_t + α_i · probe_i
+> $emb_t$ = $emb_t$ + $α_i$ · $probe_i$
 > 
 > 三个"不需要":
 >   1. 不需要知道哪些 token 对应 query/reference 物体 → 全局应用

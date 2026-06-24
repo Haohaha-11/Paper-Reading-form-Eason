@@ -83,11 +83,11 @@ where α ∈ [0, 1] controls penalty strength. Thus, correct tokens (m_{i,t} = 0
 >
 > **两个输入信号**:
 > - Â_i: 原始 GRPO 的序列级 advantage（组内标准化后的标量）
-> - m_{i,t} ∈ {0, 1}: Perceval 提供的 token-level binary mask（1 = 幻觉 token）
+> - $m_{i,t}$ ∈ {0, 1}: Perceval 提供的 token-level binary mask（1 = 幻觉 token）
 >
 > **四种情况**:
 >
-> | m_{i,t} | Â_i 符号 | Â'_{i,t} 结果 | 直观解释 |
+> | $m_{i,t}$ | Â_i 符号 | Â'_{i,t} 结果 | 直观解释 |
 > |---------|---------|--------------|---------|
 > | 0 (正确) | 任意 | Â_i | 不做任何修改，保持原始 advantage |
 > | 1 (幻觉) | > 0 (好回复) | Â_i × (1-α) | 正 advantage 被衰减——"整体不错，但这句话说错了" |
@@ -108,15 +108,15 @@ where α ∈ [0, 1] controls penalty strength. Thus, correct tokens (m_{i,t} = 0
 >
 > ```
 > Step 1: Perceval 检测
->   o_i = "The blue mug is on the table. There is a red brick next to it."
+>   $o_i$ = "The blue mug is on the table. There is a red brick next to it."
 >   Perceval → <answer>["There is a red brick next to it"]</answer>
 >
 > Step 2: 精确字符串匹配
->   在 o_i 中找到 "There is a red brick next to it" 的起始位置
+>   在 $o_i$ 中找到 "There is a red brick next to it" 的起始位置
 >   → 假设对应 token 位置 15-28
 >
 > Step 3: Mask 构建
->   M_i = [0,0,0,...,0,1,1,...,1,0,...,0]
+>   $M_i$ = [0,0,0,...,0,1,1,...,1,0,...,0]
 >                    └─ positions 15-28 ─┘
 >
 > Step 4: Advantage 重分配

@@ -23,10 +23,10 @@ $\left\{ { \begin{array} { l l } { e _ { v } = \text{Proj}( \text{ViT}( X _ { v 
 e_v and e_t represent the visual and textual embeddings, respectively.
 
 > 💡 **公式批读 — Eq.1-2（输入构造）**:
-> - 文本嵌入 e_t 由 Huginn 的 Embedding Block E 生成（这是 Huginn 三元结构的第一元）
-> - 视觉嵌入 e_v 由 ViT 最后一层 + Proj 生成（标准 MLLM 做法）
+> - 文本嵌入 $e_t$ 由 Huginn 的 Embedding Block E 生成（这是 Huginn 三元结构的第一元）
+> - 视觉嵌入 $e_v$ 由 ViT 最后一层 + Proj 生成（标准 MLLM 做法）
 > - 两者 concat 为 e，这是送入 Recurrent Block 的输入序列
-> - **注意**: 这里的 e_v 只是 ViT 最后一层的投影，层级视觉特征（Section 3.2 中的 v_l）是额外的注入信号，二者并存。
+> - **注意**: 这里的 $e_v$ 只是 ViT 最后一层的投影，层级视觉特征（Section 3.2 中的 $v_l$）是额外的注入信号，二者并存。
 
 We denote s_t as the hidden states after t iterations. To stabilize the recurrent iterations, Huginn utilizes a random vector:
 
@@ -37,9 +37,9 @@ In the initial iteration, this vector is concatenated with the input embeddings 
 $s _ { r + 1 } = R\text{-}Block\left( e , \hat { e } _ { v } ; s _ { r } \right). $
 
 > 💡 **公式批读 — Eq.3-4（递归迭代）**:
-> - **s_0**: 随机初始化 hidden state（从高斯分布采样），这是循环的起点。随机性提供探索能力。
-> - **初始迭代 (t=0)**: 将随机向量 s_0 与输入嵌入 e 沿 channel 维 concat → adapter 映射回原始维度 → 进入 R-Block
-> - **后续迭代 (t>0)**: 将前一迭代的 hidden state s_r 与输入嵌入 e 拼接 → 继续 R-Block 计算
+> - **$s_0$**: 随机初始化 hidden state（从高斯分布采样），这是循环的起点。随机性提供探索能力。
+> - **初始迭代 (t=0)**: 将随机向量 $s_0$ 与输入嵌入 e 沿 channel 维 concat → adapter 映射回原始维度 → 进入 R-Block
+> - **后续迭代 (t>0)**: 将前一迭代的 hidden state $s_r$ 与输入嵌入 e 拼接 → 继续 R-Block 计算
 > - **关键设计**: 每次迭代都将**原始输入 e** 重新注入——这是一个 skip connection，防止深层迭代中的信号衰减
 > - **hat(e)_v**: 注入的视觉线索（如 Eq.6 定义），在特定迭代步注入，其余步为 0
 
@@ -71,7 +71,7 @@ where v_l ∈ R^{n×h} represents the projected visual cues ready for recurrent 
 
 > 💡 **公式批读 — Eq.5（Patch Merger）**:
 > - 每个选定的 ViT 层有一组独立的 patch merger m_l（轻量投影模块）
-> - 作用：将 ViT 中间层特征 h_v^l 从 ViT 的特征空间映射到 LLM 的 embedding 空间
+> - 作用：将 ViT 中间层特征 $h_v^l$ 从 ViT 的特征空间映射到 LLM 的 embedding 空间
 > - "Curriculum of visual understanding": 从 fine-grained（低层）到 coarse-grained（高层）的渐进式注入，稳定早期推理阶段的 hidden state transition
 > - **灵感来源**: Qwen3-VL 的 patch merger，但用法不同——Qwen3-VL 是静态注入到不同 LLM 层，HIVE 是动态注入到不同迭代步
 
@@ -97,9 +97,9 @@ We introduce an adaptive injection schedule. The core challenge lies in aligning
 >
 > | 场景 | R 值 | 注入策略 | 具体行为 |
 > |------|------|---------|---------|
-> | 充分迭代 | R ≥ 4 | Top-down 顺序注入 | t=0: v_6（浅层-纹理）, t=1: v_12, t=2: v_18, t=3: v_24（深层-语义）, t≥4: 纯语言推理 |
-> | 受限迭代 | R = 3 | 降采样 | 间隔 floor(4/3)=1，选 3 层: {v_6, v_12, v_18} 或 {v_6, v_12, v_24}... |
-> | 受限迭代 | R = 2 | 降采样 | 间隔 floor(4/2)=2，选 2 层: {v_6, v_18} 或 {v_6, v_24}... |
+> | 充分迭代 | R ≥ 4 | Top-down 顺序注入 | t=0: v_6（浅层-纹理）, t=1: $v_12$, t=2: $v_18$, t=3: v_24（深层-语义）, t≥4: 纯语言推理 |
+> | 受限迭代 | R = 3 | 降采样 | 间隔 floor(4/3)=1，选 3 层: {$v_6$, $v_12$, v_18} 或 {$v_6$, $v_12$, v_24}... |
+> | 受限迭代 | R = 2 | 降采样 | 间隔 floor(4/2)=2，选 2 层: {$v_6$, v_18} 或 {$v_6$, v_24}... |
 > | 受限迭代 | R = 1 | 最简 | 只注入 1 层 |
 >
 > **设计精妙处**: Poisson 分布采样 + 自适应降采样 = 模型学会在任何 recurrency depth 下都能有效利用视觉信息。这是训练和推理之间 decouple 的关键——训练时不固定步数，推理时才能灵活调整。
@@ -138,7 +138,7 @@ Finally, after r recurrent iterations, the model decodes the hidden state s_r to
 
 $p = H ( s _ { r } ). $
 
-> 💡 **公式批读 — Eq.7（解码）**: H 是 Huginn 的 Language Head。经过 r 次迭代后，最终的 hidden state s_r 被送入 Head 生成词表上的概率分布。整个过程是标准的自回归语言建模——HIVE 的"新意"不在于解码方式，而在于解码前 hidden state 是如何通过递归 + 层级视觉注入被构建的。
+> 💡 **公式批读 — Eq.7（解码）**: H 是 Huginn 的 Language Head。经过 r 次迭代后，最终的 hidden state $s_r$ 被送入 Head 生成词表上的概率分布。整个过程是标准的自回归语言建模——HIVE 的"新意"不在于解码方式，而在于解码前 hidden state 是如何通过递归 + 层级视觉注入被构建的。
 
 ### 3.3. Training Objective
 
@@ -151,8 +151,8 @@ where θ denotes the trainable parameters, and Γ_θ(x, V_hier, r) represents th
 > 💡 **公式批读 — Training Objective**:
 > - **双层期望**：外层在数据分布上求期望，内层在 recurrency depth r 的分布上求期望
 > - **CE Loss**: 标准的交叉熵，预测目标是 x'（ground truth continuation）
-> - **Γ_θ(x, V_hier, r)**: 模型在第 r 步的输出——意味着在训练时模型的输出会受 recurrency depth 影响
-> - **Log-Normal Poisson Distribution Λ**: 目标均值为 r_bar+1（r_bar 是期望的额外迭代次数）。Log-Normal+Poisson 的组合确保：(1) 正数采样值；(2) 均值可控；(3) 方差适度
+> - **Γ_θ(x, $V_hier$, r)**: 模型在第 r 步的输出——意味着在训练时模型的输出会受 recurrency depth 影响
+> - **Log-Normal Poisson Distribution Λ**: 目标均值为 $r_bar$+1（$r_bar$ 是期望的额外迭代次数）。Log-Normal+Poisson 的组合确保：(1) 正数采样值；(2) 均值可控；(3) 方差适度
 > - **Stochastic Supervision 的核心作用**: 因为训练时 r 是随机的，模型必须学会在任何 depth 下都输出正确结果。这迫使模型将"推理能力"与"推理步数"解耦，天然适配推理时的自适应早停
 
 ---

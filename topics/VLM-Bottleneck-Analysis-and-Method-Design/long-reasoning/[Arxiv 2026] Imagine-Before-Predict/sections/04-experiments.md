@@ -68,7 +68,7 @@
 > - λ=0.1 (73.2): **最优** → 适度的视觉监督
 > - λ=1.0 (69.5): 潜状态对齐太强 → 挤压了语言建模 → 文本推理质量下降
 >
-> **L_max 消融**:
+> **$L_max$ 消融**:
 > - L_max=2 (70.7): 潜空间容量不足
 > - L_max=4 (73.2): **最优** → 短而精
 > - L_max=16 (71.0): 开始下降
@@ -83,15 +83,15 @@
 > | RL 方法 | AVG | vs DAPO 基线 | 增量来源 |
 > |---------|-----|-------------|---------|
 > | DAPO | 83.8 | — | 基线 RL (answer+format reward) |
-> | + R_ctr | 84.5 | +0.7 | 潜轨迹跨 rollout 对齐 |
-> | + R_div | 84.8 | +1.0 | 潜轨迹内时序多样性 |
+> | + $R_ctr$ | 84.5 | +0.7 | 潜轨迹跨 rollout 对齐 |
+> | + $R_div$ | 84.8 | +1.0 | 潜轨迹内时序多样性 |
 > | + Both (FUTURE-L1-RL) | 85.4 | +1.6 | 两者互补 |
 >
 > 注意：即使只用 DAPO（无潜空间 reward），FUTURE-L1-SFT → DAPO 的提升 (+10.6) 已经远大于文本-only SFT → DAPO 的提升 (+11.3-12.3 over 65.0 baseline)。这再次验证了潜空间 SFT 初始化的优势。
 
 **RL Reward Coefficients.** Table 5 examines the latent-reward coefficients. The outcome-contrastive weight peaks at λ_c = 0.2 (85.4), and the temporal-diversity weight peaks at λ_d = 0.1; larger values hurt, dropping to 81.6 at λ_d = 1.0. This suggests that contrastive alignment and temporal diversity are both useful, but excessive pressure can push latent spans off the manifold.
 
-> 💡 **奖励系数的"倒 U 型"**: 两个潜空间奖励都存在最优值，过大反而有害——λ_d=1.0 时性能骤降至 81.6。这验证了一个重要直觉：过度的多样性约束会迫使潜状态偏离有意义的视觉 manifold → 偏离了 SFT 阶段建立的有效表征区域。这是"正则化强度—表征保真度"之间的经典 trade-off。
+> 💡 **奖励系数的"倒 U 型"**: 两个潜空间奖励都存在最优值，过大反而有害——$λ_d$=1.0 时性能骤降至 81.6。这验证了一个重要直觉：过度的多样性约束会迫使潜状态偏离有意义的视觉 manifold → 偏离了 SFT 阶段建立的有效表征区域。这是"正则化强度—表征保真度"之间的经典 trade-off。
 
 ### 4.3 Analysis of Latent Visual Reasoning
 

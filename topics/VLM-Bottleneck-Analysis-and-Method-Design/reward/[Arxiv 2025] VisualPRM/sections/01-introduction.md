@@ -45,10 +45,10 @@ To solve these challenges, we first introduce VisualPRM400K, a dataset comprisin
 
 > **机制拆解 — VisualPRM400K 自动数据管线**: 核心思路借鉴 Math-Shepherd [79] 的 Monte Carlo 方法：
 > 1. 从 MMPR v1.1 收集 (Image, Question)
-> 2. 用 InternVL2.5 采样逐步解答 s = {s_0, ..., s_n}
-> 3. 对每个步骤 s_i，从前缀 s_{≤i} 出发采样 16 条续写 (completions)
-> 4. mc_i = correct_completions / 16（expected accuracy）
-> 5. 如果 mc_i > 0，标记为正确步骤
+> 2. 用 InternVL2.5 采样逐步解答 s = {$s_0$, ..., s_n}
+> 3. 对每个步骤 $s_i$，从前缀 $s_{≤i}$ 出发采样 16 条续写 (completions)
+> 4. m$c_i$ = correc$t_completions$ / 16（expected accuracy）
+> 5. 如果 m$c_i$ > 0，标记为正确步骤
 
 To facilitate the evaluation of multimodal critic models, we introduce VisualProcessBench, a benchmark for evaluating PRMs and MLLMs in detecting erroneous steps in multimodal reasoning tasks. This benchmark includes 2,866 samples with 26,950 human-annotated step-wise correctness labels. Each sample includes a multimodal reasoning question, a step-by-step solution, and correctness labels for each step. To ensure annotation accuracy, we employ human experts with at least a university degree to manually assess the correctness of each step. Unlike prior benchmarks, which require identifying only the first erroneous step, VisualProcessBench challenges models to detect all errors within a given solution. This adjustment aligns with recent advancements in model reflection abilities, helping to reduce false negatives in evaluations. Evaluation results reveal that existing open-source MLLMs struggle to accurately assess step-wise correctness, highlighting the need for improved multimodal critic models.
 

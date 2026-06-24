@@ -48,8 +48,8 @@ The model, however, may name the same object with different wording, and the sam
 >
 > **Router 的设计选择**:
 > - 轻量 VLM: Qwen3.5-4B（保证 RL 训练效率）
-> - 输入: image + (gt_name, gt_context) + [list of model-generated objects]
-> - 输出: 与 gt_object 匹配的 model-generated objects 子集
+> - 输入: image + (g$t_name$, g$t_context$) + [list of model-generated objects]
+> - 输出: 与 g$t_object$ 匹配的 model-generated objects 子集
 > - 多个 model objects 匹配同一 gt object 时，只保留最早出现的那个
 
 ### Box Grounding Quality (IoU-based)

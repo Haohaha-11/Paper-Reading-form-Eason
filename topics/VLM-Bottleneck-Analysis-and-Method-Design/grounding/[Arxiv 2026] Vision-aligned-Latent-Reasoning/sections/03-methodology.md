@@ -33,7 +33,7 @@ $H_{t+1} = \text{Transformer}(E_{t+1}),$
 
 where t > T. This recursive process repeats until the model predicts the `<EOS>` token. Upon entering the latent mode, the model is constrained to remain in this state for a fixed number K of steps. After K latent steps, the model reverts to the language mode and resumes generating text tokens from the current hidden state h_t, using the language model head, LM-Head:
 
-$M(x_t | v, x_{<t}) = \text{LM-Head}(h_t),$
+$M(x_t | v, x_{\lt t}) = \text{LM-Head}(h_t),$
 
 where $M$ denotes the standard MLLM. This alternation strategy allows MLLMs to broaden its reasoning capability without explicit linguistic reasoning steps.
 
@@ -42,7 +42,7 @@ where $M$ denotes the standard MLLM. This alternation strategy allows MLLMs to b
 > | 属性 | Latent Mode | Language Mode |
 > |------|------------|---------------|
 > | 触发 token | `<latent>` | `</latent>` |
-> | 输入来源 | 前一步 hidden state h_t | token embedding e(x_{t+1}) |
+> | 输入来源 | 前一步 hidden state $h_t$ | token embedding e($x_{t+1}$) |
 > | 输出内容 | 连续潜向量（不可读） | 离散文本 token |
 > | 固定步数 | K=16 步（固定） | 不固定 |
 > | 功能 | 在潜空间中保持视觉信息 | 生成可读的推理文本 |
@@ -106,7 +106,7 @@ We adopt a two-stage curriculum learning strategy to progressively foster latent
 
 **Stage 1: Standard SFT on CoT datasets.** We perform standard SFT on pre-trained MLLMs using 450K samples from existing CoT datasets, endowing MLLMs with language-based reasoning capabilities. Concretely, given a training sample with an input image set I, a question q, and ground-truth language CoT reasoning **y** = [r¹, r², ..., r^N, a] where rⁱ represents the i-th reasoning step and a is the final answer, we optimize the model using the standard autoregressive language modeling objective:
 
-$L_{CE} := -E_{(I, q, y)} \left[ \sum_{t} \log M(y_t | v, q, y_{<t}) \right],$
+$L_{CE} := -E_{(I, q, y)} \left[ \sum_{t} \log M(y_t | v, q, y_{\lt t}) \right],$
 
 where y_t denotes the t-th token in the reasoning sequence. This stage establishes the fundamental ability to decompose complex visual questions into intermediate linguistic reasoning steps. During this stage, we only train the decoder of MLLM while freezing the native vision encoder.
 
