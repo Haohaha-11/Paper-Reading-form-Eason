@@ -22,7 +22,7 @@ In Section 3.1, we first revisit the concept of latent reasoning in MLLMs. Then,
 
 Formally, given an input text sequence **x** = (x₁, ..., $x_{T}$) and images I, we formulate the task as generating a corresponding text response. During inference with latent reasoning, the model iteratively switches between two distinct modes: latent and language. In detail, in the latent mode, the model produces latent reasoning tokens that are not directly shown as text, while in the language mode, it generates the response with text tokens.
 
-Specifically, the native vision encoder first extracts image tokens from images I, i.e., **v** = (v₁, v₂, ..., $v_{S}$) = ViT(I). Subsequently, the transformer decoder processes input text-token embeddings, $E_{T}$ = [v₁, ..., $v_{S}$, e(x₁), ..., e($x_{T}$)], to yield the last hidden state $H_{T}$ = Transformer($E_{T}$), where e is the token embedding function. During inference, the model enters the latent mode by predicting a special token `<latent>` and reverts to the language mode by predicting another special token `</latent>`. In the latent mode, the model leverages the previous hidden state, $h_t$ = $H_{t}$[t, :], as input for the next prediction, whereas in the language mode, the model uses the token embedding, e(x_{t+1}), as input for the next prediction, as formulated below:
+Specifically, the native vision encoder first extracts image tokens from images I, i.e., **v** = (v₁, v₂, ..., $v_{S}$) = ViT(I). Subsequently, the transformer decoder processes input text-token embeddings, $E_{T}$ = [v₁, ..., $v_{S}$, e(x₁), ..., e($x_{T}$)], to yield the last hidden state $H_{T}$ = Transformer($E_{T}$), where e is the token embedding function. During inference, the model enters the latent mode by predicting a special token `<latent>` and reverts to the language mode by predicting another special token `</latent>`. In the latent mode, the model leverages the previous hidden state, $h_t$ = $H_{t}$[t, :], as input for the next prediction, whereas in the language mode, the model uses the token embedding, e($x_{t+1}$), as input for the next prediction, as formulated below:
 
 $$
 
@@ -54,7 +54,7 @@ where $\mathcal{M}$ denotes the standard MLLM. This alternation strategy allows 
 > | 属性 | Latent Mode | Language Mode |
 > |------|------------|---------------|
 > | 触发 token | `<latent>` | `</latent>` |
-> | 输入来源 | 前一步 hidden state $h_t$ | token embedding e(x_{t+1}) |
+> | 输入来源 | 前一步 hidden state $h_t$ | token embedding e($x_{t+1}$) |
 > | 输出内容 | 连续潜向量（不可读） | 离散文本 token |
 > | 固定步数 | K=16 步（固定） | 不固定 |
 > | 功能 | 在潜空间中保持视觉信息 | 生成可读的推理文本 |
@@ -132,7 +132,7 @@ where each $\mathcal{L}_{REPA}^{(m)}$ follows the same formulation as the single
 
 We adopt a two-stage curriculum learning strategy to progressively foster latent reasoning in MLLMs. In the first stage, we perform standard supervised fine-tuning (SFT) on Chain-of-Thought (CoT) visual question-answering (VQA) datasets to establish foundational multi-modal reasoning capabilities. Subsequently, in the second stage, we decompose the reasoning into step-by-step phases and interleave latent reasoning tokens, allowing the model to reason within the latent representations. Crucially, we employ representation alignment (REPA) to align the intermediate hidden states of the MLLM with features extracted from vision encoders such as DINO (Oquab et al., 2023; Simeoni et al., 2025), CLIP (Radford et al., 2021), or SigLIP (Tschannen et al., 2025). This alignment empowers MLLMs to retain visual information required for reasoning, thereby enabling robust long-context reasoning.
 
-**Stage 1: Standard SFT on CoT datasets.** We perform standard SFT on pre-trained MLLMs using 450K samples from existing CoT datasets, endowing MLLMs with language-based reasoning capabilities. Concretely, given a training sample with an input image set I, a question q, and ground-truth language CoT reasoning **y** = [r¹, r², ..., r^N, a] where rⁱ represents the i-th reasoning step and a is the final answer, we optimize the model using the standard autoregressive language modeling objective:
+**Stage 1: Standard SFT on CoT datasets.** We perform standard SFT on pre-trained MLLMs using 450K samples from existing CoT datasets, endowing MLLMs with language-based reasoning capabilities. Concretely, given a training sample with an input image set I, a question q, and ground-truth language CoT reasoning **y** = [r¹, r², ..., $r^N$, a] where rⁱ represents the i-th reasoning step and a is the final answer, we optimize the model using the standard autoregressive language modeling objective:
 
 $$
 

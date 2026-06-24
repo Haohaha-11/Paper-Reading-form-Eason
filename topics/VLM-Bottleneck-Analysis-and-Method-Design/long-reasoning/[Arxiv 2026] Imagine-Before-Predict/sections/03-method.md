@@ -110,19 +110,19 @@ SFT provides a grounded but teacher-forced initialization: each latent state is 
 
 > 💡 **问题动机 — 为什么需要 $R_ctr$**: DAPO 的 answer reward 是一个 sequence-level 标量——所有 token 位置共享同一个 reward 信号。这意味着潜状态收到的梯度信号非常弱（特别是当序列中潜状态占比较小时）。$R_ctr$ 为潜状态提供了一种**结构化的轨迹级反馈**：正确的推理路径上的潜状态应该是相似的（它们在做相似的未来想象），而错误的路径上的潜状态应该不同。
 
-Let $Z_{i}$ = [$z_{{i,1}}$, ..., z_{i,$T_{i}$}] be the normalized latent trajectory of rollout i, with correctness $a_{i}$ ∈ {0, 1}. We define trajectory similarity as:
+Let $Z_{i}$ = [$z_{{i,1}}$, ..., $z_{i,$T_{i}$}$] be the normalized latent trajectory of rollout i, with correctness $a_{i}$ ∈ {0, 1}. We define trajectory similarity as:
 
 $s_{ij}$ = (1/T) ∑ (1 + ⟨$z_{{i,t}}$, $z_{{j,t}}$⟩) / 2
 
-where T = min($T_{i}$, $T_{j}$). Let $P_{i}$ = {j ≠ i : $a_{j}$ = 1}, $N_{i}$ = {j ≠ i : $a_{j}$ = 0}, and $s_{i}$^+ = max_{j∈$P_{i}$} $s_{ij}$. We use a hardest-positive InfoNCE reward:
+where T = min($T_{i}$, $T_{j}$). Let $P_{i}$ = {j ≠ i : $a_{j}$ = 1}, $N_{i}$ = {j ≠ i : $a_{j}$ = 0}, and $s_{i}^+$ = $max_{j∈$P_{i}$} s_{ij}$. We use a hardest-positive InfoNCE reward:
 
-$R_{ctr}$(i) = exp($s_{i}$^+ / τ) / (exp($s_{i}$^+ / τ) + ∑_{j∈$N_{i}$} exp($s_{ij}$ / τ))
+$R_{ctr}$(i) = exp($s_{i}^+$ / τ) / (exp($s_{i}^+$ / τ) + ∑_{j∈$N_{i}$} exp($s_{ij}$ / τ))
 
 > 💡 **公式批读 — $R_ctr$ 的对比学习设计**:
 >
 > **轨迹相似度 $s_ij$**: 按时间步对齐后计算余弦相似度，取平均。相似度在 [0, 1] 范围（1 代表完全相同）。
 >
-> **Hardest-positive**: $s_{i}$^+ = max($s_ij$ over all correct rollouts) —— 只与最相似的正确 rollout 比较，而不是平均。这样鼓励"至少有一条正确的潜轨迹与你相似"，给模型更多灵活性。
+> **Hardest-positive**: $s_{i}^+$ = max($s_ij$ over all correct rollouts) —— 只与最相似的正确 rollout 比较，而不是平均。这样鼓励"至少有一条正确的潜轨迹与你相似"，给模型更多灵活性。
 >
 > **InfoNCE**: 对比学习标准形式 —— 分子是正例相似度的指数，分母是正例 + 所有反例相似度的指数和。最大化 $R_ctr$ 等价于最大化正例相对反例的区分度。
 >
@@ -148,7 +148,7 @@ This reward is maximized at 0 when adjacent span representatives are orthogonal 
 
 **Final Rewards.** The total target combines answer/format rewards and two latent terms:
 
-R = $λ_{a}$ $R_{acc}$ + $λ_{f}$ $R_{fmt}$ + $λ_{c}$ $R_{ctr}$ + $λ_{d}$ $R_{div}$
+R = $λ_{a} R_{acc}$ + $λ_{f} R_{fmt}$ + $λ_{c} R_{ctr}$ + $λ_{d} R_{div}$
 
 where $λ_{c}$ and $λ_{d}$ are ablated in Section 4.
 

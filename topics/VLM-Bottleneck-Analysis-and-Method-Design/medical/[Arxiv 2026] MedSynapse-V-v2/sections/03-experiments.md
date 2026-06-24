@@ -19,7 +19,7 @@
 > - Stage II/III: ~4K 高质量 mixed-modality RL samples——数据量小但 label 质量高，且 MedSAM3 提供 region mask
 > - 关键设计：Stage II 的 4K 数据覆盖 8 种成像模态，确保 causal reward 在多模态上都有意义
 
-**Baselines.** We compare against four categories of methods: (1) General VLMs: Qwen3-VL-8B [2] (our base model), InternVL3-8B [157]; (2) Medical-specific VLMs: RadFM [117], LLaVA-Med [53], GMAI-VL [59], HuatuoGPT-Vision [7], BiMediX2-8B [81], MedMO-8B [14]; (3) RL-enhanced medical reasoning: MedVLM-R1-2B [84], Med-R1-3B [47], MediX-R1-8B [80], MMedExpert-R1-7B [15]; (4) Latent-space reasoning: Coconut^{{\dagger}}$$ [28], MCOUT-Multi^{{\dagger}}$$ [85], IVT-LR^{{\dagger}}$$ [4] (^{{\dagger}}$$: adapted with identical Qwen3-VL-8B backbone and training data). We additionally report MedSynapse-V-4B on the Qwen3-VL-4B backbone to assess scalability.
+**Baselines.** We compare against four categories of methods: (1) General VLMs: Qwen3-VL-8B [2] (our base model), InternVL3-8B [157]; (2) Medical-specific VLMs: RadFM [117], LLaVA-Med [53], GMAI-VL [59], HuatuoGPT-Vision [7], BiMediX2-8B [81], MedMO-8B [14]; (3) RL-enhanced medical reasoning: MedVLM-R1-2B [84], Med-R1-3B [47], MediX-R1-8B [80], MMedExpert-R1-7B [15]; (4) Latent-space reasoning: $Coconut^{{\dagger}$}$$ [28], MCOUT-Multi^{{\dagger}}$$ [85], IVT-$LR^{{\dagger}$}$$ [4] (^{{\dagger}}$$: adapted with identical Qwen3-VL-8B backbone and training data). We additionally report MedSynapse-V-4B on the Qwen3-VL-4B backbone to assess scalability.
 
 > **Baseline 选择解读**: 四类 baseline 各有侧重——(1) 通用 VLM 提供 zero-shot 基线，(2) 医学专用 VLM 提供 domain-specific 对比，(3) RL-CoT 提供"当前最优离散推理"对比，(4) 通用潜空间方法（统一 backbone + 训练数据适配）提供"不加医学先验的纯潜空间推理"对比。这种全覆盖的 baseline 设计使得每个组件（先验、因果精炼、蒸馏）的贡献可以清晰归因。
 

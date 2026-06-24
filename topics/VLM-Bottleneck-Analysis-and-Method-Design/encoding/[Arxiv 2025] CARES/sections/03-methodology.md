@@ -18,7 +18,7 @@ Given an image x and query q, let R = [$r_{min}$, $r_{max}$] subset of R+ denote
 
 ## 3.2 Labeling Strategy for Training CARES
 
-Since searching for the optimal r* in R is prohibitively expensive, we chose to use a small, discrete set of valid resolutions for the annotation Rd = {r_1, ..., $r_{K}$} subset of R. For each sample, we render the image at the fixed resolutions Rd, and use a pretrained VLM to generate predictions at each resolution. The predictions are evaluated against the ground-truth annotations using the ANLS metric. The supervision label is assigned as the lowest resolution whose ANLS score exceeds a threshold, without significant improvement at higher resolutions. The procedure yields a discrete sufficiency label r* in Rd per example. We emphasize that discretization is only used for supervision efficiency; at inference, we deploy a continuous finer-grained selector (§3.4). Algorithm 1 outlines the data generation process, and Table 1 visualizes the concept.
+Since searching for the optimal r* in R is prohibitively expensive, we chose to use a small, discrete set of valid resolutions for the annotation Rd = {$r_1$, ..., $r_{K}$} subset of R. For each sample, we render the image at the fixed resolutions Rd, and use a pretrained VLM to generate predictions at each resolution. The predictions are evaluated against the ground-truth annotations using the ANLS metric. The supervision label is assigned as the lowest resolution whose ANLS score exceeds a threshold, without significant improvement at higher resolutions. The procedure yields a discrete sufficiency label r* in Rd per example. We emphasize that discretization is only used for supervision efficiency; at inference, we deploy a continuous finer-grained selector (§3.4). Algorithm 1 outlines the data generation process, and Table 1 visualizes the concept.
 
 > 💡 **批注**: 标注策略的三个关键设计：(1) 离散化只为降低标注成本（否则需要搜索连续空间）；(2) 用目标 VLM 自身来定义"充分性"——这保证了标签和部署的一致性；(3) "无显著提升"（delta <= 0.1）避免为 trivial improvement 升级分辨率。
 
@@ -28,11 +28,11 @@ $u_{k}$ = ANLS(F(x^($r_{k}$), q), gt) in [0, 1]
 
 and select the minimal sufficient resolution as:
 
-r* = min{ $r_{k}$ | $u_{k}$ >= tau, max_{l > k}($u_{l}$ - $u_{k}$) <= delta }
+r* = min{ $r_{k}$ | $u_{k}$ >= tau, $max_{l > k}$($u_{l}$ - $u_{k}$) <= delta }
 
 where we default to $r_{K}$ if no resolution satisfies the condition. We set tau = 0.85 and use a small margin delta (e.g., 0.1) to prevent rewarding negligible performance improvements. We define the full resolution range as R = [384, 1024], and use a discrete set Rd = {384, 768, 1024} for annotation.
 
-> 💡 **公式批读**: 收敛规则的数学表达有两部分：(1) $u_{k}$ >= tau——当前分辨率已足够好；(2) max_{l>k}($u_{l}$ - $u_{k}$) <= delta——更高分辨率没有显著提升。两个条件缺一不可：条件(1)保证充分性，条件(2)保证"最小"性。
+> 💡 **公式批读**: 收敛规则的数学表达有两部分：(1) $u_{k}$ >= tau——当前分辨率已足够好；(2) $max_{l>k}$($u_{l}$ - $u_{k}$) <= delta——更高分辨率没有显著提升。两个条件缺一不可：条件(1)保证充分性，条件(2)保证"最小"性。
 
 > 💡 **批注**: tau=0.85 和 delta=0.1 的选择值得关注。tau 太低会过早标记为"充分"（可能导致 CARES 过于激进地降分辨率），tau 太高会导致大多数样本都被标注为 $r_{K}$（失去 routing 效果）。delta 控制对微小提升的容忍度。这两个超参数在论文中没有做详细消融，是潜在的风险点。
 
@@ -44,7 +44,7 @@ Output: Label r* in R
 for k <- 1 to K do
     $y_{k}$ <- F(x^($r_{k}$), q); $u_{k}$ <- U($y_{k}$, gt)
 for k <- 1 to K do
-    if $u_{k}$ >= tau and max_{l > k}($u_{l}$ - $u_{k}$) <= delta then
+    if $u_{k}$ >= tau and $max_{l > k}$($u_{l}$ - $u_{k}$) <= delta then
         return r* = $r_{k}$
 return r* = $r_{K}$
 ```
@@ -85,28 +85,28 @@ At inference time, we read the first-step logits over the resolution tokens, app
 
 ## 3.4 From Discrete Supervision to a Continuous Resolution
 
-Although CARES is trained as a K-way classifier over a discrete set of resolutions Rd = {r_1 < ... < $r_{K}$}, we deploy it as a continuous selector over R = [$r_{min}$, $r_{max}$]. Given features z from the low-resolution image and query, compute logits l(z) in R^K and class probabilities
+Although CARES is trained as a K-way classifier over a discrete set of resolutions Rd = {$r_1$ < ... < $r_{K}$}, we deploy it as a continuous selector over R = [$r_{min}$, $r_{max}$]. Given features z from the low-resolution image and query, compute logits l(z) in $R^K$ and class probabilities
 
 p = softmax(l)
 
 We use the probability-weighted expectation over Rd:
 
-$r_{tilde}$ = SUM_{k=1}^{|Rd|} $p_{k}$ * $r_{k}$
+$r_{tilde}$ = $SUM_{k=1}^{|Rd|}$ $p_{k}$ * $r_{k}$
 
 This yields a continuous resolution that varies smoothly with confidence and is insensitive to the specific discretization used for labeling. In practice, $r_{tilde}$ preserves the routing behavior of the classifier while allowing finer control.
 
-> 💡 **公式批读**: Eq. 3 是整个 continuous inference 的核心。预期值比 argmax 有更多信息——当模型在两个分辨率之间犹豫时（如 p_384=0.6, p_768=0.4），预期值会给一个中间值（~538），实现更平滑的 routing。
+> 💡 **公式批读**: Eq. 3 是整个 continuous inference 的核心。预期值比 argmax 有更多信息——当模型在两个分辨率之间犹豫时（如 $p_384$=0.6, $p_768$=0.4），预期值会给一个中间值（~538），实现更平滑的 routing。
 
 > 💡 **批注**: "insensitive to the specific discretization" 是一个重要的鲁棒性声明。即使训练用的 Rd 很粗糙（如 {384, 1024}），推理时通过插值仍能获得 384-1024 之间的任意分辨率值。
 
 **Algorithm 2: Continuous resolution selection.**
 
 ```
-Input: (x, q); low-res r_1; logits l.
-Output: Continuous resolution $r_{tilde}$ in [r_1, $r_{K}$].
-z <- features from proxy VLM at r_1
+Input: (x, q); low-res $r_1$; logits l.
+Output: Continuous resolution $r_{tilde}$ in [$r_1$, $r_{K}$].
+z <- features from proxy VLM at $r_1$
 p <- softmax(l(z))
-$r_{tilde}$ <- SUM_{k=1}^{K} $p_{k}$ * $r_{k}$
+$r_{tilde}$ <- $SUM_{k=1}^{K}$ $p_{k}$ * $r_{k}$
 return $r_{tilde}$
 ```
 

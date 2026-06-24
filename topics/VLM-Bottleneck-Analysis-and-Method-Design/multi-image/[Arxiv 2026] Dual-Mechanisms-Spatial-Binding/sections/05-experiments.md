@@ -186,12 +186,12 @@ Together, these results indicate that VLMs rely on two sources of ordering infor
 
 Our mechanistic analysis shows that ordering information is essential for spatial variable binding. We therefore hypothesize that amplifying vision-derived ordering representations can correct spatial binding failures. To test this, we enhance the ordering information in the vision embeddings by amplifying probe directions identified with the procedure of Sec. 5.2.1. These probe directions are trained to capture ordering information; amplifying them should therefore enhance ordering signals of the vision encoder.
 
-We evaluate this on the COCO-spatial dataset using a spatial relation task: given a query object and a reference object, the model must determine the spatial relation of the query object relative to the reference (left/right or above/below). Formally, for each visual token t, we modify its embedding: emb_t = emb_t + $α_i$ · probe_i, where $α_i$ ∈ [1, 15] is an amplification coefficient and probe_i is the probe for queried direction i trained with the setting mentioned in Sec. 5.2.1. We apply this intervention globally to all visual token embeddings (without the need to know which correspond to the queried objects), across all possible probe directions (without the need to know which direction is queried). As a baseline, we perform the same intervention using randomly sampled directions, allowing us to isolate the effect of amplifying ordering-specific representations. Refer to App. A.4 for more details.
+We evaluate this on the COCO-spatial dataset using a spatial relation task: given a query object and a reference object, the model must determine the spatial relation of the query object relative to the reference (left/right or above/below). Formally, for each visual token t, we modify its embedding: $emb_t$ = $emb_t$ + $α_i$ · $probe_i$, where $α_i$ ∈ [1, 15] is an amplification coefficient and $probe_i$ is the probe for queried direction i trained with the setting mentioned in Sec. 5.2.1. We apply this intervention globally to all visual token embeddings (without the need to know which correspond to the queried objects), across all possible probe directions (without the need to know which direction is queried). As a baseline, we perform the same intervention using randomly sampled directions, allowing us to isolate the effect of amplifying ordering-specific representations. Refer to App. A.4 for more details.
 
 > **Probe 放大干预的优雅之处**:
 >
 > ```
-> emb_t = emb_t + $α_i$ · probe_i
+> $emb_t$ = $emb_t$ + $α_i$ · $probe_i$
 > 
 > 三个"不需要":
 >   1. 不需要知道哪些 token 对应 query/reference 物体 → 全局应用

@@ -118,5 +118,5 @@ Each image in MM4 is associated with four semantically distinct questions, const
 |------|---------|------------|
 | **3.1 整体架构** | 双分支：Static (frozen ViT) + Dynamic (AdaLN-ViT) | 解耦 = 分离表征保留与指令调制 |
 | **3.2 调制** | CLIP text enc [CLS] → Linear Proj → AdaLN → ViT 每层 | AdaLN 替代 Cross-Attn，轻量+逐层+hierarchical |
-| **3.3 融合** | $y_{I}$ = Zero-FFN(Norm($y_{ct}$)) + y_0 | Zero init → 训练初 = baseline，渐近混入调制特征 |
+| **3.3 融合** | $y_{I}$ = Zero-FFN(Norm($y_{ct}$)) + $y_0$ | Zero init → 训练初 = baseline，渐近混入调制特征 |
 | **3.4 MM4** | 180图 x 4问 = 720QA, n-out-of-4 scoring | 三大原则：Answer Reversal + 多视角 + 选项均衡 |

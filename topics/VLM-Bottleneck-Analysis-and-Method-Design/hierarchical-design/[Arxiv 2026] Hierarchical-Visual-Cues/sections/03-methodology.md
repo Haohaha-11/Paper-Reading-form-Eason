@@ -12,7 +12,7 @@ Method 分为三个子模块：(3.1) Recurrent Visual-Language Backbone——基
 
 ### 3.1. Recurrent Visual-Language Backbone
 
-We denote the input sequence length as n, the hidden dimension of the model as h, and the vocabulary as V. Given a recurrent depth R, an iteration step t, an input text sequence x ∈ V^n, and a sequence of flattened image patches $X_{v}$, we process the textual and visual modalities separately. For the visual components, we denote the vision transformer and its associated projector as ViT(.) and Proj(.), respectively. The feature extraction and fusion process can be written as:
+We denote the input sequence length as n, the hidden dimension of the model as h, and the vocabulary as V. Given a recurrent depth R, an iteration step t, an input text sequence x ∈ $V^n$, and a sequence of flattened image patches $X_{v}$, we process the textual and visual modalities separately. For the visual components, we denote the vision transformer and its associated projector as ViT(.) and Proj(.), respectively. The feature extraction and fusion process can be written as:
 
 $e = [ e _ { v } ; e _ { t } ] = \text{concat}( e _ { v } , e _ { t } ), $
 
@@ -67,7 +67,7 @@ To bridge the modality gap and align the dimensionalities, we employ a set of pa
 
 $v _ { l } = m _ { l } ( h _ { v } ^ { l } ), \quad l \in \{ 6 , 1 2 , 1 8 , 2 4 \}, $
 
-where $v_{l}$ ∈ R^{n×h} represents the projected visual cues ready for recurrent injection. By progressively injecting these features from fine-grained semantics to coarse-grained textures into the initial recurrent iterations, we provide the language backbone with a "curriculum" of visual understanding, stabilizing the hidden state transition during the early stages of reasoning.
+where $v_{l}$ ∈ $R^{n×h}$ represents the projected visual cues ready for recurrent injection. By progressively injecting these features from fine-grained semantics to coarse-grained textures into the initial recurrent iterations, we provide the language backbone with a "curriculum" of visual understanding, stabilizing the hidden state transition during the early stages of reasoning.
 
 > 💡 **公式批读 — Eq.5（Patch Merger）**:
 > - 每个选定的 ViT 层有一组独立的 patch merger $m_{l}$（轻量投影模块）
@@ -97,9 +97,9 @@ We introduce an adaptive injection schedule. The core challenge lies in aligning
 >
 > | 场景 | R 值 | 注入策略 | 具体行为 |
 > |------|------|---------|---------|
-> | 充分迭代 | R ≥ 4 | Top-down 顺序注入 | t=0: v_6（浅层-纹理）, t=1: $v_12$, t=2: $v_18$, t=3: v_24（深层-语义）, t≥4: 纯语言推理 |
-> | 受限迭代 | R = 3 | 降采样 | 间隔 floor(4/3)=1，选 3 层: {$v_6$, $v_12$, v_18} 或 {$v_6$, $v_12$, v_24}... |
-> | 受限迭代 | R = 2 | 降采样 | 间隔 floor(4/2)=2，选 2 层: {$v_6$, v_18} 或 {$v_6$, v_24}... |
+> | 充分迭代 | R ≥ 4 | Top-down 顺序注入 | t=0: $v_6$（浅层-纹理）, t=1: $v_12$, t=2: $v_18$, t=3: $v_24$（深层-语义）, t≥4: 纯语言推理 |
+> | 受限迭代 | R = 3 | 降采样 | 间隔 floor(4/3)=1，选 3 层: {$v_6$, $v_12$, $v_18$} 或 {$v_6$, $v_12$, $v_24$}... |
+> | 受限迭代 | R = 2 | 降采样 | 间隔 floor(4/2)=2，选 2 层: {$v_6$, $v_18$} 或 {$v_6$, $v_24$}... |
 > | 受限迭代 | R = 1 | 最简 | 只注入 1 层 |
 >
 > **设计精妙处**: Poisson 分布采样 + 自适应降采样 = 模型学会在任何 recurrency depth 下都能有效利用视觉信息。这是训练和推理之间 decouple 的关键——训练时不固定步数，推理时才能灵活调整。
@@ -130,9 +130,9 @@ def iterate_forward(x, embeds, vis_features):
 ```
 
 > 💡 **伪代码批读**:
-> - **n_no_grad / $n_{grad}$**: 随机采样决定多少步不做梯度回传（truncated BPTT）。前 n_no_grad 步用 `torch.no_grad()`，后 $n_{grad}$ 步正常计算梯度
-> - **get_input(i)**: 核心的分发逻辑——当 i < len(vis_features) 时注入视觉特征，否则只传原始 embed。这是层级注入在代码层面的实际体现
-> - **设计要点**: 视觉特征通过 `func(embeds, vis_features[i])` 与基础嵌入融合（可能是 concat 或 add 后过 adapter），具体实现在 `core_block_forward` 的注释 "Model expand recurrent blocks here" 中，论文未详细展开
+> - **n_no_grad / $n_{grad}$**: 随机采样决定多少步不做梯度回传（truncated BPTT）。前 n_no_grad 步用 `torch.$no_grad$()`，后 $n_{grad}$ 步正常计算梯度
+> - **$get_input$(i)**: 核心的分发逻辑——当 i < len($vis_features$) 时注入视觉特征，否则只传原始 embed。这是层级注入在代码层面的实际体现
+> - **设计要点**: 视觉特征通过 `func(embeds, $vis_features$[i])` 与基础嵌入融合（可能是 concat 或 add 后过 adapter），具体实现在 `core_block_forward` 的注释 "Model expand recurrent blocks here" 中，论文未详细展开
 
 Finally, after r recurrent iterations, the model decodes the hidden state $s_{r}$ to produce the output probabilities:
 

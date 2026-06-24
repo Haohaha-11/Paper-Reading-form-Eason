@@ -18,7 +18,7 @@ During Best-of-N (BoN) evaluation, a critic model is required to estimate the qu
 
 ### 3.1. VisualPRM400K
 
-**Definition.** As shown in Figure 2, each data sample in our VisualPRM400K consists of an image I, a question q, a step-by-step solution s = {$s_{0}$, $s_{1}$, ..., $s_{n}$}, and the expected accuracy annotation mc = {mc_0, mc_1, ..., mc_n}, mc_i ∈ ℝ_{≥0} for each step, where n is the number of steps of a certain solution and mc_i denotes the expected accuracy of step $s_{i}$. The image sets I and question sets Q are collected from MMPR v1.1 [82], while the step-by-step solutions s are sampled using InternVL2.5 series models [15, 82].
+**Definition.** As shown in Figure 2, each data sample in our VisualPRM400K consists of an image I, a question q, a step-by-step solution s = {$s_{0}$, $s_{1}$, ..., $s_{n}$}, and the expected accuracy annotation mc = {$mc_0$, $mc_1$, ..., $mc_n$}, $mc_i$ ∈ ℝ_{≥0} for each step, where n is the number of steps of a certain solution and $mc_i$ denotes the expected accuracy of step $s_{i}$. The image sets I and question sets Q are collected from MMPR v1.1 [82], while the step-by-step solutions s are sampled using InternVL2.5 series models [15, 82].
 
 > **数据定义**: 每个样本 = (图像 I, 问题 q, 逐步解答 s, expected accuracy mc)。m$c_i$ ∈ [0, 1] 衡量从第 i 步前缀出发采样的续写中正确回答的比例。注意 mc 是**连续值**（Monte Carlo 估计），但训练时会被离散化为二分类标签（正确/错误）。
 
@@ -34,7 +34,7 @@ Notably, to reduce the data construction costs, we set the max number of steps t
 
 > **公式批读 — Monte Carlo 过程监督**:
 >
-> Eq.(1): 给定前缀 s_{≤i}（前 i 步），让策略模型从该前缀出发**采样续写** s̃_{>i}。这个过程被称为 "rollout"——模拟在前 i 步正确的前提下，后续推理能到达正确答案的概率。
+> Eq.(1): 给定前缀 $s_{≤i}$（前 i 步），让策略模型从该前缀出发**采样续写** s̃_{>i}。这个过程被称为 "rollout"——模拟在前 i 步正确的前提下，后续推理能到达正确答案的概率。
 >
 > Eq.(2): m$c_i$ = 正确续写数 / 总续写数（每次都采样 16 条）。直观理解：如果从前 i 步出发，16 次续写中有 12 次得到正确答案，则 m$c_i$ = 0.75。
 >
@@ -42,7 +42,7 @@ Notably, to reduce the data construction costs, we set the max number of steps t
 >
 > **步骤合并策略**: 原始解答可能步骤很多（如 30+ 步），但大多数推理步骤不需要精细到那个粒度。限制 max steps=12 并通过均匀合并来减少步骤数——本质上是在过程监督的**粒度**和**数据构建成本**之间的权衡。
 
-**Statistics.** During the construction process, we sample 4 solutions for each image-question pair and split each of them into at most 12 steps. For each step, we sample 16 continuations and compute mc_i according to these continuations. The resulting dataset comprises approximately 400K samples and 2 million steps with process supervision. Each response averages 126.9 words and 5.6 steps, while each step averages 22.6 words. Among these steps, about 10% are incorrect steps. Despite the imbalanced distribution of correct and incorrect steps, our PRM demonstrates promising performance, as shown in Section 4.
+**Statistics.** During the construction process, we sample 4 solutions for each image-question pair and split each of them into at most 12 steps. For each step, we sample 16 continuations and compute $mc_i$ according to these continuations. The resulting dataset comprises approximately 400K samples and 2 million steps with process supervision. Each response averages 126.9 words and 5.6 steps, while each step averages 22.6 words. Among these steps, about 10% are incorrect steps. Despite the imbalanced distribution of correct and incorrect steps, our PRM demonstrates promising performance, as shown in Section 4.
 
 > **数据统计解读**:
 > - 4 solutions per question × 100K questions ≈ 400K 样本
@@ -58,7 +58,7 @@ Notably, to reduce the data construction costs, we set the max number of steps t
 
 ![Figure 2 (continued)](../images/91edd45d0ae7e5a03b0b1bf9d0132c36dc5f9dee0174c206f19cb978bfe6bc8b.jpg)
 
-*Figure 2. Data examples in VisualPRM400K and VisualProcessBench. For VisualPRM400K, we generate the data using an automatic data pipeline. The key idea is to estimate the expected accuracy mc_i of the given step $s_{{≤i}}$ based on Monte Carlo sampling and consider the step correct if mc_i > 0. During the training process of VisualPRM, the data is formulated as multi-turn conversations and the model is required to predict the correctness of each step conditioned on the image, question, and previous steps. For VisualProcessBench, we collect questions from existing multimodal reasoning benchmarks and generate the solutions using leading MLLMs. Based on these questions and solutions, we employ a team of human experts with at least a university degree to manually annotate the correctness of each step in the solutions.*
+*Figure 2. Data examples in VisualPRM400K and VisualProcessBench. For VisualPRM400K, we generate the data using an automatic data pipeline. The key idea is to estimate the expected accuracy $mc_i$ of the given step $s_{{≤i}}$ based on Monte Carlo sampling and consider the step correct if $mc_i$ > 0. During the training process of VisualPRM, the data is formulated as multi-turn conversations and the model is required to predict the correctness of each step conditioned on the image, question, and previous steps. For VisualProcessBench, we collect questions from existing multimodal reasoning benchmarks and generate the solutions using leading MLLMs. Based on these questions and solutions, we employ a team of human experts with at least a university degree to manually annotate the correctness of each step in the solutions.*
 
 > **Figure 2 批读**: 上图展示了 VisualPRM400K 和 VisualProcessBench 的数据样例和构建流程的对比：
 >
@@ -78,7 +78,7 @@ Notably, to reduce the data construction costs, we set the max number of steps t
 
 **Overview.** During the training process, we formulate the process supervision problem as a multi-turn chat task so that we can effectively leverage the generation ability of MLLMs. The image I, question q, and the first step $s_{0}$ of the solution to this question are included in the first turn and a new step is presented in each subsequent turn. The model is required to predict the quality of the given step in each turn as follows:
 
-$y_i \sim M($y_{i}$ \mid I, q, s_{\leq i}),$
+$y_i \sim M( y_{i}  \mid I, q, s_{\leq i}),$
 
 where $y_{i}$ denotes the quality of i-th step.
 
@@ -86,7 +86,7 @@ where $y_{i}$ denotes the quality of i-th step.
 
 ![Figure 3](../images/beb252f017a000f1c995286b45d659f0073264aea9dccfab7bced8727f88b4a6.jpg)
 
-*Figure 3. Different modeling methods for PRMs. For value-based PRMs, the quality is determined by expected accuracy mc_i, where a step is correct if mc_i > 0. For advantage-based PRMs, the quality is determined by the improvement of mc_i over mc_{i-1}, where a step is good if mc_i - mc_{i-1} > 0. During training, the output space is discretized into specific tokens; during inference, we compute the step score as the weighted sum of the generation probability for these discretized tokens.*
+*Figure 3. Different modeling methods for PRMs. For value-based PRMs, the quality is determined by expected accuracy $mc_i$, where a step is correct if $mc_i$ > 0. For advantage-based PRMs, the quality is determined by the improvement of $mc_i$ over $mc_{i-1}$, where a step is good if $mc_i$ - $mc_{i-1}$ > 0. During training, the output space is discretized into specific tokens; during inference, we compute the step score as the weighted sum of the generation probability for these discretized tokens.*
 
 > **Figure 3 批读 — 两种 PRM 建模方式对比**:
 >
@@ -98,7 +98,7 @@ where $y_{i}$ denotes the quality of i-th step.
 > - 直观：这个步骤"好不好"
 >
 > **Advantage-based PRM**:
-> - 定义：步骤 $s_i$ 的质量 = m$c_i$ - mc_{i-1}（accuracy 增量）
+> - 定义：步骤 $s_i$ 的质量 = m$c_i$ - $mc_{i-1}$（accuracy 增量）
 > - 输出空间：{+, =, -}（三分类，提升/不变/下降）
 > - 推理分数：P(+) × 1 + P(=) × 0 + P(-) × (-1)
 > - 类比：强化学习中的**优势函数** A(s, a)
@@ -106,7 +106,7 @@ where $y_{i}$ denotes the quality of i-th step.
 >
 > 实验结论：**value-based 优于 advantage-based**（Table 4）。原因：自动管线数据有噪声，精确判断"变好还是变差"比判断"是否有正确可能"更难。
 
-**For value-based PRMs**, the quality of a certain step is determined by its expected accuracy mc_i, which is similar to the definition of the value function in reinforcement learning. Following Math-Shepherd, we require the model to predict the correctness $c_{i}$ ∈ {+, -} of the given step, rather than the exact score of mc_i. The i-th step is considered correct if mc_i > 0. We also try to set a threshold to reduce false positive steps, but find that such a threshold negatively impacts the PRM performance, as shown in Section 7. Notably, unlike previous works, which choose to supervise only up to the first incorrect step, we always supervise all steps.
+**For value-based PRMs**, the quality of a certain step is determined by its expected accuracy $mc_i$, which is similar to the definition of the value function in reinforcement learning. Following Math-Shepherd, we require the model to predict the correctness $c_{i}$ ∈ {+, -} of the given step, rather than the exact score of $mc_i$. The i-th step is considered correct if $mc_i$ > 0. We also try to set a threshold to reduce false positive steps, but find that such a threshold negatively impacts the PRM performance, as shown in Section 7. Notably, unlike previous works, which choose to supervise only up to the first incorrect step, we always supervise all steps.
 
 > **训练策略 — w/o early stop**:
 > - **传统做法** (PRM800K, Math-Shepherd): 只监督到第一个错误步骤为止（"early stop"），认为后续步骤都基于错误前提
@@ -114,7 +114,7 @@ where $y_{i}$ denotes the quality of i-th step.
 > - **实验结论** (Table 4): w/o early stop 略优于 w. early stop（value-based: 41.1 vs 40.6 on BoN）
 > - **原因分析**: 在多模态场景中，错误步骤之后可能还有正确步骤（模型可能在某步犯错后又回到正轨，尤其是在有 reflection 能力的情况下），early stop 会丢失这些信号
 
-**For advantage-based PRMs**, the quality of a certain step is determined by the improvement of mc_i over mc_{i-1}, which is analogous to the definition of the advantage function in reinforcement learning. Similar to value-based PRMs, the quality space is discretized into predefined values {+, =, -}, meaning that the i-th step $s_{i}$ results in a superior, comparable, or inferior situation.
+**For advantage-based PRMs**, the quality of a certain step is determined by the improvement of $mc_i$ over $mc_{i-1}$, which is analogous to the definition of the advantage function in reinforcement learning. Similar to value-based PRMs, the quality space is discretized into predefined values {+, =, -}, meaning that the i-th step $s_{i}$ results in a superior, comparable, or inferior situation.
 
 **During inference stage**, we first compute the scores of each step and then merge them to obtain the response score. Specifically, the score for each step is defined as the weighted sum of the generation probability for the discretized scores. For value-based PRMs, the weights for {+, -} are {1, 0}. For advantage-based PRMs, the weights for {+, =, -} are {1, 0, -1}. Without further explanation, we average the scores of each step as the response score.
 
