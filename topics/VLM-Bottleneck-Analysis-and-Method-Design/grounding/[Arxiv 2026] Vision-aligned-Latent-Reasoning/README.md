@@ -61,13 +61,13 @@ VaLR 提出了一种视觉对齐的潜空间推理框架，通过在每步 Chain
 
 ```mermaid
 flowchart TD
-    A["📥 输入: 图片 + Query"] --> B["🔍 阶段1: SFT训练"]
-    B --> B1["多编码器 DINOv3/SigLIP/pi3"]
-    B1 --> B2["视觉特征对齐到LLM latent space"]
-    B2 --> C["🎯 阶段2: Latent + REPA对齐"]
+    A["输入: 图片 + 查询"] --> B["阶段1: SFT训练"]
+    B --> B1["多编码器视觉特征提取"]
+    B1 --> B2["特征对齐到LLM空间"]
+    B2 --> C["阶段2: 潜空间推理 + 对齐"]
     C --> C1["Latent mode: 纯潜空间推理"]
     C1 --> C2["REPA: 视觉编码器特征注入"]
-    C2 --> D["📤 输出: 测试时可扩展推理"]
+    C2 --> D["输出: 测试时扩展推理"]
     style C fill:#ff9,stroke:#333
     style D fill:#9f9,stroke:#333
 ```

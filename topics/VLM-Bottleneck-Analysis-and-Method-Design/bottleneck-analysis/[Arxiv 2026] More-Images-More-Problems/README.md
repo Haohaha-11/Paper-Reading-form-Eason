@@ -66,13 +66,13 @@
 
 ```mermaid
 flowchart TD
-    A["📥 输入: 多图数据集 MIMIC"] --> B["🔍 分析阶段: 6维可控诊断"]
-    B --> B1["图像数量 / 排列 / 干扰物"]
-    B1 --> B2["6个 Findings: 注意力稀释等"]
-    B2 --> C["🛠️ 方法: 双策略改进"]
+    A["输入: MIMIC 多图数据集"] --> B["分析阶段: 6维可控诊断"]
+    B --> B1["图像数量 / 排列方式 / 干扰物"]
+    B1 --> B2["6个 Findings 发现"]
+    B2 --> C["方法: 双策略改进"]
     C --> C1["数据侧: 198K 多样化样本"]
     C --> C2["模型侧: Masked Attention"]
-    C1 --> D["📤 输出: MuirBench +6 Benchmarks 提升"]
+    C1 --> D["输出: 6项 Benchmark 提升"]
     C2 --> D
     style B2 fill:#ff9,stroke:#333
     style D fill:#9f9,stroke:#333
@@ -82,13 +82,13 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A["📥 输入: 多图数据集 MIMIC"] --> B["🔍 分析阶段: 6维可控诊断"]
-    B --> B1["图像数量 / 排列 / 干扰物"]
-    B1 --> B2["6个 Findings: 注意力稀释等"]
-    B2 --> C["🛠️ 方法: 双策略改进"]
+    A["输入: MIMIC 多图数据集"] --> B["分析阶段: 6维可控诊断"]
+    B --> B1["图像数量 / 排列方式 / 干扰物"]
+    B1 --> B2["6个 Findings 发现"]
+    B2 --> C["方法: 双策略改进"]
     C --> C1["数据侧: 198K 多样化样本"]
     C --> C2["模型侧: Masked Attention"]
-    C1 --> D["📤 输出: MuirBench +6 Benchmarks 提升"]
+    C1 --> D["输出: 6项 Benchmark 提升"]
     C2 --> D
     style B2 fill:#ff9,stroke:#333
     style D fill:#9f9,stroke:#333

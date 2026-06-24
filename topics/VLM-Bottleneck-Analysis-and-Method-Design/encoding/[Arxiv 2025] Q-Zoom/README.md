@@ -61,18 +61,18 @@ Q-Zoom 提出一种查询感知的自适应高分辨率感知框架，通过轻�
 
 ```mermaid
 flowchart TD
-    A["📥 输入: 图片 x_v + 文本查询 x_t"] --> B["🔍 Stage 0: 粗粒度编码 (单次 Prefill)"]
-    B --> B1["编码粗分辨率图片 → H_v^0"]
-    B1 --> B2["冻结层 L₁: B 前向 → H_context^B"]
-    B2 --> C{"🚦 Stage 1: 动态门控"}
-    C -->|"Y_pred < τ_gate"| D["✅ 粗粒度路径: 直接解码输出"]
-    C -->|"Y_pred ≥ τ_gate"| E["🎯 Stage 2: SD-RPN 空间定位"]
-    E --> E1["Cross-attention → 热力图 → 二值化"]
-    E1 --> E2["裁剪高分辨率 RoI → H_v_roi^0"]
-    E2 --> F["🔗 Stage 3: KV-Cache 复用 + 时空对齐"]
-    F --> F1["复用缓存的 H_sys^B + H_v^B"]
-    F1 --> F2["时空位置编码 → 拼接全部token"]
-    F2 --> G["📤 输出: L_B+1:L → 自回归解码"]
+    A["输入: 图片 + 文本查询"] --> B["Stage 0: 粗粒度编码"]
+    B --> B1["编码粗分辨率图片"]
+    B1 --> B2["冻结层前向传播"]
+    B2 --> C{"Stage 1: 动态门控"}
+    C -->|"置信度低"| D["直接解码输出"]
+    C -->|"置信度高"| E["Stage 2: RoI 定位"]
+    E --> E1["注意力热力图"]
+    E1 --> E2["裁剪高分辨率区域"]
+    E2 --> F["Stage 3: 缓存复用 + 对齐"]
+    F --> F1["时空位置编码"]
+    F1 --> F2["拼接全局+局部特征"]
+    F2 --> G["输出: 自回归解码"]
     D --> G
     style C fill:#f9f,stroke:#333
     style D fill:#9f9,stroke:#333

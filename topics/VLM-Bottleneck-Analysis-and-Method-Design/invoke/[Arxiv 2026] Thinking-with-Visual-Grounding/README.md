@@ -61,13 +61,13 @@
 
 ```mermaid
 flowchart TD
-    A["📥 输入: 图片 + 文本问题"] --> B["🔍 阶段1: SAM3 数据合成"]
-    B --> B1["检测/分割/裁剪/聚焦 4工具"]
-    B1 --> B2["生成视觉grounding推理链"]
-    B2 --> C["🎯 阶段2: RL训练"]
-    C --> C1["Box IoU + Point F1 奖励"]
+    A["输入: 图片 + 文本问题"] --> B["阶段1: 数据合成"]
+    B --> B1["SAM3: 检测/分割/裁剪/聚焦"]
+    B1 --> B2["生成视觉定位推理链"]
+    B2 --> C["阶段2: RL训练"]
+    C --> C1["位置奖励: Box IoU + Point F1"]
     C1 --> C2["GRPO → 多轮视觉推理策略"]
-    C2 --> D["📤 输出: 含region定位的推理链"]
+    C2 --> D["输出: 含区域定位的推理链"]
     style C fill:#ff9,stroke:#333
     style D fill:#9f9,stroke:#333
 ```
