@@ -59,49 +59,41 @@
 
 ## Data Flow: Distillation → Grounding → Training
 
-```
-| 阶段 | 描述 |
-|------|------|
-| 1. Thinking with Visual Grounding Pipeline |  |
-| 2. [Stage 1 | Reasoning Distillation] |
-| 3. MultihopSpatial, SpatialMQA |  |
+**🔍 | 2. Stage 1 | Reasoning Distillation |**  
+  - Output: Correct reasoning traces (filtered by answer match)
 
-Output: Correct reasoning traces (filtered by answer match)     │
-│                                                                       │
-│  [Stage 2: Object Extraction]                                         │
-│    ├── Input: Correct reasoning trace                                  │
-│    ├── Model: LLM (DeepSeek-V4-Flash)                                  │
-│    └── Output: (name, disambiguating context) pairs                    │
-│                                                                       │
-│  [Stage 3: Agentic Grounding]                                         │
-│    ├── Core Engine: SAM3 + VLM agent (Qwen3.5-Flash)                   │
-│    ├── Actions: noun-phrase query → mask candidate → verify → select   │
-│    ├── Fallback: Qwen3.6-Plus → Gemini-3-Flash for retries             │
-│    └── Output: RLE masks for each grounded object                      │
-│                                                                       │
-│  [Stage 4: Supervision Writing]                                        │
-│    ├── Box mode: <obj> name | [x1,y1,x2,y2] </obj>                    │
-│    ├── Point mode: <obj> name | [x,y] </obj>                          │
-│    ├── Both share the same reasoning trace + SAM3 masks                │
-│    └── Output: Aligned SFT data in two grounding modes                  │
-│                                                                       │
-│  [Stage 5: SFT Cold-Start]                                             │
-│    ├── Base Model: Gemma3-4B-IT                                        │
-│    ├── 3 variants: non-grounded / box-grounded / point-grounded         │
-│    └── Same images, questions, answers, reasoning traces                │
-│                                                                       │
-│  [Stage 6: RL with Grounding Reward]                                   │
-│    ├── Algorithm: GRPO (8 rollouts/prompt)                             │
-│    ├── Reward = N(R_base) + w_ground * N(r_ground)                     │
-│    │   ├── r_ans: answer correctness                                   │
-│    │   ├── r_think: thinking format (<think>...</think> + \boxed{})    │
-│    │   ├── r_gfmt: grounding tag format                                │
-│    │   ├── r_trunc: truncation penalty (-1 if truncated)               │
-│    │   └── r_ground: box IoU or point F1 via object router             │
-│    └── Output: Visually grounded thinking model                         │
-│                                                                       │
-└──────────────────────────────────────────────────────────────────────┘
-```
+**🚦 Stage 2: Object Extraction**  
+  - Input: Correct reasoning trace
+  - Model: LLM (DeepSeek-V4-Flash)
+  - Output: (name, disambiguating context) pairs
+
+**🎯 Stage 3: Agentic Grounding**  
+  - Core Engine: SAM3 + VLM agent (Qwen3.5-Flash)
+  - Actions: noun-phrase query → mask candidate → verify → select
+  - Fallback: Qwen3.6-Plus → Gemini-3-Flash for retries
+  - Output: RLE masks for each grounded object
+
+**🔗 Stage 4: Supervision Writing**  
+  - Box mode: <obj> name | [x1,y1,x2,y2] </obj>
+  - Point mode: <obj> name | [x,y] </obj>
+  - Both share the same reasoning trace + SAM3 masks
+  - Output: Aligned SFT data in two grounding modes
+
+**📤 Stage 5: SFT Cold-Start**  
+  - Base Model: Gemma3-4B-IT
+  - 3 variants: non-grounded / box-grounded / point-grounded
+  - Same images, questions, answers, reasoning traces
+
+**➡️ Stage 6: RL with Grounding Reward**  
+  - Algorithm: GRPO (8 rollouts/prompt)
+  - Reward = N(R_base) + w_ground * N(r_ground)
+  - r_ans: answer correctness
+  - r_think: thinking format (<think>...</think> + \boxed{})
+  - r_gfmt: grounding tag format
+  - r_trunc: truncation penalty (-1 if truncated)
+  - r_ground: box IoU or point F1 via object router
+  - Output: Visually grounded thinking model
+
 
 ## Pros/Cons & Future Work
 

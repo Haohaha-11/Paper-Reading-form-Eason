@@ -98,37 +98,13 @@ Bounding box + class label annotations                     │
 
 ## Data Flow: Proposed Method (Training Pipeline)
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    Training Pipeline                               │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  [Data-Centric Strategy]                                          │
-│    ├── Source: OpenImages v7 annotations                          │
-│    ├── Pipeline: Same as MIMIC benchmark generation               │
-│    ├── Output: ~198K multi-image conversation samples              │
-│    ├── Format: LLaVA-style multi-turn conversations                │
-│    ├── Max images: 10                                             │
-│    └── Combined with: original LLaVA-OV multi-image data (~580K)  │
-│                                                                   │
-│  [Optimization-Centric Strategy]                                  │
-│    ├── Layer-wise Attention Masking                                │
-│    │   └── Vision tokens attend ONLY to same-image tokens          │
-│    │   └── Text tokens remain global (autoregressive)              │
-│    ├── Applied on: deeper layers (12-23 for 0.5B)                 │
-│    ├── Training: LoRA (rank=128) on LLM layers                     │
-│    └── Benefit: ~81% FLOPs reduction + performance gain            │
-│                                                                   │
-│  [Training Config]                                                │
-│    ├── Starting point: LLaVA-OV Single-Image (Stage 2.1)          │
-│    ├── Frozen: Vision encoder                                     │
-│    ├── Trained: LLM layers + vision-to-language projector         │
-│    ├── Batch size: 128 (effective)                                │
-│    ├── LR: 2.5e-6 (full FT), 2.5e-5 (LoRA masked)                │
-│    └── Schedule: Cosine LR with 0.03 warmup ratio                 │
-│                                                                   │
-└─────────────────────────────────────────────────────────────────┘
-```
+**🔍 Starting point: LLaVA-OV Single-Image (Stage 2.1)**  
+  - Frozen: Vision encoder
+  - Trained: LLM layers + vision-to-language projector
+  - Batch size: 128 (effective)
+  - LR: 2.5e-6 (full FT), 2.5e-5 (LoRA masked)
+  - Schedule: Cosine LR with 0.03 warmup ratio
+
 
 ## Pros/Cons & Future Work
 

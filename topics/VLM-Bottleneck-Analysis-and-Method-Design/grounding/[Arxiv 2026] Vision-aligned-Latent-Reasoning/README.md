@@ -59,38 +59,27 @@ VaLR 提出了一种视觉对齐的潜空间推理框架，通过在每步 Chain
 
 ## Data Flow: Input → Intermediate → Output
 
-```
-| 阶段 | 描述 |
-|------|------|
-| 1. VaLR Data Flow |  |
-| 2. [Input] |  |
+**🔍 Stage 1: Standard CoT SFT**  
+  - Model: Qwen2.5-VL-7B (frozen vision encoder)
+  - Data: 450K CoT VQA samples
+  - Loss: L_CE (cross-entropy)
+  - Output: Base MLLM with text reasoning capability
 
-Visual features F_φ from frozen vision encoders (train)   │
-│                                                                   │
-│  [Stage 1: Standard CoT SFT]                                      │
-│    ├── Model: Qwen2.5-VL-7B (frozen vision encoder)              │
-│    ├── Data: 450K CoT VQA samples                                │
-│    ├── Loss: L_CE (cross-entropy)                                │
-│    └── Output: Base MLLM with text reasoning capability           │
-│                                                                   │
-│  [Stage 2: Latent Token Training + REPA]                          │
-│    ├── Insert K=16 latent tokens before each reasoning step      │
-│    ├── Special tokens: <latent> ... </latent>                     │
-│    ├── Extract intermediate features F_MLLM from MLLM            │
-│    ├── Project via MLP ψ: F̂_MLLM = ψ(Upsample(F_MLLM))          │
-│    ├── Compute REPA loss with vision encoder features:            │
-│    │     L_REPA = -cos_sim(F̂_MLLM, F_φ)                         │
-│    ├── Total loss: L = L_CE + λ·L_REPA  (λ=0.5)                  │
-│    └── Multi-encoder: average REPA losses across encoders        │
-│                                                                   │
-│  [Inference (no external encoder needed)]                         │
-│    ├── Model alternates between latent mode and language mode    │
-│    ├── Latent mode: K=16 steps, input = previous hidden state    │
-│    ├── Language mode: input = token embedding                    │
-│    └── Output: Final answer a                                     │
-│                                                                   │
-└─────────────────────────────────────────────────────────────────┘
-```
+**🚦 Stage 2: Latent Token Training + REPA**  
+  - Insert K=16 latent tokens before each reasoning step
+  - Special tokens: <latent> ... </latent>
+  - Extract intermediate features F_MLLM from MLLM
+  - Project via MLP ψ: F̂_MLLM = ψ(Upsample(F_MLLM))
+  - Compute REPA loss with vision encoder features:
+  - L_REPA = -cos_sim(F̂_MLLM, F_φ)
+  - Total loss: L = L_CE + λ·L_REPA (λ=0.5)
+  - Multi-encoder: average REPA losses across encoders
+  - [Inference (no external encoder needed)]
+  - Model alternates between latent mode and language mode
+  - Latent mode: K=16 steps, input = previous hidden state
+  - Language mode: input = token embedding
+  - Output: Final answer a
+
 
 ## Pros/Cons & Future Work
 

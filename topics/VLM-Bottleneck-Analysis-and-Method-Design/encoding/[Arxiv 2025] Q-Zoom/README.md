@@ -59,51 +59,36 @@ Q-Zoom 提出一种查询感知的自适应高分辨率感知框架，通过轻�
 
 ## Data Flow: Coarse → Gate → (RoI) → Fusion → Answer
 
-```
-| 阶段 | 描述 |
-|------|------|
-| 1. Q-Zoom Data Flow |  |
-| 2. [Input] |  |
+**🔍 Stage 0: Coarse Encoding - Single Prefill**  
+  - Encode x_v at coarse resolution → H_v^0
+  - Forward through frozen backbone layers 1→B:
+  - H_context^B = L_1:B([H_sys^0, H_v^0, H_user^0])
 
-Text Query x_t (system prompt + user question)            │
-│                                                                   │
-│  [Stage 0: Coarse Encoding - Single Prefill]                      │
-│    │                                                              │
-│    ├── Encode x_v at coarse resolution → H_v^0                   │
-│    ├── Forward through frozen backbone layers 1→B:                │
-│    │     H_context^B = L_1:B([H_sys^0, H_v^0, H_user^0])        │
-│    │                                                              │
-│  [Stage 1: Dynamic Gating - Query-Level Routing]                  │
-│    │                                                              │
-│    ├── Gate G (layers B+1→B+R) processes H_context^B             │
-│    ├── Extract last query token → Y_pred via LP_gate + sigmoid   │
-│    ├── IF Y_pred < τ_gate:                                        │
-│    │     → Route to Coarse Path: directly decode with coarse ctx │
-│    │     → SKIP all below, generate answer                       │
-│    └── IF Y_pred ≥ τ_gate:                                        │
-│          → Trigger RoI Refinement Path (continue below)          │
-│                                                                   │
-│  [Stage 2: SD-RPN - Spatial RoI Localization]                     │
-│    │                                                              │
-│    ├── RPN (layers B+1→B+R-1) processes H_context^B              │
-│    ├── Last query token + visual tokens → Q_RoI · K_v^T          │
-│    ├── Dense heatmap → sigmoid → gaussian smooth → binarize      │
-│    ├── Compute minimal bounding box → crop x_v_roi               │
-│    └── Re-encode x_v_roi at high resolution → H_v_roi^0          │
-│                                                                   │
-│  [Stage 3: KV-Cache Reuse + Spatio-Temporal Alignment]            │
-│    │                                                              │
-│    ├── Reuse cached H_sys^B and H_v^B from Stage 0               │
-│    ├── Forward only [H_v_roi^0, H_user^0] through layers 1→B    │
-│    ├── Apply continuous spatio-temporal MRoPE:                    │
-│    │     p_roi = Embed(t_src+δ, interpolated spatial coords)     │
-│    └── Concatenate: [H_sys^B, H_v^B, H_v_roi^B, H_user^B]       │
-│                                                                   │
-│  [Output]                                                         │
-│    └── Layers B+1→L → Final hidden states → Autoregressive decode │
-│                                                                   │
-└─────────────────────────────────────────────────────────────────┘
-```
+**🚦 Stage 1: Dynamic Gating - Query-Level Routing**  
+  - Gate G (layers B+1→B+R) processes H_context^B
+  - Extract last query token → Y_pred via LP_gate + sigmoid
+  - IF Y_pred < τ_gate:
+  - → Route to Coarse Path: directly decode with coarse ctx
+  - → SKIP all below, generate answer
+  - IF Y_pred ≥ τ_gate:
+  - → Trigger RoI Refinement Path (continue below)
+
+**🎯 Stage 2: SD-RPN - Spatial RoI Localization**  
+  - RPN (layers B+1→B+R-1) processes H_context^B
+  - Last query token + visual tokens → Q_RoI · K_v^T
+  - Dense heatmap → sigmoid → gaussian smooth → binarize
+  - Compute minimal bounding box → crop x_v_roi
+  - Re-encode x_v_roi at high resolution → H_v_roi^0
+
+**🔗 Stage 3: KV-Cache Reuse + Spatio-Temporal Alignment**  
+  - Reuse cached H_sys^B and H_v^B from Stage 0
+  - Forward only [H_v_roi^0, H_user^0] through layers 1→B
+  - Apply continuous spatio-temporal MRoPE:
+  - p_roi = Embed(t_src+δ, interpolated spatial coords)
+  - Concatenate: [H_sys^B, H_v^B, H_v_roi^B, H_user^B]
+  - [Output]
+  - Layers B+1→L → Final hidden states → Autoregressive decode
+
 
 ## Pros/Cons & Future Work
 

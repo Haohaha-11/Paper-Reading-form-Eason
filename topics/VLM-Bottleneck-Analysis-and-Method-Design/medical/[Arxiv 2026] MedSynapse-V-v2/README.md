@@ -60,52 +60,38 @@ MedSynapse-V 提出了一套**三阶段渐进式 latent diagnostic memory evolut
 
 ## Data Flow: Input --> Intermediate --> Output
 
-```
-| 阶段 | 描述 |
-|------|------|
-| 1. MedSynapse-V Data Flow |  |
-| 2. [Input] |  |
+**🔍 ═══ Stage I: MQPM Warmup ═══**  
+  - 1. Frozen E_ana(X) → spatial features F ∈ R^{H_f×W_f×d_f}
+  - 2. Flatten F → S ∈ R^{M×d_f}, M = H_f × W_f
+  - 3. Learnable meta-query probes Q_0 ∈ R^{N×d_f}
+  - 4. P_φ(Q_0, S) → Cross-Attention → M ∈ R^{N×d_h}
+  - 5. Inject M after question encoding: [Enc(X); Enc(q); m_1..m_N]
+  - 6. Train only P_φ with NTP loss (VLM + E_ana frozen)
 
-Clinical query q                                                   │
-│                                                                           │
-│  ═══ Stage I: MQPM Warmup ═══                                             │
-│    │                                                                      │
-│    ├── 1. Frozen E_ana(X) → spatial features F ∈ R^{H_f×W_f×d_f}        │
-│    ├── 2. Flatten F → S ∈ R^{M×d_f}, M = H_f × W_f                      │
-│    ├── 3. Learnable meta-query probes Q_0 ∈ R^{N×d_f}                    │
-│    ├── 4. P_φ(Q_0, S) → Cross-Attention → M ∈ R^{N×d_h}                 │
-│    ├── 5. Inject M after question encoding: [Enc(X); Enc(q); m_1..m_N]   │
-│    └── 6. Train only P_φ with NTP loss (VLM + E_ana frozen)              │
-│                                                                           │
-│  ═══ Stage II: CCR (RL-based Memory Refinement) ═══                       │
-│    │                                                                      │
-│    ├── 1. Freeze P_φ + VLM backbone, train LoRA adapters                 │
-│    ├── 2. For each sample, sample G=4 candidate trajectories              │
-│    ├── 3. Compute composite reward R = λ_acc·r_acc + λ_causal·r_causal   │
-│    │      ├── r_acc: binary correctness                                   │
-│    │      └── r_causal: log π(M)/π(M') where M'=P_φ(E_ana(X)⊙B̅)        │
-│    │                     B̅ = inverted MedSAM3 mask (region zeroed out)    │
-│    ├── 4. GRPO policy gradient with clipping coefficient ε=0.2           │
-│    └── 5. M evolves from M → M* through attention pathway shaping        │
-│                                                                           │
-│  ═══ Stage III: IMT (Privileged-Autonomous Distillation) ═══              │
-│    │                                                                      │
-│    ├── Teacher branch (privileged): M_pri = P_φ(E_ana(X))               │
-│    ├── Student branch (autonomous): M_auto = A_ψ(Enc_VLM(X,q))           │
-│    ├── Sample ŷ ~ π^-(·|X,q,M_auto) from student                         │
-│    ├── Compute JSD_β between π^+(·|M_pri) and π^-(·|M_auto)             │
-│    │      over full vocabulary at every position                          │
-│    ├── Gradient only → A_ψ (teacher is fixed distributional target)      │
-│    └── M_auto → M_auto* (behaviorally equivalent to M_pri)              │
-│                                                                           │
-│  [Inference]                                                               │
-│    ├── A_ψ(Enc_VLM(X,q)) → M_auto ∈ R^{N×d_h}                           │
-│    ├── Inject M_auto after q encoding in hidden stream                    │
-│    ├── E_ana COMPLETELY REMOVED                                           │
-│    └── Decode answer y (no explicit CoT needed)                           │
-│                                                                           │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+**🚦 ═══ Stage II: CCR (RL-based Memory Refinement) ═══**  
+  - 1. Freeze P_φ + VLM backbone, train LoRA adapters
+  - 2. For each sample, sample G=4 candidate trajectories
+  - 3. Compute composite reward R = λ_acc·r_acc + λ_causal·r_causal
+  - r_acc: binary correctness
+  - r_causal: log π(M)/π(M') where M'=P_φ(E_ana(X)⊙B̅)
+  - B̅ = inverted MedSAM3 mask (region zeroed out)
+  - 4. GRPO policy gradient with clipping coefficient ε=0.2
+  - 5. M evolves from M → M* through attention pathway shaping
+
+**🎯 ═══ Stage III: IMT (Privileged-Autonomous Distillation) ═══**  
+  - Teacher branch (privileged): M_pri = P_φ(E_ana(X))
+  - Student branch (autonomous): M_auto = A_ψ(Enc_VLM(X,q))
+  - Sample ŷ ~ π^-(·|X,q,M_auto) from student
+  - Compute JSD_β between π^+(·|M_pri) and π^-(·|M_auto)
+  - over full vocabulary at every position
+  - Gradient only → A_ψ (teacher is fixed distributional target)
+  - M_auto → M_auto* (behaviorally equivalent to M_pri)
+  - [Inference]
+  - A_ψ(Enc_VLM(X,q)) → M_auto ∈ R^{N×d_h}
+  - Inject M_auto after q encoding in hidden stream
+  - E_ana COMPLETELY REMOVED
+  - Decode answer y (no explicit CoT needed)
+
 
 ## Pros/Cons & Future Work
 
