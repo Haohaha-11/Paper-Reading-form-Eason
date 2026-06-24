@@ -35,7 +35,9 @@ To explicitly separate representation preservation from instruction-conditioned 
 To enable instruction-conditioned visual perception, we derive a global textual guidance signal from the instruction. We adopt the text encoder from a pretrained CLIP model and truncate the input text to a maximum length of 77 tokens. The resulting [CLS] token embedding summarizes the semantic intent of the instruction and is mapped into the vision latent space through a lightweight linear projection:
 
 $$
+
 c_t = \mathscr{F}_T(T_{\leq 77}), \quad \hat{c}_t = \mathscr{H}_t(\mathrm{Norm}(c_t)), \tag{1}
+
 $$
 
 where $\mathcal { F } _ { T } ( \cdot )$ denotes the CLIP text encoder, and $\mathcal { H } _ { t } ( \cdot )$ aligns the text embedding with the vision feature space.
@@ -51,7 +53,9 @@ We incorporate Adaptive Layer Normalization (AdaLN) (Perez et al., 2018) into ea
 Formally, given an input image I and instruction embedding $\hat { c } _ { t } ,$ the instruction-guided vision encoder produces:
 
 $$
+
 y_{ct} = \mathscr{F}_{ct}(I, \hat{c}_t; \Theta_{\mathrm{CLIP}}), \tag{2}
+
 $$
 
 where $y_{ct} \in \mathbb{R}^{N_I \times D_I}$ denotes the instruction-conditioned visual features and $\Theta_{\mathrm{CLIP}}$ represents the frozen pretrained parameters.
@@ -65,7 +69,9 @@ While instruction-conditioned modulation enables taskspecific adaptation, preser
 Let $y_{ct} \in \mathbb{R}^{N_I \times D_I}$ denote the instruction-guided features from $\mathcal{F}_{ct}$, and let $y_0 = \mathcal{F}_I(I; \Theta_{\mathrm{CLIP}})$ denote the corresponding frozen features from the original vision encoder. The fused visual representation is computed as:
 
 $$
+
 y_I = \mathcal{Z}(\mathrm{Norm}(y_{ct})) + y_0, \tag{3}
+
 $$
 
 where Z is a learnable linear projection initialized to zero. This initialization ensures that the fused representation initially matches the pretrained visual features, allowing instruction-conditioned adaptation to be introduced gradually and safely during training.

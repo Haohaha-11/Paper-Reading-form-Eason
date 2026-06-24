@@ -39,6 +39,7 @@
 - 通过 RPN 第 R 个注意力层的原生投影矩阵 (LP_q 和 LP_k) 映射到共享潜空间：
 
 $$Q_{RoI} = LP_q(\mathrm{Norm}(H_u^{B+R-1}[-1]))$$
+
 $$K_v = LP_k(\mathrm{Norm}(H_v^{B+R-1})) \tag{4}$$
 
 **步骤 3**: 通过内积计算空间热力图：

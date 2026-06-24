@@ -110,7 +110,9 @@ Table I 的数据揭示了关键洞察：将输入从 2048 约束到 512 tokens�
 **训练目标**：
 
 $$H_{gate}^{B+R} = \mathcal{G}(H_{context}^B)$$
+
 $$Y^{pred} = \sigma(LP_{gate}(H_{gate}^{B+R}[-1]))$$
+
 $$\mathcal{L}_{gate} = \mathrm{BCE}(Y^{pred}, Y^{label}) \tag{3}$$
 
 **推理时的自适应路由**：
