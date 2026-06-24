@@ -1,0 +1,1860 @@
+[
+    {
+        "type": "text",
+        "text": "Improving Visual Reasoning with Iterative Evidence Refinement",
+        "text_level": 1,
+        "bbox": [
+            183,
+            121,
+            815,
+            171
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Zeru Shi<sup>∗</sup> Kai Mei<sup>∗</sup> Yihao Quan Dimitris N. Metaxas Ruixiang Tang<sup>†</sup>",
+        "bbox": [
+            233,
+            220,
+            772,
+            237
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Department of Computer Science Rutgers University",
+        "bbox": [
+            387,
+            250,
+            611,
+            279
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Abstract",
+        "text_level": 2,
+        "bbox": [
+            459,
+            313,
+            539,
+            329
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Vision–language models (VLMs) are increasingly capable of reasoning over images, but robust visual reasoning often requires re-grounding intermediate steps in the underlying visual evidence. Recent approaches typically rely on external image operations such as zooming or cropping to re-access fine-grained details during inference, which requires additional image re-encoding and can disrupt the reasoning trajectory. We argue that VLMs already provide strong internal signals for identifying and reusing visual evidence, and that these signals can be directly leveraged to support image-grounded reasoning. Motivated by this insight, we propose an end-to-end self-revisit framework, SIEVE, that trains models to re-engage image evidence through internal representations. SIEVE automatically extracts embeddings of salient image regions and injects them into the reasoning chain when additional grounding is needed, enabling later steps to condition on relevant visual cues without external tool calls or re-encoding. We use reinforcement learning to teach the model when to trigger visual revisiting and which region embeddings to retrieve and insert during the reasoning process. Experiments on multiple visual reasoning benchmarks, together with perception, reasoning, and hallucination evaluations, show that SIEVE yields consistent gains, improving performance by 8% on average across several benchmarks.",
+        "bbox": [
+            228,
+            344,
+            767,
+            595
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "1 Introduction",
+        "text_level": 2,
+        "bbox": [
+            173,
+            619,
+            312,
+            636
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Vision–Language Models (VLMs) have demonstrated strong reasoning performance on multimodal question answering, often supported by long chain-of-thought (CoT) reasoning Team et al. [2025a], Guo et al. [2025], Bai et al. [2025a], Team et al. [2025b]. However, their reasoning pipeline remains largely text-centric. In a standard VLM inference pipeline, the image is encoded into a fixed set of visual tokens that serve as static context, while reasoning unfolds autoregressively in text. As generation proceeds, the model’s conditioning gradually shifts toward the growing history of generated text tokens, reducing the relative influence of visual evidence Li et al. [2025a], Fang et al. [2025]. Consequently, the model rarely revisits the image in a targeted, step-dependent way, and visual information is often underutilized in long-horizon reasoning.",
+        "bbox": [
+            169,
+            650,
+            826,
+            776
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "To address this limitation, recent work has begun to explicitly integrate visual evidence into the reasoning trajectory, drawing inspiration from human cognition Shao et al. [2024a]. Models repeatedly consult the image during CoT to improve grounded reasoning. After the release of OpenAI’s o3 model OpenAI [2025], a common implementation has operationalized this idea through external visual operations such as zooming and cropping, generating sub-images for targeted inspection Huang et al. [2025a], Bai et al. [2025b]. Beyond predefined operations, other approaches allow VLMs to generate executable code for more flexible, programmatic image manipulation Lee et al. [2025], Mallis et al. [2025].",
+        "bbox": [
+            169,
+            781,
+            826,
+            866
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "aside_text",
+        "text": "arXiv:2603.14117v1 [cs.CV] 14 Mar 2026",
+        "bbox": [
+            22,
+            272,
+            58,
+            720
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "page_footnote",
+        "text": "<sup>∗</sup>Equal contribution",
+        "bbox": [
+            192,
+            872,
+            315,
+            886
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "page_footnote",
+        "text": "<sup>†</sup>Corresponding author",
+        "bbox": [
+            192,
+            886,
+            333,
+            901
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "footer",
+        "text": "Preprint.",
+        "bbox": [
+            173,
+            922,
+            227,
+            936
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "image",
+        "img_path": "images/a273eb3e91396ef76e29d31bebe5f8d6eab644c77c093c9d6d4b23ebbb8714ef.jpg",
+        "image_caption": [
+            "Figure 1: This figure compares tool-augmented methods with SIEVE. The left shows tool-based reasoning, where external tools are invoked for additional visual information. The right shows SIEVE, which directly retrieves and injects key region embeddings into the reasoning process."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            269,
+            90,
+            722,
+            457
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            171,
+            517,
+            826,
+            547
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Despite their effectiveness, existing methods are constrained by their reliance on external tools or agents, which introduces two key drawbacks. First, existing methods often disrupt the continuity of the reasoning chain during multi-turn interaction. Specifically, these approaches typically rely on an external module to generate a new view of the image, which is then appended to the original image input rather than being directly integrated into the CoT reasoning process. As a result, the extracted visual view is not inserted into the corresponding positions of the CoT; instead, it is appended to the input as additional images before the input and current output text. Second, enabling the model to repeatedly invoke external tools requires constructing a large amount of training data and designing complex training pipelines for the VLM to learn such capabilities.",
+        "bbox": [
+            169,
+            553,
+            826,
+            679
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "In this paper, we challenge the prevailing paradigm and ask a simple question: do we truly need to generate new image views through external operations to let model revist the image information during inference? Our hypothesis is that the original visual embeddings already contain sufficient information for grounded reasoning, and that the main bottleneck is the model’s limited ability to selectively reuse relevant visual evidence as generation unfolds. Instead of cropping, zooming, and reencoding additional images, we propose to directly extract task-relevant visual embeddings and insert them into the reasoning chain. To validate this idea, we conduct a preliminary analysis by manually identifying salient regions and directly injecting their visual embeddings into intermediate reasoning. This simple intervention consistently improves performance on the V\\* benchmark, yielding a 3% accuracy gain without any additional training.",
+        "bbox": [
+            169,
+            683,
+            826,
+            824
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Inspired by this observation, we introduce SIEVE, a framework that enables VLMs to revisit visual evidence without external tools or agentic image operations. As shown in Figure 1, when the model signals a need for additional visual grounding during inference, SIEVE retrieves embeddings for the relevant image regions and inserts them into the current reasoning chain, rather than localizing regions with an external tool and re-encoding new views. By reusing already encoded region features, SIEVE preserves access to fine-grained, localized visual cues for grounded multi-step reasoning while avoiding redundant vision re-encoding. We further develop a visually grounded RL training pipeline that enables the model to learn when and how to effectively retrieve and insert region embeddings. This RL training is highly data-efficient: SIEVE requires only a small dataset (approximately 1.5k samples) to acquire the capability. We evaluate SIEVE on Qwen3-based VLMs (4B and 8B) [Yang et al., 2025a] across multiple benchmarks. Results show consistent improvements over inference time tool-augmented baselines, indicating that much of the benefit typically attributed to explicit visua re-inspection can be achieved through retrieval and reuse of the embeddings of visual evidence. Our contributions are:",
+        "bbox": [
+            169,
+            827,
+            826,
+            914
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "page_number",
+        "text": "2",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            92,
+            826,
+            203
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "• We propose SIEVE, a framework that lets VLMs revisit fine-grained visual evidence by retrieving and reinserting region-level visual embeddings from the original encoding, avoiding external crop/zoom tools and any re-encoding.",
+        "bbox": [
+            171,
+            212,
+            825,
+            256
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "• We design a saliency-based mechanism to identify the embeddings of visual evidence that could be critical to reasoning semantics. Building on this, we develop a visually grounded RL training pipeline that teaches the model when to retrieve these visual embeddings during reasoning.",
+        "bbox": [
+            171,
+            257,
+            825,
+            301
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "• We validate SIEVE across multiple model scales and benchmarks, where we show that using only a small training set (approximately 1.5k samples), SIEVE can demonstrate consistent gains in grounded multimodal performance (up to 8% on average across several benchmarks).",
+        "bbox": [
+            171,
+            304,
+            825,
+            347
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2 Related Work",
+        "text_level": 2,
+        "bbox": [
+            171,
+            364,
+            323,
+            381
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2.1 Tool-augmented Multi-modal Reasoning",
+        "text_level": 2,
+        "bbox": [
+            171,
+            395,
+            496,
+            410
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Recent work extends VLM inference beyond a single visual pass by introducing explicit visual re-query mechanisms during reasoning. A prominent line equips models with visual tools (e.g., cropping, zooming, object detection) that produce targeted observations and feed them back as additional inputs Huang et al. [2025b], Su et al. [2025a], Fan et al. [2025], Chen et al. [2025], Hu et al.. Later approaches learn tool-use policies with reinforcement learning, rewarding effective re-query trajectories and verification behaviors, often adopting coarse-to-fine strategies that start from a global view and refine under higher-resolution observations Zheng et al. [2025], Zhong et al. [2025]. Related methods further encourage pixel-space exploration, either via instruction tuning to broaden search coverage Su et al. [2025b] or RL to strengthen perceptual competence and steer attention to task-relevant regions Yu et al. [2025a]. Despite strong performance, these systems typically incur inference-time overhead due to repeated view generation and re-encoding.",
+        "bbox": [
+            169,
+            420,
+            826,
+            574
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2.2 Multi-modal Reasoning in Latent Space",
+        "text_level": 2,
+        "bbox": [
+            171,
+            587,
+            491,
+            603
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "In parallel, several lines reduce reliance on explicit image operations by operating in representation space or by selectively using visual tokens. Generation-based methods synthesize auxiliary visual representations to support inference Xu et al. [2025], Chern et al. [2025], Li et al. [2025b]. More recently, latent thinking-with-images paradigms introduce learnable latent visual tokens and embedding-level manipulation to internalize certain visual operations and enable mode switching during inference Li et al. [2025c], Zhang et al. [2025a], Yang et al. [2025b]. A complementary efficiency literature observes that dense patch sequences are redundant and studies how to select, prune, or merge visual tokens while preserving representational fidelity Chen et al. [2024], Cao et al. [2024], Wang et al. [2025], Bolya et al. [2022], Zeng et al. [2025], Zhang et al. [2024a], Huang et al. [2024], Li et al. [2025d], Hu et al. [2025], Yu et al. [2025b], Song et al. [2024]. These approaches share a common premise: they construct reasoning processes within a latent visual space and train models to perform reasoning in that space. However, this paradigm requires substantial effort to enable the model to learn reasoning over newly introduced visual latents that differ from the native textual representation space. Motivated by this limitation, we propose a framework that directly leverages the embeddings of images within the textual reasoning space, rather than constructing and training reasoning in a separate latent space.",
+        "bbox": [
+            169,
+            613,
+            828,
+            837
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3 Methodology",
+        "text_level": 2,
+        "bbox": [
+            171,
+            853,
+            315,
+            871
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Our core hypothesis is that the visual embeddings produced by a VLM already encode sufficient information for complex visual reasoning, provided the model can access the appropriate localized evidence at the right moment. To validate this hypothesis, we conduct a controlled study on the V\\* dataset examining whether region-level visual features can directly enhance multimodal inference. Concretely, we manually identify task-relevant regions, extract their corresponding embeddings, and augment inference by inserting these region embeddings with the model’s original visual embeddings, all without any additional training. We evaluate this intervention against the standard setting that relies solely on global image. As shown in Figure 2, region-augmented inference yields a 3% improvement, confirming that localized embedding evidence provides a compact yet effective signal that the model can immediately leverage. This finding aligns with prior work demonstrating that LLM hidden states encode rich semantic structure [Skean et al., 2025, Schiekiera et al., 2026, Liu et al., 2024].",
+        "bbox": [
+            171,
+            883,
+            826,
+            912
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "page_number",
+        "text": "3",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "image",
+        "img_path": "images/2c9abf4304190a0331bc938240d81daec4b1c72d3243937fa47d7392bdb24cd3.jpg",
+        "image_caption": [
+            "Figure 3: Training workflow of SIEVE. For each question, the embeddings of image patches aligned with key textual anchors are extracted and cached as visual evidence. During RL rollouts, the policy learns when to insert this evidence into the reasoning stream, with rewards computed from the final answer. Embeddings of visual evidence are periodically re-extracted using the updated model to keep the evidence aligned with the evolving policy."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            174,
+            90,
+            810,
+            351
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            459,
+            828,
+            587
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Motivated by this observation, we introduce SIEVE, a framework that treats task-relevant region embeddings as reusable visual evidence and learns to incorporate them within RL policy optimization. Specifically, SIEVE (i) extracts and caches region embeddings as compact evidence units and (ii) jointly optimizes how such evidence is selected and integrated into the model’s reasoning process throughout reinforcement learning. Section 3.1 presents an overview of the training pipeline. Section 3.2 details our automatic evidence discovery procedure. Section 3.3 introduces a visually grounded RL formulation that trains the model to retrieve and insert cached region embeddings on demand, enabling systematic evidence-aware reasoning beyond global visual representations.",
+        "bbox": [
+            169,
+            603,
+            584,
+            786
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "chart",
+        "img_path": "images/1db632952be23d6fd963ec96bbb8f454b98c4d7e2455d036e23524db6b213a7a.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 2: Performance with and without region embeddings."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            596,
+            599,
+            823,
+            731
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "3.1 Overview of SIEVE",
+        "text_level": 2,
+        "bbox": [
+            171,
+            803,
+            348,
+            818
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Figure 3 illustrates the training workflow of SIEVE. Prior to training-time rollouts, we construct embeddings of visually salient regions through a two-stage process. On the textual side, we compute token-level saliency scores to identify the tokens that exert the greatest influence on subsequent generation. These salient tokens serve as semantic queries. On the visual side, we compute crossmodal similarity between each query token and the image patch representations to localize the most relevant spatial regions.",
+        "bbox": [
+            169,
+            828,
+            826,
+            912
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "page_number",
+        "text": "4",
+        "bbox": [
+            493,
+            935,
+            504,
+            946
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "code",
+        "sub_type": "algorithm",
+        "code_caption": [],
+        "code_footnote": [],
+        "code_body": "Algorithm 1 Self-Guided Visual Evidence Discovery   \nRequire: Multimodal model M; image I; token embeddings $\\{ \\mathbf { h } _ { i } \\} _ { i = 1 } ^ { L } ; u ,$ v row and column coordinates of the   \npatch.   \nEnsure: Evidence snapshot set E   \nRun $\\mathcal { M } ( I , \\{ \\mathbf { h } _ { i } \\} )$ to obtain logits $\\mathbf { z } _ { L }$ and hidden states $\\{ \\mathbf { H } ^ { ( \\ell ) } \\}$   \n$\\hat { v } = \\arg \\operatorname* { m a x } _ { v \\in \\mathcal { V } } \\mathbf { z } _ { L } [ v ] , s = \\mathbf { z } _ { L } [ \\hat { v } ]$ // choose prediction target   \n$\\mathrm { S a l } ( i ) \\bar { = } \\| \\nabla _ { \\mathbf { h } _ { i } } s \\odot \\dot { \\mathbf { h } _ { i } } \\| _ { 2 } , \\mathcal { A } = \\dot { \\mathrm { F i l t e r } } ( \\mathrm { S a l } )$ // identify salient textual anchors   \n$\\begin{array} { r } { \\bar { \\mathbf { H } } = \\frac { 1 } { | \\mathcal { L } _ { \\mathrm { m i d } } | } \\sum _ { \\ell \\in \\mathcal { L } _ { \\mathrm { m i d } } } \\mathbf { H } ^ { ( \\ell ) } } \\end{array}$ // stabilize cross-modal representations   \nExtract patch tokens $\\ddot { \\mathbf { X } } = \\{ \\mathbf { x } _ { j } \\} _ { j = 1 } ^ { N }$ and anchor token reps $\\{ \\mathbf { q } _ { i } \\} _ { i \\in \\mathcal { A } }$ from H<sup>¯</sup> .   \nNormalize $\\hat { \\mathbf { x } } _ { j } = \\mathbf { x } _ { j } / \\lVert \\mathbf { x } _ { j } \\rVert _ { 2 } , \\hat { \\mathbf { q } } _ { i } = \\mathbf { q } _ { i } / \\lVert \\mathbf { q } _ { i } \\rVert _ { 2 }$ ; initialize ${ \\bar { \\varepsilon } }  \\varnothing .$   \nfor $i \\in \\mathcal A$ do   \n$\\begin{array} { r } { s _ { i j } = \\cos ( \\hat { \\mathbf { q } } _ { i } , \\hat { \\mathbf { x } } _ { j } ) , ~ w _ { i j } = \\frac { \\exp ( s _ { i j } / \\tau ) } { \\sum _ { u = 1 } ^ { N } \\exp ( s _ { i u } / \\tau ) } } \\end{array}$ // anchor–patch affinity   \n$S ( \\mathcal { B } _ { i } ) = \\operatorname* { m a x } _ { v _ { \\boldsymbol { v } _ { i } } , \\mathbf { \\boldsymbol { \\tau } } , \\in \\mathcal { B } _ { i } } s _ { u , v } , \\mathcal { B } ^ { * } = \\operatorname { T o p K } ( \\{ S ( \\mathcal { B } _ { i } ) \\} )$ // score blocks and select top-k   \n$\\textstyle { \\mathcal { R } } _ { i } = \\operatorname { B B o x } ( \\bigcup _ { B \\in B ^ { * } } B )$ // merge selected blocks into a region   \n$E _ { i } = \\mathrm { C o n c a t } \\ \\mathbf { x } _ { j }$ // concatenate all patch embeddings in region R<sub>i</sub>   \n$\\mathcal { E }  \\mathcal { E } \\cup \\{ \\dot { E } _ { i } \\}$   \nend for   \nreturn $\\varepsilon$",
+        "bbox": [
+            171,
+            89,
+            825,
+            358
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "During each rollout, the model first assesses whether supplementary visual information is required at the current reasoning step. When additional visual information is warranted, the previously cached evidence embeddings are injected into the generation process. Otherwise, the model proceeds directly toward producing an answer. This selection decision can be invoked repeatedly across multiple reasoning steps until the model either produces a final answer or reaches a predefined maximum reasoning horizon. Upon termination, a reward is computed from the final output. When the model fails despite utilizing the cached evidence, we interpret this as an indication that the stored embeddings are misaligned or insufficient. In such cases, we re-identify task-relevant regions under the current model parameters, re-extract their region embeddings, and update the evidence cache accordingly. The refreshed embeddings are employed in subsequent rollouts, enabling the evidence to co-evolve with the policy and progressively improve visual grounding throughout training.",
+        "bbox": [
+            169,
+            382,
+            826,
+            539
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "3.2 Self-Guided Visual Evidence Identification",
+        "text_level": 2,
+        "bbox": [
+            171,
+            551,
+            509,
+            566
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "A central challenge in constructing visual evidence lies in determining what to store: the embeddings must capture precisely the visual information that the model would need to revisit during reasoning, without relying on manual annotation or task-specific heuristics. We address this through a two-stage self-guided visual evidence identification pipeline, which is illustrated in Algorithm 1. First, the model introspects on its own predictive process to surface the most prediction-critical tokens as textual anchors. Subsequently, we ground these anchors onto spatially coherent image regions via cross-modal matching within the model’s internal representation space.",
+        "bbox": [
+            169,
+            577,
+            826,
+            676
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "3.2.1 Discovering Textual Anchors via Gradient Saliency",
+        "text_level": 2,
+        "bbox": [
+            171,
+            689,
+            581,
+            704
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Rather than relying on external concept taggers or handcrafted keyword lists, we derive anchors directly from the model’s own predictive dynamics. Our primary signal is token-level gradient saliency: if a token is critical to the model’s next-step prediction, the output logit will exhibit high sensitivity to perturbations of that token’s embedding, manifesting as a large gradient magnitude. This yields an importance landscape over input tokens, from which we select the most influential ones as anchors. Formally, let the multimodal model produce logits $\\mathbf { z } _ { L } \\in \\mathbb { R } ^ { | \\nu | }$ at the last input position L, where V is the vocabulary. Let $\\hat { v } = \\arg \\operatorname* { m a x } _ { v \\in \\mathcal { V } } \\mathbf { z } _ { L } [ v ]$ denote the predicted next token, and define the scalar target $s = \\mathbf { z } _ { L } [ \\hat { v } ]$ . We compute a saliency score for each input token embedding $\\mathbf { h } _ { i } \\in \\mathbb { R } ^ { d }$ as",
+        "bbox": [
+            169,
+            712,
+            826,
+            829
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/e379abfe186dc14db2c551119722da5252fb40cba744c0e1770599b6a51dc2c6.jpg",
+        "text": "$$\n\\mathrm { S a l } ( i ) = \\| \\nabla _ { \\mathbf { h } _ { i } } s \\odot \\mathbf { h } _ { i } \\| _ { 2 } ,\\tag{1}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            408,
+            833,
+            586,
+            849
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "where ⊙ denotes element-wise multiplication. This gradient–input formulation captures both the sensitivity of the prediction (via the gradient) and the magnitude of the representation (via $\\mathbf { h } _ { i } )$ ensuring that high saliency reflects genuine dependence of the model’s output on token i. Since raw saliency scores often assign non-trivial weight to function words $( \\mathrm { e g . , } t h e , i s )$ that carry limited semantic content, we apply a stop-word filter and retain only content-bearing tokens whose saliency exceeds a predefined threshold. The surviving tokens constitute our textual anchors, i.e., the semantics that the model implicitly treats as pivotal to its reasoning (e.g., objects, attributes, or spatial relations). These anchors subsequently serve as queries for visual grounding.",
+        "bbox": [
+            169,
+            854,
+            825,
+            912
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "page_number",
+        "text": "5",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            92,
+            826,
+            148
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "3.2.2 Identifying Visual Evidence with Textual Anchors",
+        "text_level": 2,
+        "bbox": [
+            169,
+            166,
+            573,
+            181
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Given the textual anchors, we localize their corresponding visual regions by matching the internal hidden representations of text tokens and image patch tokens within the model’s joint multimodal space, where both modalities reside in the same representation space and can therefore be directly compared. Our approach operates on intermediate-layer representations, where cross-modal semantics exhibit more explicit alignment.",
+        "bbox": [
+            169,
+            191,
+            825,
+            262
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Let $\\mathbf { H } ^ { ( \\ell ) } \\in \\mathbb { R } ^ { L \\times d }$ denote the hidden states at layer $\\ell ,$ for $\\ell = 1 , \\ldots , \\mathcal { L }$ . Prior work has shown that middle layers tend to capture richer semantic representations than either early or later layers Skean et al. [2024, 2025]. We accordingly compute a stabilized representation by averaging middle layer’s hidden states with: $\\begin{array} { r } { \\bar { \\bf H } = \\frac { 1 } { | \\mathcal { L } _ { \\mathrm { m i d } } | } \\bar { \\sum _ { \\ell \\in \\mathcal { L } _ { \\mathrm { m i d } } } } { \\bf H } ^ { ( \\ell ) } } \\end{array}$ . Both modalities are obtained from the same H<sup>¯</sup> by indexing the corresponding token positions. Let $\\mathbf { X } \\in \\mathbb { R } ^ { N \\times d }$ denote the patch-token representations and $\\mathbf { q } \\in \\mathbb { R } ^ { d }$ the representation of a textual anchor token.",
+        "bbox": [
+            169,
+            267,
+            826,
+            359
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "To ensure robust similarity computation, we apply mean-centering and $\\ell _ { 2 }$ normalization to both the patch tokens and the anchor, yielding normalized vectors $\\{ \\hat { \\mathbf { x } } _ { i } \\bar  \\} _ { i = 1 } ^ { N }$ and $\\hat { \\mathbf { q } } .$ We then compute anchor–patch affinity via cosine similarity: $s _ { i } = \\cos ( \\hat { \\mathbf { x } } _ { i } , \\hat { \\mathbf { q } } ) \\quad i = 1 , \\ldots , \\bar { N }$ , and convert the affinities into a temperature-scaled softmax distribution:",
+        "bbox": [
+            169,
+            363,
+            825,
+            420
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/8e2aa4b97f96b74c2cb2449b87306ef925c95bb53198acfce0a5f235941df733.jpg",
+        "text": "$$\nw _ { i } = \\frac { \\exp ( s _ { i } / \\tau ) } { \\sum _ { j = 1 } ^ { N } \\exp ( s _ { j } / \\tau ) } .\\tag{2}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            415,
+            431,
+            581,
+            468
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "We leverage this distribution to extract a spatially coherent region. Specifically, we map patch tokens onto the $H \\times W$ patch grid and compute each block’s score as the maximum similarity within the block: $s _ { b } = \\operatorname* { m a x } _ { j \\in \\mathcal { B } _ { b } } w _ { i j }$ ,where $B _ { b }$ denotes the set of patches in block b. We then select the top-K scoring blocks $\\bar { B _ { i } } = \\mathrm { T o p K } ( \\{ s _ { b } \\} )$ , and expand each selected block by computing the bounding rectangle of the selected patches. We set k to 1, and further discussion it in the B. We evaluate the similarity of these patches with their corresponding textual anchors and retain the highest-scoring one as the expanded block $\\mathcal { R } _ { i } = \\mathrm { E x p a n d } ( \\bar { B } _ { i } )$ . The embeddings of patches within each region are then aggregated to form a region-level snapshot: $E _ { i } = \\operatorname { C o n c a t } _ { j \\in \\mathcal { R } _ { i } } \\mathbf { x } _ { j }$ . The resulting region embeddings",
+        "bbox": [
+            169,
+            484,
+            825,
+            602
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "are cached as evidence snapshots and stored alongside each training sample. These embeddings constitute reusable visual evidence that can be dynamically inserted into reasoning during the rollout process.",
+        "bbox": [
+            169,
+            603,
+            826,
+            645
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "3.3 Visual-grounded Reinforcement Learning",
+        "text_level": 2,
+        "bbox": [
+            171,
+            665,
+            504,
+            680
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Existing tool-augmented thinking-with-images methods [Zheng et al., 2025, Hong et al., 2025, Zhang et al., 2025b] enlarge the action space with external tool calls and require image re-encoding at every reasoning step. Since SIEVE simply reuses embeddings already produced by the vision encoder and projected into text space, it sidesteps these issues entirely and we can formalize the reasoning as shown in Equation 3, where the policy selects the next action conditioned on the original image and the full interaction history, including both generated text and any previously inserted visual evidence, accumulated up to the current step:",
+        "bbox": [
+            169,
+            690,
+            826,
+            790
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/f618680062114c74661f5836cfa14e85518a95c3beb09b87a96447ead4956a2a.jpg",
+        "text": "$$\na _ { t } \\sim \\pi _ { \\theta } ( \\cdot \\mid s _ { t } ) , \\qquad s _ { t } \\triangleq I \\parallel ( x _ { 1 } \\parallel E _ { 1 } ) \\parallel \\cdot \\cdot \\cdot \\parallel ( x _ { t - 1 } \\parallel E _ { t - 1 } ) .\\tag{3}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            297,
+            801,
+            694,
+            818
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Here, I denotes the input image, $x _ { t }$ is the text generated by the model, and $E _ { t }$ is the embeddings of visual evidence inserted at turn t (with $E _ { t } = \\emptyset$ when no insertion occurs). Thus, $s _ { t }$ represents the accumulated context: the raw image followed by all preceding textual responses and inserted evidence blocks in temporal order. Conditioned on $s _ { t } ,$ , the policy samples the next action $a _ { t }$ , either terminating with a final answer or triggering insertion of the cached visual evidence. The rollout terminates when a final answer is produced or when a predefined maximum number of turns is reached.",
+        "bbox": [
+            169,
+            827,
+            826,
+            912
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "page_number",
+        "text": "6",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Trajectory-level reward design. We design a trajectory-level reward function that holistically evaluates the quality of the complete reasoning path. The reward comprises four complementary components, each yielding a binary score of 1 (satisfied) or 0 (violated). Given a trajectory τ , the total reward is:",
+        "bbox": [
+            169,
+            90,
+            826,
+            147
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "equation",
+        "img_path": "images/bd45430e9296f44eff35a66f1faa3cd78da8590e23775d9ee4292c4bcd23f46f.jpg",
+        "text": "$$\n\\mathcal { R } ( \\tau ) = \\lambda _ { 1 } \\mathcal { R } _ { \\mathrm { r e s } } ( \\tau ) + \\lambda _ { 2 } \\mathcal { R } _ { \\mathrm { f o r m a t } } ( \\tau ) + \\lambda _ { 3 } \\mathcal { R } _ { \\mathrm { e m b } } ( \\tau ) + \\lambda _ { 4 } \\mathcal { R } _ { \\mathrm { a c t } } ( \\tau ) ,\\tag{4}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            289,
+            155,
+            705,
+            171
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "where the λ values are scaling coefficients. In our experiments, we set $\\lambda _ { 1 } = 0 . 6 , \\lambda _ { 2 } = 0 . 3 , \\lambda _ { 3 } = 0 . 5$ and $\\lambda _ { 4 } = 0 . 2$ . Each component targets a distinct aspect of the desired behavior:",
+        "bbox": [
+            169,
+            178,
+            825,
+            207
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "• Format reward $( \\mathcal { R } _ { \\mathrm { f o r m a t } } )$ promotes well-structured outputs. For single-turn trajectories, the full reward is granted only if the model produces a valid reasoning chain followed by a final answer. For multi-turn trajectories, obtaining the full reward additionally requires an explicit embedding selection during an intermediate turn. Any structural violation results in a zero format reward.",
+        "bbox": [
+            171,
+            218,
+            826,
+            275
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "• Result reward $\\left( \\mathcal { R } _ { \\mathrm { r e s } } \\right)$ evaluates the correctness of the final answer, serving as the primary learning signal for reasoning quality.",
+        "bbox": [
+            171,
+            279,
+            825,
+            308
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "• Embedding reward $( \\mathcal { R } _ { \\mathrm { e m b } } )$ is activated exclusively when the model produces a correct final answer and invokes embedding insertion at least once during intermediate reasoning steps. This bonus incentivizes the model to actively leverage visual evidence when it is beneficial for task resolution, rather than bypassing the available evidence.",
+        "bbox": [
+            171,
+            311,
+            826,
+            368
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "• Action reward ${ \\mathcal { R } } _ { \\mathrm { a c t } }$ improves training stability in two ways: (i) it penalizes overly short reasoning traces that could hack the reward, and (ii) it provides a small positive reward for committing to an action, either retrieving an embedding or producing an answer, which discourages the policy from collapsing into “non-committal” outputs that avoid taking actions.",
+        "bbox": [
+            171,
+            371,
+            825,
+            429
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "4 Experiments",
+        "text_level": 2,
+        "bbox": [
+            171,
+            446,
+            313,
+            463
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "4.1 Experimental Setup",
+        "text_level": 2,
+        "bbox": [
+            171,
+            477,
+            354,
+            493
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "4.1.1 Benchmarks and Baselines",
+        "text_level": 2,
+        "bbox": [
+            171,
+            502,
+            413,
+            517
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "For training, we sample 1,500 images from COCO 2017 Lin et al. [2014] and construct the corresponding training data with pre-extracted region embeddings. For evaluation, we focus on two challenging high-resolution visual reasoning benchmarks: V\\*Bench Wu and Xie [2024] and HR-Bench Wang et al. [2024], reporting results at both 4K and 8K resolutions. To assess generalization beyond high-resolution reasoning, we additionally evaluate on perception benchmarks MME-Real-Lite Zhang et al. [2024b] and RealWorldQ xAI; multimodal reasoning benchmarks MathVista Lu et al. [2024], LogicVista Xiao et al. [2024], and WeMath Qiao et al. [2025]; and the hallucination benchmark Hallusion Wu et al. [2024]. We compare SIEVE against representative zoom-and-refine baselines, including DyFo Li et al. [2025e], ZoomEye Shen et al. [2024], and Zoom-Refine Yu et al. [2025c], as well as a vanilla GRPO-trained model optimized solely with format and accuracy rewards.",
+        "bbox": [
+            169,
+            526,
+            828,
+            666
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "4.1.2 Training Details",
+        "text_level": 2,
+        "bbox": [
+            171,
+            679,
+            339,
+            695
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "We adopt Qwen3-VL-4B-Instruct Yang et al. [2025a] and Qwen3-VL-8B-Instruct as base models. Both are trained with GRPO Shao et al. [2024b] for 60 rollout steps on two NVIDIA H200 GPUs. Each rollout batch contains 16 prompts with 8 rollouts per prompt. We set the KL divergence coefficient to 0.0 and the maximum response length is set as 8,192 tokens.",
+        "bbox": [
+            169,
+            703,
+            826,
+            760
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "4.2 Main Results",
+        "text_level": 2,
+        "bbox": [
+            171,
+            775,
+            307,
+            790
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "In Table 1, we report the performance of SIEVE on ${ \\mathrm { V } } ^ { * }$ and HRBench, comparing it with other models and methods at both the 4B and 8B scales. As shown in the table, SIEVE consistently outperforms all baselines on both benchmarks across both model sizes. Notably, the 4B variant of SIEVE achieves a 10.06% improvement over the corresponding vanilla model. This result indicates that enabling the model to reason with hidden-state embeddings can effectively enhance performance on high-resolution tasks. We further validate our approach on additional datasets. As presented in Table 2, SIEVE demonstrates consistent improvements over both the vanilla model and the GRPO trained model across perception tasks, reasoning tasks, and hallucination benchmarks. In particular,",
+        "bbox": [
+            169,
+            800,
+            826,
+            912
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "page_number",
+        "text": "7",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "table",
+        "img_path": "images/724b1f51288131088f5a9cf18a8885f980875296524a67bc8f21452894dd6466.jpg",
+        "table_caption": [],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"2\">Model</td><td colspan=\"3\">V* Bench</td><td colspan=\"3\">HR-Bench 4K</td><td colspan=\"3\">HR-Bench 8K</td></tr><tr><td>Attribute</td><td>Spatial</td><td>Overall</td><td>FSP</td><td>FCP</td><td>Overall</td><td>FSP</td><td>FCP</td><td>Overall</td></tr><tr><td>Qwen3-VL-4B-Instruct</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Vanilla*</td><td>74.78</td><td>82.89</td><td>78.01</td><td>86.00</td><td>69.50</td><td>77.75</td><td>80.75</td><td>64.00</td><td>72.38</td></tr><tr><td>DyFo</td><td>86.09</td><td>75.00</td><td>81.68</td><td>72.75</td><td>57.25</td><td>65.00</td><td>69.75</td><td>53.50</td><td>61.62</td></tr><tr><td>ZoomEye</td><td>92.17</td><td>86.84</td><td>90.05</td><td>90.00</td><td>61.00</td><td>75.50</td><td>88.00</td><td>60.00</td><td>74.00</td></tr><tr><td>Zoom-Refine</td><td>86.09</td><td>73.47</td><td>81.17</td><td>87.00</td><td>66.00</td><td>76.50</td><td>87.00</td><td>63.00</td><td>75.00</td></tr><tr><td>GRPO</td><td>81.74</td><td>90.79</td><td>85.34</td><td>88.50</td><td>72.50</td><td>80.50</td><td>83.00</td><td>67.75</td><td>75.38</td></tr><tr><td>SIEVE</td><td>81.74</td><td>92.11</td><td>85.86</td><td>88.00</td><td>74.50</td><td>81.25</td><td>85.00</td><td>67.25</td><td>76.13</td></tr><tr><td>∆ (vs. Vanilla)</td><td>+6.96</td><td>+9.22</td><td>+7.85</td><td>+2.00</td><td>+5.00</td><td>+3.50</td><td>+4.25</td><td>+3.25</td><td>+3.75</td></tr><tr><td>Qwen3-VL-8B-Instruct</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Vanilla*</td><td>84.35</td><td>80.26</td><td>82.72</td><td>89.0069.00</td><td></td><td>79.00</td><td>81.00</td><td>67.50</td><td>74.25</td></tr><tr><td>DyFo</td><td>86.09</td><td>78.95</td><td>83.25</td><td>78.50</td><td>57.25</td><td>67.88</td><td>71.50</td><td>54.50</td><td>63.00</td></tr><tr><td>ZoomEye</td><td>81.74</td><td>73.68</td><td>78.35</td><td>88.00</td><td>60.00</td><td>74.00</td><td>88.00</td><td>53.00</td><td>70.50</td></tr><tr><td>Zoom-Refine</td><td>83.48</td><td>82.89</td><td>83.25</td><td>91.00</td><td>63.00</td><td>77.00</td><td>92.00</td><td>60.00</td><td>76.00</td></tr><tr><td>GRPO</td><td>86.96</td><td>86.84</td><td>86.91</td><td>91.75</td><td>70.00</td><td>80.88</td><td>86.75</td><td>68.25</td><td>77.50</td></tr><tr><td>SIEVE</td><td>88.70</td><td>86.84</td><td>87.96</td><td>90.00</td><td>73.00</td><td>81.50</td><td>83.00</td><td>73.50</td><td>78.25</td></tr><tr><td>∆ (vs. Vanilla)</td><td>+4.35</td><td>+6.58</td><td>+5.24</td><td>+1.00</td><td>+2.75</td><td>+2.50</td><td>+2.00</td><td>+6.00</td><td>+4.00</td></tr></table>",
+        "bbox": [
+            178,
+            89,
+            820,
+            386
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/d52abeda9fce5cd685ee218f4fb3413005a3c5c3934afb84accc7edfe05d9fdc.jpg",
+        "table_caption": [
+            "Table 1: Results on V\\* Bench and HR-Bench. <sup>∗</sup> indicates results reproduced by our implementation."
+        ],
+        "table_footnote": [
+            "Table 2: Benchmark comparison on perception, reasoning, and general tasks. For each model size, we report the base model (Vanilla), applying GRPO to the base model (+GRPO), and our method SIEVE. Subscripts indicate absolute gains over the corresponding Vanilla baseline. <sup>∗</sup> denotes results reproduced by us.",
+            "SIEVE 4B achieves a 17.58% gain on MME-Real-Lite, while SIEVE 8B achieves improvements of 19.30% on MME-Real-Lite and 20.65% on WeMath. These results suggest that injecting hidden-state embeddings during reasoning can yield benefits across diverse task categories."
+        ],
+        "table_body": "<table><tr><td rowspan=\"2\">Benchmark</td><td rowspan=\"2\">Split</td><td colspan=\"3\">Qwen3-VL-4B-Instruct</td><td colspan=\"3\">Qwen3-VL-8B-Instruct</td></tr><tr><td>Vanilla*</td><td>+GRPO</td><td>SIEVE</td><td>Vanilla*</td><td>+GRPO</td><td>SIEVE</td></tr><tr><td rowspan=\"3\">MME-Real-Lite</td><td>Perception</td><td>50.90</td><td>54.41</td><td> ${ \\bar { \\bf 5 } } 5 . 9 5 _ { + 5 . 0 5 }$ </td><td>52.95</td><td>54.58</td><td> $5 8 . 4 3 _ { + 5 . 4 8 }$ </td></tr><tr><td>Reasoning</td><td>38.27</td><td>40.00</td><td> ${ \\bar { \\mathbf { 5 1 . 0 7 } } } _ { + 1 2 . 8 }$ </td><td>38.40</td><td>39.47</td><td> ${ \\bar { 5 } } 3 . 2 0 _ { + 1 4 . 8 }$ </td></tr><tr><td>Overall</td><td>45.96</td><td>48.78</td><td> ${ \\bar { \\bf 5 4 . 0 4 } } _ { + 8 . 0 8 }$ </td><td>47.26</td><td>48.67</td><td> ${ \\bar { 5 } 6 . 3 8 } _ { + 9 . 1 2 }$ </td></tr><tr><td>RealWorldQA</td><td>Overall</td><td>68.10</td><td>67.84</td><td> $\\mathbf { 7 1 . 1 1 _ { + 3 . 0 1 } }$ </td><td>69.28</td><td>70.72</td><td> $6 9 . 2 8 _ { + 0 . 0 0 }$ </td></tr><tr><td>MathVista</td><td>Mini</td><td>67.70</td><td>68.40</td><td> $\\mathbf { 7 0 . 5 0 } _ { + 2 . 8 0 }$ </td><td>69.90</td><td>70.30</td><td> $\\mathbf { 7 1 . 6 0 } _ { + 1 . 7 0 }$ </td></tr><tr><td>LogicVista</td><td>Overall</td><td>43.08</td><td>46.21</td><td> ${ \\bf 4 8 . 9 9 _ { + 5 . 9 1 } }$ </td><td>48.66</td><td>52.01</td><td> ${ \\pm 3 . 0 2 } _ { + 4 . 3 6 }$ </td></tr><tr><td>WeMath</td><td>Overall</td><td>50.98</td><td>51.03</td><td> ${ \\bar { 5 } } 3 . 0 5 _ { + 2 . 0 7 }$ </td><td>54.71</td><td>55.40</td><td> ${ \\bf 6 6 . 0 1 _ { + 1 1 . 3 } }$ </td></tr><tr><td rowspan=\"4\">HallusionBench</td><td>qAcc</td><td>35.74</td><td>37.55</td><td> $3 8 . 9 9 _ { + 3 . 2 5 }$ </td><td>36.10</td><td>37.91</td><td> $4 2 . 2 4 _ { + 6 . 1 4 }$ </td></tr><tr><td>fAcc</td><td>41.91</td><td>42.77</td><td> ${ \\pmb { 4 3 . 6 4 } } _ { + 1 . 7 3 }$ </td><td>44.22</td><td>45.38</td><td> $\\mathbf { 4 7 . 9 8 _ { + 3 . 7 6 } }$ </td></tr><tr><td>aAcc</td><td>63.41</td><td>64.98</td><td> $6 4 . 9 5 _ { + 1 . 5 4 }$ </td><td>66.35</td><td>67.19</td><td> ${ \\bf 6 8 . 1 1 _ { + 1 . 7 6 } }$ </td></tr><tr><td>Overall</td><td>47.02</td><td>48.43</td><td> $\\mathbf { 4 9 . 1 9 _ { + 2 . 1 7 } }$ </td><td>48.89</td><td>50.16</td><td> ${ \\pm 2 . 7 8 _ { + 3 . 8 9 } }$ </td></tr></table>",
+        "bbox": [
+            178,
+            417,
+            821,
+            671
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "4.3 Visualization and Analysis",
+        "text_level": 2,
+        "bbox": [
+            171,
+            801,
+            398,
+            816
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "In Figure 4, using the $\\mathrm { V } ^ { \\ast }$ dataset as a case study, we demonstrate how our model retrieves bounding boxes in image coordinate space that align with the learned region embeddings. Specifically, the selected embeddings are mapped back to their corresponding spatial patch locations and aggregated to form coherent bounding regions. The resulting visualizations show that these extracted embeddings consistently correspond to semantically meaningful and task-relevant image regions, rather than arbitrary or background areas. Although minor localization drift may occur due to the patch-based segmentation mechanism in Qwen-VL where object boundaries may not perfectly align with fixed patch grids our extended patching strategy mitigates this issue. By explicitly injecting the target object’s embedding as a structured guidance signal during inference, the model is encouraged to focus on spatially relevant regions and refine its reasoning accordingly. This design not only improves visual grounding fidelity but also provides an intuitive explanation for the consistent performance gains achieved by our method across benchmarks.",
+        "bbox": [
+            169,
+            827,
+            826,
+            912
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "page_number",
+        "text": "8",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            92,
+            826,
+            176
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/dae647b3b3fbd5e4535555deea161dee8e55d41e375f55a6a1cc579052931d73.jpg",
+        "image_caption": [
+            "Q: What is the material of the ?glove Answer: rubber"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            176,
+            188,
+            338,
+            272
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/71907f7502ecfb550744dd15dbf10066d7533ce428c2280e0c2d29c202b803bc.jpg",
+        "image_caption": [
+            "Q: What is the color of the ?scooter Answer: orange"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            339,
+            188,
+            498,
+            272
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/91bc592527c3d2b34132b22346b30d27c32e7911ba1ed5e14f08ca916c0142bd.jpg",
+        "image_caption": [
+            "Q: What is the material of the ?stool Answer: plastic"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            501,
+            188,
+            660,
+            273
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/cf3982019852a626012aceb7de1ebd024bf1ffb8a80b37a1c710bfe894ad1660.jpg",
+        "image_caption": [
+            "Q: What is the color of the ?bucket Answer: white"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            663,
+            188,
+            823,
+            273
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/703f5dc91ad1160d2c9ab98be6ac7cf27b9cd69b2cadcdc92f5fd4ab7f3421b6.jpg",
+        "image_caption": [
+            "Q: What is the color of the ?bicycle Answer: yellow"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            174,
+            296,
+            336,
+            383
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/22d60e2ff8a6d9fdb6fea131bcbe07f953065829759f4c0d0515435510465974.jpg",
+        "image_caption": [
+            "Q: What is the color of the ?clock Answer: green"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            339,
+            296,
+            500,
+            383
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/79d4ecec0d39ae472ba3df05c0983da0105a96a73efeb1cf0007cc4cc7a07793.jpg",
+        "image_caption": [
+            "Q: Is the color of the orange or green?motorcycle Answer: orange"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            501,
+            297,
+            661,
+            383
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/7133008fb34d2dc0193ea7754cc683bbc525ac8266fca022327e45c2a456ace2.jpg",
+        "image_caption": [
+            "Q: What is the color of the ?bicycle Answer: red",
+            "Figure 4: Examples of image regions associated with the extracted embeddings. The green box denotes the matched bounding box, and the red box is the expanded region whose embedding is fed into the model. The bottom-left corner shows a zoomed view of the red box. Minor box drift may occur due to Qwen-VL’s patch segmentation."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            663,
+            297,
+            823,
+            383
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "4.4 Ablation Studies",
+        "text_level": 2,
+        "bbox": [
+            171,
+            511,
+            330,
+            525
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "4.4.1 Role of Inserting Embedding",
+        "text_level": 2,
+        "bbox": [
+            171,
+            536,
+            428,
+            551
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "In this section, we empirically demonstrate that the selected region embeddings contribute positively and meaningfully to the reasoning process. To validate this claim, we construct a controlled ablation experiment in which image patch embeddings are randomly sampled and inserted following the same inference protocol as our method. Concretely, whenever the model determines that additional visual information is required to assist its reasoning, we inject randomly selected patch embeddings instead of the semantically aligned embeddings identified by our saliency-based selection mechanism. We evaluate this variant on V<sup>∗</sup> Bench, and the results are reported in Figure 5.(a) and Figure 5.(b). As shown, replacing our selected embeddings with randomly sampled ones leads to a substantial and consistent degradation in performance. This performance drop indicates that the gains observed in our method are not simply due to the act of injecting additional visual tokens into the reasoning process. Rather, they stem from incorporating semantically relevant and contextually aligned visual embeddings that meaningfully support intermediate reasoning steps. Together, these results show that our embedding selection captures task-relevant visual information and that the gains stem from informed cross-modal grounding rather than arbitrary token augmentation.",
+        "bbox": [
+            169,
+            560,
+            826,
+            755
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "4.4.2 Select Embeddings in Different Layers",
+        "text_level": 2,
+        "bbox": [
+            171,
+            756,
+            496,
+            771
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "We visualize image-token hidden states from different VLM layers and analyze the corresponding image embeddings selected via saliency-based token analysis. Specifically, after identifying salient tokens that strongly influence generation, we compute their similarity with image patch representations extracted from different transformer layers and map the selected embeddings back to their spatial locations to obtain visual grounding results.",
+        "bbox": [
+            169,
+            780,
+            826,
+            851
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Using Qwen3-VL-4B-Instruct as an example, we compute layer-wise embedding retrieval accuracy to justify selecting middle layers. Since our goal is to extract informative key-region embeddings rather than fully reconstruct object extents, we only require the predicted region to overlap with the ground-truth object region. Accordingly, we define the Information Hit Ratio (IHR) as $\\mathrm { I H R } = \\mathbb { I } \\left( | B _ { \\mathrm { p r e d } } \\cap B _ { \\mathrm { g t } } | > 0 \\right)$ , where a prediction is considered correct if the predicted bounding box overlaps with the ground-truth region.",
+        "bbox": [
+            169,
+            856,
+            826,
+            912
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "page_number",
+        "text": "9",
+        "bbox": [
+            493,
+            935,
+            504,
+            946
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "chart",
+        "img_path": "images/fbab6fe43382de4cf41344cd5ef45ea4390c7a22a0f3a31ee4aefd29b7cb2490.jpg",
+        "content": "",
+        "chart_caption": [
+            "(a) Qwen3-VL-4B-Instruct"
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            178,
+            88,
+            408,
+            181
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "chart",
+        "img_path": "images/d205efb2645c718b276cbe97393e6d367ef155fbf16146093ef2a1147abf70ff.jpg",
+        "content": "",
+        "chart_caption": [
+            "(b) Qwen3-VL-8B-Instruct"
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            411,
+            98,
+            632,
+            181
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "chart",
+        "img_path": "images/dd604a0277086ced91d33538882dde5219602df0e04752e5c57fb63dc99e1c07.jpg",
+        "content": "",
+        "chart_caption": [
+            "(c) IHR",
+            "Figure 5: (a) and (b) are the comparison of w/o inserting embedding, inserting random select embedding and insert embedding chosen by our method. (c) is IHR in different Layers on Qwen3- VL-4B-Instruct and SIEVE-4B."
+        ],
+        "chart_footnote": [
+            "Question: What is the color of the dog?"
+        ],
+        "bbox": [
+            633,
+            98,
+            823,
+            183
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "image",
+        "img_path": "images/7ec78bfa0921b0740c0f78367407f207ccd0465de6df2002dac7d53ba3cce00e.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            274,
+            296,
+            454,
+            377
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "image",
+        "img_path": "images/229f9988fa1ec1cdc6fcbf1541bc77901eeb9373a288a692f8d29838d9790796.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            460,
+            296,
+            638,
+            377
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "image",
+        "img_path": "images/121467198a47c9e025c406e8bc01c412c09964cf2a10efb0f3de7738d809000b.jpg",
+        "image_caption": [],
+        "image_footnote": [
+            "Question: What is the color of the mailbox?"
+        ],
+        "bbox": [
+            647,
+            296,
+            823,
+            377
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "image",
+        "img_path": "images/5f13df82542209155a67fb2d6262f625c043af0f7e8b183691d5024947a8c1e3.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            272,
+            382,
+            454,
+            465
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "image",
+        "img_path": "images/362eba207385d237a7626e9eea49b2959ecb8cb422aaa4152bc224a3b20e36b2.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            460,
+            382,
+            638,
+            464
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "image",
+        "img_path": "images/0f2b9c13394ef2cccf867b8fdbdf8bc493c3dd18bc3769efbdb0121501a3b0fa.jpg",
+        "image_caption": [],
+        "image_footnote": [
+            "Question: What is the color of the umbrella?"
+        ],
+        "bbox": [
+            645,
+            381,
+            825,
+            463
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "image",
+        "img_path": "images/98b90cc7f0de867f0defd21946853fb6112f657568382bfef282e63fcea58719.jpg",
+        "image_caption": [
+            "Our (Middle Layers)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            274,
+            470,
+            454,
+            553
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "image",
+        "img_path": "images/cb52156e57dc9c19b366af6541e1552767d91892ae1de3f719f272c8acd36d98.jpg",
+        "image_caption": [
+            "Early Layers (1 - 10)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            460,
+            469,
+            638,
+            553
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "image",
+        "img_path": "images/7d25fd5c0d110aec1ee29996f77121fbca315bbf36eb8ff07595c14a47d1a3a2.jpg",
+        "image_caption": [
+            "Late Layers (30 +)",
+            "Figure 6: This diagram shows how saliency-guided embeddings for image tokens are computed across transformer layers, highlighting how key regions are identified and how layer choice affects visual grounding quality."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            647,
+            469,
+            823,
+            551
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            669,
+            825,
+            699
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "We randomly sample 300 images from COCO2017, each potentially containing multiple objects. As shown in Figure 5(c), the IHR increases significantly in the middle layers, supporting our design choice of extracting features from intermediate representations. In this experiment, we set $T o p K = 1$ to directly reflect the feature matching quality of each layer. We further compare the matching precision between SIEVE and the vanilla model before and after training, showing that SIEVE achieves higher precision in locating the corresponding object regions. As illustrated in Figure 6, grounding quality varies across layers. Early-layer representations often fail to capture the true semantic target of the salient token, producing noisy matches, while late-layer representations tend to be overly task-specialized and biased toward output prediction. In contrast, middle-layer representations yield more accurate correspondences between salient tokens and relevant image regions, producing spatially coherent and semantically aligned patches. This observation aligns with prior findings Skean et al. [2024, 2025] that intermediate transformer layers capture richer semantic information than both shallow and late layers. These results empirically justify computing similarity and extracting region embeddings from middle-layer hidden states, which better balance semantic abstraction and spatial fidelity for cross-modal alignment..",
+        "bbox": [
+            169,
+            704,
+            826,
+            912
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "page_number",
+        "text": "10",
+        "bbox": [
+            490,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "chart",
+        "img_path": "images/3f99c050e8fb0548f21460475fc7024f58042929c0566d0d93b4d13fc39f0e91.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 7: The comparison of metrics change during stage with and without action rewards. (a) is the rewards change. (b) is the extropy loss change, (c) is the average response length, (d) is the max response length."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            173,
+            87,
+            821,
+            179
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "4.4.3 Role of Action Rewards",
+        "text_level": 2,
+        "bbox": [
+            171,
+            255,
+            392,
+            270
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "In Section 3.3, we incorporate action-level rewards into the total reward function, including a thought richness reward and a signal reward. These additional rewards encourage the model to produce more informative reasoning traces and to issue appropriate response requests, thereby improving both stability and interpretability during training. In Figure 7, we analyze the impact of enabling or disabling these action rewards. Figures (a) and (b) illustrate the effect of the signal reward. In Figure (a), when the signal reward is removed, the training reward collapses in the later stages. Although the model may perform well during early training, the overall reward eventually drops to nearly zero. This indicates that without explicit signal supervision, the policy drifts and fails to maintain consistent behavior. In contrast, Figure (b) demonstrates that introducing the signal reward significantly stabilizes the training process and prevents reward collapse. Figures (c) and (d) examine the influence of the thought richness reward. With this reward enabled, the average response length becomes more stable throughout training, and we no longer observe the sudden and sharp decline in response length that appears when it is disabled. Without the thought richness reward, the model tends to exploit the reward mechanism by outputting empty reasoning tags (e.g., <think> </think>) without providing substantive thought content. This shortcut allows the model to obtain rewards without genuinely engaging in reasoning. Furthermore, in the absence of this reward, the maximum response length becomes highly unstable, often leading to repetitive or duplicated content, which artificially inflates the response length. These results show that action-level rewards enhance training stability, prevent degenerate behaviors, and promote meaningful, structured reasoning during reinforcement learning.",
+        "bbox": [
+            169,
+            280,
+            826,
+            558
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "5 Conclusion",
+        "text_level": 2,
+        "bbox": [
+            171,
+            579,
+            300,
+            594
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "In this work, we propose a training framework, SIEVE, that enables vision–language models (VLMs) to revisit and leverage image information during inference without relying on external tools. Unlike existing approaches that depend on tool invocation, retrieval systems, or additional visual processing modules, SIEVE extracts and utilizes the intrinsic signals already present within the VLM’s hidden states, using them as structured hints to guide image-grounded reasoning. By exploiting these internal representations, SIEVE encourages the model to dynamically refine its understanding of visual content in a lightweight and self-contained manner. Despite its simplicity, SIEVE demonstrates substantial performance improvements over both the vanilla baseline model and training-free toolbased methods. These results suggest that effective visual revisiting does not necessarily require external tool orchestration; rather, carefully harnessing internal multimodal representations can provide a more efficient and scalable solution for improving image-grounded reasoning.",
+        "bbox": [
+            169,
+            611,
+            826,
+            766
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "References",
+        "text_level": 2,
+        "bbox": [
+            173,
+            786,
+            269,
+            803
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Kimi Team, Angang Du, Bofei Gao, Bowei Xing, Changjiu Jiang, Cheng Chen, Cheng Li, Chenjun Xiao, Chenzhuang Du, Chonghua Liao, et al. Kimi k1. 5: Scaling reinforcement learning with llms. arXiv preprint arXiv:2501.12599, 2025a.",
+            "Dong Guo, Faming Wu, Feida Zhu, Fuxing Leng, Guang Shi, Haobin Chen, Haoqi Fan, Jian Wang, Jianyu Jiang, Jiawei Wang, et al. Seed1. 5-vl technical report. arXiv preprint arXiv:2505.07062, 2025."
+        ],
+        "bbox": [
+            174,
+            813,
+            823,
+            854
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "page_number",
+        "text": "11",
+        "bbox": [
+            488,
+            935,
+            508,
+            948
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Shuai Bai, Keqin Chen, Xuejing Liu, Jialin Wang, Wenbin Ge, Sibo Song, Kai Dang, Peng Wang, Shijie Wang, Jun Tang, et al. Qwen2. 5-vl technical report. arXiv preprint arXiv:2502.13923, 2025a.",
+            "Kimi Team, Angang Du, Bohong Yin, Bowei Xing, Bowen Qu, Bowen Wang, Cheng Chen, Chenlin Zhang, Chenzhuang Du, Chu Wei, et al. Kimi-vl technical report. arXiv preprint arXiv:2504.07491, 2025b.",
+            "Zhuowei Li, Haizhou Shi, Yunhe Gao, Di Liu, Zhenting Wang, Yuxiao Chen, Ting Liu, Long Zhao, Hao Wang, and Dimitris N Metaxas. The hidden life of tokens: Reducing hallucination of large vision-language models via visual information steering. arXiv preprint arXiv:2502.03628, 2025a.",
+            "Hao Fang, Changle Zhou, Jiawei Kong, Kuofeng Gao, Bin Chen, and Shu-Tao Xia. Grounding language with vision: A conditional mutual information calibrated decoding strategy for reducing hallucinations in lvlms. arXiv preprint arXiv:2505.19678, 2025.",
+            "Hao Shao, Shengju Qian, Han Xiao, Guanglu Song, Zhuofan Zong, Letian Wang, Yu Liu, and Hongsheng Li. Visual cot: Advancing multi-modal language models with a comprehensive dataset and benchmark for chain-of-thought reasoning. Advances in Neural Information Processing Systems, 37:8612–8642, 2024a.",
+            "OpenAI. Thinking with images. https://openai.com/index/thinking-with-images/, 2025.",
+            "Jiaqi Huang, Zunnan Xu, Jun Zhou, Ting Liu, Yicheng Xiao, Mingwen Ou, Bowen Ji, Xiu Li, and Kehong Yuan. Sam-r1: Leveraging sam for reward feedback in multimodal segmentation via reinforcement learning. arXiv preprint arXiv:2505.22596, 2025a.",
+            "Sule Bai, Mingxing Li, Yong Liu, Jing Tang, Haoji Zhang, Lei Sun, Xiangxiang Chu, and Yansong Tang. Univg-r1: Reasoning guided universal visual grounding with reinforcement learning. arXiv preprint arXiv:2505.14231, 2025b.",
+            "Jimin Lee, Steven-Shine Chen, and Paul Pu Liang. Interactive sketchpad: A multimodal tutoring system for collaborative, visual problem-solving. In Proceedings of the Extended Abstracts of the CHI Conference on Human Factors in Computing Systems, pages 1–14, 2025.",
+            "Dimitrios Mallis, Ahmet Serda Karadeniz, Sebastian Cavada, Danila Rukhovich, Niki Foteinopoulou, Kseniya Cherenkova, Anis Kacem, and Djamila Aouada. Cad-assistant: tool-augmented vllms as generic cad task solvers. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 7284–7294, 2025.",
+            "An Yang, Anfeng Li, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo Zheng, Bowen Yu, Chang Gao, Chengen Huang, Chenxu Lv, et al. Qwen3 technical report. arXiv preprint arXiv:2505.09388, 2025a.",
+            "Zeyi Huang, Yuyang Ji, Anirudh Sundara Rajan, Zefan Cai, Wen Xiao, Haohan Wang, Junjie Hu, and Yong Jae Lee. Visualtoolagent (vista): A reinforcement learning framework for visual tool selection. arXiv preprint arXiv:2505.20289, 2025b.",
+            "Zhaochen Su, Linjie Li, Mingyang Song, Yunzhuo Hao, Zhengyuan Yang, Jun Zhang, Guanjie Chen, Jiawei Gu, Juntao Li, Xiaoye Qu, et al. Openthinkimg: Learning to think with images via visual tool reinforcement learning. arXiv preprint arXiv:2505.08617, 2025a.",
+            "Yue Fan, Xuehai He, Diji Yang, Kaizhi Zheng, Ching-Chen Kuo, Yuting Zheng, Sravana Jyothi Narayanaraju, Xinze Guan, and Xin Eric Wang. Grit: Teaching mllms to think with images. arXiv preprint arXiv:2505.15879, 2025.",
+            "Zhangquan Chen, Ruihui Zhao, Chuwei Luo, Mingze Sun, Xinlei Yu, Yangyang Kang, and Ruqi Huang. Sifthinker: Spatially-aware image focus for visual reasoning. arXiv preprint arXiv:2508.06259, 2025.",
+            "Yushi Hu, Weijia Shi, Xingyu Fu, Dan Roth, Mari Ostendorf, Luke Zettlemoyer, Noah A Smith, and Ranjay Krishna. Visual sketchpad: Sketching as a visual chain of thought for multimodal language models. In The Thirty-eighth Annual Conference on Neural Information Processing Systems."
+        ],
+        "bbox": [
+            173,
+            90,
+            826,
+            133
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "page_number",
+        "text": "12",
+        "bbox": [
+            490,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Ziwei Zheng, Michael Yang, Jack Hong, Chenxiao Zhao, Guohai Xu, Le Yang, Chao Shen, and Xing Yu. Deepeyes: Incentivizing\" thinking with images\" via reinforcement learning. arXiv preprint arXiv:2505.14362, 2025.",
+            "Hao Zhong, Muzhi Zhu, Zongze Du, Zheng Huang, Canyu Zhao, Mingyu Liu, Wen Wang, Hao Chen, and Chunhua Shen. Omni-r1: Reinforcement learning for omnimodal reasoning via two-system collaboration. arXiv preprint arXiv:2505.20256, 2025.",
+            "Alex Su, Haozhe Wang, Weiming Ren, Fangzhen Lin, and Wenhu Chen. Pixel reasoner: Incentivizing pixel-space reasoning with curiosity-driven reinforcement learning. arXiv preprint arXiv:2505.15966, 2025b.",
+            "En Yu, Kangheng Lin, Liang Zhao, Jisheng Yin, Yana Wei, Yuang Peng, Haoran Wei, Jianjian Sun, Chunrui Han, Zheng Ge, et al. Perception-r1: Pioneering perception policy with reinforcement learning. arXiv preprint arXiv:2504.07954, 2025a.",
+            "Yi Xu, Chengzu Li, Han Zhou, Xingchen Wan, Caiqi Zhang, Anna Korhonen, and Ivan Vulic. Visual´ planning: Let’s think only with images. arXiv preprint arXiv:2505.11409, 2025.",
+            "Ethan Chern, Zhulin Hu, Steffi Chern, Siqi Kou, Jiadi Su, Yan Ma, Zhijie Deng, and Pengfei Liu. Thinking with generated images. arXiv preprint arXiv:2505.22525, 2025.",
+            "Chengzu Li, Wenshan Wu, Huanyu Zhang, Yan Xia, Shaoguang Mao, Li Dong, Ivan Vulic, and´ Furu Wei. Imagine while reasoning in space: Multimodal visualization-of-thought. arXiv preprint arXiv:2501.07542, 2025b.",
+            "Bangzheng Li, Ximeng Sun, Jiang Liu, Ze Wang, Jialian Wu, Xiaodong Yu, Hao Chen, Emad Barsoum, Muhao Chen, and Zicheng Liu. Latent visual reasoning. arXiv preprint arXiv:2509.24251, 2025c.",
+            "Chi Zhang, Haibo Qiu, Qiming Zhang, Zhixiong Zeng, Lin Ma, and Jing Zhang. Deepsketcher: Internalizing visual manipulation for multimodal reasoning. arXiv preprint arXiv:2509.25866, 2025a.",
+            "Zeyuan Yang, Xueyang Yu, Delin Chen, Maohao Shen, and Chuang Gan. Machine mental imagery: Empower multimodal reasoning with latent visual tokens. arXiv preprint arXiv:2506.17218, 2025b.",
+            "Boyuan Chen, Zhuo Xu, Sean Kirmani, Brain Ichter, Dorsa Sadigh, Leonidas Guibas, and Fei Xia. Spatialvlm: Endowing vision-language models with spatial reasoning capabilities. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 14455–14465, 2024.",
+            "Jianjian Cao, Peng Ye, Shengze Li, Chong Yu, Yansong Tang, Jiwen Lu, and Tao Chen. Madtp: Multimodal alignment-guided dynamic token pruning for accelerating vision-language transformer. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pages 15710–15719, 2024.",
+            "Xiyao Wang, Zhengyuan Yang, Chao Feng, Hongjin Lu, Linjie Li, Chung-Ching Lin, Kevin Lin, Furong Huang, and Lijuan Wang. Sota with less: Mcts-guided sample selection for data-efficient visual reasoning self-improvement. arXiv preprint arXiv:2504.07934, 2025.",
+            "Daniel Bolya, Cheng-Yang Fu, Xiaoliang Dai, Peizhao Zhang, Christoph Feichtenhofer, and Judy Hoffman. Token merging: Your vit but faster. arXiv preprint arXiv:2210.09461, 2022.",
+            "Quan-Sheng Zeng, Yunheng Li, Qilong Wang, Peng-Tao Jiang, Zuxuan Wu, Ming-Ming Cheng, and Qibin Hou. A glimpse to compress: Dynamic visual token pruning for large vision-language models. arXiv preprint arXiv:2508.01548, 2025.",
+            "Huiyong Zhang, Lichun Wang, Shuang Li, Kai Xu, and Baocai Yin. Area-keywords cross-modal alignment for referring image segmentation. Neurocomputing, 581:127475, 2024a.",
+            "Kai Huang, Hao Zou, Ye Xi, BoChen Wang, Zhen Xie, and Liang Yu. Ivtp: Instruction-guided visual token pruning for large vision-language models. In European Conference on Computer Vision, pages 214–230. Springer, 2024."
+        ],
+        "bbox": [
+            171,
+            92,
+            826,
+            133
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "page_number",
+        "text": "13",
+        "bbox": [
+            488,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Chaoyu Li, Yogesh Kulkarni, and Pooyan Fazli. Regate: Learning faster and better with fewer tokens in mllms. arXiv preprint arXiv:2507.21420, 2025d.",
+            "Junshan Hu, Jialiang Mao, Zhikang Liu, Zhongpu Xia, Peng Jia, and Xianpeng Lang. Tokenflex: Unified vlm training for flexible visual tokens inference. arXiv preprint arXiv:2504.03154, 2025.",
+            "Runpeng Yu, Xinyin Ma, and Xinchao Wang. Introducing visual perception token into multimodal large language model. arXiv preprint arXiv:2502.17425, 2025b.",
+            "Dingjie Song, Wenjun Wang, Shunian Chen, Xidong Wang, Michael Guan, and Benyou Wang. Less is more: A simple yet effective token reduction method for efficient multi-modal llms. arXiv preprint arXiv:2409.10994, 2024.",
+            "Oscar Skean, Md Rifat Arefin, Dan Zhao, Niket Patel, Jalal Naghiyev, Yann LeCun, and Ravid Shwartz-Ziv. Layer by layer: Uncovering hidden representations in language models. arXiv preprint arXiv:2502.02013, 2025.",
+            "Louis Schiekiera, Max Zimmer, Christophe Roux, Sebastian Pokutta, and Fritz Günther. From associations to activations: Comparing behavioral and hidden-state semantic geometry in llms. arXiv preprint arXiv:2602.00628, 2026.",
+            "Zhu Liu, Cunliang Kong, Ying Liu, and Maosong Sun. Fantastic semantics and where to find them: Investigating which layers of generative llms reflect lexical semantics. In Findings of the Association for Computational Linguistics: ACL 2024, pages 14551–14558, 2024.",
+            "Oscar Skean, Md Rifat Arefin, Yann LeCun, and Ravid Shwartz-Ziv. Does representation matter? exploring intermediate layers in large language models. arXiv preprint arXiv:2412.09563, 2024.",
+            "Jack Hong, Chenxiao Zhao, ChengLin Zhu, Weiheng Lu, Guohai Xu, and Xing Yu. Deepeyesv2: Toward agentic multimodal model. arXiv preprint arXiv:2511.05271, 2025.",
+            "Yi-Fan Zhang, Xingyu Lu, Shukang Yin, Chaoyou Fu, Wei Chen, Xiao Hu, Bin Wen, Kaiyu Jiang, Changyi Liu, Tianke Zhang, et al. Thyme: Think beyond images. arXiv preprint arXiv:2508.11630, 2025b.",
+            "Tsung-Yi Lin, Michael Maire, Serge Belongie, James Hays, Pietro Perona, Deva Ramanan, Piotr Doll’ar, and C Lawrence Zitnick. Microsoft coco: Common objects in context. In Computer Vision–ECCV 2014: 13th European Conference, Zurich, Switzerland, September 6-12, 2014, Proceedings, Part V 13, pages 740–755. Springer, 2014.",
+            "Penghao Wu and Saining Xie. V?: Guided visual search as a core mechanism in multimodal llms. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 13084–13094, 2024.",
+            "Wenbin Wang, Liang Ding, Minyan Zeng, Xiabin Zhou, Li Shen, Yong Luo, and Dacheng Tao. Divide, conquer and combine: A training-free framework for high-resolution image perception in multimodal large language models. arXiv preprint, 2024. URL https://arxiv.org/abs/ 2408.15556.",
+            "Yi-Fan Zhang, Huanyu Zhang, Haochen Tian, Chaoyou Fu, Shuangqing Zhang, Junfei Wu, Feng Li, Kun Wang, Qingsong Wen, Zhang Zhang, et al. Mme-realworld: Could your multimodal llm challenge high-resolution real-world scenarios that are difficult for humans? arXiv preprint arXiv:2408.13257, 2024b.",
+            "xAI. Grok-1.5 vision preview. URL https://x.ai/news/grok-1.5v.",
+            "Pan Lu, Hritik Bansal, Tony Xia, Jiacheng Liu, Chunyuan Li, Hannaneh Hajishirzi, Hao Cheng, Kai-Wei Chang, Michel Galley, and Jianfeng Gao. Mathvista: Evaluating mathematical reasoning of foundation models in visual contexts. In International Conference on Learning Representations (ICLR), 2024.",
+            "Yijia Xiao, Edward Sun, Tianyu Liu, and Wei Wang. Logicvista: Multimodal llm logical reasoning benchmark in visual contexts, 2024. URL https://arxiv.org/abs/2407.04973."
+        ],
+        "bbox": [
+            171,
+            92,
+            825,
+            121
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "page_number",
+        "text": "14",
+        "bbox": [
+            488,
+            935,
+            509,
+            946
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Runqi Qiao, Qiuna Tan, Guanting Dong, MinhuiWu MinhuiWu, Chong Sun, Xiaoshuai Song, Jiapeng Wang, Zhuoma GongQue, Shanglin Lei, Yifan Zhang, et al. We-math: Does your large multimodal model achieve human-like mathematical reasoning? In Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 20023–20070, 2025.",
+            "Xiyang Wu, Tianrui Guan, Dianqi Li, Shuaiyi Huang, Xiaoyu Liu, Xijun Wang, Ruiqi Xian, Abhinav Shrivastava, Furong Huang, Jordan Lee Boyd-Graber, Tianyi Zhou, and Dinesh Manocha. Autohallusion: Automatic generation of hallucination benchmarks for vision-language models, 2024. URL https://arxiv.org/abs/2406.10900.",
+            "Geng Li, Jinglin Xu, Yunzhen Zhao, and Yuxin Peng. Dyfo: A training-free dynamic focus visual search for enhancing lmms in fine-grained visual understanding, 2025e. URL https://arxiv. org/abs/2504.14920.",
+            "Haozhan Shen, Kangjia Zhao, Tiancheng Zhao, Ruochen Xu, Zilun Zhang, Mingwei Zhu, and Jianwei Yin. Zoomeye: Enhancing multimodal llms with human-like zooming capabilities through tree-based image exploration. arXiv preprint arXiv:2411.16044, 2024.",
+            "Xuan Yu, Dayan Guan, and Yanfeng Gu. Zoom-refine: Boosting high-resolution multimodal understanding via localized zoom and self-refinement. arXiv preprint arXiv:2506.01663, 2025c.",
+            "Zhihong Shao, Peiyi Wang, Qihao Zhu, Runxin Xu, Junxiao Song, Xiao Bi, Haowei Zhang, Mingchuan Zhang, YK Li, Yang Wu, et al. Deepseekmath: Pushing the limits of mathematical reasoning in open language models. arXiv preprint arXiv:2402.03300, 2024b."
+        ],
+        "bbox": [
+            173,
+            92,
+            825,
+            160
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "page_number",
+        "text": "15",
+        "bbox": [
+            488,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "chart",
+        "img_path": "images/75a1edaf05436f9f6921ec9d6579e644c2afcb1c591be477b1fe408fb9c61285.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 8: The relationship between the K-value and the accuracy of Vstar benchmark on Qwen3-VL-4B-Instruct."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            338,
+            87,
+            661,
+            270
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "A Time Cost",
+        "text_level": 2,
+        "bbox": [
+            171,
+            333,
+            299,
+            349
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "table",
+        "img_path": "images/259e3b5fa61a69ca45153835da728f42aa6b495255da1684744837e50fe07148.jpg",
+        "table_caption": [
+            "Table 3: Average inference time per item and accuracy on V\\* benchmark under different reasoning mechanisms."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Model</td><td colspan=\"2\">Vanilla Time (s) Acc.</td><td colspan=\"2\">ZoomEyes Time (s) Acc.</td><td colspan=\"2\">ZoomRefine Time (s) Acc.</td><td colspan=\"2\">SIEVE Time (s) Acc.</td></tr><tr><td>Qwen3-VL-4B-Instruct</td><td>5.4758</td><td>78.01</td><td>5.7689</td><td>90.05</td><td>6.5733</td><td>81.17</td><td>6.2811</td><td>85.86</td></tr><tr><td>Qwen3-VL-8B-Instruct</td><td>3.5696</td><td>82.72</td><td>6.8715</td><td>78.35</td><td>7.4327</td><td>83.25</td><td>6.4445</td><td>87.86</td></tr></table>",
+        "bbox": [
+            176,
+            405,
+            820,
+            481
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "This section evaluates the relationship between the average response time per question and the accuracy. We run experiments on the Vstar dataset to measure the average time required to answer each question. To ensure a fair comparison across methods, we disable inference acceleration frameworks (e.g., vLLM and SGLang). Accordingly, we exclude DyFo from this analysis, since its original implementation is vLLM-based, and re-implementing it in a huggingface inference stack could introduce non-trivial performance degradation and confound the latency comparison. All experiments are conducted under the same hardware and runtime conditions. In addition, we fix the maximum generation length to 1024 tokens and enforce a unified “think-then-answer” protocol for all methods, ensuring that differences in response time are not caused by variations in output length or reasoning format. The results are presented in Table 3.",
+        "bbox": [
+            169,
+            506,
+            826,
+            646
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Overall, we observe that the average response time of SIEVE does not increase substantially compared to the baseline. This indicates that the additional reasoning mechanism introduced by SIEVE does not impose significant computational overhead. Specifically, compared with methods that require tool invocation during inference, on Qwen3-VL-4B-Instruct, SIEVE is faster than ZoomRefine, while on Qwen3-VL-8B-Instrct it is fastest compared to tool-call methods. We attribute these differences to the varying reasoning capabilities of different models, which lead to different response behaviors across tasks and consequently different time overheads when combined with various baselines. Overall, although SIEVE introduces some additional time cost, its overhead is not the largest among the compared methods, while it consistently maintains stable performance improvements across different models and baselines. Considering both time cost and performance, SIEVE provides the best trade-off between efficiency and effectiveness.",
+        "bbox": [
+            169,
+            651,
+            826,
+            805
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "B Hyperparameter Analysis",
+        "text_level": 2,
+        "bbox": [
+            171,
+            824,
+            428,
+            842
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "In this section, we analyze the choice of the top-k parameter in Identifying Visual Evidence with Textual Anchors to justify the effectiveness of setting k = 1. Specifically, we conduct experiments using Qwen3-VL-4B-Instruct on the V\\* benchmark, varying k from 1 to 7 to evaluate how inserting different numbers of region embeddings affects model performance. The results are shown in Figure 8.",
+        "bbox": [
+            169,
+            856,
+            826,
+            912
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "page_number",
+        "text": "16",
+        "bbox": [
+            490,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "In the Figure, the model achieves the best performance when k = 1. As k increases, although more embeddings are inserted into the reasoning process, the performance gradually degrades. We attribute this phenomenon to the way region snapshots are constructed. In our method, patches associated with each textual anchor are aggregated to form a single region-level embedding. While this aggregation captures the key visual evidence, it inevitably introduces additional irrelevant visual information within the region. When more regions are inserted (i.e., larger k), the amount of such noisy information accumulates, which interferes with the model’s reasoning process and reduces performance. These results suggest that inserting a small number of highly relevant visual embeddings is more beneficial than introducing multiple potentially noisy regions. Therefore, we adopt k = 1 as the default setting in our method.",
+        "bbox": [
+            169,
+            92,
+            826,
+            231
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "C More Examples",
+        "text_level": 2,
+        "bbox": [
+            171,
+            250,
+            343,
+            266
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "Here we choose more examples in Vstar benchmark to show the generation process of SIEVE. In these examples, the content in ‘[ ]‘ is not generated by model. We use it to hint of the inserting embeddings operation. We show the example in Figure 9, Figure 10, Figure 11 and Figure 12.",
+        "bbox": [
+            169,
+            280,
+            825,
+            324
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "page_number",
+        "text": "17",
+        "bbox": [
+            488,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "image",
+        "img_path": "images/fb1e06a22a1680885de93ed04dc9dd150426bd5b58cdc0c046cc797d6e1ec5fb.jpg",
+        "image_caption": [
+            "Figure 9: Example of SIEVE on Vstar."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            251,
+            212,
+            754,
+            758
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "page_number",
+        "text": "18",
+        "bbox": [
+            490,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "image",
+        "img_path": "images/e4d623fb48a8eb3b43fbe41bccb1141a08f206eacbdd664793c9e25b214cf601.jpg",
+        "image_caption": [
+            "Figure 10: Example of SIEVE on Vstar."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            251,
+            262,
+            754,
+            709
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "page_number",
+        "text": "19",
+        "bbox": [
+            490,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "image",
+        "img_path": "images/eccf3328d74e6b795c87a36d5b664b8a3e734943c96a5933322c7277f106e1d8.jpg",
+        "image_caption": [
+            "Figure 11: Example of SIEVE on Vstar."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            251,
+            179,
+            754,
+            790
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "page_number",
+        "text": "20",
+        "bbox": [
+            488,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/584737c4b480d8702a92df7ab0ad8d2c9ce1eae9146e9e5ab6eabe6c098af4ae.jpg",
+        "image_caption": [
+            "Figure 12: Example of SIEVE on Vstar."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            253,
+            183,
+            754,
+            790
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "page_number",
+        "text": "21",
+        "bbox": [
+            488,
+            935,
+            508,
+            948
+        ],
+        "page_idx": 20
+    }
+]

@@ -18,6 +18,7 @@ Haojiang 的文献阅读仓库，按课题组织。每篇论文都有「批读�
 | 2025-06-23 | [FlashMemory-DSV4](./topics/TTT%20in%20LLM/%5BArxiv%202026%5D%20FlashMemory-DSV4/) | TTT in LLM | ⏳ 待读 | - |
 | 2025-06-23 | [ULRFM](./topics/Medical-Compression/%5BArxiv%202026%5D%20ULRFM/) | Medical Compression | ⏳ 待读 | - |
 | 2025-06-23 | [PathoLIC](./topics/Medical-Compression/%5BArxiv%202026%5D%20PathoLIC/) | Medical Compression | ⏳ 待读 | - |
+| 2025-06-24 | [Q-Zoom](./topics/VLM-Bottleneck-Analysis-and-Method-Design/encoding/%5BArxiv%202025%5D%20Q-Zoom/) +14 more | VLM Bottleneck Analysis | ⏳ 待读 | - |
 
 ---
 
@@ -167,6 +168,25 @@ Test-Time Training / Test-Time Learning / long-context continual adaptation：�
 | [TissueWSI](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202026%5D%20TissueWSI/) | Arxiv 2026 | Tissue-Aware WSI Reasoning 让模型像病理学家一样在组织空间上下文中推理，实现端到端的空间定位与诊断。 |
 
 📖 [Whole Slide Image Analysis 详细总结](./topics/Whole-Slide-Image-Analysis/README.md)
+
+---
+
+### 🔍 VLM Bottleneck Analysis and Method Design
+VLM 瓶颈分析与方法设计：系统诊断视觉编码、推理过程、奖励设计、多图理解等环节的 failure mode，并针对性设计新方法。
+
+| 子类别 | 论文数 | 代表论文 |
+|--------|--------|----------|
+| encoding | 4 | Q-Zoom, CARES, iGVLM, Perceptual-Bandwidth-Bottleneck |
+| grounding | 1 | Vision-aligned Latent Reasoning |
+| hierarchical | 1 | Hierarchical Visual Cues Injection |
+| invoke | 2 | Iterative Evidence Refinement, Thinking with Visual Grounding |
+| reward | 3 | RegionReasoner, VisualPRM, Perception-centric PRM |
+| long-reasoning | 3 | Imagine Before Predict, VisMem, DMLR |
+| bottleneck | 1 | More Images More Problems |
+| multi-image | 1 | Dual Mechanisms Spatial Binding |
+| medical | 1 | MedSynapse-V |
+
+📖 [VLM Bottleneck Analysis 详细总结](./topics/VLM-Bottleneck-Analysis-and-Method-Design/README.md)
 
 ---
 

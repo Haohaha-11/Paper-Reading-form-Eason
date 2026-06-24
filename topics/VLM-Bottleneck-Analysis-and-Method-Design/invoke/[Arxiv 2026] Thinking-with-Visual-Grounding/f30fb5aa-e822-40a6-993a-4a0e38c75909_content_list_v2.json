@@ -1,0 +1,3030 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Thinking with Visual Grounding"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                327,
+                90,
+                670,
+                110
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Junkai Zhang Yihe Deng Kai-Wei Chang Wei Wang University of California, Los Angeles"
+                    }
+                ]
+            },
+            "bbox": [
+                215,
+                151,
+                788,
+                185
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Abstract"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                262,
+                260,
+                342,
+                275
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Visual thinking should not only sound right; it should show its evidence. While recent vision language models (VLMs) can produce natural language reasoning traces, these traces often leave the supporting image regions implicit, making them hard to verify and difficult to supervise. We introduce visually grounded thinking, a reasoning process in which models interleave natural-language thoughts with explicit point or box groundings of the visual evidence used at each step. This lets the model express intermediate reasoning in language while grounding key objects in the image regions they refer to. To train this behavior, we construct a scalable synthesis pipeline that distills correct visual reasoning traces, extracts the visual objects required by the traces, grounds them with a SAM3-based agent, and derives aligned point and box supervision from the resulting masks. We further propose grounding-aware reinforcement learning, which combines an swer correctness rewards with dense ground ing rewards that score whether generated object references match the correct image evidence. Across two counting benchmarks and four spatial reasoning benchmarks, adding vi sually grounded thinking to Gemma3-4B-IT consistently improves performance over the original model and the non-grounded thinking baseline. On spatial reasoning, the visu ally grounded thinking 4B models match, and in some cases surpass, Gemma3-27B-IT from the same model family. Our analysis shows that point grounding is well suited to counting, while box grounding benefits most from explicit grounding rewards on spatial tasks. Overall, our results show that VLMs think better when their intermediate thoughts are tied to the image regions that make them true."
+                    }
+                ]
+            },
+            "bbox": [
+                141,
+                282,
+                462,
+                840
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "1 Introduction"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                115,
+                845,
+                260,
+                860
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Language models have made strong progress on complex problem solving by producing explicit natural-language reasoning traces. In particular, R1-style reinforcement learning has shown that models can improve their ability to solve math, coding, and general reasoning problems through long textual thinking (Guo et al., 2025). This success has motivated analogous reasoning methods for vision-language models (VLMs): given an image and a question, the model can think in text before giving the final answer. Such a strategy has been shown to be effective for visual question answering (Deng et al., 2025; Hu et al., 2026)."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                870,
+                489,
+                902
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                507,
+                262,
+                887,
+                438
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "However, visual thinking differs from purely textual thinking because the evidence needed to solve a visual question is located in the image (Zhu et al., 2016) and cannot be fully expressed in words. When humans answer visual questions, we often link our thoughts to concrete image regions, such as the person on the left, the cup near the table edge, or the object being counted (Das et al., 2016). These visual references guide where attention should be directed and what task-specific information should be extracted (Hayhoe and Ballard, 2005). In contrast, a pure natural-language reasoning trace may state that “the red car is near the entrance” or that “there are three people holding umbrellas,” but it does not identify which image regions support these claims. This makes the thinking hard to verify and supervise: a final answer may be correct even without the image, while the reasoning trace can still appear coherent and image-based (Asadi et al., 2026). Thus, visual thinking requires not only step-by-step reasoning, but also explicit links between important reasoning steps and the correct visual evidence."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                439,
+                885,
+                809
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We propose visually grounded thinking to address this issue, as shown in Figure 1. In this format, the model interleaves natural-language reasoning with explicit visual grounding. Whenever a reasoning step refers to an important visual object, the model outputs a coordinate-based grounding tag, using either a bounding box or a point, to identify the referenced object in the image. Natural language and spatial coordinates are combined in the thinking process: language describes the thoughts, while the coordinates specify the visual evidence that supports each step."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                809,
+                887,
+                923
+            ]
+        },
+        {
+            "type": "page_aside_text",
+            "content": {
+                "page_aside_text_content": [
+                    {
+                        "type": "text",
+                        "content": "arXiv:2606.16122v1 [cs.AI] 15 Jun 2026"
+                    }
+                ]
+            },
+            "bbox": [
+                23,
+                294,
+                58,
+                701
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>1</sup>We release the data and code."
+                    }
+                ]
+            },
+            "bbox": [
+                136,
+                907,
+                324,
+                921
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "1"
+                    }
+                ]
+            },
+            "bbox": [
+                494,
+                944,
+                504,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/a0695a50f352ffff2ef1d669ac7595a7d7924a7b7c014fe97a45cb3dd54ab191.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 1: Thinking in pure natural language vs. visually grounded thinking in box mode and point mode."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                152,
+                82,
+                448,
+                269
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                112,
+                340,
+                489,
+                419
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Visually grounded thinking requires training data that supports both SFT and RL. Coordinateannotated reasoning traces can teach the model to interleave language and grounding during SFT, but RL needs supervision at the level of each visual reference, since a rollout may rename objects, reorder reasoning steps, skip supervised entities, or ground additional useful evidence. We therefore build an automatic data synthesis pipeline around a SAM3-based grounding agent (Carion et al., 2026). Starting from visual questions, the pipeline obtains correct reasoning traces, extracts the visual objects used in the reasoning, represents each object with a name and a disambiguating scene context, and grounds it with a run-length encoding (RLE) mask. These masks are used to construct both point and box-mode grounded reasoning traces, while the corresponding grounded objects are kept as structured supervision for grounding-aware RL."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                420,
+                490,
+                727
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We train models to perform visually grounded thinking with the synthetic data. The models are first cold-started with synthesized visually grounded reasoning traces, where important objects are grounded with either points or boxes. We then apply RL with the reward explicitly supervising the grounding quality. This stage jointly encourages answer correctness and precise grounding of the visual objects that support the model’s intermediate reasoning. An example output from a visually grounded thinking model is shown in Figure 2."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                728,
+                489,
+                906
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Our controlled experiments show that visually grounded thinking substantially improves counting and spatial relationship understanding. On spatial relationship benchmarks, our 4B visually grounded thinking models reach performance comparable to, and in some cases higher than, the 27B model from the same family. The grounding reward brings clear gains for box-mode grounded thinking, especially on spatial tasks where object extent and relative geometry are important. We also find that the two grounding interfaces have different strengths: point grounding performs better on counting, where instance-level localization is often sufficient, while point and box grounding are broadly comparable on spatial reasoning."
+                    }
+                ]
+            },
+            "bbox": [
+                131,
+                906,
+                487,
+                922
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                507,
+                85,
+                885,
+                311
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Our contributions are as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                527,
+                311,
+                776,
+                326
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "1. We build a scalable data pipeline to synthesize visually grounded thinking data for both SFT and RL, centered on a SAM3-based agentic grounding system that extracts high-fidelity object masks as visual supervision."
+                    }
+                ]
+            },
+            "bbox": [
+                524,
+                340,
+                884,
+                422
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "2. We design a grounding reward that directly supervises whether the model grounds its intermediate visual references in the correct image evidence, supporting both box-mode and point-mode grounded thinking."
+                    }
+                ]
+            },
+            "bbox": [
+                522,
+                434,
+                885,
+                516
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "3. Through controlled experiments, we show that visually grounded thinking substantially improves counting and spatial reasoning. The grounding reward brings clear gains for box grounding, especially on spatial tasks. In addition, point grounding is particularly effective for counting and remains competitive with box grounding on spatial reasoning."
+                    }
+                ]
+            },
+            "bbox": [
+                524,
+                527,
+                885,
+                658
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2 Related Work"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                669,
+                667,
+                686
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Early work on visually grounded thinking mainly uses grounding to locate the image regions needed for answering a question. Visual CoT (Shao et al., 2024a) introduces intermediate bounding boxes that highlight key regions, while UV-CoT (Zhao et al., 2025) reduces the need for human box annotations by learning from preferences over modelgenerated regions. Later work more tightly couples grounding with the reasoning trace. GCoT (Wu et al., 2025), Xia et al. (2025), and Argus (Man et al., 2025) generate grounding coordinates as steplevel visual evidence, aiming to make the reasoning more faithful to the image and easier to check. More recent work further treats grounding as an active behavior: GRIT (Fan et al., 2025) and ViGoRL (Sarch et al., 2025) train models to interleave natural language with visual coordinates through RL, and VGR (Wang et al., 2025) uses predicted regions for visual replay during inference. Our work follows this shift from region-of-interest selection to visually grounded thinking, and extends it with an explicit grounding reward that directly scores the visual grounding produced during thinking."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                696,
+                887,
+                923
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "2"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                942,
+                505,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/084645ca2187996989903a8e2931993d865da5878683ce63d5839df94918e22c.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 2: A real example of a visually grounded thinking model’s output in the evaluation benchmark."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                132,
+                82,
+                865,
+                181
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                112,
+                233,
+                489,
+                380
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3 Data Synthesis Pipeline"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                391,
+                352,
+                407
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Overview. We synthesize visually grounded thinking data from open-source datasets for counting and spatial reasoning: TallyQA (Acharya et al., 2018), Pixmo-Count (Deitke et al., 2024), VSR (Liu et al., 2023), MultihopSpatial (Lee et al., 2026), and SpatialMQA (Liu et al., 2025), with all test sets held out. Our goal is to identify the visual objects needed for correct thinking, obtain their image coordinates, and synthesize reasoning traces with explicit grounding annotations. The complete pipeline is shown in Figure 3."
+                    }
+                ]
+            },
+            "bbox": [
+                110,
+                417,
+                489,
+                596
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Distilling visual thinking from VLMs. For each image-question pair, we prompt Qwen3-VL-Plus (Bai et al., 2025) to generate a thinking-mode response. We parse the final answer and keep examples whose predictions match the ground-truth answers. For examples not answered correctly in the first pass, we run a second pass with Qwen3.5- Plus (QwenTeam, 2026a) and keep examples that are answered correctly in either pass."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                605,
+                490,
+                752
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Extracting groundable objects. Given a correct reasoning trace, we use an LLM to identify the visual objects needed for the thinking process. These objects include answer objects, visible multiplechoice alternatives, spatial anchors, counted instances, and endpoints of spatial relations. Each object is represented by a name (e.g., “red car”) and a disambiguating context (e.g., “in the back row”). The context separates visually or semantically similar instances, so two occurrences of “red car” can be distinguished by scene cues such as “near the entrance” or “in the back row”."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                762,
+                490,
+                923
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                507,
+                233,
+                884,
+                265
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Agentic visual grounding. The main challenge in data synthesis is to obtain accurate grounding for each extracted visual object. Direct prompting of VLMs does not produce RLE masks, and their predicted boxes are often noisy. SAM3 (Carion et al., 2026) can produce high-quality instance masks from simple noun prompts, but it is not well suited to complex context-dependent queries. We therefore use a SAM3-centered grounding agent powered by a VLM, adapted from the SAM 3 Agent in Carion et al. (2026)."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                277,
+                887,
+                453
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The agent uses four tool actions. First, it calls SAM3 with a short noun phrase and receives candidate instance masks with confidence scores. Second, it verifies rendered masks using the raw image, a full-image mask overlay, and a zoomed-in crop, returning an accept/reject decision for each candidate. Third, it selects the final mask IDs from the current candidate set. Finally, it can report that no valid detection is found. Importantly, the agent cannot directly write coordinates; all geometric supervision must be derived from selected SAM3 masks."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                454,
+                887,
+                648
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For each object, the agent uses these tools in an iterative grounding loop. It receives the raw image and the object, then identifies the intended target and converts the name-context description into a SAM3-compatible noun phrase. If the initial prompt misses the target or returns confusing candidates, the agent revises the noun phrase and tries again. When candidates are small, overlapping, or ambiguous, it invokes the verifier and re-renders the accepted masks as the updated candidate set. Once it has sufficient evidence, it selects the final mask IDs; if no valid target can be found, it reports no detection."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                648,
+                885,
+                857
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The selected masks are stored as RLE masks and used as the shared supervision signal for both grounding modes. In box mode, each RLE mask is converted to a normalized bounding box in the [0, 1000] image coordinate system. For point mode, each RLE mask is converted to a single on-object point by choosing the interior point farthest from the mask boundary, which ensures that the point lies inside the object even for nonconvex masks. We retry failed detections and nearduplicate groundings by rerunning the same agent loop with stronger VLMs. Objects that remain unresolved are removed from the grounded object list so that later stages do not use unreliable grounding signals."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                858,
+                885,
+                922
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "3"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                942,
+                505,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/247da2ef197bed04ac71aae66a96a7b8b5a5495825726d24d4104b9f721ba273.jpg"
+                },
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "bbox": [
+                152,
+                80,
+                845,
+                368
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/5a3f8ef92be4c6a372537b9a21912cadaf950e5307fe2cb634c17a980ea97939.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 3: Data synthesis pipeline. We distill reasoning traces, extract groundable visual evidence, ground those objects with an iterative SAM3-based agent, and write aligned box-mode and point-mode SFT and RL training data."
+                    },
+                    {
+                        "type": "text",
+                        "content": "Figure 4: An example of synthesized visually grounded thinking data for box and point mode. The two variants share the same original reasoning trace and SAM3 masks, but expose either boxes or points inside <obj> ... </obj> tags."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                154,
+                419,
+                843,
+                594
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                112,
+                674,
+                489,
+                852
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Writing box and point supervision. In the final annotation stage, we insert placeholder object tags into the validated reasoning text using only the extracted object phrases and their contexts, without exposing coordinates to the annotation model. We then fill in the coordinates from the SAM3 outputs. This design prevents the annotation model from hallucinating spatial values. A single placeholder pass therefore produces two aligned SFT variants: <obj> name phrase | [x1,y1,x2,y2] </obj> for box supervision and <obj> name phrase | [x,y] </obj> for point supervision, as illustrated in Figure 4. We filter out rows whose tag-stripped annotated thinking differs substantially from the original thinking, as well as rows with malformed tags or highly repetitive reasoning."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                873,
+                489,
+                923
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                507,
+                674,
+                885,
+                885
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "4"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                942,
+                505,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/37f4ac3ac46ef50089d7b6ac839b880c3e42a42e84d2c7c14a7f6bcdc7babf70.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 5: Grounding object router. Model-generated grounding objects are matched to saved ground-truth grounding objects before grounding quality is scored."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                152,
+                83,
+                447,
+                552
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Dataset Statistics. Our synthetic data pipeline produces 19,909 reasoning traces for SFT, containing 107,613 grounding annotations over 72,381 distinct grounded objects."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                636,
+                489,
+                702
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4 Reinforcement Learning with Grounding Reward"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                715,
+                405,
+                750
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Grounding tag parsing. The grounding reward evaluates the grounding object tags generated in the model rollout. In visually grounded thinking, a valid tag must have the form <obj> name phrase | coordinates </obj>. The coordinate format is mode-specific: box mode expects "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "[ x _ { 1 } , y _ { 1 } , x _ { 2 } , y _ { 2 } ]"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", while point mode expects [x, y]. Coordinates must fall within the [0, 1000] image coordinate system; boxes must additionally satisfy "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "x _ { 1 } ~ < ~ x _ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "y _ { 1 } ~ < ~ y _ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". A single tag may contain multiple coordinates separated by semicolons, as one object can refer to multiple instances (e.g. “birds in the sky” corresponds to several birds in the sky)."
+                    }
+                ]
+            },
+            "bbox": [
+                110,
+                760,
+                490,
+                923
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                507,
+                85,
+                885,
+                149
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Grounding objects routing. The grounding reward is computed between model-generated grounding objects and the ground-truth grounding objects saved in the data. Each grounding object in the data stores a name phrase, a disambiguating context, and geometric supervision. The model, however, may name the same object with different wording, and the same name phrase can refer to multiple distinct objects in the image and therefore needs to be disambiguated by context. We therefore use a VLM grounding object router before scoring grounding quality, as shown in Figure 5."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                165,
+                885,
+                360
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The grounding object router is a lightweight VLM, Qwen3.5-4B (QwenTeam, 2026a), chosen to keep RL training efficient. We first parse all model-generated <obj> ... </obj> tags from the rollout and extract their object names together with the nearby text as disambiguating context. For each ground-truth object, the router receives the image, the object consisting of a name and a disambiguating context, and the full list of model-generated grounding objects. It is then instructed to return the subset of generated grounding objects that correspond to the ground-truth object. This routing step matches model-generated grounding objects to the saved ground-truth grounding objects before scoring grounding quality. If several generated grounding objects are matched to the same groundtruth grounding object, only the earliest one is kept for grounding quality scoring."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                361,
+                887,
+                653
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Box grounding quality. In box mode, each saved object i is associated with a set of ground-truth boxes "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "G _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". After grounding object routing, let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote the set of boxes generated for the generated grounding object matched to target i. We score the grounding quality by comparing the image region covered by the generated boxes with the region covered by the ground-truth boxes. Specifically, we treat each set of boxes as a union of regions and compute their intersection-over-union (IoU). For a matched target, define "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "as the area covered by both "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "G _ { i } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "U _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "as the area covered by either "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "or "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "G _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The per-target box score is"
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                667,
+                885,
+                878
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { I o U } _ { i } = \\frac { I _ { i } } { U _ { i } } .",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/b999959e9e7e3a1362c233781d43bafeefbe8a18b927647eb82d36c05730becf.jpg"
+                }
+            },
+            "bbox": [
+                648,
+                894,
+                742,
+                926
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "5"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                942,
+                505,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "If no model-generated grounding object is matched to ground-truth object i, we set "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { I o U } _ { i } = 0 ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The final box grounding quality is the mean score over all "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "T"
+                    },
+                    {
+                        "type": "text",
+                        "content": "ground-truth objects. This averaging gives each ground-truth object equal weight, regardless of how many boxes it contains. A multi-box grounding receives a perfect score only when the union of its generated boxes exactly matches the union of the ground-truth boxes."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                84,
+                489,
+                231
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Point grounding quality. Point mode evaluates whether generated grounding points lie inside the target RLE masks. Let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "M _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "be the set of groundtruth masks for object i saved in the data, and let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "be the set of points from the rollout grounding object matched to that ground-truth object. We form a one-to-one assignment between generated points and ground-truth masks, where a point can be assigned to a mask only if it lies inside that mask. This constraint prevents duplicate points from receiving repeated credit for the same object instance."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                239,
+                489,
+                431
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For each object, let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { T P } _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "be the number of masks matched by this assignment. The object-level false positives and false negatives are"
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                431,
+                489,
+                481
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { F P } _ { i } = | P _ { i } | - \\mathrm { T P } _ { i } , \\qquad \\mathrm { F N } _ { i } = | M _ { i } | - \\mathrm { T P } _ { i } .",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/d570ef81f853fa47b6f2ba3c3928bbba990a643a0f66c92049ca993a6037efbe.jpg"
+                }
+            },
+            "bbox": [
+                131,
+                492,
+                467,
+                511
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We use the per-object F1 score to measure point grounding quality:"
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                523,
+                487,
+                556
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "F 1 _ { i } = \\frac { 2 \\mathrm { T P } _ { i } } { 2 \\mathrm { T P } _ { i } + \\mathrm { F P } _ { i } + \\mathrm { F N } _ { i } } .",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/8875d0de7b0132aa56df9264d3c09b77c364690581ce38ad511575341184a69b.jpg"
+                }
+            },
+            "bbox": [
+                193,
+                564,
+                408,
+                599
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "If no rollout grounding object is matched to groundtruth object i, we set "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "F 1 _ { i } = 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The final point grounding quality is the mean over all supervised targets. As in box mode, every supervised target has equal weight, and perfect point grounding receives a score of 1.0."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                607,
+                490,
+                705
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Remarks. The point grounding quality can be viewed as a discrete analogue of the box grounding quality. Box mode measures the spatial overlap between generated and ground-truth regions using IoU, while point mode reduces this comparison to an instance-level matching problem: generated points are credited only when they are matched to distinct ground-truth masks. Thus, both rewards encourage grounding the same visual evidence, but they differ in how dense their feedback is. Box IoU changes smoothly with the amount of overlap, whereas point F1 is piecewise constant: moving a point within the same mask does not change the score, while crossing a mask boundary can abruptly change the grounding quality. This discreteness makes the point reward coarser and potentially harder to optimize, even though it provides a learning signal aligned with the box grounding reward."
+                    }
+                ]
+            },
+            "bbox": [
+                110,
+                713,
+                490,
+                923
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                507,
+                85,
+                885,
+                181
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We intentionally do not penalize unmatched grounding objects in the rollout. The grounding objects extracted by the data synthesis pipeline are not a complete enumeration of all visual cues that the model may use to answer a question. During thinking, the model may identify additional visual evidence that is useful for solving the question and is also reasonable to ground. Therefore, unmatched rollout grounding objects neither increase nor decrease the grounding quality. We only apply a hard-coded cap on the number of grounding tags to prevent the model from over-emitting them."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                181,
+                885,
+                376
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Final reward. For each rollout i, the total reward includes the dense grounding reward together with several sparse response-level rewards: an answer correctness reward, two formatting rewards, and a truncation penalty. The format rewards consist of a thinking-format reward, which checks the use of <think>...</think> and \\boxed{}, and a grounding-format reward, which checks the use of valid grounding tags in the form "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "< \\mathrm { o b j > . ~ . ~ . ~ | ~ . ~ . ~ < / o b j > }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "r _ { i } ^ { \\mathrm { a n s } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote the answer correctness reward, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "r _ { i } ^ { \\mathrm { t h i n k } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "the thinking format reward, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "r _ { i } ^ { \\mathrm { g f m t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "the grounding format reward, and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "r _ { i } ^ { \\mathrm { t r u n c } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "the truncation penalty. The raw grounding reward is defined as the grounding quality score from the corresponding mode."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                387,
+                887,
+                631
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The dense grounding reward and the sparse response-level rewards have different scales. We therefore normalize them separately before combining them. We first define the base reward as"
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                631,
+                885,
+                696
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r c l } { R _ { i } ^ { \\mathrm { b a s e } } } & { = } & { w _ { \\mathrm { a n s } } r _ { i } ^ { \\mathrm { a n s } } + w _ { \\mathrm { t h i n k } } r _ { i } ^ { \\mathrm { t h i n k } } } \\\\ & & { + w _ { \\mathrm { g f m t } } r _ { i } ^ { \\mathrm { g f m t } } + r _ { i } ^ { \\mathrm { t r u n c } } . } \\end{array}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/734c7ca1a456f4d7897c8a9d9afd7d835fb21d127fe0f52f7856ba47e42c58bf.jpg"
+                }
+            },
+            "bbox": [
+                559,
+                708,
+                833,
+                746
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { N } _ { B } ( \\cdot )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote batch-wise normalization over the current batch B. The final reward is"
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                758,
+                884,
+                791
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "R _ { i } = \\mathcal { N } _ { \\mathcal { B } } \\Big ( R ^ { \\mathrm { b a s e } } \\Big ) _ { i } + w _ { \\mathrm { g r o u n d } } \\mathcal { N } _ { \\mathcal { B } } \\Big ( r ^ { \\mathrm { g r o u n d } } \\Big ) _ { i } .",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/34c9fddc4dfbed533dd5713780bca915819f22c8f8b2dd48b9f6490cfba927a6.jpg"
+                }
+            },
+            "bbox": [
+                524,
+                801,
+                865,
+                829
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We use "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for advantage estimation in GRPO (Shao et al., 2024b). In our experiments, we set "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "w _ { \\mathrm { a n s } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "1.0, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "w _ { \\mathrm { g r o u n d } } = 0 . 5"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "w _ { \\mathrm { t h i n k } } = w _ { \\mathrm { g f m t } } = 0 . 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "We set "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "r _ { i } ^ { \\mathrm { t r u n c } } = -"
+                    },
+                    {
+                        "type": "text",
+                        "content": "−1 for truncated rollouts and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "r _ { i } ^ { \\mathrm { t r u n c } } = 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": "otherwise."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                841,
+                885,
+                923
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "6"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                944,
+                505,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5 Experiments"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                84,
+                260,
+                101
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.1 Setup"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                109,
+                208,
+                126
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Training. We train all models with verl (Sheng et al., 2024), using SGLang (Zheng et al., 2024) as the inference engine and FSDP2 (Zhao et al., 2023) as the training backend. The base model is Gemma3-4B-IT (Team et al., 2025). We first perform SFT on the synthetic data described in Section 3 to obtain cold-start models. To isolate the effect of visual grounding, we train three controlled variants: non-grounded thinking, thinking with box grounding, and thinking with point grounding. These variants use parallel examples with the same images, questions, answers, and underlying reasoning traces, and differ only in whether grounding tags are included and, if so, whether the tags use boxes or points. We then apply RL with GRPO on the corresponding training data. Full training details are provided in Section B.1."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                130,
+                490,
+                406
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Evaluation. The models are evaluated on two counting benchmarks: TallyBench (Cai et al., 2025) and CountQA (Tamarapalli et al., 2025); and four spatial reasoning benchmarks: VSR-zeroshot (Liu et al., 2023), EmbSpatial (Du et al., 2024), SpatialMQA (Liu et al., 2025), and MultihopSpatial (Lee et al., 2026). We conduct evaluation using VLMEvalKit (Duan et al., 2025). Inference is performed with SGLang at temperature 1.0. To reduce variance from stochastic decoding, we run four inference passes and report both average accuracy and pass@4. The full evaluation configuration is provided in Section B.2."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                413,
+                490,
+                624
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/de069fa69182f8e93e56017a6110e321bf4ace3dd0d7c043e49caa79f60c0033.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 1: Counting benchmark results. Bold indicates the best result and underline indicates the second-best result within each column."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td colspan=\"2\">Method</td><td colspan=\"2\">TallyBench</td><td colspan=\"2\">CountQA</td></tr><tr><td></td><td>ACc.</td><td>PASS@4</td><td>ACC.</td><td>PASS@4</td></tr><tr><td>Gemma3-4B-IT</td><td>33.33</td><td>40.65</td><td>9.87</td><td>14.14</td></tr><tr><td>Non-grounded Thinking Thinking with Grounding Box</td><td>21.73</td><td>42.00</td><td>4.30</td><td>12.24</td></tr><tr><td>w/o grounding reward w/ grounding reward</td><td>37.24 38.81</td><td>64.45 64.50</td><td>10.73 11.19</td><td>27.75 28.47</td></tr><tr><td>Thinking with Grounding Point</td><td></td><td></td><td></td><td></td></tr><tr><td>w/o grounding reward</td><td>39.03</td><td>65.50</td><td>12.34</td><td>31.48</td></tr><tr><td>w/ grounding reward</td><td>39.31</td><td>65.75</td><td>11.65</td><td>29.77</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                112,
+                634,
+                484,
+                787
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.2 Main Results"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                870,
+                267,
+                884
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The results on counting benchmarks are presented in Table 1, and the results on spatial reasoning benchmarks are presented in Table 2. We find that visually grounded thinking substantially improves upon the base model Gemma3-4B-IT. On spatial reasoning tasks, the 4B visually grounded thinking models are comparable to Gemma3-27B-IT: on VSR-zeroshot and EmbSpatial, the best visually grounded thinking model achieves performance between Gemma3-12B-IT and Gemma3-27B-IT; on SpatialMQA and MultihopSpatial, the best visually grounded thinking models even outperform Gemma3-27B-IT. The pass@4 results show even larger gains: all visually grounded thinking models outperform Gemma3-27B-IT by large margins."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                890,
+                489,
+                923
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                507,
+                85,
+                885,
+                294
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Visually grounded thinking also strongly outperforms the non-grounded thinking baseline. We observe that the non-grounded thinking model suffers from length collapse during RL: its response length decreases roughly linearly over training, which reduces exploration and leads to poor final performance. In contrast, the visually grounded variants maintain more stable rollouts. We hypothesize that interleaved grounding tags, together with the grounding-format reward, provide additional local structure during generation and help stabilize RL training. Overall, visually grounded thinking substantially improves the counting and spatial reasoning capabilities of the models."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                294,
+                887,
+                520
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.3 Effect of the Grounding Reward"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                531,
+                811,
+                546
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The grounding-quality reward provides a consistent benefit for box-mode grounded thinking. Compared with box-mode RL without the grounding reward, adding the reward improves average accuracy on all six evaluation benchmarks. The gains are relatively modest on counting tasks, but are more visible on spatial reasoning tasks. This suggests that the box reward is especially helpful when the answer depends on fine-grained geometry: bounding boxes provide both object identity and object extent, which can help the model resolve spatial relations such as left/right/above/below, distance, and overlap."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                551,
+                887,
+                760
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For point-mode grounded thinking, the grounding reward does not produce equally clear downstream gains. Across the six benchmarks, pointmode RL with and without the grounding reward remains close in overall performance, with gains on some metrics and drops on others. This does not necessarily imply that point grounding is unhelpful; rather, it suggests that the current point reward may be a weaker optimization signal. As discussed in Section 4, the point and box rewards are aligned in the visual evidence they encourage the model to ground, but they provide different feedback signals. The box reward changes with the amount of region overlap, while the point reward only checks whether generated points can be matched to target masks. Therefore, many point locations inside the same object receive the same credit, and crossing a mask boundary can abruptly change the score. This coarser feedback may make the point reward harder to optimize and may explain why it does not translate into consistent accuracy gains in our current experiments."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                762,
+                887,
+                923
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "7"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                942,
+                505,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/0b63c2119cb664e82ad3915f67e70b71b5df0d68c3b8cbfec8e814d01f321333.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 2: Spatial relationship understanding benchmark results. Bold indicates the best result and underline indicates the second-best result within each column, excluding Gemma3-12B-IT and Gemma3-27B-IT from the comparison."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Method</td><td colspan=\"2\">VSR-zeroshot</td><td colspan=\"2\">EmbSpatial</td><td colspan=\"2\">SpatialMQA</td><td colspan=\"2\">MultihopSpatial</td></tr><tr><td></td><td>ACC.</td><td>PASS@4</td><td>ACC.</td><td>PASS@4</td><td>ACc.</td><td>PASS@4</td><td>ACC.</td><td>PASS@4</td></tr><tr><td>Gemma3-4B-IT</td><td>56.65</td><td>57.94</td><td>49.13</td><td>63.79</td><td>25.35</td><td>36.43</td><td>22.70</td><td>36.87</td></tr><tr><td>Non-grounded Thinking</td><td>51.84</td><td>79.13</td><td>20.54</td><td>42.53</td><td>14.17</td><td>27.88</td><td>4.79</td><td>11.67</td></tr><tr><td colspan=\"9\">Thinking with Grounding Box</td></tr><tr><td>w/o grounding reward</td><td>66.82</td><td>87.64</td><td>57.62</td><td>81.46</td><td>37.64</td><td>67.66</td><td>34.89</td><td>63.82</td></tr><tr><td>w/ grounding reward</td><td>68.08</td><td>86.91</td><td>59.93</td><td>82.66</td><td>38.68</td><td>68.49</td><td>37.68</td><td>66.40</td></tr><tr><td colspan=\"9\">Thinking with Grounding Point</td></tr><tr><td>w/o grounding reward</td><td>65.38</td><td>83.88</td><td>60.25</td><td>83.21</td><td>39.13</td><td>67.19</td><td>37.03</td><td>65.40</td></tr><tr><td>w/ grounding reward</td><td>64.67</td><td>81.42</td><td>60.88</td><td>83.10</td><td>39.01</td><td>68.49</td><td>37.01</td><td>65.02</td></tr><tr><td colspan=\"9\">Larger Gemma3 baselines (reference)</td></tr><tr><td>Gemma3-12B-IT</td><td>67.98</td><td>69.56</td><td>56.68</td><td>65.14</td><td>37.85</td><td>50.00</td><td>30.08</td><td>43.58</td></tr><tr><td>Gemma3-27B-IT</td><td>69.25</td><td>70.70</td><td>62.09</td><td>72.12</td><td>38.99</td><td>54.28</td><td>30.94</td><td>45.82</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                112,
+                82,
+                882,
+                280
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                112,
+                347,
+                489,
+                541
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.4 Box vs. Point Grounding"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                557,
+                357,
+                573
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We further compare the two grounding interfaces. On counting benchmarks, point-mode grounded thinking consistently outperforms boxmode grounded thinking. This suggests that counting mainly requires instance-level localization: the model needs to identify which objects belong to the counted set and keep them separated from distractors, but it does not necessarily need to recover the full extent of each object. Point grounding is well matched to this requirement because it provides a compact grounding to each instance while avoiding the harder problem of generating a tight bounding box. This advantage may be especially useful when counted objects are small, partially occluded, or have irregular shapes."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                581,
+                490,
+                824
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "On spatial reasoning benchmarks, the two interfaces are much closer. Box grounding can provide useful geometric cues because the box extent reflects object size and boundary information, which may help with spatial relations such as overlap and relative position. However, point grounding can still identify the relevant objects and spatial anchors, and many spatial questions can be answered from these instance-level groundings together with the model’s visual representation. The spatial results therefore suggest that box grounding gives richer geometric supervision, but this extra information does not always translate into a clear accuracy advantage. Overall, point grounding appears better suited to counting, while point and box grounding are broadly tied on spatial relationship understanding."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                826,
+                490,
+                923
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                507,
+                346,
+                887,
+                525
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "6 Conclusion"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                535,
+                643,
+                551
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Visual thinking should not only sound plausible in natural language; it should point to the evidence it uses. Our work turns that idea into a training recipe for visually grounded thinking, where models interleave natural-language thinking with point or box groundings of the image regions that support each step. By combining a scalable SAM3-based synthesis pipeline with an RL grounding reward, we train VLMs to optimize both answer correctness and the accurate grounding of visual objects referenced during thinking. The results show that visually grounded thinking substantially improves counting and spatial reasoning, with 4B grounded models matching, and sometimes exceeding, much larger 27B models on spatial benchmarks. Overall, our work suggests that the next step for visual thinking is not simply longer thinking, but thinking that is tied to the image in a form that can be checked, supervised, and improved."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                560,
+                887,
+                869
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "8"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                942,
+                505,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "References"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                84,
+                215,
+                99
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Manoj Acharya, Kushal Kafle, and Christopher Kanan. 2018. Tallyqa: Answering complex counting questions. Preprint, arXiv:1810.12440."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Mohammad Asadi, Jack W O’Sullivan, Fang Cao, Tahoura Nedaee, Kamyar Rajabalifardi, Fei-Fei Li, Ehsan Adeli, and Euan Ashley. 2026. Mirage: The illusion of visual understanding. arXiv preprint arXiv:2603.21687."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Shuai Bai, Yuxuan Cai, Ruizhe Chen, Keqin Chen, Xionghui Chen, Zesen Cheng, Lianghao Deng, Wei Ding, Chang Gao, Chunjiang Ge, Wenbin Ge, Zhifang Guo, Qidong Huang, Jie Huang, Fei Huang, Binyuan Hui, Shutong Jiang, Zhaohai Li, Mingsheng Li, and 45 others. 2025. Qwen3-vl technical report. Preprint, arXiv:2511.21631."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Jie Cai, Kangning Yang, Lan Fu, Jiaming Ding, Jinlong Li, Huiming Sun, Daitao Xing, Jinglin Shen, and Zibo Meng. 2025. Comparebench: A benchmark for visual comparison reasoning in vision-language models. arXiv preprint arXiv:2509.22737."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Nicolas Carion, Laura Gustafson, Yuan-Ting Hu, Shoubhik Debnath, Ronghang Hu, Didac Suris, Chaitanya Ryali, Kalyan Vasudev Alwala, Haitham Khedr, Andrew Huang, Jie Lei, Tengyu Ma, Baishan Guo, Arpit Kalla, Markus Marks, Joseph Greer, Meng Wang, Peize Sun, Roman Rädle, and 19 others. 2026. Sam 3: Segment anything with concepts. Preprint, arXiv:2511.16719."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Abhishek Das, Harsh Agrawal, C. Lawrence Zitnick, Devi Parikh, and Dhruv Batra. 2016. Human attention in visual question answering: Do humans and deep networks look at the same regions? Preprint, arXiv:1606.03556."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "DeepSeek-AI. 2026. Deepseek-v4: Towards highly efficient million-token context intelligence."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Matt Deitke, Christopher Clark, Sangho Lee, Rohun Tripathi, Yue Yang, Jae Sung Park, Mohammadreza Salehi, Niklas Muennighoff, Kyle Lo, Luca Soldaini, Jiasen Lu, Taira Anderson, Erin Bransom, Kiana Ehsani, Huong Ngo, YenSung Chen, Ajay Patel, Mark Yatskar, Chris Callison-Burch, and 31 others. 2024. Molmo and pixmo: Open weights and open data for state-of-the-art vision-language models. Preprint, arXiv:2409.17146."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Yihe Deng, Hritik Bansal, Fan Yin, Nanyun Peng, Wei Wang, and Kai-Wei Chang. 2025. Openvlthinker: Complex vision-language reasoning via iterative sftrl cycles. Preprint, arXiv:2503.17352."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Mengfei Du, Binhao Wu, Zejun Li, Xuanjing Huang, and Zhongyu Wei. 2024. Embspatial-bench: Benchmarking spatial understanding for embodied tasks with large vision-language models. Preprint, arXiv:2406.05756."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Haodong Duan, Xinyu Fang, Junming Yang, Xiangyu Zhao, Yuxuan Qiao, Mo Li, Amit Agarwal, Zhe Chen, Lin Chen, Yuan Liu, Yubo Ma, Hailong Sun, Yifan Zhang, Shiyin Lu, Tack Hwa Wong, Weiyun Wang, Peiheng Zhou, Xiaozhe Li, Chaoyou Fu, and 13 others. 2025. Vlmevalkit: An open-source toolkit for evaluating large multi-modality models. Preprint, arXiv:2407.11691."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Yue Fan, Xuehai He, Diji Yang, Kaizhi Zheng, Ching-Chen Kuo, Yuting Zheng, Sravana Jyothi Narayanaraju, Xinze Guan, and Xin Eric Wang. 2025. Grit: Teaching mllms to think with images. Preprint, arXiv:2505.15879."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Google DeepMind. 2025. Gemini 3 flash: frontier intelligence built for speed."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Daya Guo, Dejian Yang, Haowei Zhang, Junxiao Song, Peiyi Wang, Qihao Zhu, Runxin Xu, Ruoyu Zhang, Shirong Ma, Xiao Bi, Xiaokang Zhang, Xingkai Yu, Yu Wu, Z. F. Wu, Zhibin Gou, Zhihong Shao, Zhuoshu Li, Ziyi Gao, Aixin Liu, and 175 others. 2025. Deepseek-r1 incentivizes reasoning in llms through reinforcement learning. Nature, 645(8081):633–638."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Mary Hayhoe and Dana Ballard. 2005. Eye movements in natural behavior. Trends in Cognitive Sciences, 9(4):188–194."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Wenbo Hu, Xin Chen, Yan Gao-Tian, Yihe Deng, Nanyun Peng, and Kai-Wei Chang. 2026. Openvlthinkerv2: A generalist multimodal reasoning model for multi-domain visual tasks. arXiv preprint arXiv:2604.08539."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Youngwan Lee, Soojin Jang, Yoorhim Cho, Seunghwan Lee, Yong-Ju Lee, and Sung Ju Hwang. 2026. Multihopspatial: Multi-hop compositional spatial reasoning benchmark for vision-language model. Preprint, arXiv:2603.18892."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Fangyu Liu, Guy Emerson, and Nigel Collier. 2023. Visual spatial reasoning. Preprint, arXiv:2205.00363."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Jingping Liu, Ziyan Liu, Zhedong Cen, Yan Zhou, Yinan Zou, Weiyan Zhang, Haiyun Jiang, and Tong Ruan. 2025. Can multimodal large language models understand spatial relations? In Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), page 620–632. Association for Computational Linguistics."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Yunze Man, De-An Huang, Guilin Liu, Shiwei Sheng, Shilong Liu, Liang-Yan Gui, Jan Kautz, Yu-Xiong Wang, and Zhiding Yu. 2025. Argus: Vision-centric reasoning with grounded chain-of-thought. In Proceedings of the Computer Vision and Pattern Recognition Conference, pages 14268–14280."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "QwenTeam. 2026a. Qwen3.5: Towards native multimodal agents."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "QwenTeam. 2026b. Qwen3.6-plus: Towards real world agents."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                115,
+                108,
+                489,
+                149
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "9"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                942,
+                505,
+                954
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Gabriel Sarch, Snigdha Saha, Naitik Khandelwal, Ayush Jain, Michael J. Tarr, Aviral Kumar, and Katerina Fragkiadaki. 2025. Grounded reinforcement learning for visual reasoning. Preprint, arXiv:2505.23678."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Hao Shao, Shengju Qian, Han Xiao, Guanglu Song, Zhuofan Zong, Letian Wang, Yu Liu, and Hongsheng Li. 2024a. Visual cot: Advancing multimodal language models with a comprehensive dataset and benchmark for chain-of-thought reasoning. Advances in Neural Information Processing Systems, 37:8612–8642."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Zhihong Shao, Peiyi Wang, Qihao Zhu, Runxin Xu, Junxiao Song, Xiao Bi, Haowei Zhang, Mingchuan Zhang, Y. K. Li, Y. Wu, and Daya Guo. 2024b. Deepseekmath: Pushing the limits of mathematical reasoning in open language models. Preprint, arXiv:2402.03300."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Guangming Sheng, Chi Zhang, Zilingfeng Ye, Xibin Wu, Wang Zhang, Ru Zhang, Yanghua Peng, Haibin Lin, and Chuan Wu. 2024. Hybridflow: A flexible and efficient rlhf framework. arXiv preprint arXiv: 2409.19256."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Jayant Sravan Tamarapalli, Rynaa Grover, Nilay Pande, and Sahiti Yerramilli. 2025. Countqa: How well do mllms count in the wild? Preprint, arXiv:2508.06585."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Gemma Team, Aishwarya Kamath, Johan Ferret, Shreya Pathak, Nino Vieillard, Ramona Merhej, Sarah Perrin, Tatiana Matejovicova, Alexandre Ramé, Morgane Rivière, Louis Rouillard, Thomas Mesnard, Geoffrey Cideron, Jean bastien Grill, Sabela Ramos, Edouard Yvinec, Michelle Casbon, Etienne Pot, Ivo Penchev, and 197 others. 2025. Gemma 3 technical report. Preprint, arXiv:2503.19786."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Jiacong Wang, Zijian Kang, Haochen Wang, Haiyong Jiang, Jiawen Li, Bohong Wu, Ya Wang, Jiao Ran, Xiao Liang, Chao Feng, and Jun Xiao. 2025. Vgr: Visual grounded reasoning. Preprint, arXiv:2506.11991."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Qiong Wu, Xiangcong Yang, Yiyi Zhou, Chenxin Fang, Baiyang Song, Xiaoshuai Sun, and Rongrong Ji. 2025. Grounded chain-of-thought for multimodal large language models. arXiv preprint arXiv:2503.12799."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Jiaer Xia, Bingkui Tong, Yuhang Zang, Rui Shao, and Kaiyang Zhou. 2025. Bootstrapping grounded chain-of-thought in multimodal llms for data-efficient model adaptation. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 208–217."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Kesen Zhao, Beier Zhu, Qianru Sun, and Hanwang Zhang. 2025. Unsupervised visual chain-of-thought reasoning via preference optimization. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 2303–2312."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Yanli Zhao, Andrew Gu, Rohan Varma, Liang Luo, Chien-Chin Huang, Min Xu, Less Wright, Hamid Shojanazeri, Myle Ott, Sam Shleifer, Alban Desmaison, Can Balioglu, Pritam Damania, Bernard Nguyen, Geeta Chauhan, Yuchen Hao, Ajit Mathews, and Shen Li. 2023. Pytorch fsdp: Experiences on scaling fully sharded data parallel. Preprint, arXiv:2304.11277."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Lianmin Zheng, Liangsheng Yin, Zhiqiang Xie, Chuyue Sun, Jeff Huang, Cody Hao Yu, Shiyi Cao, Christos Kozyrakis, Ion Stoica, Joseph E. Gonzalez, Clark Barrett, and Ying Sheng. 2024. Sglang: Efficient execution of structured language model programs. Preprint, arXiv:2312.07104."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Yuke Zhu, Oliver Groth, Michael Bernstein, and Li Fei-Fei. 2016. Visual7w: Grounded question answering in images. Preprint, arXiv:1511.03416."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                115,
+                85,
+                487,
+                139
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A Data Synthesis Details"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                344,
+                742,
+                360
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A.1 Models Used in Each Pipeline Stage"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                369,
+                842,
+                386
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We distill the reasoning traces from Qwen3-VL-Plus (Bai et al., 2025) and Qwen3.5-Plus (Qwen-Team, 2026a). DeepSeek-V4-Flash (DeepSeek-AI, 2026) is used to extract groundable objects in Stage 3 and annotate reasoning traces in Stage 6. In Stage 4, we use Qwen3.5-Flash (QwenTeam, 2026a) to power the SAM3-based grounding-agent system. Objects that fail to ground are retried sequentially with Qwen3.6-Plus (QwenTeam, 2026b) and Gemini-3-Flash (Google DeepMind, 2025)."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                391,
+                887,
+                552
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A.2 Data Synthesis Prompt Details"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                563,
+                801,
+                579
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Because the prompts used in the data synthesis pipeline are lengthy, we refer readers to the source code for their full details."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                585,
+                884,
+                632
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A.3 Source Dataset Filtering"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                643,
+                752,
+                659
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For TallyQA, we kept the AMT complex-counting split and additionally included imported VQA counting examples only when the answer count was at least 4, the question contained a compositional cue, and duplicate imported-VQA images were removed. For VSR and MultihopSpatial, we used the training splits, converting VSR captions into yes/no questions and removing the original bounding-box instruction from MultihopSpatial questions. For SpatialMQA, we used the train and dev splits and held out the test split. For PixMo-Count, we kept train examples with counts in [4, 20], removed ambiguous labels, applied a per-class cap of 200, and kept the validation split without this filtering. Across all sources, examples with missing or failed image downloads, invalid answer formats, or unparseable multiple-choice labels were skipped. After this dataset-level filtering, we had 24,645 source examples: 7,197 from TallyQA, 3,489 from VSR, 6,791 from MultihopSpatial, 4,316 from SpatialMQA, and 2,852 from PixMo-Count."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                664,
+                887,
+                923
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "10"
+                    }
+                ]
+            },
+            "bbox": [
+                489,
+                942,
+                510,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                110,
+                85,
+                490,
+                166
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A.4 Final Data Composition by Source Dataset"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                183,
+                436,
+                215
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Source Dataset Distribution"
+                    }
+                ]
+            },
+            "bbox": [
+                141,
+                233,
+                307,
+                246
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/7f270be895e533a6ee6041d05692d3857d3b34d4d7a0f564e81dc3a8dfc4a0e7.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 6: Final Data Composition by Source Dataset."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                114,
+                248,
+                489,
+                409
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "After the data pipeline, the source-dataset distribution of the final dataset is shown in Figure 6."
+                    }
+                ]
+            },
+            "bbox": [
+                114,
+                456,
+                490,
+                489
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A.5 Grounding Density Distribution"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                506,
+                416,
+                523
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The dataset contains 19,909 paired rows with 72,381 grounded objects in the RL data and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "1 0 7 , 6 1 3 < \\mathrm { o b j > \\quad . ~ . ~ < / o b j > }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "annotations in the SFT traces. This corresponds to an average of 3.64 grounded objects per row and 5.41 grounding annotations per row. The higher SFT annotation density reflects repeated use of the same grounded objects during reasoning: each grounded object can be referenced multiple times in the SFT response, producing more <obj> ... </obj> annotations than the number of unique grounded objects. The grounding density distribution is presented in Figure 7."
+                    }
+                ]
+            },
+            "bbox": [
+                110,
+                531,
+                490,
+                741
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "B Training and Evaluation Details"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                759,
+                428,
+                777
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "B.1 SFT and RL Training Settings"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                789,
+                403,
+                807
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The training configurations are presented in Table 3 and Table 4."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                814,
+                487,
+                847
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "B.2 Evaluation Settings"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                864,
+                319,
+                881
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The evaluation configurations are presented in Table 5."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                890,
+                490,
+                921
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/2c61a8c574469a1f680313d4b92ac5a34b0da357ea02898dcab1c1362d0308f6.jpg"
+                },
+                "table_caption": [],
+                "table_footnote": [],
+                "html": "<table><tr><td>Configuration</td><td>Value</td></tr><tr><td>Maximum sequence length</td><td>8192 tokens</td></tr><tr><td>Global batch size</td><td>256</td></tr><tr><td>Training epochs</td><td>6</td></tr><tr><td>Optimizer</td><td>AdamW,  $\\beta _ { 1 } { \\mathrm { ~ \\scriptsize ~ = ~ } } 0 . 9 ,$   $\\beta _ { 2 } ~ = ~ 0 . 9 5 .$  weight de-</td></tr><tr><td>Learning rate</td><td> $\\mathrm { c a y } = 0 . 0 1$   $1 \\times 1 0 ^ { - 5 }$  with cosine de-</td></tr><tr><td>Warmup ratio</td><td>cay 0.03</td></tr><tr><td>Minimum learning-rate ratio</td><td>0.1</td></tr><tr><td></td><td></td></tr><tr><td>Precision</td><td>bfloat16</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                522,
+                82,
+                868,
+                252
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/2b280fae61a7b86fb74c16bde9bbe71f796f587db19c9150c23540b81c060793.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 3: Training configuration used for supervised finetuning."
+                    }
+                ],
+                "table_footnote": [
+                    {
+                        "type": "text",
+                        "content": "Table 4: Training configuration used for reinforcement learning."
+                    }
+                ],
+                "html": "<table><tr><td>Configuration</td><td>Value</td></tr><tr><td>Algorithm</td><td>GRPO</td></tr><tr><td>Rollout samples per prompt</td><td>8</td></tr><tr><td>Rollout temperature</td><td>1.0</td></tr><tr><td>Maximum prompt length</td><td>4096 tokens</td></tr><tr><td>Maximum response length</td><td>8192 tokens</td></tr><tr><td>Optimizer</td><td>AdamW, β1 1 = 0.9, β2 = 0.999, weight de-</td></tr><tr><td>Batch size</td><td> $\\mathrm { c a y } = 0 . 0 1$  64</td></tr><tr><td>Learning rate</td><td> $1 \\times 1 0 ^ { - 6 }$  with cosine de- cay</td></tr><tr><td>Warmup ratio</td><td>0.03</td></tr><tr><td>Minimum learning-rate ratio KL regularization</td><td>0.1</td></tr><tr><td></td><td>Disabled, with KL coef- ficient 0.0</td></tr><tr><td>Entropy coefficient</td><td>0.0</td></tr><tr><td>Training steps</td><td>100</td></tr><tr><td>Precision</td><td>bfloat16</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                522,
+                307,
+                868,
+                570
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "B.3 System Prompts"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                639,
+                689,
+                655
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Instruct model system prompt"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                526,
+                665,
+                768,
+                681
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "You are a helpful assistant. Please put your final answer inside the \\boxed{}."
+                    }
+                ]
+            },
+            "bbox": [
+                524,
+                687,
+                870,
+                720
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Non-grounded thinking system prompt"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                524,
+                737,
+                838,
+                753
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "You are a helpful assistant that answers questions about images. Think step by step in <think>...</think> tags, then give your final answer in \\boxed{} format."
+                    }
+                ]
+            },
+            "bbox": [
+                522,
+                759,
+                872,
+                825
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Thinking with Grounding Box System Prompt"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                524,
+                840,
+                870,
+                873
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "You are a visual reasoning assistant with precise spatial grounding ability."
+                    }
+                ]
+            },
+            "bbox": [
+                522,
+                879,
+                872,
+                913
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "11"
+                    }
+                ]
+            },
+            "bbox": [
+                489,
+                942,
+                509,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/596ae2c0877ad862930103b1de41990fe97df4e537b41fade1c19dc6f8e27cc2.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 7: The grounding density distribution."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                194,
+                82,
+                806,
+                330
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/73a07dffd1b554529cf7a4d6d8786a6f54a468e90f753a8504d89269814fd4da.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 5: Evaluation configuration used for visual-spatial and counting benchmarks."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Configuration</td><td>Value</td></tr><tr><td>Maximum generation length</td><td>8192 tokens</td></tr><tr><td>Context length</td><td>32768 tokens</td></tr><tr><td>Decoding</td><td>Temperature = 1.0, top-  $p = \\bar { 1 } . 0 , \\mathrm { t o p } { - k = - 1 }$ </td></tr><tr><td>Number of evaluation passes</td><td>4</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                127,
+                376,
+                473,
+                470
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "All bounding box coordinates are normalized to [0, 1000], where [0, 0] is the top-left corner and [1000, 1000] is the bottom-right corner of the image."
+                    }
+                ]
+            },
+            "bbox": [
+                126,
+                539,
+                475,
+                605
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "When you reason about the image in your <think> block, ground the important visual objects that are essential to your reasoning using the <obj> tag format. Every grounded object is marked by a bounding box that tightly encloses it. A single <obj> tag carries one descriptive phrase and one or more boxes; each box corresponds to one instance of that phrase: <obj> descriptive phrase | [x1, y1, x2, y2] </obj> <obj> descriptive phrase | [x1’, y1’, x2’, y2’]; "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "[ \\mathrm { x } 1 ^ { \\prime } , \\mathrm { y } 1 ^ { \\prime } , \\mathrm { x } 2 ^ { \\prime } , \\mathrm { y } 2 ^ { \\prime } ] ; \\ldots < / \\mathrm { o b j } >"
+                    }
+                ]
+            },
+            "bbox": [
+                126,
+                605,
+                475,
+                782
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Only ground objects that are critical for justifying your answer. Use descriptive phrases that distinguish the object(s) from others in the image. When several instances share the same phrase, list one box per instance, separated by semicolons, inside a single <obj> tag; if you want to describe each instance differently, you may instead emit a separate <obj> tag per in-"
+                    }
+                ]
+            },
+            "bbox": [
+                127,
+                782,
+                477,
+                913
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "stance."
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                524,
+                382,
+                581,
+                397
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For non-groundable questions, e.g. math, STEM, or abstract reasoning where no specific visual region needs to be localized, you do not need to output any <obj> grounding tags. Example: <think> I can see <obj> the red car near the entrance | [120, 300, 450, 620] </obj> and <obj> a blue truck on the right | [500, 280, 850, 640] </obj>. There are also <obj> three pedestrians on the sidewalk | [100, 680, 160, 780]; [170, 670, 230, 770]; [240, 685, 300, 785] </obj>. Counting the vehicles on the left side, there are two. </think> Put your final answer in \\boxed{} format."
+                    }
+                ]
+            },
+            "bbox": [
+                522,
+                397,
+                873,
+                609
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Thinking with grounding point system prompt"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                524,
+                631,
+                870,
+                664
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "You are a visual reasoning assistant with precise spatial grounding ability."
+                    }
+                ]
+            },
+            "bbox": [
+                522,
+                670,
+                872,
+                702
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "All point coordinates are normalized to [0, 1000], where [0, 0] is the top-left corner and [1000, 1000] is the bottom-right corner of the image."
+                    }
+                ]
+            },
+            "bbox": [
+                524,
+                702,
+                870,
+                766
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "When you reason about the image in your <think> block, ground the important visual objects that are essential to your reasoning using the <obj> tag format. Every grounded object is marked by a single point that lies inside it. A single <obj> tag carries one descriptive phrase and one or more points; each point corresponds to one instance of that phrase: <obj> descriptive phrase | [x, y] </obj> <obj> descriptive phrase | [x1, y1]; [x2, y2]; ... </obj> Place each point on its object, e.g. near the center, so that it falls inside the object’s extent. Only ground objects that are critical for justifying your answer. Use descriptive phrases that distinguish the object(s) from others in the image. When several instances share the same phrase, list one point per instance, separated by semicolons, inside a single <obj> tag; if you want to describe each instance differently, you may instead emit a separate <obj> tag per instance."
+                    }
+                ]
+            },
+            "bbox": [
+                521,
+                766,
+                872,
+                914
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "12"
+                    }
+                ]
+            },
+            "bbox": [
+                489,
+                942,
+                510,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                126,
+                86,
+                477,
+                280
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For non-groundable questions, e.g. math, STEM, or abstract reasoning where no specific visual region needs to be localized, you do not need to output any <obj> grounding tags. Example: <think> I can see <obj> the red car near the entrance | [285, 460] </obj> and <obj> a blue truck on the right | [675, 460] </obj>. There are also <obj> three pedestrians on the sidewalk | [120, 700]; [180, 695]; [240, 705] </obj>. Counting the vehicles on the left side, there are two. </think> Put your final answer in \\boxed{} format."
+                    }
+                ]
+            },
+            "bbox": [
+                126,
+                281,
+                477,
+                478
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "B.4 Experiment Cost"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                491,
+                299,
+                507
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The training and evaluation take about 400 H200 GPU hours."
+                    }
+                ]
+            },
+            "bbox": [
+                114,
+                511,
+                487,
+                543
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "13"
+                    }
+                ]
+            },
+            "bbox": [
+                489,
+                942,
+                510,
+                956
+            ]
+        }
+    ]
+]
