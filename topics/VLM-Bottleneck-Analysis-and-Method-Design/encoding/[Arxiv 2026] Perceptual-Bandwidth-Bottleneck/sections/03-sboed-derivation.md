@@ -1,6 +1,6 @@
 [← 返回 README](../README.md)
 
-# 3. Active Visual Reasoing as S-BOED
+# 3. Active Visual Reasoning as S-BOED
 
 ## 一、Preview
 

@@ -12,7 +12,7 @@
 
 ### Overview
 
-We synthesize visually grounded thinking data from open-source datasets for counting and spatial reasoing: TallyQA (Acharya et al., 2018), Pixmo-Count (Deitke et al., 2024), VSR (Liu et al., 2023), MultihopSpatial (Lee et al., 2026), and SpatialMQA (Liu et al., 2025), with all test sets held out. Our goal is to identify the visual objects needed for correct thinking, obtain their image coordinates, and synthesize reasoing traces with explicit grounding annotations.
+We synthesize visually grounded thinking data from open-source datasets for counting and spatial reasoning: TallyQA (Acharya et al., 2018), Pixmo-Count (Deitke et al., 2024), VSR (Liu et al., 2023), MultihopSpatial (Lee et al., 2026), and SpatialMQA (Liu et al., 2025), with all test sets held out. Our goal is to identify the visual objects needed for correct thinking, obtain their image coordinates, and synthesize reasoning traces with explicit grounding annotations.
 
 > 💡 **数据源概览**:
 >
@@ -22,7 +22,7 @@ We synthesize visually grounded thinking data from open-source datasets for coun
 > | PixMo-Count | Counting | 2,852 |
 > | VSR | Spatial (yes/no) | 3,489 |
 > | MultihopSpatial | Multi-hop spatial | 6,791 |
-> | SpatialMQA | Spatial reasoing | 4,316 |
+> | SpatialMQA | Spatial reasoning | 4,316 |
 > | **Total (filtered)** | -- | **24,645** |
 >
 > 所有 test sets 被严格 hold out，确保 evaluation 无泄漏。
@@ -41,7 +41,7 @@ For each image-question pair, we prompt Qwen3-VL-Plus (Bai et al., 2025) to gene
 
 ### Stage 2: Extracting groundable objects
 
-Given a correct reasoing trace, we use an LLM to identify the visual objects needed for the thinking process. These objects include answer objects, visible multiple-choice alternatives, spatial anchors, counted instances, and endpoints of spatial relations. Each object is represented by a name (e.g., "red car") and a disambiguating context (e.g., "in the back row"). The context separates visually or semantically similar instances, so two occurrences of "red car" can be distinguished by scene cues such as "near the entrance" or "in the back row".
+Given a correct reasoning trace, we use an LLM to identify the visual objects needed for the thinking process. These objects include answer objects, visible multiple-choice alternatives, spatial anchors, counted instances, and endpoints of spatial relations. Each object is represented by a name (e.g., "red car") and a disambiguating context (e.g., "in the back row"). The context separates visually or semantically similar instances, so two occurrences of "red car" can be distinguished by scene cues such as "near the entrance" or "in the back row".
 
 > 💡 **为什么要 (name, context) 二元组？**
 >
@@ -142,7 +142,7 @@ The selected masks are stored as RLE masks and used as the shared supervision si
 
 ### Stage 5: Writing Box and Point Supervision
 
-In the final annotation stage, we insert placeholder object tags into the validated reasoing text using **only the extracted object phrases and their contexts, without exposing coordinates to the annotation model**. We then fill in the coordinates from the SAM3 outputs. This design prevents the annotation model from hallucinating spatial values.
+In the final annotation stage, we insert placeholder object tags into the validated reasoning text using **only the extracted object phrases and their contexts, without exposing coordinates to the annotation model**. We then fill in the coordinates from the SAM3 outputs. This design prevents the annotation model from hallucinating spatial values.
 
 A single placeholder pass therefore produces two aligned SFT variants:
 - `<obj> name phrase | [x1,y1,x2,y2] </obj>` for box supervision
@@ -151,23 +151,23 @@ A single placeholder pass therefore produces two aligned SFT variants:
 > 💡 **关键设计决策: 坐标注入而非坐标生成**
 >
 > ```
-> Wrong approach:  LLM sees image + reasoing + object → generates coordinates
+> Wrong approach:  LLM sees image + reasoning + object → generates coordinates
 >                  ^-- LLM may hallucinate coordinates
 >
-> Right approach:  LLM sees image + reasoing + object → generates <obj> tags (w/o coords)
+> Right approach:  LLM sees image + reasoning + object → generates <obj> tags (w/o coords)
 >                  SAM3 masks are mapped to tags → coordinates filled in post-hoc
 >                  ^-- Coordinates are geometrically accurate, from SAM3
 > ```
 >
 > 这保证了 box mode 和 point mode 的数据来自**同一套 SAM3 masks**，实验对比完全公平。
 
-**Filtering**: We filter out rows whose tag-stripped annotated thinking differs substantially from the original thinking, as well as rows with malformed tags or highly repetitive reasoing.
+**Filtering**: We filter out rows whose tag-stripped annotated thinking differs substantially from the original thinking, as well as rows with malformed tags or highly repetitive reasoning.
 
 ### Dataset Statistics
 
 | 指标 | 数值 |
 |------|------|
-| SFT reasoing traces | 19,909 |
+| SFT reasoning traces | 19,909 |
 | Grounding annotations (<obj> tags) | 107,613 |
 | Unique grounded objects | 72,381 |
 | Avg grounded objects per row | 3.64 |
@@ -187,7 +187,7 @@ A single placeholder pass therefore produces two aligned SFT variants:
 
 ## 三、Summary
 
-- **Pipeline 六阶段**: Reasoing distillation → Object extraction → Agentic grounding → Mask conversion → Tag annotation → Filtering
+- **Pipeline 六阶段**: Reasoning distillation → Object extraction → Agentic grounding → Mask conversion → Tag annotation → Filtering
 - **SAM3 Agent 是核心**: VLM 做语义理解 + SAM3 做精确定位，通过迭代闭环协作
 - **对齐设计**: box 和 point 模式共享同一套 SAM3 masks，保证对比公平
 - **坐标注入而非生成**: annotation model 只产生 placeholder tag，坐标从 SAM3 填入，防止 VLM 坐标幻觉

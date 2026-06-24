@@ -10,11 +10,11 @@ Method 分为三个子模块：3.1 定义交错式潜视觉推理的机制（特
 
 ## 二、原始文本
 
-We propose FUTURE-L1, an interleaved latent visual reasoing framework for VEP. Given an observed video prefix V and question q, the model generates a response y by alternating textual reasoing, bounded latent visual spans, and a final answer. Training has two stages: SFT on FUTURE-L1-50K teaches when to invoke latent spans and aligns them with future-frame embeddings, while LA-DAPO further optimizes sampled latent trajectories with outcome-contrastive and temporal-diversity rewards. Figure 2 illustrates the pipeline.
+We propose FUTURE-L1, an interleaved latent visual reasoning framework for VEP. Given an observed video prefix V and question q, the model generates a response y by alternating textual reasoning, bounded latent visual spans, and a final answer. Training has two stages: SFT on FUTURE-L1-50K teaches when to invoke latent spans and aligns them with future-frame embeddings, while LA-DAPO further optimizes sampled latent trajectories with outcome-contrastive and temporal-diversity rewards. Figure 2 illustrates the pipeline.
 
-### 3.1 Interleaved Latent Visual Reasoing
+### 3.1 Interleaved Latent Visual Reasoning
 
-**Autoregressive Reasoing with Latent Visual Spans.** FUTURE-L1 augments a standard MLLM backbone (Bai et al., 2025a) with a latent visual reasoing channel using three special tokens: `<|latent_start|>`, `<|latent|>`, and `<|latent_end|>`. Generation begins in textual mode. Once `<|latent_start|>` is emitted, each following `<|latent|>` position produces a hidden state h_t that is fed back as the next input embedding rather than projected to the vocabulary. These continuous states act as latent visual thoughts and remain in the KV cache to condition later textual reasoing. Generation returns to text when `<|latent_end|>` is emitted.
+**Autoregressive Reasoning with Latent Visual Spans.** FUTURE-L1 augments a standard MLLM backbone (Bai et al., 2025a) with a latent visual reasoning channel using three special tokens: `<|latent_start|>`, `<|latent|>`, and `<|latent_end|>`. Generation begins in textual mode. Once `<|latent_start|>` is emitted, each following `<|latent|>` position produces a hidden state h_t that is fed back as the next input embedding rather than projected to the vocabulary. These continuous states act as latent visual thoughts and remain in the KV cache to condition later textual reasoning. Generation returns to text when `<|latent_end|>` is emitted.
 
 > 💡 **机制拆解 — 潜视觉 span 的工作原理**:
 >
@@ -29,7 +29,7 @@ We propose FUTURE-L1, an interleaved latent visual reasoing framework for VEP. G
 >
 > **为什么这个设计对 VEP 特别重要**：因为动态视觉状态需要在时间维度上累积和更新。每次潜状态更新都留在 KV cache 中 → 后来的文本 token 可以 "attend to" 之前所有的想象视觉状态。
 
-**Dynamic Latent Budget at Inference.** Latent span length is not fixed: a span ends when the model emits `<|latent_end|>`. We cap each span by L_max to avoid run-on latent decoding, and a response may contain multiple spans, allowing the model to allocate latent computation adaptively across reasoing stages.
+**Dynamic Latent Budget at Inference.** Latent span length is not fixed: a span ends when the model emits `<|latent_end|>`. We cap each span by L_max to avoid run-on latent decoding, and a response may contain multiple spans, allowing the model to allocate latent computation adaptively across reasoning stages.
 
 > 💡 **设计细节 — 自适应潜预算**:
 > - **不受控的灵活性**: span 长度由模型自己决定（通过生成 `<|latent_end|>`），无强制固定长度
@@ -39,17 +39,17 @@ We propose FUTURE-L1, an interleaved latent visual reasoing framework for VEP. G
 
 ### 3.2 SFT with FUTURE-L1-50K
 
-SFT provides a necessary cold start for latent reasoing by training on curated interleaved traces and aligning latent states with future-frame embeddings. This prevents the model from either avoiding latent spans or producing continuous states not grounded in meaningful visual manifold before RL.
+SFT provides a necessary cold start for latent reasoning by training on curated interleaved traces and aligning latent states with future-frame embeddings. This prevents the model from either avoiding latent spans or producing continuous states not grounded in meaningful visual manifold before RL.
 
 > 💡 **SFT 的双重目标**: (1) **行为层面**: 训练模型在推理中正确使用 `<|latent_start|>` / `<|latent|>` / `<|latent_end|>` —— 何时开始、何时结束、每个 span 内生成多少潜状态； (2) **语义层面**: 通过 MSE 对齐确保潜状态位于有意义的视觉语义 manifold 上，而非任意向量。缺少任何一个目标都会导致 RL 阶段的 failure。
 
-**Visual-Gain Data Curation.** We curate FUTURE-L1-50K from TwiFF-2.7M (Liu et al., 2026a), a VCoT corpus that provides intermediate reasoing frames. Unlike synthesized sketches or generic helper images, these frames are temporally later frames from the same authentic video, so they depict unseen future states that are physically consistent with the observed prefix. This makes them a natural supervision signal for latent visual reasoing: the model is not asked to imitate arbitrary visual hints, but to internalize future visual states that actually occur.
+**Visual-Gain Data Curation.** We curate FUTURE-L1-50K from TwiFF-2.7M (Liu et al., 2026a), a VCoT corpus that provides intermediate reasoning frames. Unlike synthesized sketches or generic helper images, these frames are temporally later frames from the same authentic video, so they depict unseen future states that are physically consistent with the observed prefix. This makes them a natural supervision signal for latent visual reasoning: the model is not asked to imitate arbitrary visual hints, but to internalize future visual states that actually occur.
 
 > 💡 **为什么用 TwiFF 数据**: TwiFF 提供的"中间推理帧"实际上是**同一视频中时间上的后续帧**——这些帧描绘的是物理上与观察前缀一致的未来的真实视觉状态。这比合成的草图或通用的辅助图像更适合作为潜空间未来视觉推理的监督信号——因为目标是让模型内部化"实际发生"的未来状态，而非任意视觉提示。
 
-However, not every TwiFF sample provides useful supervision for VEP. Some examples are already easy to solve from the observed prefix alone, where extra future-frame hints add little value. Others remain ambiguous or uninformative even when a reasoing frame is provided. Training on them dilutes the signal that latent visual states should carry. We therefore filter examples by the marginal utility of their intermediate reasoing frames.
+However, not every TwiFF sample provides useful supervision for VEP. Some examples are already easy to solve from the observed prefix alone, where extra future-frame hints add little value. Others remain ambiguous or uninformative even when a reasoning frame is provided. Training on them dilutes the signal that latent visual states should carry. We therefore filter examples by the marginal utility of their intermediate reasoning frames.
 
-For each candidate, we evaluate Qwen3-VL-8B-Instruct under two conditions: (1) a text-only input with the observed video prefix and question; and (2) a hinted input that additionally includes the intermediate reasoing frames. Each condition uses 8 independent rollouts judged by Qwen3.5-397B-A17B. Let p_t, p_v ∈ [0, 8] be the correct-rollout counts; we retain samples with p_t ≤ 6, so the text-only setting is not saturated, and p_v - p_t ≥ 2, so the visual hint provides measurable lift. We rank retained samples by descending p_v - p_t, and take the top 50,000 items as FUTURE-L1-50K. All retained samples are reformatted into the interleaved trajectory shown in Figure 3.
+For each candidate, we evaluate Qwen3-VL-8B-Instruct under two conditions: (1) a text-only input with the observed video prefix and question; and (2) a hinted input that additionally includes the intermediate reasoning frames. Each condition uses 8 independent rollouts judged by Qwen3.5-397B-A17B. Let p_t, p_v ∈ [0, 8] be the correct-rollout counts; we retain samples with p_t ≤ 6, so the text-only setting is not saturated, and p_v - p_t ≥ 2, so the visual hint provides measurable lift. We rank retained samples by descending p_v - p_t, and take the top 50,000 items as FUTURE-L1-50K. All retained samples are reformatted into the interleaved trajectory shown in Figure 3.
 
 > 💡 **机制拆解 — Visual-Gain 筛选的完整流程**:
 >
@@ -78,11 +78,11 @@ L_SFT = L_CE + λ L_Latent
 
 where λ controls the strength of latent supervision.
 
-For discrete positions (textual reasoing, answer tokens, special control tokens), standard next-token prediction:
+For discrete positions (textual reasoning, answer tokens, special control tokens), standard next-token prediction:
 
 L_CE = -∑ log p_θ(w_t | w_<t, V, q)
 
-For latent positions, each hidden state h_t is aligned with the visual embedding e*_t of the corresponding future reasoing frame, extracted by the Qwen3-VL vision encoder:
+For latent positions, each hidden state h_t is aligned with the visual embedding e*_t of the corresponding future reasoning frame, extracted by the Qwen3-VL vision encoder:
 
 L_Latent = (1/|S|) ∑ ||h_t - e*_t||²₂
 
@@ -102,7 +102,7 @@ This anchors latent spans to the future-frame manifold while preserving standard
 
 ### 3.3 LA-DAPO for Latent-Aware RL
 
-SFT provides a grounded but teacher-forced initialization: each latent state is matched to a future-frame embedding, while sampled latent trajectories are not directly optimized for prediction success. We therefore introduce LA-DAPO (Latent-Aware Direct Advantage Policy Optimization), a latent-aware extension of DAPO (Yu et al., 2026a). LA-DAPO keeps DAPO's answer and format rewards, and adds two trajectory-level latent rewards: an outcome-contrastive reward that aligns latent trajectories associated with correct answers, and a temporal-diversity reward that discourages repeating the same visual thought across spans. Because these rewards depend on rollout outcomes and generated latent states, LA-DAPO can optimize latent reasoing without requiring intermediate-frame annotations during RL.
+SFT provides a grounded but teacher-forced initialization: each latent state is matched to a future-frame embedding, while sampled latent trajectories are not directly optimized for prediction success. We therefore introduce LA-DAPO (Latent-Aware Direct Advantage Policy Optimization), a latent-aware extension of DAPO (Yu et al., 2026a). LA-DAPO keeps DAPO's answer and format rewards, and adds two trajectory-level latent rewards: an outcome-contrastive reward that aligns latent trajectories associated with correct answers, and a temporal-diversity reward that discourages repeating the same visual thought across spans. Because these rewards depend on rollout outcomes and generated latent states, LA-DAPO can optimize latent reasoning without requiring intermediate-frame annotations during RL.
 
 > 💡 **LA-DAPO 的核心价值**: RL 阶段不需要中间帧标注——signal 完全来自 answer correctness 和潜状态结构。这使得 LA-DAPO 可以在大规模无标注视频上进行 RL，而不受 SFT 阶段需要未来帧的限制。这是一个**监督信号解耦**的设计：SFT 用未来帧 embedding（强监督）、RL 用 answer reward（弱监督）——前者保证初始化，后者保证泛化。
 

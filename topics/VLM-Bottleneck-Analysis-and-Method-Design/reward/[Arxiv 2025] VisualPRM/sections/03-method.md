@@ -12,7 +12,7 @@
 
 ### Method Overview
 
-During Best-of-N (BoN) evaluation, a critic model is required to estimate the quality of each response candidate. In this work, we formulate the critic model as a Process Reward Model (PRM). To develop a multimodal PRM, we first construct VisualPRM400K, a dataset comprising about 400K multimodal process supervision data, as detailed in Section 3.1. We then describe our PRM's modeling approach in Section 3.2. Furthermore, to support the evaluation of critic models, we establish VisualProcessBench to measure the abilities of critic models to detect erroneous steps in multimodal reasoing, as introduced in Section 3.3.
+During Best-of-N (BoN) evaluation, a critic model is required to estimate the quality of each response candidate. In this work, we formulate the critic model as a Process Reward Model (PRM). To develop a multimodal PRM, we first construct VisualPRM400K, a dataset comprising about 400K multimodal process supervision data, as detailed in Section 3.1. We then describe our PRM's modeling approach in Section 3.2. Furthermore, to support the evaluation of critic models, we establish VisualProcessBench to measure the abilities of critic models to detect erroneous steps in multimodal reasoning, as introduced in Section 3.3.
 
 > **整体逻辑链**: VisualPRM400K (数据) → VisualPRM (模型) → VisualProcessBench (评测)，三个模块形成严格的前后依赖：数据集用于训练 PRM，benchmark 用于评估 PRM。
 
@@ -58,7 +58,7 @@ Notably, to reduce the data construction costs, we set the max number of steps t
 
 ![Figure 2 (continued)](../images/91edd45d0ae7e5a03b0b1bf9d0132c36dc5f9dee0174c206f19cb978bfe6bc8b.jpg)
 
-*Figure 2. Data examples in VisualPRM400K and VisualProcessBench. For VisualPRM400K, we generate the data using an automatic data pipeline. The key idea is to estimate the expected accuracy mc_i of the given step s_{≤i} based on Monte Carlo sampling and consider the step correct if mc_i > 0. During the training process of VisualPRM, the data is formulated as multi-turn conversations and the model is required to predict the correctness of each step conditioned on the image, question, and previous steps. For VisualProcessBench, we collect questions from existing multimodal reasoing benchmarks and generate the solutions using leading MLLMs. Based on these questions and solutions, we employ a team of human experts with at least a university degree to manually annotate the correctness of each step in the solutions.*
+*Figure 2. Data examples in VisualPRM400K and VisualProcessBench. For VisualPRM400K, we generate the data using an automatic data pipeline. The key idea is to estimate the expected accuracy mc_i of the given step s_{≤i} based on Monte Carlo sampling and consider the step correct if mc_i > 0. During the training process of VisualPRM, the data is formulated as multi-turn conversations and the model is required to predict the correctness of each step conditioned on the image, question, and previous steps. For VisualProcessBench, we collect questions from existing multimodal reasoning benchmarks and generate the solutions using leading MLLMs. Based on these questions and solutions, we employ a team of human experts with at least a university degree to manually annotate the correctness of each step in the solutions.*
 
 > **Figure 2 批读**: 上图展示了 VisualPRM400K 和 VisualProcessBench 的数据样例和构建流程的对比：
 >
@@ -131,7 +131,7 @@ where y_i denotes the quality of i-th step.
 
 ### 3.3. VisualProcessBench
 
-**Definition.** Each sample in our benchmark consists of a multimodal reasoing question, a step-by-step solution, and correctness annotations for each step. Considering that recent models begin to demonstrate reflection abilities to rectify their own reasoing process, the evaluation setting used in previous works, which only requires the model to find the first erroneous step, may lead to a false negative estimation. Therefore, our benchmark requires the model to identify all erroneous steps in the given solution instead of only the first erroneous step.
+**Definition.** Each sample in our benchmark consists of a multimodal reasoning question, a step-by-step solution, and correctness annotations for each step. Considering that recent models begin to demonstrate reflection abilities to rectify their own reasoning process, the evaluation setting used in previous works, which only requires the model to find the first erroneous step, may lead to a false negative estimation. Therefore, our benchmark requires the model to identify all erroneous steps in the given solution instead of only the first erroneous step.
 
 > **设计决策 — 识别所有错误 vs. 仅第一个错误**:
 > - 传统设置（ProcessBench, PRMBench）：仅需找出第一个错误步骤
@@ -140,14 +140,14 @@ where y_i denotes the quality of i-th step.
 >   - 步骤 1 错 → 步骤 3 自我纠正 → 传统评测认为"模型在第 1 步犯错"（true）但忽视了步骤 3 的纠正能力
 >   - 这种设置会导致 false negative：模型实际的步骤判断能力被低估
 
-**Data Source.** Our benchmark focuses on multimodal reasoing tasks, collecting images and questions from existing representative multimodal reasoing benchmarks, including MMMU [90], MathVision [78], MathVerse [93], DynaMath [99], and WeMath [60]. Given these questions, we generate step-by-step solutions using leading MLLMs, including GPT-4o [58], Claude-3.5-Sonnet [4], Gemini-2.0-Flash [70], QvQ-72B-Preview [72], and InternVL2.5-78B [15]. The solutions are sampled from different MLLMs to ensure their diversity.
+**Data Source.** Our benchmark focuses on multimodal reasoning tasks, collecting images and questions from existing representative multimodal reasoning benchmarks, including MMMU [90], MathVision [78], MathVerse [93], DynaMath [99], and WeMath [60]. Given these questions, we generate step-by-step solutions using leading MLLMs, including GPT-4o [58], Claude-3.5-Sonnet [4], Gemini-2.0-Flash [70], QvQ-72B-Preview [72], and InternVL2.5-78B [15]. The solutions are sampled from different MLLMs to ensure their diversity.
 
 > **数据来源多样性**:
 > - Questions: 5 个多模态推理 benchmark → 覆盖数学、科学、逻辑等多学科
 > - Solutions: 5 种 MLLM → 涵盖闭源和开源、不同解题风格
 > - 这种多样性确保 benchmark 不会过拟合单一模型或单一领域的解题模式
 
-**Step Correctness Annotation.** We employ a team of human experts with at least a university degree to manually annotate the correctness of each step in the solutions. Specifically, 13 people worked for 3 days, resulting in a workload of 39 person-days. The cost per person-day is approximately 37 dollars. During the annotation process, annotators are provided with the image, question, ground truth answer, and each step of the solution. Their task is to assign each step in the solution a label of positive, negative, or neutral, as illustrated in Figure 2. A positive label indicates that the step is correct, while a negative label signifies an incorrect step. The neural label is assigned to steps that do not involve any reasoing process or provide no additional information. To ensure the annotation quality, annotators are permitted to skip questions they do not understand. During the annotation process, our dataset is divided into 10 splits, each containing approximately 300 samples. For each split, the authors of this paper manually review about 10% of the samples. Splits with erroneous annotations are sent back for re-annotation.
+**Step Correctness Annotation.** We employ a team of human experts with at least a university degree to manually annotate the correctness of each step in the solutions. Specifically, 13 people worked for 3 days, resulting in a workload of 39 person-days. The cost per person-day is approximately 37 dollars. During the annotation process, annotators are provided with the image, question, ground truth answer, and each step of the solution. Their task is to assign each step in the solution a label of positive, negative, or neutral, as illustrated in Figure 2. A positive label indicates that the step is correct, while a negative label signifies an incorrect step. The neural label is assigned to steps that do not involve any reasoning process or provide no additional information. To ensure the annotation quality, annotators are permitted to skip questions they do not understand. During the annotation process, our dataset is divided into 10 splits, each containing approximately 300 samples. For each split, the authors of this paper manually review about 10% of the samples. Splits with erroneous annotations are sent back for re-annotation.
 
 > **标注质量保障机制**:
 > 1. **人员素质**: 至少大学学历的标注员（总成本约 $37×39 ≈ $1,443）

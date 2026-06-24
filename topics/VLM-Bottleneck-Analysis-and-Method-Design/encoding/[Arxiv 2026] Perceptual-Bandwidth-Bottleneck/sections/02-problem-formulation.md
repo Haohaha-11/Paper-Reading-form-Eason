@@ -4,21 +4,21 @@
 
 ## 一、Preview
 
-本节建立 active visual reasoing 的概率框架，分三层构建：(1) 感知带宽的物理约束 (Sec 2.2)；(2) 从 latent state 到 observation 的生成过程 (Sec 2.3)；(3) 概率图模型 (Fig. 2) 统一上述组件。核心引入三个关键概念：Perceptual Bandwidth B、Resolution Probability φ(d)、Visibility Event S。
+本节建立 active visual reasoning 的概率框架，分三层构建：(1) 感知带宽的物理约束 (Sec 2.2)；(2) 从 latent state 到 observation 的生成过程 (Sec 2.3)；(3) 概率图模型 (Fig. 2) 统一上述组件。核心引入三个关键概念：Perceptual Bandwidth B、Resolution Probability φ(d)、Visibility Event S。
 
 ---
 
 ## 二、原始文本
 
-We ground our approach in the rigorous framework of Bayesian optimal experimental design (BOED). We consider a VLM agent performing active visual reasoing over a high-resolution image I and a query Q. A comprehensive summary of notations is provided in Appendix B.
+We ground our approach in the rigorous framework of Bayesian optimal experimental design (BOED). We consider a VLM agent performing active visual reasoning over a high-resolution image I and a query Q. A comprehensive summary of notations is provided in Appendix B.
 
-To bridge the gap between continuous visual signals and discrete token-based reasoing, we structure this formulation into three layers. First, we model the physical constraints of the VLM sensor, introducing the concept of perceptual bandwidth (Sec. 2.2). Second, we define the generative process, detailing how latent semantic states produce observable tokens through a resolution-gated mechanism (Sec. 2.3). Finally, we unify these components into a probabilistic graphical model (Fig. 2) that governs the agent's belief updates.
+To bridge the gap between continuous visual signals and discrete token-based reasoning, we structure this formulation into three layers. First, we model the physical constraints of the VLM sensor, introducing the concept of perceptual bandwidth (Sec. 2.2). Second, we define the generative process, detailing how latent semantic states produce observable tokens through a resolution-gated mechanism (Sec. 2.3). Finally, we unify these components into a probabilistic graphical model (Fig. 2) that governs the agent's belief updates.
 
 > 💡 **架构概述**: 三层层级结构 — Layer 1 (物理约束): 感知带宽如何限制传感器的信息采集能力；Layer 2 (生成过程): latent state (ℓ, y) 如何通过 visibility gate S 产生 observation z；Layer 3 (概率图模型): 统一所有随机变量和条件依赖关系，为后续的 Bayesian update 和 EIG 推导提供 formal basis。
 
 ![Figure 2](../images/f941b42b595ab62b58de57c02c05c7c55ea9960b675fe834a2ad99978a3b965e.jpg)
 
-*Figure 2: Influence diagram of active visual reasoing. The foveation design d and latent target location ℓ jointly determine the visibility event S. This latent gate S modulates whether the observation z conveys information about the semantic target y. The agent's objective is to maximise the utility U, defined as the expected information gain over y, by actively managing the sensing design d.*
+*Figure 2: Influence diagram of active visual reasoning. The foveation design d and latent target location ℓ jointly determine the visibility event S. This latent gate S modulates whether the observation z conveys information about the semantic target y. The agent's objective is to maximise the utility U, defined as the expected information gain over y, by actively managing the sensing design d.*
 
 > 💡 **Figure 2 概率图关键路径**: d (foveation design) + ℓ (location) → S (visibility event) → z (observation). y (semantic target) → z 的路径被 S gate 控制: S=0 时 y 与 z 独立（噪声），S=1 时 z 携带 y 的信息。这精确建模了：只有当你"看见"（S=1）目标时，视觉观测才携带语义信息。
 
@@ -65,13 +65,13 @@ Remark 2.3 (Analogy: The Semantic Nyquist Rate). The saturation behavior of f_sa
 
 ### 2.3. The Generative Process
 
-Visual reasoing is not a static task but an interactive loop initiated by the agent's decisions. The generative process unfolds in three stages: action selection, physical interaction, and observation generation.
+Visual reasoning is not a static task but an interactive loop initiated by the agent's decisions. The generative process unfolds in three stages: action selection, physical interaction, and observation generation.
 
 Design Space: Foveation Actions (D). Foveation actions are parameterised as spatial crops d = [u, v, w, h] ∈ [0, 1]^4. Crucially, d acts as a control variable for bandwidth allocation: by selecting a smaller region (w·h ≪ 1), the agent concentrates the fixed token budget onto a limited area, thereby boosting the local resolution density ρ(d) and increasing the resolution probability φ(d).
 
 Latent Parameters: Semantic & Spatial State (θ). We define the unknown state space as θ ≜ {ℓ, y}, which factorises into two components: the spatial location ℓ of the relevant object and the semantic target y (e.g., the class label or text answer).
 
-Agent's Belief State. At any time step t, the agent's knowledge about the latent parameters θ is captured by the joint posterior p_t(ℓ, y). In real-world visual reasoing, spatial location ℓ and semantic identity y are often coupled (e.g., context implies location). However, maintaining a full highdimensional joint posterior is computationally intractable for real-time inference.
+Agent's Belief State. At any time step t, the agent's knowledge about the latent parameters θ is captured by the joint posterior p_t(ℓ, y). In real-world visual reasoning, spatial location ℓ and semantic identity y are often coupled (e.g., context implies location). However, maintaining a full highdimensional joint posterior is computationally intractable for real-time inference.
 
 Assumption 2.4 (Factorised Belief Approximation). To ensure tractability during the sequential design process, we adopt a mean-field approximation (Blei et al., 2017), assuming that the spatial search and semantic identification are momentarily decoupled during planning:
 

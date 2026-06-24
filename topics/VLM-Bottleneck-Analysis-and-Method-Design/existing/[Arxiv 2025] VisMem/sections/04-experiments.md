@@ -9,7 +9,7 @@
 
 # 4.1. Settings
 
-Benchmarks. We select 12 benchmarks to comprehensively evaluate three main abilities of VLMs, i.e., understanding, reasoing and generation [31]. These benchmarks include: (1) understanding: MMStar [7], MMVet [76], MMT [73], BLINK [15], MuirBench [57]; (2) reasoing: MMMU [79], LogicVista [67], MathVista [37], MV-Math [62]; (3) generation: HallBench [19], Multi-Trust [82], MMVU [34]. Details are in Appendix 8.2.
+Benchmarks. We select 12 benchmarks to comprehensively evaluate three main abilities of VLMs, i.e., understanding, reasoning and generation [31]. These benchmarks include: (1) understanding: MMStar [7], MMVet [76], MMT [73], BLINK [15], MuirBench [57]; (2) reasoning: MMMU [79], LogicVista [67], MathVista [37], MV-Math [62]; (3) generation: HallBench [19], Multi-Trust [82], MMVU [34]. Details are in Appendix 8.2.
 
 > 💡 **批注**: 这段按 VisMem 的动态视觉记忆主线读：模型需要在生成过程中保留细粒度视觉证据，同时把可复用语义经验压缩成长期 latent memory；关键是何时调用、如何更新、是否真的缓解 visual grounding 丢失。
 
@@ -17,12 +17,12 @@ Baselines. We compare our VisMem against 15 baselines, falling into four categor
 
 Implementation Details. All experiments (except for Tab. 2) are implemented on Qwen2.5-VL-7B [4] based on 8
 
-Table 1. Results on 12 benchmarks to evaluate visual understanding, reasoing and generation abilities. The best and second best values are emphasized, and the average values are calculated for both specific capabilities and overall results.
+Table 1. Results on 12 benchmarks to evaluate visual understanding, reasoning and generation abilities. The best and second best values are emphasized, and the average values are calculated for both specific capabilities and overall results.
 
-> 💡 **批注**: 主实验表最关键的不是某个 benchmark 的最高分，而是 VisMem 是否在 understanding、reasoing、generation 三类任务上都同向提升；这决定它是不是通用视觉记忆机制，而不是只对单一能力有效。
+> 💡 **批注**: 主实验表最关键的不是某个 benchmark 的最高分，而是 VisMem 是否在 understanding、reasoning、generation 三类任务上都同向提升；这决定它是不是通用视觉记忆机制，而不是只对单一能力有效。
 
 ![Table 1.](../images/773df2901d0a7e89ecf5373f1950973fa6e22983e2869d0a25b571d94d70fe3a.jpg)
-*Table 1.: Table 1. Results on 12 benchmarks to evaluate visual understanding, reasoing and generation abilities. The best and second best values are emphasized, and the average values are calculated for both specific capabilities and overall results.*
+*Table 1.: Table 1. Results on 12 benchmarks to evaluate visual understanding, reasoning and generation abilities. The best and second best values are emphasized, and the average values are calculated for both specific capabilities and overall results.*
 
 > 💡 **Table 1. 批读**: 表格要看主指标、次指标与效率/鲁棒性是否一致支持论文 claim。
 
@@ -36,7 +36,7 @@ The main experimental results demonstrate that our proposed memory system VisMem
 
 > 💡 **批注**: 这段按 VisMem 的动态视觉记忆主线读：模型需要在生成过程中保留细粒度视觉证据，同时把可复用语义经验压缩成长期 latent memory；关键是何时调用、如何更新、是否真的缓解 visual grounding 丢失。
 
-[Enh.1] VisMem enables advanced and comprehensive visual capabilities. As presented in Tab. 1, our proposed method demonstrates distinct superiority over other baseline models. Compared with the vanilla model, Vis-Mem achieves a notable average improvement of $1 1 . 0 \%$ across all benchmarks. When compared with the top three baselines (i.e., Vision-R1 [26], VLM-R1 [44], and Open-ThinkImg [49]), our method still maintains improvements of $3 . 0 \%$ , $4 . 2 \%$ , and $4 . 9 \%$ , respectively. Furthermore, it consistently enhances performance across the three core domains of visual tasks, namely, understanding, reasoing, and generation. Our latent vision memory mechanism yields comprehensive enhancements in visual capabilities, with specific gains of $+ 8 . 9 \%$ in visual understanding, $+ 1 4 . 4 \%$ in reasoing, and $+ 1 0 . 6 \%$ in generation, relative to the vanilla model. It is also noteworthy that direct RL-based methods (e.g., VLM-R1 [44] and Vision-R1 [26]) also achieve relatively better performance than most other paradigms. However, this approach of directly modifying parameters relies on incremental parameter updates, which may lead to the overwriting of prior general knowledge and result in catastrophic forgetting.
+[Enh.1] VisMem enables advanced and comprehensive visual capabilities. As presented in Tab. 1, our proposed method demonstrates distinct superiority over other baseline models. Compared with the vanilla model, Vis-Mem achieves a notable average improvement of $1 1 . 0 \%$ across all benchmarks. When compared with the top three baselines (i.e., Vision-R1 [26], VLM-R1 [44], and Open-ThinkImg [49]), our method still maintains improvements of $3 . 0 \%$ , $4 . 2 \%$ , and $4 . 9 \%$ , respectively. Furthermore, it consistently enhances performance across the three core domains of visual tasks, namely, understanding, reasoning, and generation. Our latent vision memory mechanism yields comprehensive enhancements in visual capabilities, with specific gains of $+ 8 . 9 \%$ in visual understanding, $+ 1 4 . 4 \%$ in reasoning, and $+ 1 0 . 6 \%$ in generation, relative to the vanilla model. It is also noteworthy that direct RL-based methods (e.g., VLM-R1 [44] and Vision-R1 [26]) also achieve relatively better performance than most other paradigms. However, this approach of directly modifying parameters relies on incremental parameter updates, which may lead to the overwriting of prior general knowledge and result in catastrophic forgetting.
 
 > 💡 **批注**: 这段按 VisMem 的动态视觉记忆主线读：模型需要在生成过程中保留细粒度视觉证据，同时把可复用语义经验压缩成长期 latent memory；关键是何时调用、如何更新、是否真的缓解 visual grounding 丢失。
 
@@ -45,7 +45,7 @@ The main experimental results demonstrate that our proposed memory system VisMem
 
 > 💡 **Figure 3. 批读**: 这张图要结合 VisMem 的记忆机制读：看它是在说明短期/长期 memory 的结构、invocation/formation 的流程，还是在展示 grounding 保持、消融和泛化效果。
 
-As illustrated in Tab. 5 and 6, we conduct additional evaluations on selected subsets of MuirBench [57] and LogicVista [67]. Endowed with short- and long-term vision memory, our VisMem outperforms all baseline methods by a substantial margin in tasks demanding fine-grained visual evidence, such as counting $( + 7 . 0 \% )$ , visual retrieval $( + 9 . 4 \% )$ , and grounding $( 1 3 . 1 \% )$ , while also yielding notable improvements in visual reasoing tasks, including inductive $( + 5 . 7 \% )$ and deductive $( + 7 . 1 \% )$ learning.
+As illustrated in Tab. 5 and 6, we conduct additional evaluations on selected subsets of MuirBench [57] and LogicVista [67]. Endowed with short- and long-term vision memory, our VisMem outperforms all baseline methods by a substantial margin in tasks demanding fine-grained visual evidence, such as counting $( + 7 . 0 \% )$ , visual retrieval $( + 9 . 4 \% )$ , and grounding $( 1 3 . 1 \% )$ , while also yielding notable improvements in visual reasoning tasks, including inductive $( + 5 . 7 \% )$ and deductive $( + 7 . 1 \% )$ learning.
 
 > 💡 **批注**: 这段按 VisMem 的动态视觉记忆主线读：模型需要在生成过程中保留细粒度视觉证据，同时把可复用语义经验压缩成长期 latent memory；关键是何时调用、如何更新、是否真的缓解 visual grounding 丢失。
 
@@ -81,7 +81,7 @@ Through additional analyses, we derive three key research observations pertainin
 
 > 💡 **批注**: 这段按 VisMem 的动态视觉记忆主线读：模型需要在生成过程中保留细粒度视觉证据，同时把可复用语义经验压缩成长期 latent memory；关键是何时调用、如何更新、是否真的缓解 visual grounding 丢失。
 
-[Obs.2] The memory invocations are dynamic and selfadaptive. To elaborate on the effectiveness of our dual latent memory system, we characterize the properties of the short- and long-term memories it forms. As illustrated in Fig. 5, we first analyze the type-specific invocation ratios and their relative positions within the output sequence across four benchmarks. In summary, invocation ratios are self-adaptive across tasks, while both memory types exhibit a dynamic downward trend in invocation frequency throughout the output sequence. Task-specific comparisons in Fig. 9 further reveal that short-term latent memories are invoked more frequently to retrieve fine-grained details during visual information acquisition and understanding, particularly in multi-image scenarios, such as MuirBench [57]. Conversely, long-term latent vision memories play a more critical role in reasoing, e.g., in MV-Math [62], by providing abstract semantic knowledge relevant to the current task. Furthermore, Tab. 5 and 6, which detail the sub-task performance of MuirBench [57] and LogicVista [67] respectively, further illustrate that short-term and long-term latent visual memories are complementary. Their dynamic invocation yields superior performance compared to relying on a single memory type or the absence of vision memory.
+[Obs.2] The memory invocations are dynamic and selfadaptive. To elaborate on the effectiveness of our dual latent memory system, we characterize the properties of the short- and long-term memories it forms. As illustrated in Fig. 5, we first analyze the type-specific invocation ratios and their relative positions within the output sequence across four benchmarks. In summary, invocation ratios are self-adaptive across tasks, while both memory types exhibit a dynamic downward trend in invocation frequency throughout the output sequence. Task-specific comparisons in Fig. 9 further reveal that short-term latent memories are invoked more frequently to retrieve fine-grained details during visual information acquisition and understanding, particularly in multi-image scenarios, such as MuirBench [57]. Conversely, long-term latent vision memories play a more critical role in reasoning, e.g., in MV-Math [62], by providing abstract semantic knowledge relevant to the current task. Furthermore, Tab. 5 and 6, which detail the sub-task performance of MuirBench [57] and LogicVista [67] respectively, further illustrate that short-term and long-term latent visual memories are complementary. Their dynamic invocation yields superior performance compared to relying on a single memory type or the absence of vision memory.
 
 > 💡 **批注**: 这段按 VisMem 的动态视觉记忆主线读：模型需要在生成过程中保留细粒度视觉证据，同时把可复用语义经验压缩成长期 latent memory；关键是何时调用、如何更新、是否真的缓解 visual grounding 丢失。
 

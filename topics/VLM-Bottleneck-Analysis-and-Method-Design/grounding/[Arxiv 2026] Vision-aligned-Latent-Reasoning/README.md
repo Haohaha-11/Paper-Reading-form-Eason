@@ -1,10 +1,10 @@
-# Vision-aligned Latent Reasoing for Multi-modal Large Language Model (VaLR)
+# Vision-aligned Latent Reasoning for Multi-modal Large Language Model (VaLR)
 
 ## Paper Metadata
 
 | 项目 | 内容 |
 |------|------|
-| **Title** | Vision-aligned Latent Reasoing for Multi-modal Large Language Model |
+| **Title** | Vision-aligned Latent Reasoning for Multi-modal Large Language Model |
 | **Authors** | Byungwoo Jeon¹, Yoonwoo Jeong², Hyunseok Lee¹, Minsu Cho²'³'*, Jinwoo Shin¹'³'* |
 | **Affiliations** | ¹KAIST, ²POSTECH, ³KRAFTON |
 | **Venue** | arXiv 2026 |
@@ -73,10 +73,10 @@ VaLR 提出了一种视觉对齐的潜空间推理框架，通过在每步 Chain
 │    ├── Model: Qwen2.5-VL-7B (frozen vision encoder)              │
 │    ├── Data: 450K CoT VQA samples                                │
 │    ├── Loss: L_CE (cross-entropy)                                │
-│    └── Output: Base MLLM with text reasoing capability           │
+│    └── Output: Base MLLM with text reasoning capability           │
 │                                                                   │
 │  [Stage 2: Latent Token Training + REPA]                          │
-│    ├── Insert K=16 latent tokens before each reasoing step      │
+│    ├── Insert K=16 latent tokens before each reasoning step      │
 │    ├── Special tokens: <latent> ... </latent>                     │
 │    ├── Extract intermediate features F_MLLM from MLLM            │
 │    ├── Project via MLP ψ: F̂_MLLM = ψ(Upsample(F_MLLM))          │
@@ -119,7 +119,7 @@ VaLR 提出了一种视觉对齐的潜空间推理框架，通过在每步 Chain
 1. 将 VaLR 扩展到视频和具身智能场景（VLA、CUA）
 2. 探索更大规模的模型（13B+）和多模态架构
 3. 减少对显式 CoT 标注的依赖，探索弱监督或无监督的 latent token 定位策略
-4. 结合 RL 进行 latent reasoing 的策略优化
+4. 结合 RL 进行 latent reasoning 的策略优化
 5. 更细粒度的多尺度视觉对齐策略
 
 ## Reading Q&A Record
@@ -131,7 +131,7 @@ VaLR 提出了一种视觉对齐的潜空间推理框架，通过在每步 Chain
 | 3 | 为什么不用视觉编码器作为 MLLM 的额外输入？ | Section 3.2, Figure 4 (Appx C.4) | 实验证明 REPA 对齐方式优于将视觉特征作为输入 token（input token method），且 REPA 在推理时不需要外部编码器，更高效。 |
 | 4 | 为什么不对齐 MLLM 的 native encoder 而要用外部编码器？ | Section 4.5, Table 3 | 对齐 MLLM 原生编码器已经有效（VaLR w/ QE），但使用更强的专用视觉编码器（如 DINOv3）能进一步提升性能。VaLR 不依赖外部编码器，但它们能提供更丰富的视觉表征。 |
 | 5 | 为什么中间层（第 12 层）对齐效果最好？ | Section 4.5, Table 6 | 这与之前的研究一致（Yu et al., 2025; Kang et al., 2025; Jiang et al., 2025），视觉信息在 MLLM 的中间层表现最突出。前层（第 4 层）视觉表征不成熟，后层（第 27 层）偏向语义。 |
-| 6 | Latent reasoing baselines（LVR, CoVT, Monet）为什么在 VSI-Bench 上崩溃？ | Section 4.2, Appx C.1 | 这些方法仅支持单视图场景或对多视图扩展有限。没有动态视觉重注入机制，在需要长期视觉记忆的多视图任务上视觉信号完全衰减。 |
+| 6 | Latent reasoning baselines（LVR, CoVT, Monet）为什么在 VSI-Bench 上崩溃？ | Section 4.2, Appx C.1 | 这些方法仅支持单视图场景或对多视图扩展有限。没有动态视觉重注入机制，在需要长期视觉记忆的多视图任务上视觉信号完全衰减。 |
 | 7 | VaLR 中 K（latent tokens 数）和 λ（REPA 权重）如何影响性能？ | Section 4.5, Table 11-12 | K 越大性能越好但边际递减（16→25 只 +0.2%）；λ=0.5 时最佳，过大会破坏语言语义，过小则视觉对齐不足。是语言语义保持和视觉对齐之间的平衡。 |
 
 ## Citation Landscape
@@ -145,10 +145,10 @@ VaLR 提出了一种视觉对齐的潜空间推理框架，通过在每步 Chain
 **MLLM Backbones & Architectures**:
 - Qwen2.5-VL [Bai et al., 2025], LLaVA [Liu et al., 2023; 2024], PaliGemma [Beyer et al., 2024], Flamingo [Alayrac et al., 2022], BLIP-2 [Li et al., 2023], PrismaticVLM [Karamcheti et al., 2024]
 
-**Chain-of-Thought Reasoing**:
+**Chain-of-Thought Reasoning**:
 - CoT [Wei et al., 2022], Math-Shepherd [Wang et al., 2024], DeepSeekMath [Shao et al., 2024], MetaMath [Yu et al., 2023], Zebra-CoT [Li et al., 2025a], Visual-CoT [Shao et al., 2024a], CogCoM [Qi et al., 2025]
 
-**Latent Reasoing**:
+**Latent Reasoning**:
 - COCONUT [Hao et al., 2024], LVR [Li et al., 2025c], CoVT [Qin et al., 2025], Monet [Wang et al., 2025c], Machine Mental Imagery [Yang et al., 2025d]
 
 **Representation Alignment**:
@@ -166,7 +166,7 @@ VaLR 提出了一种视觉对齐的潜空间推理框架，通过在每步 Chain
 **Training Frameworks**:
 - VLMEvalKit [Duan et al., 2024], vLLM [Kwon et al., 2023], DeepSpeed ZeRO-2
 
-**Reasoing Search Strategies**:
+**Reasoning Search Strategies**:
 - Tree-of-Thoughts [Yao et al., 2023], Self-Evaluation Beam Search [Xie et al., 2023], Stream of Search [Gandhi et al., 2024], Dualformer [Su et al., 2024]
 
 ---

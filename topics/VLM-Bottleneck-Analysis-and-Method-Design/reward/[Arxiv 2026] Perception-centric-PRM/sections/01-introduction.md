@@ -10,11 +10,11 @@
 
 ## 二、原始文本
 
-Vision-language models (VLMs) [3, 7, 12] deliver strong results across tasks such as multimodal mathematics [26, 38], chart analysis [24, 27], and general VQA [50]. However, they still falter on complex visual reasoing tasks, where multi-step chains of thought can be brittle and produce perceptual or logical mistakes [6, 11, 42]. To improve the performance, reinforcement learning with verifiable rewards (RLVR) [13, 33, 35] has become a widely used post-training strategy. Built on policy-gradient methods like PPO and GRPO, RLVR assigns outcome-level rewards to explicit reasoing traces and optimizes the policy toward more consistent, robust multi-step visual reasoing.
+Vision-language models (VLMs) [3, 7, 12] deliver strong results across tasks such as multimodal mathematics [26, 38], chart analysis [24, 27], and general VQA [50]. However, they still falter on complex visual reasoning tasks, where multi-step chains of thought can be brittle and produce perceptual or logical mistakes [6, 11, 42]. To improve the performance, reinforcement learning with verifiable rewards (RLVR) [13, 33, 35] has become a widely used post-training strategy. Built on policy-gradient methods like PPO and GRPO, RLVR assigns outcome-level rewards to explicit reasoning traces and optimizes the policy toward more consistent, robust multi-step visual reasoning.
 
 > 💡 **背景梳理**: VLM 在复杂视觉推理任务上的根本瓶颈不是"推理能力不够"，而是多步推理链中的感知或逻辑错误难以被 RLVR 的 outcome-level reward 捕获。一句话总结现状：模型在做 chain-of-thought 时会"走神"（插入幻觉或漂移），但 reward 信号只看最后的答案对不对。
 
-Despite these advances, outcome-level supervision in RLVR is poorly matched to the inherently multi-step nature of visual reasoing. In fact, sequence-level rewards are too coarse to identify which perception or reasoing steps went wrong, creating a hard credit-assignment problem. In practice, VLMs often insert hallucinated objects or spatial relations and drift from the image context mid-chain [1, 19, 20, 22, 53], but only the final reward offers little guidance about whether the failure arose from visual grounding or subsequent logic. Thus, the sparse-reward regime ultimately bottlenecks RLVR's gains on VLMs [48].
+Despite these advances, outcome-level supervision in RLVR is poorly matched to the inherently multi-step nature of visual reasoning. In fact, sequence-level rewards are too coarse to identify which perception or reasoning steps went wrong, creating a hard credit-assignment problem. In practice, VLMs often insert hallucinated objects or spatial relations and drift from the image context mid-chain [1, 19, 20, 22, 53], but only the final reward offers little guidance about whether the failure arose from visual grounding or subsequent logic. Thus, the sparse-reward regime ultimately bottlenecks RLVR's gains on VLMs [48].
 
 > 💡 **机制拆解 — Sparse Reward 瓶颈**:
 >
@@ -26,7 +26,7 @@ Despite these advances, outcome-level supervision in RLVR is poorly matched to t
 >
 > 这就是本文的核心 gap：RLVR 给的所有东西（最终奖励）是必要的，但远不充分。需要一个更精细的监督信号来"拆解"这个最终奖励。
 
-To overcome the sparse-reward limitation, we introduce a process reward model (PRM) that supervises intermediate steps rather than only the final outcome [39]. Prior work shows that PRMs can effectively guide both training and inference by rewarding stepwise, chain-of-thought correctness [21, 55]. However, building a high-quality PRM is difficult because step-level annotations are expensive and some steps are only verifiable after later derivations, complicating labeling and consistency [17, 54]. Fortunately, in visual reasoing many intermediate steps are perceptual claims (e.g., objects, attributes, or spatial relations) that can be grounded directly in the image, enabling automatic checks for "image-text misalignment" (hallucination). Therefore, it is promising to develop a perception-centric PRM that detects and explains such misalignments to provide fine-grained feedback, alleviating sparse-reward issue and improving learning of the reasoing ability.
+To overcome the sparse-reward limitation, we introduce a process reward model (PRM) that supervises intermediate steps rather than only the final outcome [39]. Prior work shows that PRMs can effectively guide both training and inference by rewarding stepwise, chain-of-thought correctness [21, 55]. However, building a high-quality PRM is difficult because step-level annotations are expensive and some steps are only verifiable after later derivations, complicating labeling and consistency [17, 54]. Fortunately, in visual reasoning many intermediate steps are perceptual claims (e.g., objects, attributes, or spatial relations) that can be grounded directly in the image, enabling automatic checks for "image-text misalignment" (hallucination). Therefore, it is promising to develop a perception-centric PRM that detects and explains such misalignments to provide fine-grained feedback, alleviating sparse-reward issue and improving learning of the reasoning ability.
 
 > 💡 **机制拆解 — 为什么 Perception-centric 的 PRM 天然可行？**:
 >
@@ -40,7 +40,7 @@ To overcome the sparse-reward limitation, we introduce a process reward model (P
 
 To operationalize this, we first define a perception-level error-finding schema for a perception-centric PRM. We curate training queries from perception-intensive settings — such as goal-directed visual search and referring-expression grounding — and use a strong LLM to produce structured annotations that mark image-text misalignments (hallucinatory spans and their visual counter-evidence). After supervised fine-tuning on this corpus, the PRM can reliably flag hallucinations that arise within multi-step rationales and return well-structured feedback. Building on this, we integrate the PRM into RLVR by decomposing the sequence-level advantage and assigning fine-grained, token-level penalties to spans identified as hallucinatory, yielding more precise credit assignment than GRPO alone. Finally, based on PRM's structured outputs, we employ a simple Truncation-Regeneration loop at inference. In this way, suspect spans are pruned and regenerated, trading a bit more compute for stronger factual grounding.
 
-Experimental results demonstrate that, compared to direct GRPO, our training method significantly enhances the model's perceptual capabilities, boosting performance on perception-centric tasks. Furthermore, we observe a surprising and significant generalization effect: even without applying PRM supervision during the training for complex reasoing tasks, this foundational improvement in perception nonetheless generalizes, leading to a comprehensive enhancement of the model's overall reasoing abilities.
+Experimental results demonstrate that, compared to direct GRPO, our training method significantly enhances the model's perceptual capabilities, boosting performance on perception-centric tasks. Furthermore, we observe a surprising and significant generalization effect: even without applying PRM supervision during the training for complex reasoning tasks, this foundational improvement in perception nonetheless generalizes, leading to a comprehensive enhancement of the model's overall reasoning abilities.
 
 > 💡 **核心发现 — "能力迁移"现象**:
 > 这是一个非常有意思的实验观察：训练阶段只在 Visual Search 等感知密集任务上使用 Perceval 做 token-level 监督，对数学/图表等复杂推理任务照常使用 GRPO（不做 PRM 干预）。但测试时发现复杂推理任务也有显著提升！
@@ -49,7 +49,7 @@ Experimental results demonstrate that, compared to direct GRPO, our training met
 
 Our main contributions are as follows:
 
-- We propose a novel, perception-centric process reward model (PRM) that can explicitly identify perception errors in the reasoing process.
+- We propose a novel, perception-centric process reward model (PRM) that can explicitly identify perception errors in the reasoning process.
 - We introduce a fine-grained, token-level advantage reallocation framework that integrates our PRM with GRPO, to solve the sparse reward issue.
 - We design a test-time iterative refinement strategy that leverages our PRM to actively detect and correct perceptual errors from the policy model.
 

@@ -46,7 +46,7 @@ To overcome the sparse supervision issue, we propose PERCEVAL (Perception-centri
 
 **Process Reward Model Training.** We train PERCEVAL using a dataset constructed via a four-stage pipeline:
 
-- **Query selection**: to emphasize perceptual grounding, we primarily source the images and queries from visual search datasets [42, 56] that require locating specific objects in large images, and we include a small proportion from other domains (e.g., mathematical reasoing and general understanding [10]) to preserve breadth;
+- **Query selection**: to emphasize perceptual grounding, we primarily source the images and queries from visual search datasets [42, 56] that require locating specific objects in large images, and we include a small proportion from other domains (e.g., mathematical reasoning and general understanding [10]) to preserve breadth;
 
 - **Rollout generation**: based on the images and queries, we use an open-source VLM (e.g., Qwen2.5-VL-7B) to produce responses, whose imperfect perceptual alignment yields realistic hallucinations as negative examples;
 
@@ -131,7 +131,7 @@ Beyond training-time use, PERCEVAL (our perception-centric PRM) enables test-tim
 
 **Truncate-then-Regenerate.** When PERCEVAL detects an erroneous claim, it returns the offending span in the model's rationale. We truncate the hypothesis before the first token of that span, preserving only the verified prefix as context. The policy model then continues to regenerate the answer following this cleaned prefix. As the original image and question are given, the VLM just needs to resample the detected hallucinated part, without rewriting verified content. This truncate-continue cycle repeats until no new errors are flagged or a maximum of k iterations is reached. The iteration cap k bounds latency while typically yielding large accuracy gains with only a few refinement steps.
 
-**Truncate-Thinking-then-Regenerate.** To further encourage self-correction, we augment the above method with a lightweight guidance for thinking. After truncating at the error, we append a brief thinking prompt in PERCEVAL's output, e.g., "Wait, I need to reconsider this reasoing more carefully: the mug is not on the brick in the image.", which guides the model to think and then regenerate from the augmented context. The added thinking process enables self-reflection on the failure mode (object/attribute/spatial mismatch), improving the likelihood that the continuation repairs the specific misalignment. As with Truncate-then-Regenerate, we iterate up to k times or stop early when no further errors are found, trading modest extra compute for stronger factual grounding.
+**Truncate-Thinking-then-Regenerate.** To further encourage self-correction, we augment the above method with a lightweight guidance for thinking. After truncating at the error, we append a brief thinking prompt in PERCEVAL's output, e.g., "Wait, I need to reconsider this reasoning more carefully: the mug is not on the brick in the image.", which guides the model to think and then regenerate from the augmented context. The added thinking process enables self-reflection on the failure mode (object/attribute/spatial mismatch), improving the likelihood that the continuation repairs the specific misalignment. As with Truncate-then-Regenerate, we iterate up to k times or stop early when no further errors are found, trading modest extra compute for stronger factual grounding.
 
 > 💡 **机制拆解 — 两种 Test-time Scaling 策略对比**:
 >

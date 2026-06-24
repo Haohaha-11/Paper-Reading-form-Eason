@@ -1,10 +1,10 @@
-# VisualPRM: An Effective Process Reward Model for Multimodal Reasoing
+# VisualPRM: An Effective Process Reward Model for Multimodal Reasoning
 
 ## Paper Metadata
 
 | 项目 | 内容 |
 |------|------|
-| **Title** | VisualPRM: An Effective Process Reward Model for Multimodal Reasoing |
+| **Title** | VisualPRM: An Effective Process Reward Model for Multimodal Reasoning |
 | **Authors** | Weiyun Wang, Zhangwei Gao, Lianjie Chen, Zhe Chen, Jinguo Zhu, Xiangyu Zhao, Yangzhou Liu, Yue Cao, Shenglong Ye, Xizhou Zhu, Lewei Lu, Haodong Duan, Yu Qiao, Jifeng Dai, Wenhai Wang |
 | **Affiliations** | Fudan University, Shanghai AI Laboratory, Shanghai Jiaotong University, Tsinghua University, Nanjing University, The Chinese University of Hong Kong, SenseTime Research |
 | **Venue** | arXiv 2025 |
@@ -86,12 +86,12 @@ VisualPRM 提出首个多模态过程奖励模型 (PRM, 8B)，构建了约 400K 
 │    └── Model: 8B parameters, 1 epoch, lr=1e-5, AdamW                 │
 │                                                                       │
 │  [Phase 3: Best-of-N Evaluation]                                      │
-│    ├── Policy Model generates N=8 CoT reasoing (temp=0.7)           │
+│    ├── Policy Model generates N=8 CoT reasoning (temp=0.7)           │
 │    ├── VisualPRM scores each response                                 │
 │    │     Step score: softmax over {+, -} tokens                      │
 │    │     Response score: average of step scores                      │
 │    ├── Select response with highest score                            │
-│    └── Evaluate on 7 multimodal reasoing benchmarks                 │
+│    └── Evaluate on 7 multimodal reasoning benchmarks                 │
 │                                                                       │
 └──────────────────────────────────────────────────────────────────────┘
 ```
@@ -140,7 +140,7 @@ VisualPRM 提出首个多模态过程奖励模型 (PRM, 8B)，构建了约 400K 
 ## Citation Landscape
 
 ### Semantic Scholar TLDR
-> "VisualPRM is an 8B multimodal Process Reward Model that improves MLLM reasoing via Best-of-N evaluation, built on the VisualPRM400K dataset and evaluated on the human-annotated VisualProcessBench."
+> "VisualPRM is an 8B multimodal Process Reward Model that improves MLLM reasoning via Best-of-N evaluation, built on the VisualPRM400K dataset and evaluated on the human-annotated VisualProcessBench."
 
 ### Reference Grouping by Topic
 
@@ -159,7 +159,7 @@ VisualPRM 提出首个多模态过程奖励模型 (PRM, 8B)，构建了约 400K 
 **Reinforcement Learning for MLLMs**:
 - REINFORCE [2, 26], PPO [64], DeepSeek-R1 [24], DeepSeekMath [66], MMPR/Mix Preference Optimization [82]
 
-**Multimodal Reasoing Benchmarks**:
+**Multimodal Reasoning Benchmarks**:
 - MMMU [90], MathVista [50], MathVision [78], MathVerse [93], DynaMath [99], WeMath [60], LogicVista [87]
 
 ---

@@ -20,7 +20,7 @@
 
 **Training**: All models are trained with verl (Sheng et al., 2024), SGLang (Zheng et al., 2024) as inference engine, FSDP2 (Zhao et al., 2023) as training backend. Base model: Gemma3-4B-IT.
 
-Three controlled variants (same images, questions, answers, reasoing traces; differ only in grounding tags):
+Three controlled variants (same images, questions, answers, reasoning traces; differ only in grounding tags):
 
 | Variant | Grounding | Tag Format |
 |---------|-----------|------------|
@@ -32,7 +32,7 @@ SFT first (cold-start), then RL with GRPO.
 
 > 💡 **实验设计的干净性**: 三个变体使用 "parallel examples" -- 相同的图像、问题、答案和底层推理链，唯一区别是是否包含 grounding tags 以及 tag 是 box 还是 point。这确保了任何性能差异都可以归因于 grounding 的有无和类型。
 
-**Evaluation**: 2 counting + 4 spatial reasoing benchmarks, evaluated via VLMEvalKit (Duan et al., 2025). Temperature 1.0, 4 inference passes, report both average accuracy and pass@4.
+**Evaluation**: 2 counting + 4 spatial reasoning benchmarks, evaluated via VLMEvalKit (Duan et al., 2025). Temperature 1.0, 4 inference passes, report both average accuracy and pass@4.
 
 | Benchmark | Type | Metric |
 |-----------|------|--------|
@@ -40,7 +40,7 @@ SFT first (cold-start), then RL with GRPO.
 | CountQA | Counting | Acc, Pass@4 |
 | VSR-zeroshot | Spatial (yes/no) | Acc, Pass@4 |
 | EmbSpatial | Spatial (embodied) | Acc, Pass@4 |
-| SpatialMQA | Spatial reasoing | Acc, Pass@4 |
+| SpatialMQA | Spatial reasoning | Acc, Pass@4 |
 | MultihopSpatial | Multi-hop spatial | Acc, Pass@4 |
 
 > 💡 **Pass@4 的意义**: Temperature 1.0 下的 stochastic decoding 引入了采样方差，4 次推理取 pass@4 能更稳定地反映模型的真实能力上限，减少 variance 对结论的干扰。
@@ -74,7 +74,7 @@ SFT first (cold-start), then RL with GRPO.
 > - **Point mode 在计数上更强**: point w/o reward 在 CountQA 上达到最高 12.34 (acc) 和 31.48 (pass@4)。
 > - **Grounding reward for box 有小幅正收益**: box w/ reward 在两个 benchmark 的 accuracy 上都超过了 w/o reward。
 
-**Table 2: Spatial Reasoing Benchmarks**
+**Table 2: Spatial Reasoning Benchmarks**
 
 | Method | VSR-zero Acc | EmbSpatial Acc | SpatialMQA Acc | Multihop Acc |
 |--------|:---:|:---:|:---:|:---:|
@@ -87,7 +87,7 @@ SFT first (cold-start), then RL with GRPO.
 | *Gemma3-12B-IT* | *67.98* | *56.68* | *37.85* | *30.08* |
 | *Gemma3-27B-IT* | *69.25* | *62.09* | *38.99* | *30.94* |
 
-> 💡 **关键发现 2 — Spatial Reasoing**:
+> 💡 **关键发现 2 — Spatial Reasoning**:
 >
 > - **Non-grounded thinking 灾难性退化**: 在 MultihopSpatial 上从 22.70 暴跌到 4.79，EmbSpatial 从 49.13 到 20.54。这再次验证了 length collapse 问题。
 > - **4B grounded 模型超越 27B**:
@@ -119,7 +119,7 @@ SFT first (cold-start), then RL with GRPO.
 
 > 💡 **Box reward 在空间推理上更有效的原因**:
 >
-> 空间推理任务（left/right, above/below, distance, overlap）对 object extent 和相对几何关系高度敏感。Bounding box 提供了 object identity 和 object extent 的双重信息。精确的 box 意味着更准确的 spatial relation 推理。Grounding reward 通过 IoU 直接鼓励模型生成与 GT 更一致的 box，间接提升了 spatial reasoing 的质量。
+> 空间推理任务（left/right, above/below, distance, overlap）对 object extent 和相对几何关系高度敏感。Bounding box 提供了 object identity 和 object extent 的双重信息。精确的 box 意味着更准确的 spatial relation 推理。Grounding reward 通过 IoU 直接鼓励模型生成与 GT 更一致的 box，间接提升了 spatial reasoning 的质量。
 
 **Point mode**: grounding reward 没有带来一致的提升。6 个 benchmark 中，point RL w/ 和 w/o reward 的整体表现接近，有些指标上升，有些下降。
 
@@ -152,7 +152,7 @@ SFT first (cold-start), then RL with GRPO.
 > 2. 对于小物体或不规则形状物体，精确 box 更难预测
 > 3. 这些 extra effort 对计数任务没有额外帮助
 
-**Spatial reasoing benchmarks**: The two interfaces are much closer.
+**Spatial reasoning benchmarks**: The two interfaces are much closer.
 
 > 💡 **空间推理上 Box vs Point 接近的原因分析**:
 >
@@ -167,7 +167,7 @@ SFT first (cold-start), then RL with GRPO.
 > | 任务类型 | 推荐 Grounding 模式 | 原因 |
 > |---------|-------------------|------|
 > | Counting | Point | Instance-level localization 足够，避免 box 回归困难 |
-> | Spatial Reasoing | Box (w/ grounding reward) | Box extent 提供几何信息，grounding reward 持续正收益 |
+> | Spatial Reasoning | Box (w/ grounding reward) | Box extent 提供几何信息，grounding reward 持续正收益 |
 > | 通用场景 | Box (w/ grounding reward) | 最稳定的 RL 优化信号 |
 
 ---

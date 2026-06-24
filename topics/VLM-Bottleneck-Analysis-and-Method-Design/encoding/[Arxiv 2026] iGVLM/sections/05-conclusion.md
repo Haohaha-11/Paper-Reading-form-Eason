@@ -10,7 +10,7 @@
 
 ## 二、原始文本
 
-We presented iGVLM, a decoupled instruction-guided vision encoder that enables visual representations to be modulated according to textual instructions without retraining the visual backbone. By explicitly separating representation preservation from instruction-conditioned adaptation, iGVLM provides an efficient and stable mechanism for question-aware visual perception in vision–language models. Extensive experiments across diverse benchmarks demonstrate that iGVLM consistently improves instruction sensitivity and fine-grained multimodal reasoing while maintaining strong general-purpose performance across model scales from 3B to 13B parameters. In addition, we introduced MM4, a controlled diagnostic benchmark for evaluating multi-instruction, multi-query visual reasoing, enabling targeted analysis of instruction-conditioned perception. Overall, our results highlight the importance of explicitly conditioning the utilization of visual features on linguistic instructions, and suggest decoupled visual modulation as a principled design direction for instruction-aware multimodal models.
+We presented iGVLM, a decoupled instruction-guided vision encoder that enables visual representations to be modulated according to textual instructions without retraining the visual backbone. By explicitly separating representation preservation from instruction-conditioned adaptation, iGVLM provides an efficient and stable mechanism for question-aware visual perception in vision–language models. Extensive experiments across diverse benchmarks demonstrate that iGVLM consistently improves instruction sensitivity and fine-grained multimodal reasoning while maintaining strong general-purpose performance across model scales from 3B to 13B parameters. In addition, we introduced MM4, a controlled diagnostic benchmark for evaluating multi-instruction, multi-query visual reasoning, enabling targeted analysis of instruction-conditioned perception. Overall, our results highlight the importance of explicitly conditioning the utilization of visual features on linguistic instructions, and suggest decoupled visual modulation as a principled design direction for instruction-aware multimodal models.
 
 > 💡 **一句话总结**: iGVLM 证明了一个核心论点——在 VLM 中，**视觉特征的"利用方式"**（而非"提取质量"）应该被指令显式地条件化，而解耦双分支是实现这一目标的高效方案。
 
@@ -25,7 +25,7 @@ We presented iGVLM, a decoupled instruction-guided vision encoder that enables v
 > - **Universal over Specialized**: AdaLN 调制对所有问题类型通用，不依赖问题特定的搜索策略
 
 > 💡 **论文写作亮点 — 值得学习的表达**:
-> - "bridging **passive perception** and **active reasoing**" (Abstract) — 简洁有力地概括了从"被动感知"到"主动推理"的转变
+> - "bridging **passive perception** and **active reasoning**" (Abstract) — 简洁有力地概括了从"被动感知"到"主动推理"的转变
 > - "explicitly conditioning the **utilization** of visual features" (Conclusion) — 强调了"利用"而非"提取"，精确定义了贡献边界
 > - "principled design direction" — 将方法上升为设计原则，提升了论文的学术影响力
 
@@ -34,14 +34,14 @@ We presented iGVLM, a decoupled instruction-guided vision encoder that enables v
 > 2. **训练依赖**: 虽然推理高效，但 AdaLN 参数仍需训练——不能像 DMLR 那样 training-free
 > 3. **模态限制**: 仅验证了图像+文本，对视频、音频等多模态场景的扩展性未知
 > 4. **MM4 的规模**: 180 图 x 4 问规模偏小，可能不足以代表真实世界的问题多样性
-> 5. **与 reasoing 模型的结合**: iGVLM 的 LLM 是非 reasoing 模型（Vicuna, Qwen2.5），如果结合 reasoing 能力（如 Qwen3-VL, R1-OneVision），效果可能更显著
+> 5. **与 reasoning 模型的结合**: iGVLM 的 LLM 是非 reasoning 模型（Vicuna, Qwen2.5），如果结合 reasoning 能力（如 Qwen3-VL, R1-OneVision），效果可能更显著
 
 > 💡 **潜在研究方向**:
 > 1. 更细粒度的指令调制（word/token-level 而非 sentence-level）
 > 2. 多轮对话中的指令调制持续性（instruction modulation persistence across turns）
 > 3. 将 AdaLN 扩展到视频帧级别的时序调制
 > 4. 结合 test-time adaptation 实现 training-free 的指令调制
-> 5. 在更大规模的 reasoing 模型（如 72B+）上验证 scaling 上限
+> 5. 在更大规模的 reasoning 模型（如 72B+）上验证 scaling 上限
 
 ---
 

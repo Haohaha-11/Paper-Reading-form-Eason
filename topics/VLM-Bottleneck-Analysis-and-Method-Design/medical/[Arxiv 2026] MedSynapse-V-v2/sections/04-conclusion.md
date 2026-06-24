@@ -10,7 +10,7 @@
 
 ## 二、原始文本
 
-We propose MedSynapse-V, a medical vision-language model that performs clinical reasoing through compact latent tokens rather than explicit chain-of-thought generation. By combining causal counterfactual rewards with progressive memory evolution, our approach effectively internalizes diagnostic reasoing within a low-latency framework. Experiments across multiple medical benchmarks show that MedSynapse-V outperforms existing medical VLMs, general-purpose VLMs, and RL-based CoT methods in both accuracy and efficiency, confirming that latent cognitive processes guided by well-designed rewards can effectively replace verbose explicit reasoing in the medical domain.
+We propose MedSynapse-V, a medical vision-language model that performs clinical reasoning through compact latent tokens rather than explicit chain-of-thought generation. By combining causal counterfactual rewards with progressive memory evolution, our approach effectively internalizes diagnostic reasoning within a low-latency framework. Experiments across multiple medical benchmarks show that MedSynapse-V outperforms existing medical VLMs, general-purpose VLMs, and RL-based CoT methods in both accuracy and efficiency, confirming that latent cognitive processes guided by well-designed rewards can effectively replace verbose explicit reasoning in the medical domain.
 
 > **核心结论**: 精心设计的 reward 引导的 latent cognitive processes 可以有效替代医学领域中冗长的显式推理——这是对"推理必须通过显式 CoT token 展开"这一预设的根本性挑战。
 

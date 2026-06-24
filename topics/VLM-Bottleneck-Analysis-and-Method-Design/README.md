@@ -19,7 +19,7 @@
 
 | 论文 | 子类别 | 方法特点 |
 |------|--------|----------|
-| [Vision-aligned-Latent-Reasoing](./grounding/%5BArxiv 2026%5D Vision-aligned-Latent-Reasoing/) | grounding | 视觉对齐的潜空间推理，将视觉特征对齐到 LLM 推理的 latent space。 |
+| [Vision-aligned-Latent-Reasoning](./grounding/%5BArxiv 2026%5D Vision-aligned-Latent-Reasoning/) | grounding | 视觉对齐的潜空间推理，将视觉特征对齐到 LLM 推理的 latent space。 |
 
 ### Hierarchical Design（分层设计）
 多层级视觉信息注入与融合。
@@ -41,16 +41,16 @@
 
 | 论文 | 子类别 | 方法特点 |
 |------|--------|----------|
-| [RegionReasoer](./reward/%5BArxiv 2026%5D RegionReasoer/) | reward | 区域定位的多轮视觉推理，用 region grounding 作为推理的中间监督。 |
+| [RegionReasoner](./reward/%5BArxiv 2026%5D RegionReasoner/) | reward | 区域定位的多轮视觉推理，用 region grounding 作为推理的中间监督。 |
 | [VisualPRM](./reward/%5BArxiv 2025%5D VisualPRM/) | reward | 面向多模态推理的 Process Reward Model，对推理步骤而非最终答案打分。 |
 | [Perception-centric-PRM](./reward/%5BArxiv 2026%5D Perception-centric-PRM/) | reward | 以感知为中心的 PRM，强化对视觉感知步骤的奖励信号。 |
 
-### Long Reasoing（长程推理）
+### Long Reasoning（长程推理）
 长时间/多步推理中的视觉信息保持。
 
 | 论文 | 子类别 | 方法特点 |
 |------|--------|----------|
-| [Imagine-Before-Predict](./long-reasoing/%5BArxiv 2026%5D Imagine-Before-Predict/) | long-reasoing | 预测前先想象——交错潜空间视觉推理用于视频事件预测。 |
+| [Imagine-Before-Predict](./long-reasoning/%5BArxiv 2026%5D Imagine-Before-Predict/) | long-reasoning | 预测前先想象——交错潜空间视觉推理用于视频事件预测。 |
 | [VisMem](./existing/%5BArxiv 2025%5D VisMem/) | existing | 动态 latent vision memory，短期感知+长期语义记忆缓解视觉 grounding 丢失。 |
 | [DMLR](./existing/%5BArxiv 2025%5D DMLR/) | existing | 测试时动态多模态潜推理，置信度引导 latent policy gradient + 动态视觉注入。 |
 
@@ -89,7 +89,7 @@ VLM 瓶颈分析在医学影像中的延伸。
 1. **encoding 子类**（Q-Zoom/CARES/iGVLM）：视觉编码效率
 2. **grounding + invoke**：视觉信息何时被调用
 3. **reward**：如何用奖励信号引导更好的视觉推理
-4. **long-reasoing**：长程推理中的视觉保持
+4. **long-reasoning**：长程推理中的视觉保持
 
 ### 路线 3：医学落地
 1. **bottleneck analysis** 论文 → 理解通用 VLM 瓶颈
@@ -103,6 +103,6 @@ VLM 瓶颈分析在医学影像中的延伸。
 |------|------|----------|----------|
 | 视觉编码 | 分辨率/压缩率选择不当，信息丢失 | adaptive encoding, query-aware perception | Q-Zoom, CARES, iGVLM |
 | 视觉调用 | 推理过程中不知道何时重新查看图像 | iterative evidence refinement, visual grounding | Iterative-Evidence-Refinement, Thinking-with-Visual-Grounding |
-| 奖励信号 | 缺少对视觉推理步骤的细粒度反馈 | process reward model, region grounding reward | VisualPRM, RegionReasoer, Perception-centric-PRM |
+| 奖励信号 | 缺少对视觉推理步骤的细粒度反馈 | process reward model, region grounding reward | VisualPRM, RegionReasoner, Perception-centric-PRM |
 | 长程保持 | 长推理链中视觉 grounding 逐步丢失 | latent memory, dynamic visual injection | VisMem, DMLR, Imagine-Before-Predict |
 | 多图绑定 | 多图场景下对象-属性-关系混淆 | spatial variable binding analysis | Dual-Mechanisms-Spatial-Binding, More-Images-More-Problems |

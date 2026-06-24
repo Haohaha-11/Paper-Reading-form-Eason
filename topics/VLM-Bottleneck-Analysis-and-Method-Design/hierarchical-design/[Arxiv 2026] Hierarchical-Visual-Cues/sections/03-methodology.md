@@ -57,9 +57,9 @@ Specifically, we extract hidden states from a set of representative layers L = {
 > | 层级 | Layer | 特征类型 | 适合任务 |
 > |------|-------|---------|---------|
 > | 浅层 | 6 | 高分辨率空间信息、纹理、边缘（primitive patterns） | Grounding, localization |
-> | 中层 | 12 | 中级语义概念（object parts, shapes） | Object recognition, attribute reasoing |
-> | 中高层 | 18 | 复杂语义聚合（objects, relations） | Relation reasoing, scene parsing |
-> | 深层 | 24 | 全局上下文和抽象语义（scene-level semantics） | Holistic understanding, reasoing |
+> | 中层 | 12 | 中级语义概念（object parts, shapes） | Object recognition, attribute reasoning |
+> | 中高层 | 18 | 复杂语义聚合（objects, relations） | Relation reasoning, scene parsing |
+> | 深层 | 24 | 全局上下文和抽象语义（scene-level semantics） | Holistic understanding, reasoning |
 >
 > **课程式注入的认知基础**: 先看细节（纹理/边缘→定位），再理解语义（概念→关系→全局）。这与人类视觉认知的 coarse-to-fine 或 bottom-up attention 机制有类比性。
 
@@ -67,7 +67,7 @@ To bridge the modality gap and align the dimensionalities, we employ a set of pa
 
 $v _ { l } = m _ { l } ( h _ { v } ^ { l } ), \quad l \in \{ 6 , 1 2 , 1 8 , 2 4 \}, \tag{5}$
 
-where v_l ∈ R^{n×h} represents the projected visual cues ready for recurrent injection. By progressively injecting these features from fine-grained semantics to coarse-grained textures into the initial recurrent iterations, we provide the language backbone with a "curriculum" of visual understanding, stabilizing the hidden state transition during the early stages of reasoing.
+where v_l ∈ R^{n×h} represents the projected visual cues ready for recurrent injection. By progressively injecting these features from fine-grained semantics to coarse-grained textures into the initial recurrent iterations, we provide the language backbone with a "curriculum" of visual understanding, stabilizing the hidden state transition during the early stages of reasoning.
 
 > 💡 **公式批读 — Eq.5（Patch Merger）**:
 > - 每个选定的 ViT 层有一组独立的 patch merger m_l（轻量投影模块）
@@ -85,13 +85,13 @@ ${ \hat { e } } _ { v } = { \left\{ \begin{array} { l l } { v _ { i } } & { \tex
 > - i = L[t]：第 t 次迭代注入第 L[t] 层的视觉特征
 > - **设计哲学**: 视觉信息只用于初始化/引导推理方向，后续的深度推理在隐空间内自主完成——视觉是"向导"而非"拐杖"
 
-To enhance the robustness of the recurrent reasoing process, the recurrent depth is randomly sampled from a Poisson distribution during the training stage of Huginn. This stochasticity forces our model to decouple the visual-language fusion from a fixed step count.
+To enhance the robustness of the recurrent reasoning process, the recurrent depth is randomly sampled from a Poisson distribution during the training stage of Huginn. This stochasticity forces our model to decouple the visual-language fusion from a fixed step count.
 
 We introduce an adaptive injection schedule. The core challenge lies in aligning the t iterations with the 4 available visual tiers. We define the injection at step t as follows:
 
-1. **Case I: Sufficient Iterations (R ≥ 4)**. The visual cues are injected in a "top-down" hierarchical order during the initial 4 steps. For t > 4, the model performs pure language modeling to refine the reasoing output.
+1. **Case I: Sufficient Iterations (R ≥ 4)**. The visual cues are injected in a "top-down" hierarchical order during the initial 4 steps. For t > 4, the model performs pure language modeling to refine the reasoning output.
 
-2. **Case II: Constrained Iterations (R < 4)**. When the sampled depth is shallower than the visual hierarchy, we perform progressive downsampling of the visual cues. Specifically, we select a subset of V with an interval of floor(4 / R) to ensure that even in shallow reasoing, the model still receives a representative spectrum of visual information (e.g., if R = 2, the model integrates {v_1, v_2}).
+2. **Case II: Constrained Iterations (R < 4)**. When the sampled depth is shallower than the visual hierarchy, we perform progressive downsampling of the visual cues. Specifically, we select a subset of V with an interval of floor(4 / R) to ensure that even in shallow reasoning, the model still receives a representative spectrum of visual information (e.g., if R = 2, the model integrates {v_1, v_2}).
 
 > 💡 **机制拆解 — 自适应注入策略**:
 >

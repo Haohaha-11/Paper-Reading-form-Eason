@@ -42,7 +42,7 @@ Next, we extend the evaluation to additional multi-image benchmarks, including B
 >
 > 注：MMT 上略有下降 (-1.3)，其余所有 benchmark 均有提升。训练与评测数据分布存在差异时存在小幅度波动是正常的。
 
-**MIMIC benchmark.** We report results in table 4. Unless otherwise specified, all results for Counting subtask correspond to the balanced split. Our method significantly outperforms LLaVA-OV across all four tasks. For the 0.5B model, the average score improves from 26.4 to 49.4, while for the 7B model, masked fine-tuning increases performance from 54.0 to 63.8. Gains are most pronounced on the Common and Odd-One tasks, highlighting improved information aggregation and multi-concept reasoing across images.
+**MIMIC benchmark.** We report results in table 4. Unless otherwise specified, all results for Counting subtask correspond to the balanced split. Our method significantly outperforms LLaVA-OV across all four tasks. For the 0.5B model, the average score improves from 26.4 to 49.4, while for the 7B model, masked fine-tuning increases performance from 54.0 to 63.8. Gains are most pronounced on the Common and Odd-One tasks, highlighting improved information aggregation and multi-concept reasoning across images.
 
 > **MIMIC Benchmark 结果解读**:
 >
@@ -125,9 +125,9 @@ We systematically investigated the capabilities of LVLMs in multi-image contexts
 
 While our work offers a rigorous analysis and effective solutions for multi-image LVLMs, we note the following boundaries of our study:
 
-- **Benchmark Domain**: We constructed MIMIC using MS-COCO to maintain precise control over confounding variables (e.g., object counts, occlusion levels). While this design enables exact "unit testing" of model reasoing, extending this controlled methodology to specialized domains, such as dense documents or medical imaging, remains an exciting avenue for future research.
+- **Benchmark Domain**: We constructed MIMIC using MS-COCO to maintain precise control over confounding variables (e.g., object counts, occlusion levels). While this design enables exact "unit testing" of model reasoning, extending this controlled methodology to specialized domains, such as dense documents or medical imaging, remains an exciting avenue for future research.
 
-- **Resolution Trade-offs**: Our analysis demonstrates that reducing sequence length improves multi-image reasoing by mitigating context overload. While highly effective for semantic understanding and counting, tasks requiring pixel-perfect perception of extremely small details might benefit from adaptive resolution strategies, which were outside the scope of this study.
+- **Resolution Trade-offs**: Our analysis demonstrates that reducing sequence length improves multi-image reasoning by mitigating context overload. While highly effective for semantic understanding and counting, tasks requiring pixel-perfect perception of extremely small details might benefit from adaptive resolution strategies, which were outside the scope of this study.
 
 - **Architectural Scope**: Our proposed analysis focuses on models with open weights. While we expect conclusions to hold for closed models, additional validations (which induce budget constraints) may be useful for reinforcing our findings.
 

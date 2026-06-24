@@ -1,15 +1,15 @@
-# The Perceptual Bandwidth Bottleneck in VLMs: Active Visual Reasoing via Sequential Experimental Design (FOVEA)
+# The Perceptual Bandwidth Bottleneck in VLMs: Active Visual Reasoning via Sequential Experimental Design (FOVEA)
 
 ## Paper Metadata
 
 | 项目 | 内容 |
 |------|------|
-| **Title** | The Perceptual Bandwidth Bottleneck in Vision-Language Models: Active Visual Reasoing via Sequential Experimental Design |
+| **Title** | The Perceptual Bandwidth Bottleneck in Vision-Language Models: Active Visual Reasoning via Sequential Experimental Design |
 | **Authors** | Anjie Liu\*, Ziqin Gong\*, Yan Song, Yuxiang Chen, Xiaolong Liu, Hengtong Lu, Kaike Zhang, Chen Wei, Jun Wang |
 | **Affiliations** | HKUST(GZ), UCL, ShanghaiTech, AI Lab Yangtze River Delta, Li Auto |
 | **Venue** | arXiv 2026 (2605.01345v3) |
 | **Code** | https://github.com/iamlilAJ/active-vlm |
-| **BibTeX** | Liu et al., "The Perceptual Bandwidth Bottleneck in Vision-Language Models: Active Visual Reasoing via Sequential Experimental Design", 2026 |
+| **BibTeX** | Liu et al., "The Perceptual Bandwidth Bottleneck in Vision-Language Models: Active Visual Reasoning via Sequential Experimental Design", 2026 |
 
 ## One-Sentence Summary
 
@@ -56,7 +56,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                  S-BOED Active Visual Reasoing Pipeline              │
+│                  S-BOED Active Visual Reasoning Pipeline              │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                       │
 │  [Problem] Perceptual Bandwidth Bottleneck                            │
@@ -109,7 +109,7 @@
 ### Weaknesses / Limitations
 
 1. **Proposal-limited (cold start)**: 如果 target 区域从未进入候选池，局部精炼无法恢复。单 seed 下 100% 的失败都是 proposal-limited
-2. **Oracle gap**: 即使 perfect crop (Oracle)，准确率仅 68%，反映 backbone 的 reasoing 能力是独立瓶颈
+2. **Oracle gap**: 即使 perfect crop (Oracle)，准确率仅 68%，反映 backbone 的 reasoning 能力是独立瓶颈
 3. **Inference overhead**: resolvability probing 增加输入/输出 token 成本（6.5x-9.5x input, 9.8x-55x output）
 4. **Ideal Observer assumption**: 假设 resolved 后的 entropy collapse 在实践中不总是成立（hallucination on clear images）
 5. **Single backbone evaluation**: 仅在 Qwen3-VL 系列上验证，在其他 VLM 架构上的泛化性待验证
@@ -130,7 +130,7 @@
 | 4 | Resolvability Probing 的本质是什么？ | Section 4.1, Eq. 10 | 不是精确的 EIG 估计，而是询问 VLM "这个 crop 包含足够回答问题的信息吗？" (Yes/No)。Monte Carlo 平滑后作为 coverage-resolution utility 的 empirical surrogate。 |
 | 5 | FOVEA 为什么是 training-free 的？ | Section 4 & D.1 | 采用 tool interception 机制：VLM 正常提议 crop，FOVEA 在工具执行前拦截并精炼坐标。所有 probing 和优化都在已有的 VLM backbone 上进行，无需梯度更新。 |
 | 6 | Cold start 是最主要的 failure mode 吗？ | Appendix H.2, Table 9 | 是的。在 50 例遥感子集上，single-seed 下 25 例全部失败且全部是 proposal-limited (target 不在候选池)。扩展为 multi-seed (9 seeds) 将 proposal-limited 从 25 降至 7 例。 |
-| 7 | 为什么 Oracle 只达到 68% 而不是 100%？ | Appendix H.3 | Ideal Observer 假设要求 resolved 后 entropy collapse 到零，但实际 VLM 即使在完美 crop 下仍有 hallucination (如错误计数)。剩余 32% 错误反映的是 backbone 固有的 reasoing 瓶颈。 |
+| 7 | 为什么 Oracle 只达到 68% 而不是 100%？ | Appendix H.3 | Ideal Observer 假设要求 resolved 后 entropy collapse 到零，但实际 VLM 即使在完美 crop 下仍有 hallucination (如错误计数)。剩余 32% 错误反映的是 backbone 固有的 reasoning 瓶颈。 |
 
 ## Citation Landscape
 
@@ -143,7 +143,7 @@
 - **Discrete BOED for LLMs**: Kobalczyk et al. (2025) - 离散空间 vs 本文的连续空间
 - **Visual Agents**: Thyme (Zhang et al., 2025b), LATTE (Ma et al., 2025), VisProg (Gupta & Kembhavi, 2023)
 - **Retrieval-Augmented Perception**: RAP (Wang et al., 2025)
-- **Latent Visual Reasoing**: Li et al. (2025a), Sun et al. (2025)
+- **Latent Visual Reasoning**: Li et al. (2025a), Sun et al. (2025)
 
 ### Benchmarks
 - MME-RealWorld-Lite (Zhang et al., 2024), CV-Bench (Tong et al., 2024), V\*Bench (Wu & Xie, 2023), HR-Bench (Team, 2024)

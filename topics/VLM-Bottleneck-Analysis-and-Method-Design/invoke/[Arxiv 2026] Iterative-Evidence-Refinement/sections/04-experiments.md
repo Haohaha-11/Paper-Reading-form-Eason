@@ -18,7 +18,7 @@
 
 #### 4.1.1 Benchmarks and Baselines
 
-For training, we sample 1,500 images from COCO 2017 Lin et al. [2014] and construct the corresponding training data with pre-extracted region embeddings. For evaluation, we focus on two challenging high-resolution visual reasoing benchmarks: V\*Bench Wu and Xie [2024] and HR-Bench Wang et al. [2024], reporting results at both 4K and 8K resolutions. To assess generalization beyond high-resolution reasoing, we additionally evaluate on perception benchmarks MME-Real-Lite Zhang et al. [2024b] and RealWorldQ xAI; multimodal reasoing benchmarks MathVista Lu et al. [2024], LogicVista Xiao et al. [2024], and WeMath Qiao et al. [2025]; and the hallucination benchmark Hallusion Wu et al. [2024]. We compare SIEVE against representative zoom-and-refine baselines, including DyFo Li et al. [2025e], ZoomEye Shen et al. [2024], and Zoom-Refine Yu et al. [2025c], as well as a vanilla GRPO-trained model optimized solely with format and accuracy rewards.
+For training, we sample 1,500 images from COCO 2017 Lin et al. [2014] and construct the corresponding training data with pre-extracted region embeddings. For evaluation, we focus on two challenging high-resolution visual reasoning benchmarks: V\*Bench Wu and Xie [2024] and HR-Bench Wang et al. [2024], reporting results at both 4K and 8K resolutions. To assess generalization beyond high-resolution reasoning, we additionally evaluate on perception benchmarks MME-Real-Lite Zhang et al. [2024b] and RealWorldQ xAI; multimodal reasoning benchmarks MathVista Lu et al. [2024], LogicVista Xiao et al. [2024], and WeMath Qiao et al. [2025]; and the hallucination benchmark Hallusion Wu et al. [2024]. We compare SIEVE against representative zoom-and-refine baselines, including DyFo Li et al. [2025e], ZoomEye Shen et al. [2024], and Zoom-Refine Yu et al. [2025c], as well as a vanilla GRPO-trained model optimized solely with format and accuracy rewards.
 
 > 💡 **实验配置解读 — 训练数据与评估的隔离设计**:
 >
@@ -45,7 +45,7 @@ We adopt Qwen3-VL-4B-Instruct Yang et al. [2025a] and Qwen3-VL-8B-Instruct as ba
 
 ### 4.2 Main Results
 
-In Table 1, we report the performance of SIEVE on V\* and HRBench, comparing it with other models and methods at both the 4B and 8B scales. As shown in the table, SIEVE consistently outperforms all baselines on both benchmarks across both model sizes. Notably, the 4B variant of SIEVE achieves a 10.06% improvement over the corresponding vanilla model. This result indicates that enabling the model to reaso with hidden-state embeddings can effectively enhance performance on high-resolution tasks. We further validate our approach on additional datasets. As presented in Table 2, SIEVE demonstrates consistent improvements over both the vanilla model and the GRPO trained model across perception tasks, reasoing tasks, and hallucination benchmarks.
+In Table 1, we report the performance of SIEVE on V\* and HRBench, comparing it with other models and methods at both the 4B and 8B scales. As shown in the table, SIEVE consistently outperforms all baselines on both benchmarks across both model sizes. Notably, the 4B variant of SIEVE achieves a 10.06% improvement over the corresponding vanilla model. This result indicates that enabling the model to reaso with hidden-state embeddings can effectively enhance performance on high-resolution tasks. We further validate our approach on additional datasets. As presented in Table 2, SIEVE demonstrates consistent improvements over both the vanilla model and the GRPO trained model across perception tasks, reasoning tasks, and hallucination benchmarks.
 
 （Table 1 和 Table 2 见原文，数据摘录如下）
 
@@ -69,7 +69,7 @@ In Table 1, we report the performance of SIEVE on V\* and HRBench, comparing it 
 >
 > **关键分析**:
 > 1. **4B 的提升幅度大于 8B**: 这说明 SIEVE 对小模型的边际收益更大——小模型本身的视觉能力更弱，更需要 evidence 辅助。8B 模型本身已经有更强的全局理解能力，evidence 的增量价值相对小。
-> 2. **V\* Spatial 提升最大** (+9.22% for 4B): Spatial reasoing（空间关系推理）是所有子任务中受益最大的——这很符合直觉，因为空间关系需要定位特定区域并推理相对位置，region embedding 直接提供了这种定位信息。
+> 2. **V\* Spatial 提升最大** (+9.22% for 4B): Spatial reasoning（空间关系推理）是所有子任务中受益最大的——这很符合直觉，因为空间关系需要定位特定区域并推理相对位置，region embedding 直接提供了这种定位信息。
 > 3. **HR-Bench 上 4B 提升比 8B 更大**: 4B +2.0~5.0%，8B +1.0~2.75%。同样符合"小模型受益更大"的模式。
 > 4. **与工具增强 baselines 对比**: SIEVE 在大部分子任务上优于或持平 ZoomEye/ZoomRefine，但注意 ZoomEye 在 4B 的 V\* 上达到了 90.05（高于 SIEVE 的 85.86）——工具增强方法在某些任务上仍有优势，但 SIEVE 以更低的推理成本实现了 close 的性能。
 >
@@ -93,7 +93,7 @@ In Table 1, we report the performance of SIEVE on V\* and HRBench, comparing it 
 
 ### 4.3 Visualization and Analysis
 
-In Figure 4, using the V\* dataset as a case study, we demonstrate how our model retrieves bounding boxes in image coordinate space that align with the learned region embeddings. Specifically, the selected embeddings are mapped back to their corresponding spatial patch locations and aggregated to form coherent bounding regions. The resulting visualizations show that these extracted embeddings consistently correspond to semantically meaningful and task-relevant image regions, rather than arbitrary or background areas. Although minor localization drift may occur due to the patch-based segmentation mechanism in Qwen-VL where object boundaries may not perfectly align with fixed patch grids our extended patching strategy mitigates this issue. By explicitly injecting the target object's embedding as a structured guidance signal during inference, the model is encouraged to focus on spatially relevant regions and refine its reasoing accordingly. This design not only improves visual grounding fidelity but also provides an intuitive explanation for the consistent performance gains achieved by our method across benchmarks.
+In Figure 4, using the V\* dataset as a case study, we demonstrate how our model retrieves bounding boxes in image coordinate space that align with the learned region embeddings. Specifically, the selected embeddings are mapped back to their corresponding spatial patch locations and aggregated to form coherent bounding regions. The resulting visualizations show that these extracted embeddings consistently correspond to semantically meaningful and task-relevant image regions, rather than arbitrary or background areas. Although minor localization drift may occur due to the patch-based segmentation mechanism in Qwen-VL where object boundaries may not perfectly align with fixed patch grids our extended patching strategy mitigates this issue. By explicitly injecting the target object's embedding as a structured guidance signal during inference, the model is encouraged to focus on spatially relevant regions and refine its reasoning accordingly. This design not only improves visual grounding fidelity but also provides an intuitive explanation for the consistent performance gains achieved by our method across benchmarks.
 
 （Figure 4 包含多组可视化示例，每个例子展示 green box (matched region) + red box (expanded region) 及其 zoomed view）
 
@@ -106,7 +106,7 @@ In Figure 4, using the V\* dataset as a case study, we demonstrate how our model
 
 #### 4.4.1 Role of Inserting Embedding
 
-In this section, we empirically demonstrate that the selected region embeddings contribute positively and meaningfully to the reasoing process. To validate this claim, we construct a controlled ablation experiment in which image patch embeddings are randomly sampled and inserted following the same inference protocol as our method. Concretely, whenever the model determines that additional visual information is required to assist its reasoing, we inject randomly selected patch embeddings instead of the semantically aligned embeddings identified by our saliency-based selection mechanism. We evaluate this variant on V\* Bench, and the results are reported in Figure 5.(a) and Figure 5.(b). As shown, replacing our selected embeddings with randomly sampled ones leads to a substantial and consistent degradation in performance. This performance drop indicates that the gains observed in our method are not simply due to the act of injecting additional visual tokens into the reasoing process. Rather, they stem from incorporating semantically relevant and contextually aligned visual embeddings that meaningfully support intermediate reasoing steps. Together, these results show that our embedding selection captures task-relevant visual information and that the gains stem from informed cross-modal grounding rather than arbitrary token augmentation.
+In this section, we empirically demonstrate that the selected region embeddings contribute positively and meaningfully to the reasoning process. To validate this claim, we construct a controlled ablation experiment in which image patch embeddings are randomly sampled and inserted following the same inference protocol as our method. Concretely, whenever the model determines that additional visual information is required to assist its reasoning, we inject randomly selected patch embeddings instead of the semantically aligned embeddings identified by our saliency-based selection mechanism. We evaluate this variant on V\* Bench, and the results are reported in Figure 5.(a) and Figure 5.(b). As shown, replacing our selected embeddings with randomly sampled ones leads to a substantial and consistent degradation in performance. This performance drop indicates that the gains observed in our method are not simply due to the act of injecting additional visual tokens into the reasoning process. Rather, they stem from incorporating semantically relevant and contextually aligned visual embeddings that meaningfully support intermediate reasoning steps. Together, these results show that our embedding selection captures task-relevant visual information and that the gains stem from informed cross-modal grounding rather than arbitrary token augmentation.
 
 > 💡 **Figure 5(a,b) 批读 — 三组对比的核心结论**:
 > - w/o Insert: 完全不注入 embedding → 基线性能
@@ -136,7 +136,7 @@ Using Qwen3-VL-4B-Instruct as an example, we compute layer-wise embedding retrie
 
 #### 4.4.3 Role of Action Rewards
 
-In Section 3.3, we incorporate action-level rewards into the total reward function, including a thought richness reward and a signal reward. These additional rewards encourage the model to produce more informative reasoing traces and to issue appropriate response requests, thereby improving both stability and interpretability during training. In Figure 7, we analyze the impact of enabling or disabling these action rewards.
+In Section 3.3, we incorporate action-level rewards into the total reward function, including a thought richness reward and a signal reward. These additional rewards encourage the model to produce more informative reasoning traces and to issue appropriate response requests, thereby improving both stability and interpretability during training. In Figure 7, we analyze the impact of enabling or disabling these action rewards.
 
 （Figure 7 包含四张子图：(a) reward 变化曲线，(b) entropy loss 变化曲线，(c) avg response length，(d) max response length）
 
@@ -169,5 +169,5 @@ In Section 3.3, we incorporate action-level rewards into the total reward functi
 - **消融结论**: 
   1. Embedding 选择质量是关键——随机选择无效甚至有害
   2. 中间层是最佳的跨模态匹配层（IHR 最高）
-  3. Action reward 是训练稳定性的必要条件——防止 reward collapse 和 empty reasoing
+  3. Action reward 是训练稳定性的必要条件——防止 reward collapse 和 empty reasoning
 - **可视化**: Evidence regions 与语义目标高度一致，expand 操作补全了 patch grid 的边界不对齐

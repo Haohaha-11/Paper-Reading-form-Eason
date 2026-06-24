@@ -1,10 +1,10 @@
-# Multimodal Latent Reasoing via Hierarchical Visual Cues Injection (HIVE)
+# Multimodal Latent Reasoning via Hierarchical Visual Cues Injection (HIVE)
 
 ## Paper Metadata
 
 | 项目 | 内容 |
 |------|------|
-| **Title** | Multimodal Latent Reasoing via Hierarchical Visual Cues Injection |
+| **Title** | Multimodal Latent Reasoning via Hierarchical Visual Cues Injection |
 | **Authors** | Yiming Zhang, Qiangyu Yan, Borui Jiang, Kai Han |
 | **Venue** | arXiv 2026 |
 | **Paper Link** | paper.pdf (in directory) |
@@ -88,7 +88,7 @@ HIVE 是首个将 loop transformer 架构与层级化视觉线索注入相结合
 │         ├── Select visual cue:                                         │
 │         │   If R ≥ 4: inject v_{L[t]} for t < 4 (top-down order)      │
 │         │   If R < 4: downsample with interval floor(4/R)              │
-│         │   If t ≥ K: hat(e)_v = 0 (pure language reasoing)           │
+│         │   If t ≥ K: hat(e)_v = 0 (pure language reasoning)           │
 │         ├── s_{r+1} = R-Block(e, hat(e)_v; s_r)  [Recurrent Block]    │
 │         └── [Gradient only through last k iterations]                  │
 │                                                                        │
@@ -123,7 +123,7 @@ HIVE 是首个将 loop transformer 架构与层级化视觉线索注入相结合
 
 1. **架构层面的潜空间推理**：不依赖 CoT 文本监督来诱导行为，而是通过 loop transformer 的结构递归实现真正的隐空间迭代推理，天然解耦"思考深度"与"参数量"。
 
-2. **层级视觉注入设计合理**：从 ViT 的浅层（纹理/边缘，适合 grounding）到深层（语义/上下文，适合 holistic reasoing）的"课程式"注入顺序，符合从感知到推理的认知递进。
+2. **层级视觉注入设计合理**：从 ViT 的浅层（纹理/边缘，适合 grounding）到深层（语义/上下文，适合 holistic reasoning）的"课程式"注入顺序，符合从感知到推理的认知递进。
 
 3. **Poisson 分布训练深度**：训练时随机采样迭代深度，迫使模型不依赖固定步数来融合视觉信息，天然适配自适应早停推理。
 
@@ -183,7 +183,7 @@ HIVE 是首个将 loop transformer 架构与层级化视觉线索注入相结合
 
 ### 参考文献分组 (Top per category)
 
-**Latent Space Reasoing / Loop Transformers**:
+**Latent Space Reasoning / Loop Transformers**:
 - Coconut (Hao et al., 2024) — 训练 LLM 在连续潜空间推理
 - Heima (Shen et al., 2025) — 首个多模态潜空间推理
 - Huginn (Geiping et al., 2025) — loop transformer 骨干
@@ -199,7 +199,7 @@ HIVE 是首个将 loop transformer 架构与层级化视觉线索注入相结合
 - InternVL (Chen et al., 2024)
 - Emu3 (Wang et al., 2024)
 
-**Multimodal Reasoing / Slow Thinking**:
+**Multimodal Reasoning / Slow Thinking**:
 - LLaVA-CoT (Xu et al., 2025)
 - Vision-R1 (Huang et al., 2025)
 - Mulberry (Yao et al., 2024) — collective MCTS
@@ -212,7 +212,7 @@ HIVE 是首个将 loop transformer 架构与层级化视觉线索注入相结合
 
 ```bibtex
 @article{zhang2026hive,
-  title={Multimodal Latent Reasoing via Hierarchical Visual Cues Injection},
+  title={Multimodal Latent Reasoning via Hierarchical Visual Cues Injection},
   author={Yiming Zhang and Qiangyu Yan and Borui Jiang and Kai Han},
   journal={arXiv preprint arXiv:2026},
   year={2026}

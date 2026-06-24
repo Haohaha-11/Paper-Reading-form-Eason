@@ -12,27 +12,27 @@
 
 ### 4.1. Experimental Setup
 
-**Benchmarks.** We select multiple visual reasoing benchmarks, covering visual search, perception-intensive reasoing, mathematical and chart-based reasoing.
+**Benchmarks.** We select multiple visual reasoning benchmarks, covering visual search, perception-intensive reasoning, mathematical and chart-based reasoning.
 
-1. V\* (V-Star) [42]: introduces an LLM-guided visual search mechanism and a dedicated benchmark, to assess models' ability to localize and reaso about small, target objects within information-dense images. It contains 191 high-resolution images with two subtasks, i.e. attribute recognition and spatial-relation reasoing that require precise grounding before reasoing.
+1. V\* (V-Star) [42]: introduces an LLM-guided visual search mechanism and a dedicated benchmark, to assess models' ability to localize and reaso about small, target objects within information-dense images. It contains 191 high-resolution images with two subtasks, i.e. attribute recognition and spatial-relation reasoning that require precise grounding before reasoning.
 
 2. MME-RealWorld [50]: targets practical applications across five domains (OCR-in-the-wild, remote sensing, diagrams/tables, monitoring, autonomous driving). We use its subset MME-RealWorld-Lite for testing.
 
-3. BLINK [11]: reframes 14 classic computer-vision tasks (e.g. relative depth, visual correspondence, image forensics, multi-view reasoing) into 3,807 multiple-choice items to probe foundational perceptual skills that resist purely linguistic mediation.
+3. BLINK [11]: reframes 14 classic computer-vision tasks (e.g. relative depth, visual correspondence, image forensics, multi-view reasoning) into 3,807 multiple-choice items to probe foundational perceptual skills that resist purely linguistic mediation.
 
 4. MMStar [6]: compiles 1,500 carefully selected, human-curated samples to probe six core capability areas along 18 fine-grained axes, focusing on cases where vision is indispensable (rather than solvable by text priors).
 
 5. RealWorldQA [43]: contains 700 images captured from vehicles and other real-world settings, each paired with a question and an easily verifiable answer.
 
-6. MathVista [26]: aggregates 6,141 examples from 28 existing multimodal sources and three new sets (IQTest, FunctionQA, PaperQA) to test numeracy, geometry/diagram understanding, tables/plots, and compositional visual-math reasoing.
+6. MathVista [26]: aggregates 6,141 examples from 28 existing multimodal sources and three new sets (IQTest, FunctionQA, PaperQA) to test numeracy, geometry/diagram understanding, tables/plots, and compositional visual-math reasoning.
 
 7. MATH-Vision [38]: offers 3,040 problems sourced from real competitions, spanning 16 mathematical disciplines and five difficulty levels, each embedded in a visual context (figures, diagrams, plots).
 
 8. ChartQA [27]: contains 9.6K human-written and 23.1K generated questions over diverse chart types, requiring both visual parsing and table/logic operations.
 
-**Baselines.** We compare our methods with multiple reasoing-oriented VLMs: VLM-R1 [34], LMM-R1 [30], R1-VL [47], Perception-R1 [45], Jigsaw-R1 [41], DeepEyes [56], PixelReasoer [37], Vision-R1 [14], VL-Rethinker [36], VLAA-Thinker [5], OpenVLThinker [8], MM-Eureka [28].
+**Baselines.** We compare our methods with multiple reasoning-oriented VLMs: VLM-R1 [34], LMM-R1 [30], R1-VL [47], Perception-R1 [45], Jigsaw-R1 [41], DeepEyes [56], PixelReasoner [37], Vision-R1 [14], VL-Rethinker [36], VLAA-Thinker [5], OpenVLThinker [8], MM-Eureka [28].
 
-**Implementation Details.** We select Qwen2.5-VL as the backbone for both reward and policy models. We first train two versions of PERCEVAL of 3B and 7B sizes, following the procedures outlined in section 3.1, and then correspondingly train two policy models of the same sizes using the proposed method. As for the training data, the supervised fine-tuning data are collected from DeepEyes [56] and SophiaVL-R1 [10], each of which is rolled out 3 times using the backbone models. The RL training data is also derived from [56], with the primary objective of enhancing the model's perception capabilities, while also containing a subset of general-purpose reasoing data. Consequently, during the RL training phase, we implement a conditional strategy: PERCEVAL is used only on perception-related data to perform fine-grained advantage rescaling. For all other training data (e.g., mathematical reasoing), no additional intervention is applied, and we revert to using direct GRPO. This experimental design allows us to investigate whether fine-grained supervision focused on perception tasks can generalize and yield performance gains in other domains.
+**Implementation Details.** We select Qwen2.5-VL as the backbone for both reward and policy models. We first train two versions of PERCEVAL of 3B and 7B sizes, following the procedures outlined in section 3.1, and then correspondingly train two policy models of the same sizes using the proposed method. As for the training data, the supervised fine-tuning data are collected from DeepEyes [56] and SophiaVL-R1 [10], each of which is rolled out 3 times using the backbone models. The RL training data is also derived from [56], with the primary objective of enhancing the model's perception capabilities, while also containing a subset of general-purpose reasoning data. Consequently, during the RL training phase, we implement a conditional strategy: PERCEVAL is used only on perception-related data to perform fine-grained advantage rescaling. For all other training data (e.g., mathematical reasoning), no additional intervention is applied, and we revert to using direct GRPO. This experimental design allows us to investigate whether fine-grained supervision focused on perception tasks can generalize and yield performance gains in other domains.
 
 > 💡 **实验设计解读 — 条件性 PRM 干预策略**:
 >
@@ -52,7 +52,7 @@
 
 ### 4.2. Main Results
 
-**RL Training with PRM.** As shown in Table 1, our method significantly and consistently outperforms the GRPO baseline across both 3B and 7B model scales. Specifically, for the 3B model, our approach achieves average improvements of approximately 4% in the Visual Search category, 3% in Math and Chart reasoing, and 1% in Perception-intensive Reasoing relative to the GRPO baseline. This result strongly demonstrates that our method provides richer and more fine-grained supervision. A deeper analysis of the Visual Search sub-tasks reveals that (Positional Perception), particularly at the 3B scale (e.g., improving from 86.95 to 90.43). This strongly suggests that our fine-grained process supervision has successfully guided the model to enhance its precise spatial localization capabilities. Concurrently, the improvements on benchmarks like BLINK and MMStar also indicate that this enhanced perception leads to higher fidelity and fewer hallucinations. A crucial finding is the model's strong generalization ability. As discussed in Section 4.1, although our PRM training and RL intervention were predominantly focused on Visual Search tasks, the model still exhibits consistent performance gains across all other domains, including general perception and math reasoing. We attribute this "capability transfer" to the fact that tasks in Math & Chart (such as MathVision and ChartQA) are fundamentally reliant on precise, fine-grained perceptual abilities (e.g., localizing data points on a chart, reading text). By strengthening the model's foundational perceptual accuracy, our method successfully generalizes this improvement to broader and more complex reasoing tasks. Furthermore, our 7B model trained with our method also surpasses Pixel-Reasoer and achieves performance competitive with DeepEyes on Visual Search tasks. It is noteworthy that the latter two models both rely on external tool manipulation to assist in object grounding. This result indicates that enhancing the intrinsic perceptual abilities of multimodal base models is a highly promising research direction, capable of rivaling the performance of tool-augmented SOTA methods.
+**RL Training with PRM.** As shown in Table 1, our method significantly and consistently outperforms the GRPO baseline across both 3B and 7B model scales. Specifically, for the 3B model, our approach achieves average improvements of approximately 4% in the Visual Search category, 3% in Math and Chart reasoning, and 1% in Perception-intensive Reasoning relative to the GRPO baseline. This result strongly demonstrates that our method provides richer and more fine-grained supervision. A deeper analysis of the Visual Search sub-tasks reveals that (Positional Perception), particularly at the 3B scale (e.g., improving from 86.95 to 90.43). This strongly suggests that our fine-grained process supervision has successfully guided the model to enhance its precise spatial localization capabilities. Concurrently, the improvements on benchmarks like BLINK and MMStar also indicate that this enhanced perception leads to higher fidelity and fewer hallucinations. A crucial finding is the model's strong generalization ability. As discussed in Section 4.1, although our PRM training and RL intervention were predominantly focused on Visual Search tasks, the model still exhibits consistent performance gains across all other domains, including general perception and math reasoning. We attribute this "capability transfer" to the fact that tasks in Math & Chart (such as MathVision and ChartQA) are fundamentally reliant on precise, fine-grained perceptual abilities (e.g., localizing data points on a chart, reading text). By strengthening the model's foundational perceptual accuracy, our method successfully generalizes this improvement to broader and more complex reasoning tasks. Furthermore, our 7B model trained with our method also surpasses Pixel-Reasoner and achieves performance competitive with DeepEyes on Visual Search tasks. It is noteworthy that the latter two models both rely on external tool manipulation to assist in object grounding. This result indicates that enhancing the intrinsic perceptual abilities of multimodal base models is a highly promising research direction, capable of rivaling the performance of tool-augmented SOTA methods.
 
 > 💡 **Table 1 批读 — 主结果分析**:
 >
@@ -66,7 +66,7 @@
 > **关键发现**:
 > 1. **位置感知 (V*_pos) 提升最显著**: 3B 上从 69.73 到 72.37 (+2.64%)，7B 上从 82.89 到 86.84 (+3.95%)。因为 PRM 直接针对空间关系类的幻觉施加惩罚，模型被迫学会"看清楚再说"。
 > 2. **能力迁移清晰**: MathVision (3B: 23.36→26.32, +2.96%) 和 ChartQA (3B: 83.32→86.48, +3.16%) 的提升说明——虽然训练时未对数学数据做 PRM 干预，但底层感知精度的增强自动溢出到了需要精确读取图表数据的复杂推理任务。
-> 3. **7B 竞争力**: 不依赖外部工具的 Perceval 在 Visual Search 上超越了依赖 zoom/crop 的 PixelReasoer，接近同样依赖工具的 DeepEyes。
+> 3. **7B 竞争力**: 不依赖外部工具的 Perceval 在 Visual Search 上超越了依赖 zoom/crop 的 PixelReasoner，接近同样依赖工具的 DeepEyes。
 >
 > **vs. GRPO baseline 的解读**:
 > GRPO 已经是一个很强的 baseline（在大多数任务上已经是 backbone 的显著提升）。Perceval 在此基础上进一步提升了约 1-4%，说明 token-level 的监督确实补足了 sequence-level 无法覆盖的"冷启动"部分——即那些"最终答案对但中间感知错了"或者"中间感知对了但最终答案错了"的情况。
@@ -149,13 +149,13 @@
 > white vehicle.</think>
 > <answer>A. The blue truck is on the right side.</answer>
 > ```
-> → 关键差异：Ours 模型显示了明确的定位步骤——先找白色车、再找蓝色车、然后判断空间关系。这种显式的 grounded reasoing 正是 token-level advantage 惩罚幻觉 token 后模型学会的模式：先感知，再推理。
+> → 关键差异：Ours 模型显示了明确的定位步骤——先找白色车、再找蓝色车、然后判断空间关系。这种显式的 grounded reasoning 正是 token-level advantage 惩罚幻觉 token 后模型学会的模式：先感知，再推理。
 
 ---
 
 ## 三、Summary
 
-- **Main Results**: 3B Visual Search +4%, Math&Chart +3%, Perception-intensive +1%；7B 超越 PixelReasoer 并接近 DeepEyes
+- **Main Results**: 3B Visual Search +4%, Math&Chart +3%, Perception-intensive +1%；7B 超越 PixelReasoner 并接近 DeepEyes
 - **能力迁移**: 仅在感知数据做 PRM 干预 → 复杂推理也受益 → "感知是公共瓶颈组件"
 - **Test-time Scaling**: Truncate > Truncate-Thinking > Major Voting；PRM 驱动的"纵向精炼"在困难任务上优于多采样的"横向扩增"
 - **Reward Hacking**: Perceval 的间接干预机制天然抗过拟合——Figure 2 验证了稳定性

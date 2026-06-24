@@ -4,7 +4,7 @@
 
 ### 背景：MLLMs 的感知演进
 
-> MLLMs have demonstrated unprecedented capabilities in visual reasoing, document understanding, and vision-language-action (VLA) modeling. The bedrock of these sophisticated reasoing capabilities lies in the model's foundational visual perception.
+> MLLMs have demonstrated unprecedented capabilities in visual reasoning, document understanding, and vision-language-action (VLA) modeling. The bedrock of these sophisticated reasoning capabilities lies in the model's foundational visual perception.
 
 早期架构（如原始 LLaVA 系列）依赖冻结的低分辨率 Vision Transformer（224x224 或 336x336），虽然对粗粒度图像描述有效，但严重压缩和模糊了关键的局部细节。
 

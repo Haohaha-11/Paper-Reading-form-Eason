@@ -12,11 +12,11 @@
 
 ## 二、原始文本
 
-In the previous section, we identified key limitations of LVLMs on multi-image tasks via zero-shot evaluation using the MIMIC benchmark. Here, we investigate targeted fine-tuning strategies derived from our findings and aimed at improving multi-image reasoing capabilities. In particular, we explore two complementary approaches: a data-centric fine-tuning strategy using synthetically generated multi-image data, and an optimization-centric attention-masking strategy.
+In the previous section, we identified key limitations of LVLMs on multi-image tasks via zero-shot evaluation using the MIMIC benchmark. Here, we investigate targeted fine-tuning strategies derived from our findings and aimed at improving multi-image reasoning capabilities. In particular, we explore two complementary approaches: a data-centric fine-tuning strategy using synthetically generated multi-image data, and an optimization-centric attention-masking strategy.
 
 ### Strategy 1: Data-Centric — Synthetic Multi-Image Training Data
 
-Multi-Image Finetuning: We fine-tune LLaVA-OV models on a unified training dataset composed of samples procedurally generated using the MIMIC pipeline (see section 3.1) together with the original LLaVA-OV multi-image instruction-tuning data (approximately 580K samples). Unlike the MIMIC benchmark used for evaluation, our fine-tuning data is built from OpenImages and provides explicit supervision for cross-image reasoing. It contains approximately 198K samples, with sequence lengths of up to 10 images (see appendix), deliberately exposing models to substantially longer vision-token sequences. All four MIMIC tasks are included to encourage diverse multi-image reasoing behaviors.
+Multi-Image Finetuning: We fine-tune LLaVA-OV models on a unified training dataset composed of samples procedurally generated using the MIMIC pipeline (see section 3.1) together with the original LLaVA-OV multi-image instruction-tuning data (approximately 580K samples). Unlike the MIMIC benchmark used for evaluation, our fine-tuning data is built from OpenImages and provides explicit supervision for cross-image reasoning. It contains approximately 198K samples, with sequence lengths of up to 10 images (see appendix), deliberately exposing models to substantially longer vision-token sequences. All four MIMIC tasks are included to encourage diverse multi-image reasoning behaviors.
 
 > **数据侧策略的设计考量**:
 >

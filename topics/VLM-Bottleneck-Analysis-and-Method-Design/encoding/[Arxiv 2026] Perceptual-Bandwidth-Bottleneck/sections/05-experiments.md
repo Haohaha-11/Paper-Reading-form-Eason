@@ -10,11 +10,11 @@
 
 ## 二、原始文本
 
-We instantiate the S-BOED framework with FOVEA, a plugin inference-time module that intercepts the VLM's crop commands and refines them before tool execution. This refinement is essential because external vision experts (e.g., OCR, Detection, and Segmentation) are equally subject to the perceptual bandwidth bottleneck. Without highresolution inputs, these tools struggle to resolve dense or minute features in down-sampled global views (Akyon et al., 2022; Singh et al., 2019). Consequently, the cropping operation serves as a fundamental bridge to deliver high-fidelity signals to both the reasoing VLM and downstream tools. FOVEA optimises this critical interface by refining the crop's spatial parameters to maximise its informative utility.
+We instantiate the S-BOED framework with FOVEA, a plugin inference-time module that intercepts the VLM's crop commands and refines them before tool execution. This refinement is essential because external vision experts (e.g., OCR, Detection, and Segmentation) are equally subject to the perceptual bandwidth bottleneck. Without highresolution inputs, these tools struggle to resolve dense or minute features in down-sampled global views (Akyon et al., 2022; Singh et al., 2019). Consequently, the cropping operation serves as a fundamental bridge to deliver high-fidelity signals to both the reasoning VLM and downstream tools. FOVEA optimises this critical interface by refining the crop's spatial parameters to maximise its informative utility.
 
 > 💡 **Cropping 作为关键接口**: crop 操作不仅是 VLM 感知的 bottleneck，也是下游工具（OCR、Detection、Segmentation）的 bottleneck。全局下采样视图喂给 Detection 模型同样会导致小目标不可检测。因此 FOVEA 通过优化 crop 的空间参数，同时为 VLM 推理和下游工具提供高保真信号——这是一个"一石二鸟"的效果。
 
-Benchmarks. We assess FOVEA on four benchmarks: HR-Bench (Team, 2024), MME-RealWorld-Lite (Zhang et al., 2024), V\*Bench (Wu & Xie, 2023), and CV-Bench (Tong et al., 2024). These datasets cover fine-grained recognition, small-object search, and 3D reasoing, all of which require high-fidelity local information.
+Benchmarks. We assess FOVEA on four benchmarks: HR-Bench (Team, 2024), MME-RealWorld-Lite (Zhang et al., 2024), V\*Bench (Wu & Xie, 2023), and CV-Bench (Tong et al., 2024). These datasets cover fine-grained recognition, small-object search, and 3D reasoning, all of which require high-fidelity local information.
 
 > 💡 **Benchmark 覆盖的任务维度**:
 > - **MME-RealWorld-Lite**: 真实世界复杂场景，包含 remote sensing（遥感）、OCR、细粒度识别
@@ -65,7 +65,7 @@ Table 1. Main results on multimodal benchmarks. FOVEA is compared with proprieta
 >
 > 4. **跨 backbone 泛化 (8B)**: 74.9% vs 70.9%/72.5% —— 800B 规模的模型上同样有效，说明策略不依赖特定 backbone 规模。
 >
-> 5. **MME-RealWorld-Lite 上 FOVEA vs RAP**: 54.6% vs 40.8% —— RAP 的 retrieval-augmented perception 策略在该任务上甚至低于 Direct baseline，表明简单的检索增强可能不适合需要精细 spatial reasoing 的场景。
+> 5. **MME-RealWorld-Lite 上 FOVEA vs RAP**: 54.6% vs 40.8% —— RAP 的 retrieval-augmented perception 策略在该任务上甚至低于 Direct baseline，表明简单的检索增强可能不适合需要精细 spatial reasoning 的场景。
 
 > 💡 **RAP 为什么在 MME-RealWorld 上表现最差？** RAP (Retrieval-Augmented Perception) 通过检索外部视觉知识来增强感知，但在真实世界遥感图像中，检索到的可能是不相关的 distractor regions，反而引入噪声。而 FOVEA 的 resolvability probing 直接验证每个 crop 是否包含 query-relevant evidence，更精准。
 
@@ -75,9 +75,9 @@ Table 1. Main results on multimodal benchmarks. FOVEA is compared with proprieta
 
 ![Figure 3](../images/0458f4e3c1cfc6cd905a322e10ba61c324717c18f0b526b1ef7ccf66b520ef58.jpg)
 
-*Figure 3: Search efficacy in the gigapixel regime. We compare Direct, ReAct, and FOVEA variants on the Remote Sensing subset against an oracle-crop baseline. FOVEA-Lookahead yields the largest gain, while the remaining oracle gap reflects residual backbone recognition and reasoing errors.*
+*Figure 3: Search efficacy in the gigapixel regime. We compare Direct, ReAct, and FOVEA variants on the Remote Sensing subset against an oracle-crop baseline. FOVEA-Lookahead yields the largest gain, while the remaining oracle gap reflects residual backbone recognition and reasoning errors.*
 
-To isolate the contribution of our search strategy from the VLM's semantic reasoing capabilities, we conduct a focused ablation on the Remote Sensing subset of MME-RealWorld-lite (Zhang et al., 2024). This setting is searchdominated: images are extremely large, targets are sparse, and task-relevant regions are often nearly invisible in the downsampled global view. We compare Direct, ReAct, and FOVEA variants against an oracle-crop baseline, where the VLM is given a human-annotated crop.
+To isolate the contribution of our search strategy from the VLM's semantic reasoning capabilities, we conduct a focused ablation on the Remote Sensing subset of MME-RealWorld-lite (Zhang et al., 2024). This setting is searchdominated: images are extremely large, targets are sparse, and task-relevant regions are often nearly invisible in the downsampled global view. We compare Direct, ReAct, and FOVEA variants against an oracle-crop baseline, where the VLM is given a human-annotated crop.
 
 > 💡 **遥感场景为什么是理想的测试场？**
 > - 图像极大（gigapixel 级）→ perceptual bandwidth bottleneck 极端严重
@@ -101,7 +101,7 @@ Analysis. As visualised in Figure 3, ReAct improves over the base model by enabl
 > **三层 gap 分解**:
 > - **Search gap** (ReAct → FOVEA-Lookahead): ~9.6pp —— S-BOED 搜索策略带来的提升
 > - **Oracle gap** (FOVEA-Lookahead → Oracle): ~13.3pp —— 搜索策略仍有提升空间（如 cold start）
-> - **Recognition gap** (Oracle → 100%): ~32pp —— backbone VLM 的固有 reasoing 能力上限
+> - **Recognition gap** (Oracle → 100%): ~32pp —— backbone VLM 的固有 reasoning 能力上限
 
 ---
 
@@ -124,13 +124,13 @@ The previous section compares search strategies at a fixed budget on the full 15
 
 Analysis. The trend is monotonic within each family: a higher search budget yields higher accuracy, but at increasing token cost. This indicates that FOVEA should be viewed as a family of compute–accuracy operating points rather than a single fixed policy. Lower-budget variants such as FOVEA-Greedy provide cheaper moderate gains and are suitable when latency is constrained, while higher-budget FOVEA-Lookahead yields larger improvements in searchdominated settings where additional search budget translates into meaningful gains.
 
-This suggests that active perception provides a complementary axis of inference-time scaling: additional compute can be spent on acquiring higher-value visual evidence, not only on generating longer textual reasoing traces.
+This suggests that active perception provides a complementary axis of inference-time scaling: additional compute can be spent on acquiring higher-value visual evidence, not only on generating longer textual reasoning traces.
 
 > 💡 **Inference-time scaling 的两种维度**:
 
 > | 维度 | 传统方法 | FOVEA (本文) |
 > |------|---------|-------------|
-> | 计算花在哪里 | 生成更长的 reasoing traces (CoT) | 采集更多/更好的视觉证据 |
+> | 计算花在哪里 | 生成更长的 reasoning traces (CoT) | 采集更多/更好的视觉证据 |
 > | 典型方法 | Best-of-N, tree search, 更长 CoT | 更多 probing, MCMC iterations, lookahead branches |
 > | 适用场景 | 推理密集型 | 感知/搜索密集型 |
 > | 核心 bottleneck | 语义推理能力 | 感知带宽 |

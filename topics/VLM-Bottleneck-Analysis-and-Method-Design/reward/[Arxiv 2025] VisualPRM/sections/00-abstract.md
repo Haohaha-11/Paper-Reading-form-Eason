@@ -6,7 +6,7 @@
 
 | 项目 | 内容 |
 |------|------|
-| **标题** | VisualPRM: An Effective Process Reward Model for Multimodal Reasoing |
+| **标题** | VisualPRM: An Effective Process Reward Model for Multimodal Reasoning |
 | **作者** | Weiyun Wang et al. |
 | **单位** | Fudan Univ., Shanghai AI Lab., SJTU, Tsinghua, NJU, CUHK, SenseTime |
 | **发表** | arXiv 2025 |
@@ -19,7 +19,7 @@
 
 ### Abstract
 
-We introduce VisualPRM, an advanced multimodal Process Reward Model (PRM) with 8B parameters, which improves the reasoing abilities of existing Multimodal Large Language Models (MLLMs) across different model scales and families with Best-of-N (BoN) evaluation strategies. Specifically, our model improves the reasoing performance of three types of MLLMs and four different model scales. Even when applied to the highly capable InternVL2.5-78B, it achieves a 5.9-point improvement across seven multimodal reasoing benchmarks. Experimental results show that our model exhibits superior performance compared to Outcome Reward Models and Self-Consistency during BoN evaluation. To facilitate the training of multimodal PRMs, we construct a multimodal process supervision dataset VisualPRM400K using an automated data pipeline. For the evaluation of multimodal PRMs, we propose VisualProcessBench, a benchmark with human-annotated step-wise correctness labels, to measure the abilities of PRMs to detect erroneous steps in multimodal reasoing tasks. We hope that our work can inspire more future research and contribute to the development of MLLMs. Our model, data, and benchmark are released in this page.
+We introduce VisualPRM, an advanced multimodal Process Reward Model (PRM) with 8B parameters, which improves the reasoning abilities of existing Multimodal Large Language Models (MLLMs) across different model scales and families with Best-of-N (BoN) evaluation strategies. Specifically, our model improves the reasoning performance of three types of MLLMs and four different model scales. Even when applied to the highly capable InternVL2.5-78B, it achieves a 5.9-point improvement across seven multimodal reasoning benchmarks. Experimental results show that our model exhibits superior performance compared to Outcome Reward Models and Self-Consistency during BoN evaluation. To facilitate the training of multimodal PRMs, we construct a multimodal process supervision dataset VisualPRM400K using an automated data pipeline. For the evaluation of multimodal PRMs, we propose VisualProcessBench, a benchmark with human-annotated step-wise correctness labels, to measure the abilities of PRMs to detect erroneous steps in multimodal reasoning tasks. We hope that our work can inspire more future research and contribute to the development of MLLMs. Our model, data, and benchmark are released in this page.
 
 > **一句话概括**: VisualPRM 提出了首个 8B 多模态过程奖励模型，配套自动构建的约 400K 过程监督数据集 VisualPRM400K 和人工标注的步骤评测基准 VisualProcessBench，通过 Best-of-N 评估策略跨模型家族和规模显著提升 MLLM 推理能力。
 
@@ -27,7 +27,7 @@ We introduce VisualPRM, an advanced multimodal Process Reward Model (PRM) with 8
 
 ![Figure 1](../images/996c69a8f0fce958a106e2317056ea6f229a715f3f90470069c37f5d1fa90bab.jpg)
 
-*Figure 1. The overall Best-of-8 evaluation results across seven multimodal reasoing benchmarks with different critic models. Our VisualPRM greatly enhances the overall performance, while InternVL2.5-8B struggles to be an effective critic model.*
+*Figure 1. The overall Best-of-8 evaluation results across seven multimodal reasoning benchmarks with different critic models. Our VisualPRM greatly enhances the overall performance, while InternVL2.5-8B struggles to be an effective critic model.*
 
 > **Figure 1 批读**: 这张图展示了使用不同 critic model 进行 Best-of-8 评测的总体结果对比（7 个 benchmark 的平均分）。核心信息有三层：
 >

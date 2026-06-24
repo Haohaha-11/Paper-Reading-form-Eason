@@ -12,7 +12,7 @@
 
 ### 4.1. Results with Best-of-N evaluation
 
-**Benchmarks.** We evaluate the reasoing abilities of MLLMs across seven benchmarks, including MMMU, MathVista, MathVision, MathVerse, DynaMath, WeMath, and LogicVista. The evaluation samples include subject-based, mathematical, and logical reasoing problems. We report the worst-case accuracy for DynaMath and the overall accuracy for the remaining benchmarks. For MathVerse, we report the performance on the Vision-Only split.
+**Benchmarks.** We evaluate the reasoning abilities of MLLMs across seven benchmarks, including MMMU, MathVista, MathVision, MathVerse, DynaMath, WeMath, and LogicVista. The evaluation samples include subject-based, mathematical, and logical reasoning problems. We report the worst-case accuracy for DynaMath and the overall accuracy for the remaining benchmarks. For MathVerse, we report the performance on the Vision-Only split.
 
 > **Benchmark 分类**:
 > | 类别 | Benchmark | 任务类型 |
@@ -21,11 +21,11 @@
 > | 数学推理 | MathVista, MathVision, MathVerse, DynaMath, WeMath | 不同难度/风格的数学题 |
 > | 逻辑推理 | LogicVista | 视觉场景中的逻辑推理 |
 
-**Settings.** Without further explanation, we use VisualPRM as the critic model for BoN evaluation and set N to 8 by default. The policy model is required to generate N distinct step-by-step Chain-of-Thought (CoT) reasoing processes with a temperature of 0.7. The response with the highest score is then selected to determine the correctness.
+**Settings.** Without further explanation, we use VisualPRM as the critic model for BoN evaluation and set N to 8 by default. The policy model is required to generate N distinct step-by-step Chain-of-Thought (CoT) reasoning processes with a temperature of 0.7. The response with the highest score is then selected to determine the correctness.
 
 > **实验设置**: N=8, temperature=0.7 是 BoN 评测的标准设置。Temperature 消融见 Section 7——0.7 是 diversity-accuracy trade-off 的最优点。
 
-**Results.** As shown in Table 2, VisualPRM greatly enhances the reasoing abilities of MLLMs across different model scales and families. Specifically, for models with fewer than 10 billion parameters, the overall performance of InternVL2.5-8B, MiniCPM-V-8B, and Qwen2.5-VL-7B improves by 8.4, 8.0, and 3.7 points, respectively, demonstrating the effectiveness of test-time scaling across different model families. For larger models, InternVL2.5-26B, InternVL2.5-38B, and InternVL2.5-78B also achieve substantial performance gains over their counterparts without TTS, further validating the scalability and effectiveness of TTS across different model sizes.
+**Results.** As shown in Table 2, VisualPRM greatly enhances the reasoning abilities of MLLMs across different model scales and families. Specifically, for models with fewer than 10 billion parameters, the overall performance of InternVL2.5-8B, MiniCPM-V-8B, and Qwen2.5-VL-7B improves by 8.4, 8.0, and 3.7 points, respectively, demonstrating the effectiveness of test-time scaling across different model families. For larger models, InternVL2.5-26B, InternVL2.5-38B, and InternVL2.5-78B also achieve substantial performance gains over their counterparts without TTS, further validating the scalability and effectiveness of TTS across different model sizes.
 
 > **Table 2 核心结果解读**:
 >
@@ -70,14 +70,14 @@
 
 ### 4.3. Ablation Studies
 
-**Effects of BoN.** Here, we increase the number of response candidates sampled from InternVL2.5-8B and select the final response using Self-Consistency (SC), Outcome Reward Model (ORM), and PRM. The training data for ORM are nearly identical to those used for PRM, except that all steps are concatenated into a single step and step-wise correctness annotations are converted into a single correctness label for the outcome. As shown in Figure 4, increasing the number of response candidates N improves the reasoing performance of InternVL2.5-8B and MiniCPM-V2.6-8B when using SC, ORM, or PRM, with PRM yielding the most significant improvements. Specifically, when using InternVL2.5-8B as the policy model, PRM outperforms SC and ORM by 2.4 and 1.5 points, respectively, under the Best-of-8 evaluation setting. Moreover, this performance gap widens as N increases, reaching 3.1 and 4.3 points when N is set to 128. Notably, when using ORM as the critic model, although performance improves during Best-of-8 evaluation, further increasing N does not lead to consistent gains for InternVL2.5-8B. For example, the Best-of-128 performance is inferior to the Best-of-64 performance. These results highlight the effectiveness of PRM in TTS.
+**Effects of BoN.** Here, we increase the number of response candidates sampled from InternVL2.5-8B and select the final response using Self-Consistency (SC), Outcome Reward Model (ORM), and PRM. The training data for ORM are nearly identical to those used for PRM, except that all steps are concatenated into a single step and step-wise correctness annotations are converted into a single correctness label for the outcome. As shown in Figure 4, increasing the number of response candidates N improves the reasoning performance of InternVL2.5-8B and MiniCPM-V2.6-8B when using SC, ORM, or PRM, with PRM yielding the most significant improvements. Specifically, when using InternVL2.5-8B as the policy model, PRM outperforms SC and ORM by 2.4 and 1.5 points, respectively, under the Best-of-8 evaluation setting. Moreover, this performance gap widens as N increases, reaching 3.1 and 4.3 points when N is set to 128. Notably, when using ORM as the critic model, although performance improves during Best-of-8 evaluation, further increasing N does not lead to consistent gains for InternVL2.5-8B. For example, the Best-of-128 performance is inferior to the Best-of-64 performance. These results highlight the effectiveness of PRM in TTS.
 
 > **机制拆解 — BoN 对比: SC vs. ORM vs. PRM**:
 >
 > ![Figure 4 (a)](../images/8eb73af8f27d4e5a23164058e5589e78c628b9b4988609cb177dbc0f0e12472d.jpg)
 > ![Figure 4 (b)](../images/22a3a57c2076a35e7c0f24afaecbc59d6c9cafcf0a3319940daa3e57531968f1.jpg)
 >
-> *Figure 4. Overall Best-of-N results across seven multimodal reasoing benchmarks with different policy and critic models.*
+> *Figure 4. Overall Best-of-N results across seven multimodal reasoning benchmarks with different policy and critic models.*
 >
 > **InternVL2.5-8B (policy) + 不同 critic 的对比**:
 >
@@ -135,7 +135,7 @@ We also compare two training strategies: supervising all steps (i.e., w/o early 
 >
 > 这进一步说明：通用 MLLM 的"语言生成"路径不适用于 critic 任务——需要独立的概率建模。
 
-**Results on text-only performance.** To assess the effectiveness of VisualPRM on text-only inputs, we evaluate the Qwen2.5 series and InternVL2.5 series on three text reasoing benchmarks under BoN evaluation settings: GSM8K, MATH-500, and GPQA-Diamond. As shown in Table 5, our model enhances the text reasoing abilities of both the Qwen2.5 series and the InternVL2.5 series. Specifically, Qwen2.5-7B achieves improvements of 6.1 and 5.0 points on MATH-500 and GPQA-Diamond, respectively. Similarly, Qwen2.5-72B demonstrates gains of 2.1 and 6.6 points on these benchmarks. For the InternVL2.5 series, InternVL2.5-8B achieves improvements of 9.4 and 5.0 points, respectively, on MATH-500 and GPQA-Diamond.
+**Results on text-only performance.** To assess the effectiveness of VisualPRM on text-only inputs, we evaluate the Qwen2.5 series and InternVL2.5 series on three text reasoning benchmarks under BoN evaluation settings: GSM8K, MATH-500, and GPQA-Diamond. As shown in Table 5, our model enhances the text reasoning abilities of both the Qwen2.5 series and the InternVL2.5 series. Specifically, Qwen2.5-7B achieves improvements of 6.1 and 5.0 points on MATH-500 and GPQA-Diamond, respectively. Similarly, Qwen2.5-72B demonstrates gains of 2.1 and 6.6 points on these benchmarks. For the InternVL2.5 series, InternVL2.5-8B achieves improvements of 9.4 and 5.0 points, respectively, on MATH-500 and GPQA-Diamond.
 
 > **纯文本迁移能力 (Table 5)**:
 >

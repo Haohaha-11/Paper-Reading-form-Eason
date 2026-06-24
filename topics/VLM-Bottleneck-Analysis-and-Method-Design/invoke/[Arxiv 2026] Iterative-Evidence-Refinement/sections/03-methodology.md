@@ -10,17 +10,17 @@ SIEVE 的方法论分为两个阶段：(1) Pre-training 阶段：通过梯度显
 
 ## 二、原始文本
 
-Our core hypothesis is that the visual embeddings produced by a VLM already encode sufficient information for complex visual reasoing, provided the model can access the appropriate localized evidence at the right moment. To validate this hypothesis, we conduct a controlled study on the V\* dataset examining whether region-level visual features can directly enhance multimodal inference. Concretely, we manually identify task-relevant regions, extract their corresponding embeddings, and augment inference by inserting these region embeddings with the model's original visual embeddings, all without any additional training. We evaluate this intervention against the standard setting that relies solely on global image. As shown in Figure 2, region-augmented inference yields a 3% improvement, confirming that localized embedding evidence provides a compact yet effective signal that the model can immediately leverage. This finding aligns with prior work demonstrating that LLM hidden states encode rich semantic structure [Skean et al., 2025, Schiekiera et al., 2026, Liu et al., 2024].
+Our core hypothesis is that the visual embeddings produced by a VLM already encode sufficient information for complex visual reasoning, provided the model can access the appropriate localized evidence at the right moment. To validate this hypothesis, we conduct a controlled study on the V\* dataset examining whether region-level visual features can directly enhance multimodal inference. Concretely, we manually identify task-relevant regions, extract their corresponding embeddings, and augment inference by inserting these region embeddings with the model's original visual embeddings, all without any additional training. We evaluate this intervention against the standard setting that relies solely on global image. As shown in Figure 2, region-augmented inference yields a 3% improvement, confirming that localized embedding evidence provides a compact yet effective signal that the model can immediately leverage. This finding aligns with prior work demonstrating that LLM hidden states encode rich semantic structure [Skean et al., 2025, Schiekiera et al., 2026, Liu et al., 2024].
 
 > 💡 **Figure 2 批读 — 手动证据注入的实证基础**: 这个 3% 的提升是整个方法论的基石。有几层含义需要解读：(1) 全局图像 + region embedding > 仅全局图像，说明 region 提供了**互补的细粒度信息**；(2) 不需要额外训练就能从 region embedding 中获益，说明 VLM 的表示空间天然支持这种跨表示的信息融合；(3) 3% 是一个 lower bound——手动选择的 region 不一定最优，自动化证据发现（SIEVE 后续做的事）应该能超越这个数字。
 >
 > **理论支撑**: 引用 Skean et al. (2025), Liu et al. (2024) 等关于中间层语义丰富性的工作，为 "为什么中间层的 embedding 值得复用" 提供了理论背书。
 
-Motivated by this observation, we introduce SIEVE, a framework that treats task-relevant region embeddings as reusable visual evidence and learns to incorporate them within RL policy optimization. Specifically, SIEVE (i) extracts and caches region embeddings as compact evidence units and (ii) jointly optimizes how such evidence is selected and integrated into the model's reasoing process throughout reinforcement learning. Section 3.1 presents an overview of the training pipeline. Section 3.2 details our automatic evidence discovery procedure. Section 3.3 introduces a visually grounded RL formulation that trains the model to retrieve and insert cached region embeddings on demand, enabling systematic evidence-aware reasoing beyond global visual representations.
+Motivated by this observation, we introduce SIEVE, a framework that treats task-relevant region embeddings as reusable visual evidence and learns to incorporate them within RL policy optimization. Specifically, SIEVE (i) extracts and caches region embeddings as compact evidence units and (ii) jointly optimizes how such evidence is selected and integrated into the model's reasoning process throughout reinforcement learning. Section 3.1 presents an overview of the training pipeline. Section 3.2 details our automatic evidence discovery procedure. Section 3.3 introduces a visually grounded RL formulation that trains the model to retrieve and insert cached region embeddings on demand, enabling systematic evidence-aware reasoning beyond global visual representations.
 
 ![Figure 3](../images/2c9abf4304190a0331bc938240d81daec4b1c72d3243937fa47d7392bdb24cd3.jpg)
 
-*Figure 3: Training workflow of SIEVE. For each question, the embeddings of image patches aligned with key textual anchors are extracted and cached as visual evidence. During RL rollouts, the policy learns when to insert this evidence into the reasoing stream, with rewards computed from the final answer. Embeddings of visual evidence are periodically re-extracted using the updated model to keep the evidence aligned with the evolving policy.*
+*Figure 3: Training workflow of SIEVE. For each question, the embeddings of image patches aligned with key textual anchors are extracted and cached as visual evidence. During RL rollouts, the policy learns when to insert this evidence into the reasoning stream, with rewards computed from the final answer. Embeddings of visual evidence are periodically re-extracted using the updated model to keep the evidence aligned with the evolving policy.*
 
 > 💡 **Figure 3 批读 — 训练闭环的三个关键环节**:
 > 1. **证据预提取 (左上)**: 对每个 question-image 对，自动识别关键区域并缓存其 embedding。这个缓存是训练过程中被**周期性刷新**的——因为模型参数在变，同一个区域的 embedding 也会变。
@@ -91,7 +91,7 @@ return E
 
 ### 3.2 Self-Guided Visual Evidence Identification
 
-A central challenge in constructing visual evidence lies in determining what to store: the embeddings must capture precisely the visual information that the model would need to revisit during reasoing, without relying on manual annotation or task-specific heuristics. We address this through a two-stage self-guided visual evidence identification pipeline, which is illustrated in Algorithm 1. First, the model introspects on its own predictive process to surface the most prediction-critical tokens as textual anchors. Subsequently, we ground these anchors onto spatially coherent image regions via cross-modal matching within the model's internal representation space.
+A central challenge in constructing visual evidence lies in determining what to store: the embeddings must capture precisely the visual information that the model would need to revisit during reasoning, without relying on manual annotation or task-specific heuristics. We address this through a two-stage self-guided visual evidence identification pipeline, which is illustrated in Algorithm 1. First, the model introspects on its own predictive process to surface the most prediction-critical tokens as textual anchors. Subsequently, we ground these anchors onto spatially coherent image regions via cross-modal matching within the model's internal representation space.
 
 > 💡 **核心挑战 — "存什么"比"怎么存"更难**: 这个 sentence 点出了 evidence-based 方法的本质难度：如果你存的 evidence 不是模型真正需要的，注入再多也无效。SIEVE 的回答是"去问模型自己"——通过梯度显著性让模型告诉你哪些 token 对它而言最关键，然后去图像中找这些 token 的视觉对应区域。
 
@@ -101,7 +101,7 @@ Rather than relying on external concept taggers or handcrafted keyword lists, we
 
 Sal(i) = ||∇_{h_i} s ⊙ h_i||_2      (1)
 
-where ⊙ denotes element-wise multiplication. This gradient–input formulation captures both the sensitivity of the prediction (via the gradient) and the magnitude of the representation (via h_i), ensuring that high saliency reflects genuine dependence of the model's output on token i. Since raw saliency scores often assign non-trivial weight to function words (e.g., the, is) that carry limited semantic content, we apply a stop-word filter and retain only content-bearing tokens whose saliency exceeds a predefined threshold. The surviving tokens constitute our textual anchors, i.e., the semantics that the model implicitly treats as pivotal to its reasoing (e.g., objects, attributes, or spatial relations). These anchors subsequently serve as queries for visual grounding.
+where ⊙ denotes element-wise multiplication. This gradient–input formulation captures both the sensitivity of the prediction (via the gradient) and the magnitude of the representation (via h_i), ensuring that high saliency reflects genuine dependence of the model's output on token i. Since raw saliency scores often assign non-trivial weight to function words (e.g., the, is) that carry limited semantic content, we apply a stop-word filter and retain only content-bearing tokens whose saliency exceeds a predefined threshold. The surviving tokens constitute our textual anchors, i.e., the semantics that the model implicitly treats as pivotal to its reasoning (e.g., objects, attributes, or spatial relations). These anchors subsequently serve as queries for visual grounding.
 
 > 💡 **Eq (1) 批读 — 梯度显著性公式**:
 > - ∇_{h_i} s: 预测目标 s 对 token i 的 embedding 的梯度。物理意义：如果轻微扰动这个 token 的 embedding，预测结果会变多少。
@@ -121,7 +121,7 @@ To ensure robust similarity computation, we apply mean-centering and ℓ_2 norma
 
 w_i = exp(s_i/τ) / Σ_j exp(s_j/τ)      (2)
 
-We leverage this distribution to extract a spatially coherent region. Specifically, we map patch tokens onto the H×W patch grid and compute each block's score as the maximum similarity within the block: s_b = max_{j∈B_b} w_ij, where B_b denotes the set of patches in block b. We then select the top-K scoring blocks B_i = TopK({s_b}), and expand each selected block by computing the bounding rectangle of the selected patches. We set k to 1, and further discussion it in the B. We evaluate the similarity of these patches with their corresponding textual anchors and retain the highest-scoring one as the expanded block R_i = Expand(B̄_i). The embeddings of patches within each region are then aggregated to form a region-level snapshot: E_i = Concat_{j∈R_i} x_j. The resulting region embeddings are cached as evidence snapshots and stored alongside each training sample. These embeddings constitute reusable visual evidence that can be dynamically inserted into reasoing during the rollout process.
+We leverage this distribution to extract a spatially coherent region. Specifically, we map patch tokens onto the H×W patch grid and compute each block's score as the maximum similarity within the block: s_b = max_{j∈B_b} w_ij, where B_b denotes the set of patches in block b. We then select the top-K scoring blocks B_i = TopK({s_b}), and expand each selected block by computing the bounding rectangle of the selected patches. We set k to 1, and further discussion it in the B. We evaluate the similarity of these patches with their corresponding textual anchors and retain the highest-scoring one as the expanded block R_i = Expand(B̄_i). The embeddings of patches within each region are then aggregated to form a region-level snapshot: E_i = Concat_{j∈R_i} x_j. The resulting region embeddings are cached as evidence snapshots and stored alongside each training sample. These embeddings constitute reusable visual evidence that can be dynamically inserted into reasoning during the rollout process.
 
 > 💡 **跨模态匹配的几点关键设计**:
 >
@@ -137,7 +137,7 @@ We leverage this distribution to extract a spatially coherent region. Specifical
 
 ### 3.3 Visual-grounded Reinforcement Learning
 
-Existing tool-augmented thinking-with-images methods [Zheng et al., 2025, Hong et al., 2025, Zhang et al., 2025b] enlarge the action space with external tool calls and require image re-encoding at every reasoing step. Since SIEVE simply reuses embeddings already produced by the vision encoder and projected into text space, it sidesteps these issues entirely and we can formalize the reasoing as shown in Equation 3, where the policy selects the next action conditioned on the original image and the full interaction history, including both generated text and any previously inserted visual evidence, accumulated up to the current step:
+Existing tool-augmented thinking-with-images methods [Zheng et al., 2025, Hong et al., 2025, Zhang et al., 2025b] enlarge the action space with external tool calls and require image re-encoding at every reasoning step. Since SIEVE simply reuses embeddings already produced by the vision encoder and projected into text space, it sidesteps these issues entirely and we can formalize the reasoning as shown in Equation 3, where the policy selects the next action conditioned on the original image and the full interaction history, including both generated text and any previously inserted visual evidence, accumulated up to the current step:
 
 a_t ~ π_θ(· | s_t),   s_t ≜ I || (x_1 || E_1) || ... || (x_{t-1} || E_{t-1})      (3)
 
@@ -151,19 +151,19 @@ Here, I denotes the input image, x_t is the text generated by the model, and E_t
 > - **关键设计**: E_t 是**插入**在 x_t 之后的——它与文本 token 在序列中**交错排列** (interleaved)。这与工具增强方法中 "new view 追加在输入前端" 形成鲜明对比。
 > - **与 CoT 的关系**: x_t 可以包含推理文本 (如 "Let me check the color of the object...")，然后 E_t 提供该对象的 region embedding。这在语义上是自然的——"我想看看 X" → X 的 embedding 被注入 → 继续推理。
 
-Trajectory-level reward design. We design a trajectory-level reward function that holistically evaluates the quality of the complete reasoing path. The reward comprises four complementary components, each yielding a binary score of 1 (satisfied) or 0 (violated). Given a trajectory τ, the total reward is:
+Trajectory-level reward design. We design a trajectory-level reward function that holistically evaluates the quality of the complete reasoning path. The reward comprises four complementary components, each yielding a binary score of 1 (satisfied) or 0 (violated). Given a trajectory τ, the total reward is:
 
 R(τ) = λ_1 R_res(τ) + λ_2 R_fmt(τ) + λ_3 R_emb(τ) + λ_4 R_act(τ)      (4)
 
 where the λ values are scaling coefficients. In our experiments, we set λ_1 = 0.6, λ_2 = 0.3, λ_3 = 0.5 and λ_4 = 0.2. Each component targets a distinct aspect of the desired behavior:
 
-• Format reward (R_fmt) promotes well-structured outputs. For single-turn trajectories, the full reward is granted only if the model produces a valid reasoing chain followed by a final answer. For multi-turn trajectories, obtaining the full reward additionally requires an explicit embedding selection during an intermediate turn. Any structural violation results in a zero format reward.
+• Format reward (R_fmt) promotes well-structured outputs. For single-turn trajectories, the full reward is granted only if the model produces a valid reasoning chain followed by a final answer. For multi-turn trajectories, obtaining the full reward additionally requires an explicit embedding selection during an intermediate turn. Any structural violation results in a zero format reward.
 
-• Result reward (R_res) evaluates the correctness of the final answer, serving as the primary learning signal for reasoing quality.
+• Result reward (R_res) evaluates the correctness of the final answer, serving as the primary learning signal for reasoning quality.
 
-• Embedding reward (R_emb) is activated exclusively when the model produces a correct final answer and invokes embedding insertion at least once during intermediate reasoing steps. This bonus incentivizes the model to actively leverage visual evidence when it is beneficial for task resolution, rather than bypassing the available evidence.
+• Embedding reward (R_emb) is activated exclusively when the model produces a correct final answer and invokes embedding insertion at least once during intermediate reasoning steps. This bonus incentivizes the model to actively leverage visual evidence when it is beneficial for task resolution, rather than bypassing the available evidence.
 
-• Action reward (R_act) improves training stability in two ways: (i) it penalizes overly short reasoing traces that could hack the reward, and (ii) it provides a small positive reward for committing to an action, either retrieving an embedding or producing an answer, which discourages the policy from collapsing into "non-committal" outputs that avoid taking actions.
+• Action reward (R_act) improves training stability in two ways: (i) it penalizes overly short reasoning traces that could hack the reward, and (ii) it provides a small positive reward for committing to an action, either retrieving an embedding or producing an answer, which discourages the policy from collapsing into "non-committal" outputs that avoid taking actions.
 
 > 💡 **Eq (4) 批读 — 四维 Reward 设计的精妙之处**:
 >

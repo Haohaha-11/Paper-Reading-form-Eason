@@ -61,7 +61,7 @@ This pattern suggests that the model first computes an ordering representation o
 
 ### 5.2 Is Vision Encoder the Source of Ordering Representations?
 
-While the previous subsection established the presence of ordering representations, it did not fully characterize them. In particular, a key open question concerns where these ordering representations are generated within VLMs: are they produced in the LM backbone, the vision encoder, or through interactions between the two components? Identifying the source of ordering representations is important not only for understanding how they arise, but also for enabling targeted mechanistic interventions to improve the reasoing capabilities of VLMs.
+While the previous subsection established the presence of ordering representations, it did not fully characterize them. In particular, a key open question concerns where these ordering representations are generated within VLMs: are they produced in the LM backbone, the vision encoder, or through interactions between the two components? Identifying the source of ordering representations is important not only for understanding how they arise, but also for enabling targeted mechanistic interventions to improve the reasoning capabilities of VLMs.
 
 #### 5.2.1 Probing Visual Embeddings
 

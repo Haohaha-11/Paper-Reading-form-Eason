@@ -1,12 +1,12 @@
 [← 返回 README](../README.md)
 
-# 4. RegionReasoer
+# 4. RegionReasoner
 
 ## 一、Preview
 
 方法论部分分为四个子节：
 1. **4.1 Pipeline Formulation**: 端到端流程形式化（输入/状态/策略/动作空间/记忆更新）
-2. **4.2 RegionReasoer Model**: 模型架构、4-tag 结构化 I/O、reference-grounded thinking、global--local consistency
+2. **4.2 RegionReasoner Model**: 模型架构、4-tag 结构化 I/O、reference-grounded thinking、global--local consistency
 3. **4.3 Reward Functions**: 三条奖励线的形式化定义（base + reference citation + global--local consistency）
 4. **4.4 Training**: GRPO 训练流程、advantage estimation、总损失
 
@@ -18,7 +18,7 @@
 
 **Inputs and state.** At turn t, the agent observes the image I, the current textual query q_t, an optional set of reference boxes B_t^ref = {[x1^(k), y1^(k), x2^(k), y2^(k)]} (propagated or newly provided), and a memory M_{t-1} that stores structured outputs from previous turns. We serialize B_t^ref and M_{t-1} into the prompt to make them available to the model.
 
-**Policy and action space.** RegionReasoer is an auto-regressive VLM policy π_θ that generates a structured text action composed of four tagged blocks y_t = (s_t, f_t, h_t, a_t) with tags <scene>, <focus>, <think>, <answer>. Let y_t = (w_{t,1}, ..., w_{t,N_t}) denote the token sequence for the whole action; then:
+**Policy and action space.** RegionReasoner is an auto-regressive VLM policy π_θ that generates a structured text action composed of four tagged blocks y_t = (s_t, f_t, h_t, a_t) with tags <scene>, <focus>, <think>, <answer>. Let y_t = (w_{t,1}, ..., w_{t,N_t}) denote the token sequence for the whole action; then:
 
 ```
 π_θ(y_t | I, q_t, B_t^ref, M_{t-1}) = ∏_{n=1}^{N_t} π_θ(w_{t,n} | I, q_t, B_t^ref, M_{t-1}, w_{t,<n})
@@ -49,9 +49,9 @@ M_t ← M_{t-1} ∪ {(s_t, f_t, h_t, a_t)}
 
 ---
 
-### 4.2 RegionReasoer Model
+### 4.2 RegionReasoner Model
 
-**Unified perception--reasoing backbone.** RegionReasoer extends the unified perception--reasoing framework of VisionReasoer to a multi-round setting, where each turn emits a structured and verifiable trajectory. The model is initialized from a large VLM backbone and performs chain-of-thought reasoing purely in text, while remaining explicitly grounded to image regions through serialized bounding-box references. Each turn-t output is organized into four tagged blocks: a global scene caption s_t (<scene>), a localized caption f_t tied to a provided reference box (<focus>, optional), a reasoing trace h_t (<think>), and a JSON answer a_t (<answer>). Constrained decoding with schema and tag guards ensures format validity, supports automatic post-hoc parsing, and prevents untagged content from leaking into <answer>.
+**Unified perception--reasoning backbone.** RegionReasoner extends the unified perception--reasoning framework of VisionReasoner to a multi-round setting, where each turn emits a structured and verifiable trajectory. The model is initialized from a large VLM backbone and performs chain-of-thought reasoning purely in text, while remaining explicitly grounded to image regions through serialized bounding-box references. Each turn-t output is organized into four tagged blocks: a global scene caption s_t (<scene>), a localized caption f_t tied to a provided reference box (<focus>, optional), a reasoning trace h_t (<think>), and a JSON answer a_t (<answer>). Constrained decoding with schema and tag guards ensures format validity, supports automatic post-hoc parsing, and prevents untagged content from leaking into <answer>.
 
 > 💡 **4-tag 架构解读**:
 > | Tag | 内容 | 是否必需 | 约束 |
@@ -61,7 +61,7 @@ M_t ← M_{t-1} ∪ {(s_t, f_t, h_t, a_t)}
 > | `<think>` h_t | 推理过程 | 是 | 自由自然语言 + 必须显式引用空间关系和参考坐标 |
 > | `<answer>` a_t | JSON 定位输出 | 是 | 约束解码确保 JSON 合法性 |
 
-**Reference-grounded thinking.** To improve verifiability and reduce free-form hallucination, RegionReasoer requires that reasoing must cite evidence. When a query specifies references, the prompt encodes the set B_t^ref in a canonical textual form and instructs the model to reaso with verbatim coordinate mentions inside <think>. The same coordinates are injected in q_t so attention aligns with the intended regions across turns. During decoding, h_t must explicitly reference the used boxes and, when relevant, name spatial relations (e.g., "to the right of bbox [x1,y1,x2,y2]"). This design yields a causal chain from evidence to conclusion that is parsable into cited coordinates S(h_t) and directly comparable to B_t^ref, enabling automatic grounding checks and precise credit assignment in RL. In multi-round interaction, previously cited boxes can be re-used or refined; the explicit citation acts as a stable interface across turns, which improves temporal coherence of the reasoing trajectory and curbs region drift.
+**Reference-grounded thinking.** To improve verifiability and reduce free-form hallucination, RegionReasoner requires that reasoning must cite evidence. When a query specifies references, the prompt encodes the set B_t^ref in a canonical textual form and instructs the model to reaso with verbatim coordinate mentions inside <think>. The same coordinates are injected in q_t so attention aligns with the intended regions across turns. During decoding, h_t must explicitly reference the used boxes and, when relevant, name spatial relations (e.g., "to the right of bbox [x1,y1,x2,y2]"). This design yields a causal chain from evidence to conclusion that is parsable into cited coordinates S(h_t) and directly comparable to B_t^ref, enabling automatic grounding checks and precise credit assignment in RL. In multi-round interaction, previously cited boxes can be re-used or refined; the explicit citation acts as a stable interface across turns, which improves temporal coherence of the reasoning trajectory and curbs region drift.
 
 > 💡 **机制拆解 — Reference-Grounded Thinking 的完整逻辑**:
 >
@@ -83,7 +83,7 @@ M_t ← M_{t-1} ∪ {(s_t, f_t, h_t, a_t)}
 > - 跨轮稳定接口（显式引用作为前轮信息的"锚点"）
 > - 抑制 region drift（不会在后续轮次中悄悄"漂移"到错误的区域）
 
-**Global--local semantic consistency.** Iterative reasoing often breaks down when global descriptions and local evidence diverge; to prevent this, RegionReasoer jointly produces s_t (global) and f_t (localized to the reference) before generating h_t, and then enforces that the semantics of s_t and f_t are reflected within h_t. Concretely, a lightweight deterministic pipeline extracts keyword sets κ(s_t), κ(f_t), and κ(h_t) (lowercasing, stop-word removal, lemmatization, and a noun/object filter). We later compute asymmetric overlaps Ov(s_t, h_t) and Ov(f_t, h_t) as part of the reward (Sec. 4.3), pushing the model to propagate entities and relations from the global and local captions into the reasoing itself. Making <think> the alignment nexus -- rather than correcting only at the final answer -- yields finer-grained RL signals, better consistency across turns, and improved spatial reasoing, especially when h_t is encouraged to include localization lexicon (e.g., left/right/inside/overlap/next to) together with explicit box mentions.
+**Global--local semantic consistency.** Iterative reasoning often breaks down when global descriptions and local evidence diverge; to prevent this, RegionReasoner jointly produces s_t (global) and f_t (localized to the reference) before generating h_t, and then enforces that the semantics of s_t and f_t are reflected within h_t. Concretely, a lightweight deterministic pipeline extracts keyword sets κ(s_t), κ(f_t), and κ(h_t) (lowercasing, stop-word removal, lemmatization, and a noun/object filter). We later compute asymmetric overlaps Ov(s_t, h_t) and Ov(f_t, h_t) as part of the reward (Sec. 4.3), pushing the model to propagate entities and relations from the global and local captions into the reasoning itself. Making <think> the alignment nexus -- rather than correcting only at the final answer -- yields finer-grained RL signals, better consistency across turns, and improved spatial reasoning, especially when h_t is encouraged to include localization lexicon (e.g., left/right/inside/overlap/next to) together with explicit box mentions.
 
 > 💡 **机制拆解 — Global--Local Consistency 为什么有效**:
 >
@@ -115,12 +115,12 @@ M_t ← M_{t-1} ∪ {(s_t, f_t, h_t, a_t)}
 
 ### 4.3 Reward Functions
 
-We optimize RegionReasoer with reinforcement learning, shaping both intermediate reasoing and final predictions. Besides the base rewards inherited from prior work (VisionReasoer): Thinking Format, Answer Format, Non-Repeat, Bboxes IoU, Bboxes L1, and Points L1, we introduce two multi-round objectives that explicitly encode (i) citation of required references inside the reasoing trace and (ii) semantic alignment between global and local evidence.
+We optimize RegionReasoner with reinforcement learning, shaping both intermediate reasoning and final predictions. Besides the base rewards inherited from prior work (VisionReasoner): Thinking Format, Answer Format, Non-Repeat, Bboxes IoU, Bboxes L1, and Points L1, we introduce two multi-round objectives that explicitly encode (i) citation of required references inside the reasoning trace and (ii) semantic alignment between global and local evidence.
 
 > 💡 **Reward 全景**:
 > | 类别 | Reward | 目标 |
 > |------|--------|------|
-> | **Base** (继承自 VisionReasoer) | Thinking Format | <think> tag 格式正确 |
+> | **Base** (继承自 VisionReasoner) | Thinking Format | <think> tag 格式正确 |
 > | | Answer Format | <answer> JSON 格式正确 |
 > | | Non-Repeat | 防止重复输出 |
 > | | Bboxes IoU | 检测框 IoU |
@@ -131,7 +131,7 @@ We optimize RegionReasoer with reinforcement learning, shaping both intermediate
 
 **Notation.** At turn t, the model outputs s_t (<scene>), f_t (<focus> if any), h_t (<think>), and a_t (<answer>). Required references are B_t^ref = {b_k^ref} (possibly empty). A lightweight extractor κ(·) returns keyword sets. We parse bbox mentions from h_t as S(h_t) and use kν(h_t) ∈ {0,1} to flag bbox-related tokens.
 
-**Reference citation reward.** To make the reasoing verifiable and grounded, the trace must explicitly cite the referenced boxes when they are required. We reward correct citation and penalize hallucinated coordinates:
+**Reference citation reward.** To make the reasoning verifiable and grounded, the trace must explicitly cite the referenced boxes when they are required. We reward correct citation and penalize hallucinated coordinates:
 
 ```
 R_ref(t) = {
@@ -166,7 +166,7 @@ with λ=μ=1.0, η=0.5, and clipping R_ref(t) ∈ [0, 2].
 > - 幻觉惩罚与奖励分离（先算基础分，再乘衰减因子）—— 比直接减分更平滑
 > - 值域 [0, 2]，与 base rewards 保持一致的 scale
 
-**Global--local consistency reward.** To keep the reasoing coherent with both global scene context and localized evidence, we align h_t with s_t and (when present) f_t. Let the asymmetric keyword overlap be:
+**Global--local consistency reward.** To keep the reasoning coherent with both global scene context and localized evidence, we align h_t with s_t and (when present) f_t. Let the asymmetric keyword overlap be:
 
 ```
 Ov(X, Y) = |κ(X) ∩ κ(Y)| / max(|κ(X)|, 1)

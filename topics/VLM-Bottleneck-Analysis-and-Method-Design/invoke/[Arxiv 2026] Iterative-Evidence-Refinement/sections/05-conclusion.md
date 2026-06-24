@@ -4,13 +4,13 @@
 
 ## 一、Preview
 
-结论部分简洁但有力：SIEVE 证明了"有效的视觉回访不需要外部工具编排"，通过谨慎利用内部多模态表示可以更高效、更可扩展地改善 image-grounded reasoing。同时隐含了一个更大的主张：VLM 的内部信号可能比我们想象的更丰富，值得被更系统地挖掘。
+结论部分简洁但有力：SIEVE 证明了"有效的视觉回访不需要外部工具编排"，通过谨慎利用内部多模态表示可以更高效、更可扩展地改善 image-grounded reasoning。同时隐含了一个更大的主张：VLM 的内部信号可能比我们想象的更丰富，值得被更系统地挖掘。
 
 ---
 
 ## 二、原始文本
 
-In this work, we propose a training framework, SIEVE, that enables vision–language models (VLMs) to revisit and leverage image information during inference without relying on external tools. Unlike existing approaches that depend on tool invocation, retrieval systems, or additional visual processing modules, SIEVE extracts and utilizes the intrinsic signals already present within the VLM's hidden states, using them as structured hints to guide image-grounded reasoing. By exploiting these internal representations, SIEVE encourages the model to dynamically refine its understanding of visual content in a lightweight and self-contained manner. Despite its simplicity, SIEVE demonstrates substantial performance improvements over both the vanilla baseline model and training-free toolbased methods. These results suggest that effective visual revisiting does not necessarily require external tool orchestration; rather, carefully harnessing internal multimodal representations can provide a more efficient and scalable solution for improving image-grounded reasoing.
+In this work, we propose a training framework, SIEVE, that enables vision–language models (VLMs) to revisit and leverage image information during inference without relying on external tools. Unlike existing approaches that depend on tool invocation, retrieval systems, or additional visual processing modules, SIEVE extracts and utilizes the intrinsic signals already present within the VLM's hidden states, using them as structured hints to guide image-grounded reasoning. By exploiting these internal representations, SIEVE encourages the model to dynamically refine its understanding of visual content in a lightweight and self-contained manner. Despite its simplicity, SIEVE demonstrates substantial performance improvements over both the vanilla baseline model and training-free toolbased methods. These results suggest that effective visual revisiting does not necessarily require external tool orchestration; rather, carefully harnessing internal multimodal representations can provide a more efficient and scalable solution for improving image-grounded reasoning.
 
 > 💡 **结论的三个层次解读**:
 >

@@ -6,7 +6,7 @@
 
 | 项目 | 内容 |
 |------|------|
-| **标题** | The Perceptual Bandwidth Bottleneck in Vision-Language Models: Active Visual Reasoing via Sequential Experimental Design |
+| **标题** | The Perceptual Bandwidth Bottleneck in Vision-Language Models: Active Visual Reasoning via Sequential Experimental Design |
 | **作者** | Anjie Liu\*, Ziqin Gong\*, Yan Song, Yuxiang Chen, Xiaolong Liu, Hengtong Lu, Kaike Zhang, Chen Wei, Jun Wang |
 | **单位** | HKUST(GZ), UCL, ShanghaiTech, AI Lab Yangtze River Delta, Li Auto |
 | **发表** | arXiv 2026 (2605.01345v3) |
@@ -16,7 +16,7 @@
 
 ## 二、原始文本
 
-Visual perception in modern Vision-Language Models (VLMs) is constrained by a perceptual bandwidth bottleneck: a broad field of view preserves global context but sacrifices the finegrained details required for complex reasoing. We argue that high-resolution visual reasoing is therefore not only semantic reasoing but also task-relevant evidence acquisition under limited perceptual bandwidth. Inspired by active vision and information foraging, we formalise this process as sequential Bayesian optimal experimental design (S-BOED), where an agent decides which visual evidence to acquire before answering. Since exact Bayesian inference is intractable in continuous gigapixel spaces, we derive a tractable coverage–resolution objective as a proxy for task-relevant information gain. We instantiate this framework with FOVEA, a trainingfree procedure that refines VLM crop proposals through evidence-oriented probing. Experiments on high-resolution benchmarks show consistent gains over direct and ReAct-style baselines, with particularly strong improvements in searchdominated remote-sensing settings.
+Visual perception in modern Vision-Language Models (VLMs) is constrained by a perceptual bandwidth bottleneck: a broad field of view preserves global context but sacrifices the finegrained details required for complex reasoning. We argue that high-resolution visual reasoning is therefore not only semantic reasoning but also task-relevant evidence acquisition under limited perceptual bandwidth. Inspired by active vision and information foraging, we formalise this process as sequential Bayesian optimal experimental design (S-BOED), where an agent decides which visual evidence to acquire before answering. Since exact Bayesian inference is intractable in continuous gigapixel spaces, we derive a tractable coverage–resolution objective as a proxy for task-relevant information gain. We instantiate this framework with FOVEA, a trainingfree procedure that refines VLM crop proposals through evidence-oriented probing. Experiments on high-resolution benchmarks show consistent gains over direct and ReAct-style baselines, with particularly strong improvements in searchdominated remote-sensing settings.
 
 > 💡 **一句话概括**: 将高分辨率 VLM 推理重新定义为"感知带宽约束下的主动视觉证据采集"问题，用 S-BOED 框架形式化，推导出 Coverage-Resolution 乘积作为可计算的 crop 选择目标，实例化为 training-free 的 FOVEA 推理框架。
 
@@ -24,7 +24,7 @@ Visual perception in modern Vision-Language Models (VLMs) is constrained by a pe
 
 ![Figure 1](../images/6cf1d798eec2fff88dd1768ad8da8b83d492a5a7dcc2ecbc1b9c7ec248ff175e.jpg)
 
-*Figure 1: S-BOED-guided active visual reasoing. Under the perceptual bandwidth bottleneck, FOVEA iteratively refines VLM crop proposals to acquire task-relevant evidence. Candidate crops are scored by a coverage–resolution utility estimated through resolvability probing, and selected views update the interaction history for subsequent search.*
+*Figure 1: S-BOED-guided active visual reasoning. Under the perceptual bandwidth bottleneck, FOVEA iteratively refines VLM crop proposals to acquire task-relevant evidence. Candidate crops are scored by a coverage–resolution utility estimated through resolvability probing, and selected views update the interaction history for subsequent search.*
 
 > 💡 **Figure 1 批读**: 该图展示了 FOVEA 的完整推理管线。核心循环：VLM 提出初始 crop proposal → FOVEA 生成候选池 → 通过 resolvability probing 为每个候选打分 → 选择 utility 最高的 crop 执行 → 新观察加入交互历史 → 下一轮搜索基于更新后的历史重新调整空间信念。关键洞察：FOVEA 将 VLM 的初始 crop 视为"噪声空间先验 (noisy spatial prior)"而非 ground truth，在周围采样候选并进行 evidence-oriented 的验证，而非盲目信任 VLM 的第一建议。
 

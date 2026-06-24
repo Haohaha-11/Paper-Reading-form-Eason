@@ -6,7 +6,7 @@
 
 | 项目 | 内容 |
 |------|------|
-| **标题** | Improving Visual Reasoing with Iterative Evidence Refinement |
+| **标题** | Improving Visual Reasoning with Iterative Evidence Refinement |
 | **作者** | Zeru Shi\*, Kai Mei\*, Yihao Quan, Dimitris N. Metaxas, Ruixiang Tang† |
 | **单位** | Department of Computer Science, Rutgers University |
 | **发表** | arXiv 2026 |
@@ -15,7 +15,7 @@
 
 ## 二、原始文本
 
-Vision–language models (VLMs) are increasingly capable of reasoing over images, but robust visual reasoing often requires re-grounding intermediate steps in the underlying visual evidence. Recent approaches typically rely on external image operations such as zooming or cropping to re-access fine-grained details during inference, which requires additional image re-encoding and can disrupt the reasoing trajectory. We argue that VLMs already provide strong internal signals for identifying and reusing visual evidence, and that these signals can be directly leveraged to support image-grounded reasoing. Motivated by this insight, we propose an end-to-end self-revisit framework, SIEVE, that trains models to re-engage image evidence through internal representations. SIEVE automatically extracts embeddings of salient image regions and injects them into the reasoing chain when additional grounding is needed, enabling later steps to condition on relevant visual cues without external tool calls or re-encoding. We use reinforcement learning to teach the model when to trigger visual revisiting and which region embeddings to retrieve and insert during the reasoing process. Experiments on multiple visual reasoing benchmarks, together with perception, reasoing, and hallucination evaluations, show that SIEVE yields consistent gains, improving performance by 8% on average across several benchmarks.
+Vision–language models (VLMs) are increasingly capable of reasoning over images, but robust visual reasoning often requires re-grounding intermediate steps in the underlying visual evidence. Recent approaches typically rely on external image operations such as zooming or cropping to re-access fine-grained details during inference, which requires additional image re-encoding and can disrupt the reasoning trajectory. We argue that VLMs already provide strong internal signals for identifying and reusing visual evidence, and that these signals can be directly leveraged to support image-grounded reasoning. Motivated by this insight, we propose an end-to-end self-revisit framework, SIEVE, that trains models to re-engage image evidence through internal representations. SIEVE automatically extracts embeddings of salient image regions and injects them into the reasoning chain when additional grounding is needed, enabling later steps to condition on relevant visual cues without external tool calls or re-encoding. We use reinforcement learning to teach the model when to trigger visual revisiting and which region embeddings to retrieve and insert during the reasoning process. Experiments on multiple visual reasoning benchmarks, together with perception, reasoning, and hallucination evaluations, show that SIEVE yields consistent gains, improving performance by 8% on average across several benchmarks.
 
 > 💡 **一句话概括**: SIEVE 是一个端到端的 self-revisit 框架，核心主张是"VLM 内部信号已经足够强"——无需外部工具做 crop/zoom，而是直接从隐状态中提取显著区域的 embedding 并按需注入推理链，通过 RL 训练让模型学会"何时回头看"和"看哪里"。
 
@@ -23,7 +23,7 @@ Vision–language models (VLMs) are increasingly capable of reasoing over images
 
 ![Figure 1](../images/a273eb3e91396ef76e29d31bebe5f8d6eab644c77c093c9d6d4b23ebbb8714ef.jpg)
 
-*Figure 1: This figure compares tool-augmented methods with SIEVE. The left shows tool-based reasoing, where external tools are invoked for additional visual information. The right shows SIEVE, which directly retrieves and injects key region embeddings into the reasoing process.*
+*Figure 1: This figure compares tool-augmented methods with SIEVE. The left shows tool-based reasoning, where external tools are invoked for additional visual information. The right shows SIEVE, which directly retrieves and injects key region embeddings into the reasoning process.*
 
 > 💡 **Figure 1 批读 — 两种范式的根本分歧**: 
 > - **左图 (工具增强范式)**: 推理过程 → 遇到不确定性 → 调用外部工具 (crop/zoom) → 重新编码新的图像 view → 作为**额外输入**追加到原图后 → 继续推理。问题在于：(1) 新 view 不是插入到 CoT 对应位置，而是追加到输入尾部，打断了推理的语义连贯性；(2) 每次 re-encoding 都增加延迟。

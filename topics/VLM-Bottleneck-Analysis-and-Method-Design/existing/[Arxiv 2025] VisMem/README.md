@@ -35,10 +35,10 @@ VisMem 给 VLM 加一套可在自回归生成中按需插入的短期/长期 lat
 | 指标 | 数值 |
 |------|------|
 | Base setting | Qwen2.5-VL-7B, 8x H200 141G |
-| Benchmark | 12 个：5 understanding + 4 reasoing + 3 generation |
+| Benchmark | 12 个：5 understanding + 4 reasoning + 3 generation |
 | Overall Avg. | Vanilla 54.5 → VisMem 65.5 |
 | 平均提升 | +11.0% over vanilla |
-| 分能力提升 | understanding +8.9%, reasoing +14.4%, generation +10.6% |
+| 分能力提升 | understanding +8.9%, reasoning +14.4%, generation +10.6% |
 | Query / memory length | $K=8$, $N_s=8$, $N_l=16$ |
 | Cross-domain | 仅用 Visual CoT + Mulberry 训练时，在 4 个未见 benchmark 上仍有 +6.9% 到 +20.2% |
 | Continual learning | 四阶段后 MMVet 保持 72.1%，高于 DeepEyes 68.4% 与 Mirage 67.0% |
@@ -120,15 +120,15 @@ VisMem 给 VLM 加一套可在自回归生成中按需插入的短期/长期 lat
 
 ### 参考文献分组 (Top 5 per category, by citations)
 
-#### Latent Reasoing / Thinking
+#### Latent Reasoning / Thinking
 - **Qwen2.5-VL Technical Report** (2025) — 4397 citations [arXiv](https://arxiv.org/abs/2502.13923)
-- **Gemini 2.5: Pushing the Frontier with Advanced Reasoing, Multimodality, Long Context, and Next Generation Agentic Capabilities** (2025) — 2741 citations [arXiv](https://arxiv.org/abs/2507.06261)
-- **DeepSeek-R1: Incentivizing Reasoing Capability in LLMs via Reinforcement Learning** (2025) — 2659 citations
-- **MathVista: Evaluating Mathematical Reasoing of Foundation Models in Visual Contexts** (2023) — 1464 citations [arXiv](https://arxiv.org/abs/2310.02255)
+- **Gemini 2.5: Pushing the Frontier with Advanced Reasoning, Multimodality, Long Context, and Next Generation Agentic Capabilities** (2025) — 2741 citations [arXiv](https://arxiv.org/abs/2507.06261)
+- **DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning** (2025) — 2659 citations
+- **MathVista: Evaluating Mathematical Reasoning of Foundation Models in Visual Contexts** (2023) — 1464 citations [arXiv](https://arxiv.org/abs/2310.02255)
 - **MM-Vet: Evaluating Large Multimodal Models for Integrated Capabilities** (2023) — 1188 citations [arXiv](https://arxiv.org/abs/2308.02490)
 
 #### Medical VLM / Medical Imaging
-- **MMMU: A Massive Multi-Discipline Multimodal Understanding and Reasoing Benchmark for Expert AGI** (2023) — 2023 citations [arXiv](https://arxiv.org/abs/2311.16502)
+- **MMMU: A Massive Multi-Discipline Multimodal Understanding and Reasoning Benchmark for Expert AGI** (2023) — 2023 citations [arXiv](https://arxiv.org/abs/2311.16502)
 - **ExpeL: LLM Agents Are Experiential Learners** (2023) — 477 citations [arXiv](https://arxiv.org/abs/2308.10144)
 - **Training Large Language Models to Reaso in a Continuous Latent Space** (2024) — 468 citations [arXiv](https://arxiv.org/abs/2412.06769)
 - **BLINK: Multimodal Large Language Models Can See but Not Perceive** (2024) — 433 citations [arXiv](https://arxiv.org/abs/2404.12390)
@@ -136,7 +136,7 @@ VisMem 给 VLM 加一套可在自回归生成中按需插入的短期/长期 lat
 
 #### Memory / Agent Memory
 - **LoRA: Low-Rank Adaptation of Large Language Models** (2021) — 18665 citations [arXiv](https://arxiv.org/abs/2106.09685)
-- **DeepSeekMath: Pushing the Limits of Mathematical Reasoing in Open Language Models** (2024) — 5773 citations [arXiv](https://arxiv.org/abs/2402.03300)
+- **DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models** (2024) — 5773 citations [arXiv](https://arxiv.org/abs/2402.03300)
 - **Working Memory: Theories, Models, and Controversies** (2015) — 3024 citations
 - **Boosting Continual Learning of Vision-Language Models via Mixture-of-Experts Adapters** (2024) — 229 citations [arXiv](https://arxiv.org/abs/2403.11549)
 - **Short-Term Memory and Long-Term Memory are Still Different** (2017) — 216 citations
@@ -163,15 +163,15 @@ VisMem 给 VLM 加一套可在自回归生成中按需插入的短期/长期 lat
 | 论文 | 年份 | 引用数 |
 |------|------|--------|
 | [Persistent Visual Memory: Sustaining Perception for Deep Generation in LVLMs](https://arxiv.org/abs/2605.00814) | 2026 | 0 |
-| [Decompose, Look, and Reaso: Reinforced Latent Reasoing for VLMs](https://arxiv.org/abs/2604.07518) | 2026 | 0 |
-| [VLA-Thinker: Boosting Vision-Language-Action Models through Thinking-with-Image Reasoing](https://arxiv.org/abs/2603.14523) | 2026 | 1 |
-| [LanteRn: Latent Visual Structured Reasoing](https://arxiv.org/abs/2603.25629) | 2026 | 0 |
+| [Decompose, Look, and Reaso: Reinforced Latent Reasoning for VLMs](https://arxiv.org/abs/2604.07518) | 2026 | 0 |
+| [VLA-Thinker: Boosting Vision-Language-Action Models through Thinking-with-Image Reasoning](https://arxiv.org/abs/2603.14523) | 2026 | 1 |
+| [LanteRn: Latent Visual Structured Reasoning](https://arxiv.org/abs/2603.25629) | 2026 | 0 |
 | [CoVFT: Context-aware Visual Fine-tuning for Multimodal Large Language Models](https://arxiv.org/abs/2603.21077) | 2026 | 0 |
-| [Q-Tacit: Image Quality Assessment via Latent Visual Reasoing](https://arxiv.org/abs/2603.22641) | 2026 | 0 |
-| [POINTS-Long: Adaptive Dual-Mode Visual Reasoing in MLLMs](https://arxiv.org/abs/2604.11627) | 2026 | 0 |
+| [Q-Tacit: Image Quality Assessment via Latent Visual Reasoning](https://arxiv.org/abs/2603.22641) | 2026 | 0 |
+| [POINTS-Long: Adaptive Dual-Mode Visual Reasoning in MLLMs](https://arxiv.org/abs/2604.11627) | 2026 | 0 |
 | [MMCORE: MultiModal COnnection with Representation Aligned Latent Embeddings](https://arxiv.org/abs/2604.19902) | 2026 | 0 |
-| [LatentGeo: Learnable Auxiliary Constructions in Latent Space for Multimodal Geometric Reasoing](https://arxiv.org/abs/2603.12166) | 2026 | 0 |
-| [Visually-Guided Policy Optimization for Multimodal Reasoing](https://arxiv.org/abs/2604.09349) | 2026 | 0 |
+| [LatentGeo: Learnable Auxiliary Constructions in Latent Space for Multimodal Geometric Reasoning](https://arxiv.org/abs/2603.12166) | 2026 | 0 |
+| [Visually-Guided Policy Optimization for Multimodal Reasoning](https://arxiv.org/abs/2604.09349) | 2026 | 0 |
 
 ## BibTeX
 

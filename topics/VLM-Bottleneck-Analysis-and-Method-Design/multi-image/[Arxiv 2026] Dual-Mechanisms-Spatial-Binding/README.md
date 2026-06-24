@@ -154,9 +154,9 @@
 
 **Variable Binding in VLMs**:
 - Assouel et al. (2025) - Visual symbolic mechanisms [1]
-- Kang et al. (2026) - Linear mechanisms for spatiotemporal reasoing [24]
+- Kang et al. (2026) - Linear mechanisms for spatiotemporal reasoning [24]
 
-**Spatial Reasoing Benchmarks**:
+**Spatial Reasoning Benchmarks**:
 - Kamath et al. (2023) - What'sUp [23]
 - Campbell et al. (2024) - Understanding limits of VLMs through binding problem [3]
 
@@ -167,7 +167,7 @@
 
 ### Reference Grouping by Topic
 
-**Spatial Reasoing Benchmarks**: [22, 4, 14, 26, 23, 25]
+**Spatial Reasoning Benchmarks**: [22, 4, 14, 26, 23, 25]
 **VLM Internal Mechanisms**: [29, 32, 1, 20, 28, 19, 21, 33, 9]
 **Symbolic Representations in LMs**: [16, 31, 10, 30, 12, 11]
 **Symbolic Representations in VLMs**: [24, 1, 34, 17]

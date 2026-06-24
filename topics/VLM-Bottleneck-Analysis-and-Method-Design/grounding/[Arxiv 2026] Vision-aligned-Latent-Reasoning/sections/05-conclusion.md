@@ -12,17 +12,17 @@
 
 ### 5. Conclusion
 
-In this paper, we have presented VaLR, a multi-modal reasoing framework that generates vision-aligned latent tokens during the reasoing process. Our experiments showed that VaLR performs test-time scaling behavior and consistently improves performance on various benchmarks that require a long or short context. We hope our work will facilitate future research on reasoing in multi-modal large language models.
+In this paper, we have presented VaLR, a multi-modal reasoning framework that generates vision-aligned latent tokens during the reasoning process. Our experiments showed that VaLR performs test-time scaling behavior and consistently improves performance on various benchmarks that require a long or short context. We hope our work will facilitate future research on reasoning in multi-modal large language models.
 
 > 💡 **结论解读**: 作者选择了极为精简的结论风格——仅 3 句话。这反映出作者对论文贡献的信心：核心贡献（vision-aligned latent tokens）、核心证据（test-time scaling）、核心展望（facilitate future research）。没有多余的修辞，每个词都承载信息。
 
 ### Impact Statement
 
-Recent advancements of Multi-modal Large Language Models (MLLMs) have enabled remarkable performance in vision question answering. However, these models suffer from dilution of visual information during autoregressive text generation. This phenomenon is emphasized during long-context reasoing. Consequently, it prevents the use of MLLM in domains that require long-context reasoing, such as the Vision Language Action (VLA) model and the Computer Use Agent (CUA).
+Recent advancements of Multi-modal Large Language Models (MLLMs) have enabled remarkable performance in vision question answering. However, these models suffer from dilution of visual information during autoregressive text generation. This phenomenon is emphasized during long-context reasoning. Consequently, it prevents the use of MLLM in domains that require long-context reasoning, such as the Vision Language Action (VLA) model and the Computer Use Agent (CUA).
 
-Our work addresses these challenges by proposing an effective way to inject a visual checkpoint with a latent token. Our approach improves long-context reasoing with test-time scalability and general VQA performance. We believe VaLR suggests future directions for mitigating the dilution of vision information.
+Our work addresses these challenges by proposing an effective way to inject a visual checkpoint with a latent token. Our approach improves long-context reasoning with test-time scalability and general VQA performance. We believe VaLR suggests future directions for mitigating the dilution of vision information.
 
-In context of applications, alleviating the long-context reasoing reveals the use of MLLM in much more complex tasks, especially when visual information is involved, such as a robot with VLA or proactive CUA. This automatic agentic system can facilitate the innovation of human society.
+In context of applications, alleviating the long-context reasoning reveals the use of MLLM in much more complex tasks, especially when visual information is involved, such as a robot with VLA or proactive CUA. This automatic agentic system can facilitate the innovation of human society.
 
 > 💡 **Impact Statement 批读**: 这段话实际上是 Introduction 中问题的回响，但视角转向了社会影响。关键论点是：VaLR 解决"视觉信息稀释"问题后，MLLM 可以部署到 VLA（机器人操作）和 CUA（计算机使用代理）等更长时域、更复杂的应用中。这不仅是性能提升，而是**打开了 MLLM 应用的新空间**。
 

@@ -6,7 +6,7 @@
 
 Experiments 分为四个部分：(4.1) 三阶段训练配置（Vision-Language Alignment → Multimodal Pretraining → Instruction Tuning）；(4.2) 评估 Setup（tokenization, hyperparameters, benchmarks）；(4.3) 核心 Benchmark 结果（主表 vs 开源模型 + 三变体消融 + 层级增益精细分析）；(4.4) 自适应计算分析（norm_diff 早停 + KV-cache 优化 + 层级注入加速收敛）。
 
-核心发现：(1) Recurrence 是中等到大幅性能提升的主要来源（r=1→r=32，avg +28.09）；(2) 层级视觉注入提供额外 modest gain（+1.10 avg），且在特定维度（Logic Reasoing +2.54%, Coarse Perception +3.04%）更显著；(3) 层级注入使收敛加速 25-40%，体现出明确的推理效率收益。
+核心发现：(1) Recurrence 是中等到大幅性能提升的主要来源（r=1→r=32，avg +28.09）；(2) 层级视觉注入提供额外 modest gain（+1.10 avg），且在特定维度（Logic Reasoning +2.54%, Coarse Perception +3.04%）更显著；(3) 层级注入使收敛加速 25-40%，体现出明确的推理效率收益。
 
 ---
 
@@ -49,7 +49,7 @@ To capture fine-grained visual details across varying aspect ratios, we employ I
 
 **Hyperparameters.** We train the model with a weight decay of 1e-3. We adhere to the optimization configuration of the original Huginn, employing the AdamW optimizer with β1 = 0.9 and β2 = 0.95. The learning rate is set with a cosine decay scheduler.
 
-**Evaluation.** We evaluated the effectiveness of our approach across several challenging benchmarks via LMMs-Eval (Zhang et al., 2024), including MMStar (Chen et al., 2024c), MMBench (Liu et al., 2024c), ScienceQA (Lu et al., 2022), SEED-Bench (Li et al., 2023a), and RealWorldQA for general visual question answering capability. For OCR & Chart, we utilize ChartQA (Masry et al., 2022), TextVQA (Singh et al., 2019), and DocVQA (Mathew et al., 2021). In addition, we use MathVista (Lu et al., 2024) for math and reasoing evaluation. POPE (Li et al., 2023c) and GQA (Hudson & Manning, 2019) are adopted to assess model capabilities in hallucination-prone scenarios and complex visual reasoing challenges.
+**Evaluation.** We evaluated the effectiveness of our approach across several challenging benchmarks via LMMs-Eval (Zhang et al., 2024), including MMStar (Chen et al., 2024c), MMBench (Liu et al., 2024c), ScienceQA (Lu et al., 2022), SEED-Bench (Li et al., 2023a), and RealWorldQA for general visual question answering capability. For OCR & Chart, we utilize ChartQA (Masry et al., 2022), TextVQA (Singh et al., 2019), and DocVQA (Mathew et al., 2021). In addition, we use MathVista (Lu et al., 2024) for math and reasoning evaluation. POPE (Li et al., 2023c) and GQA (Hudson & Manning, 2019) are adopted to assess model capabilities in hallucination-prone scenarios and complex visual reasoning challenges.
 
 > 💡 **评估矩阵 — 多维覆盖**:
 >
@@ -57,9 +57,9 @@ To capture fine-grained visual details across varying aspect ratios, we employ I
 > |---------|-----------|
 > | General VQA | MMBench, MMStar, ScienceQA-Img, SEED-Bench-Img, RealWorldQA |
 > | OCR & Chart | TextVQA, ChartQA, DocVQA |
-> | Math & Reasoing | MathVista |
+> | Math & Reasoning | MathVista |
 > | Hallucination | POPE |
-> | Complex Visual Reasoing | GQA |
+> | Complex Visual Reasoning | GQA |
 >
 > 覆盖面广但缺少一些 high-profile benchmarks（如 MMMU, MME, MM-Vet），可能与骨干能力限制有关——在"更难的推理"上基线可能过低。
 
@@ -112,7 +112,7 @@ We developed three models for a comparative study: a baseline model trained with
 >
 > **3. Baseline (r=1) 的低起点值得注意**: r=1 相当于只有一次前向的标准 MLLM。39.78 的 General VQA avg 非常低，说明单纯的 Huginn 骨干（不加 recurrence）在视觉任务上的表现很弱。这佐证了 Table 2 中 Huginn 语言能力偏弱的事实。
 
-Based on the results, HIVE demonstrates a competitive edge in parameter efficiency and specialized visual reasoing. Despite its compact 4B architecture, the model achieves 91.6 on ScienceQA-Img, notably outperforming the larger 8B Emu3 and the 7B MobileVLM V2. This indicates that HIVE is particularly effective at handling complex, knowledge-based visual tasks. Furthermore, it achieves the highest reliability in the POPE benchmark (87.6), suggesting a robust capability to mitigate object hallucination compared to its peers.
+Based on the results, HIVE demonstrates a competitive edge in parameter efficiency and specialized visual reasoning. Despite its compact 4B architecture, the model achieves 91.6 on ScienceQA-Img, notably outperforming the larger 8B Emu3 and the 7B MobileVLM V2. This indicates that HIVE is particularly effective at handling complex, knowledge-based visual tasks. Furthermore, it achieves the highest reliability in the POPE benchmark (87.6), suggesting a robust capability to mitigate object hallucination compared to its peers.
 
 The model also exhibits impressive data efficiency. While trained on 6.5M samples, HIVE consistently outperforms or matches models like Gemma3-4B-PT, which benefit from a much larger 4T token pre-training scale, across benchmarks such as RealWorldQA and DocVQA. Overall, HIVE strikes a balance between model size and performance. This is particularly notable because it manages to overcome the inherent limitations of its relatively lightweight Huginn backbone to achieve results that rival established baselines.
 
@@ -134,16 +134,16 @@ There remains substantial space for performance optimization. We recognize that 
 > - **r=32→r=64**: 收益递减，plateau——representational capacity 饱和。这在 loop transformer 的预期之中：同一组参数做太多次迭代，边际收益递减
 > - **层级注入的增益**: 整条曲线上 w/ Hier 始终略高于 w/o Hier，但差距不大且随 r 增大而收窄
 
-**Hierarchical cues help understanding.** To further examine the role of hierarchical visual cues, we report fine-grained results across six core dimensions in Table 4. Compared with the recurrent baseline (r_bar = 32, w/o Hier.), the hierarchical recurrent variant (r_bar = 32, w/ Hier.) shows generally positive trends in several categories. In particular, HIVE yields moderate gains in Logic Reasoing (LR, +2.54%), Attribute Reasoing (AR, +1.99%), Relation Reasoing (RR, +1.74%), and Coarse Perception (CP, +3.04%), suggesting that hierarchical visual priors can be incorporated effectively into the recurrent framework. Although the differences are limited in instance-level perception (FI), the overall results indicate that hierarchical cues are compatible with loop-based latent reasoing and can provide additional support in complex visual understanding.
+**Hierarchical cues help understanding.** To further examine the role of hierarchical visual cues, we report fine-grained results across six core dimensions in Table 4. Compared with the recurrent baseline (r_bar = 32, w/o Hier.), the hierarchical recurrent variant (r_bar = 32, w/ Hier.) shows generally positive trends in several categories. In particular, HIVE yields moderate gains in Logic Reasoning (LR, +2.54%), Attribute Reasoning (AR, +1.99%), Relation Reasoning (RR, +1.74%), and Coarse Perception (CP, +3.04%), suggesting that hierarchical visual priors can be incorporated effectively into the recurrent framework. Although the differences are limited in instance-level perception (FI), the overall results indicate that hierarchical cues are compatible with loop-based latent reasoning and can provide additional support in complex visual understanding.
 
 > 💡 **Figure 4 (MMBench 六维度精细分析)**:
 >
 > | 维度 | w/o Hier | w/ Hier | Gain | 分析 |
 > |------|---------|---------|------|------|
 > | CP (Coarse Perception) | baseline | +3.04% | **最大增益** | 全局/粗粒度感知受益最明显——层级注入的"从浅到深"课程天然适合 coarse-to-fine 理解 |
-> | LR (Logic Reasoing) | baseline | +2.54% | 第二大增益 | 逻辑推理受益——可能因为多尺度视觉信息提供了更丰富的推理证据 |
-> | AR (Attribute Reasoing) | baseline | +1.99% | | 属性推理受益——中层视觉特征有助于 objects/attributes 识别 |
-> | RR (Relation Reasoing) | baseline | +1.74% | | 关系推理受益——高层语义特征有助于理解 objects 间的 spatial/semantic 关系 |
+> | LR (Logic Reasoning) | baseline | +2.54% | 第二大增益 | 逻辑推理受益——可能因为多尺度视觉信息提供了更丰富的推理证据 |
+> | AR (Attribute Reasoning) | baseline | +1.99% | | 属性推理受益——中层视觉特征有助于 objects/attributes 识别 |
+> | RR (Relation Reasoning) | baseline | +1.74% | | 关系推理受益——高层语义特征有助于理解 objects 间的 spatial/semantic 关系 |
 > | FC (Fine-grained Cross-instance) | baseline | minimal | | 跨实例细粒度感知增益有限 |
 > | FI (Fine-grained Instance-level) | baseline | minimal | **几乎无增益** | 实例级细粒度感知没受益——这个结果合理：层级抽取的 global-to-regional 特征可能丢失了 instance-level 的精确 spatial 信息 |
 
@@ -163,7 +163,7 @@ where T_{j,i} ∈ {0, 1} denotes the validity of the cache at step j for token i
 
 > 💡 **机制拆解 — Latest-m4 KV-Cache**: 每 4 步重用一次 KV-Cache（通过模 4 同余约束），在保持时序一致性的同时减少冗余计算。r < 2 时不重用（因为还没有足够的历史缓存）。这是一个工程优化，与核心方法无关但对推理效率重要。
 
-To quantify the computational effect, we analyze the average recurrence steps required for the first token under the adaptive early-exit setting (max r = 32). As shown in Figure 5, incorporating hierarchical cues is associated with faster convergence of hidden states across MMBench, MMStar, RealWorldQA, and ScienceQA_img. Concretely, the mean reasoing steps decrease from 25.4 to 18.1 on MMBench, 24.9 to 17.7 on MM-Star, and 24.8 to 17.0 on ScienceQA_img. On RealWorldQA, the average computation depth decreases from 25.5 to 14.5. This leftward shift in the step distribution suggests that hierarchical visual cues can provide useful multi-scale information that helps the model meet the exit criterion earlier in some cases. Overall, these results indicate that hierarchical cue injection is compatible with reducing the number of recurrence steps required under adaptive computation.
+To quantify the computational effect, we analyze the average recurrence steps required for the first token under the adaptive early-exit setting (max r = 32). As shown in Figure 5, incorporating hierarchical cues is associated with faster convergence of hidden states across MMBench, MMStar, RealWorldQA, and ScienceQA_img. Concretely, the mean reasoning steps decrease from 25.4 to 18.1 on MMBench, 24.9 to 17.7 on MM-Star, and 24.8 to 17.0 on ScienceQA_img. On RealWorldQA, the average computation depth decreases from 25.5 to 14.5. This leftward shift in the step distribution suggests that hierarchical visual cues can provide useful multi-scale information that helps the model meet the exit criterion earlier in some cases. Overall, these results indicate that hierarchical cue injection is compatible with reducing the number of recurrence steps required under adaptive computation.
 
 > 💡 **Figure 5 批读 — 自适应早停步数分布**:
 >
@@ -189,6 +189,6 @@ To quantify the computational effect, we analyze the average recurrence steps re
 - **消融三大发现**:
   1. Recurrence 贡献巨大（+27 avg vs r=1）
   2. 层级注入额外 modest gain（+1.10 avg, 部分子任务负收益）
-  3. 层级注入在 Coarse Perception (+3.04%) 和 Logic Reasoing (+2.54%) 上增益最显著
+  3. 层级注入在 Coarse Perception (+3.04%) 和 Logic Reasoning (+2.54%) 上增益最显著
 - **Recurrence Scaling**: r=1→r=32 性能线性增长，r=32→r=64 饱和（diminishing returns）
 - **自适应早停**: 层级注入使收敛加速 25-43%——这是 practical deployment 的关键收益

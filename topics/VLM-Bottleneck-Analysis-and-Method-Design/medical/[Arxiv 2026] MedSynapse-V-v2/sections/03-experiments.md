@@ -12,14 +12,14 @@
 
 ### 3.1 Experimental Setup
 
-**Datasets.** Training data: Stage I (MQPM warmup) uses 50K image-text pairs from PubMedVision [7] covering radiology and pathology. Stage II (CCR) constructs a mixed-modality RL set: 3K closed-ended VQA samples from OmniMedVQA [35] training split (8 modalities: CT, MRI, X-ray, dermoscopy, fundus, OCT, pathology, ultrasound) plus 1K open-ended samples from SLAKE [71] and PathVQA [29] training sets, totaling ~4K samples. Region masks for $r_{causal}$ are provided by Med-SAM3 [70]. Stage III (IMT) reuses the Stage II data. Evaluation benchmarks: (i) Closed-ended VQA: VQA-RAD [48], SLAKE [71], PathVQA [29], PMC-VQA [137]; (ii) Clinical reasoing: MMMU Health & Medicine [132] (denoted MMMU*); (iii) Expert-level reasoing: MedXpertQA-MM [160] (Total score); (iv) Multi-granularity: GMAI-MMBench [127].
+**Datasets.** Training data: Stage I (MQPM warmup) uses 50K image-text pairs from PubMedVision [7] covering radiology and pathology. Stage II (CCR) constructs a mixed-modality RL set: 3K closed-ended VQA samples from OmniMedVQA [35] training split (8 modalities: CT, MRI, X-ray, dermoscopy, fundus, OCT, pathology, ultrasound) plus 1K open-ended samples from SLAKE [71] and PathVQA [29] training sets, totaling ~4K samples. Region masks for $r_{causal}$ are provided by Med-SAM3 [70]. Stage III (IMT) reuses the Stage II data. Evaluation benchmarks: (i) Closed-ended VQA: VQA-RAD [48], SLAKE [71], PathVQA [29], PMC-VQA [137]; (ii) Clinical reasoning: MMMU Health & Medicine [132] (denoted MMMU*); (iii) Expert-level reasoning: MedXpertQA-MM [160] (Total score); (iv) Multi-granularity: GMAI-MMBench [127].
 
 > **数据策略解读**:
 > - Stage I: 50K 大规模 image-text pairs（覆盖放射学和病理学）做语义对齐——数据量大但只需要 NTP loss
 > - Stage II/III: ~4K 高质量 mixed-modality RL samples——数据量小但 label 质量高，且 MedSAM3 提供 region mask
 > - 关键设计：Stage II 的 4K 数据覆盖 8 种成像模态，确保 causal reward 在多模态上都有意义
 
-**Baselines.** We compare against four categories of methods: (1) General VLMs: Qwen3-VL-8B [2] (our base model), InternVL3-8B [157]; (2) Medical-specific VLMs: RadFM [117], LLaVA-Med [53], GMAI-VL [59], HuatuoGPT-Vision [7], BiMediX2-8B [81], MedMO-8B [14]; (3) RL-enhanced medical reasoing: MedVLM-R1-2B [84], Med-R1-3B [47], MediX-R1-8B [80], MMedExpert-R1-7B [15]; (4) Latent-space reasoing: Coconut$^{\dagger}$ [28], MCOUT-Multi$^{\dagger}$ [85], IVT-LR$^{\dagger}$ [4] ($^{\dagger}$: adapted with identical Qwen3-VL-8B backbone and training data). We additionally report MedSynapse-V-4B on the Qwen3-VL-4B backbone to assess scalability.
+**Baselines.** We compare against four categories of methods: (1) General VLMs: Qwen3-VL-8B [2] (our base model), InternVL3-8B [157]; (2) Medical-specific VLMs: RadFM [117], LLaVA-Med [53], GMAI-VL [59], HuatuoGPT-Vision [7], BiMediX2-8B [81], MedMO-8B [14]; (3) RL-enhanced medical reasoning: MedVLM-R1-2B [84], Med-R1-3B [47], MediX-R1-8B [80], MMedExpert-R1-7B [15]; (4) Latent-space reasoning: Coconut$^{\dagger}$ [28], MCOUT-Multi$^{\dagger}$ [85], IVT-LR$^{\dagger}$ [4] ($^{\dagger}$: adapted with identical Qwen3-VL-8B backbone and training data). We additionally report MedSynapse-V-4B on the Qwen3-VL-4B backbone to assess scalability.
 
 > **Baseline 选择解读**: 四类 baseline 各有侧重——(1) 通用 VLM 提供 zero-shot 基线，(2) 医学专用 VLM 提供 domain-specific 对比，(3) RL-CoT 提供"当前最优离散推理"对比，(4) 通用潜空间方法（统一 backbone + 训练数据适配）提供"不加医学先验的纯潜空间推理"对比。这种全覆盖的 baseline 设计使得每个组件（先验、因果精炼、蒸馏）的贡献可以清晰归因。
 
@@ -31,7 +31,7 @@
 
 ### 3.2 Main Results
 
-As shown in Table 1, MedSynapse-V (w/ $\mathcal{E}_{ana}$) achieves the highest average of 61.4%, and the encoder-free MedSynapse-V (IMT) retains 59.6%, surpassing all baselines. Compared to the strongest RL baseline MMedExpert-R1 (55.7%), MedSynapse-V (IMT) leads by +3.9 pp without any auxiliary module at inference, with the largest margins on visual-grounding benchmarks (VQA-RAD +9.0, SLAKE +7.0, PathVQA +6.7), where discrete CoT tokens are prone to attenuating early visual evidence across long reasoing chains. On GMAI-MMBench spanning 38 modalities, MedSynapse-V scores 54.8%, confirming that the anatomical priors generalize beyond the training distribution.
+As shown in Table 1, MedSynapse-V (w/ $\mathcal{E}_{ana}$) achieves the highest average of 61.4%, and the encoder-free MedSynapse-V (IMT) retains 59.6%, surpassing all baselines. Compared to the strongest RL baseline MMedExpert-R1 (55.7%), MedSynapse-V (IMT) leads by +3.9 pp without any auxiliary module at inference, with the largest margins on visual-grounding benchmarks (VQA-RAD +9.0, SLAKE +7.0, PathVQA +6.7), where discrete CoT tokens are prone to attenuating early visual evidence across long reasoning chains. On GMAI-MMBench spanning 38 modalities, MedSynapse-V scores 54.8%, confirming that the anatomical priors generalize beyond the training distribution.
 
 > **主结果解读 — 三个关键发现**:
 >
@@ -45,11 +45,11 @@ RL baselines reveal a specialization dilemma. MediX-R1 benefits from multilingua
 
 > **RL-CoT 的专业化困境 vs. MedSynapse-V 的统一优势**: RL-CoT 方法在不同 benchmark 上表现不均衡——MediX-R1 在 PMC-VQA 领先但放射学精度被稀释，小模型在域外任务崩盘。MedSynapse-V 通过注入隐空间先验**统一地**提升所有任务类型，无需任务特定调优。核心原因：latent memory 编码的是"如何看图像"的诊断基础能力，而非某个特定 benchmark 的解题策略。
 
-Latent methods require domain priors. Among adapted latent baselines, the hierarchy Coconut (44.5%) < MCOUT-Multi (47.9%) < IVT-LR (50.5%) tracks optimization sophistication, yet even IVT-LR barely exceeds zero-shot Qwen3-VL-8B (48.6%). This inversion reveals that latent compression without clinical grounding encodes statistical shortcuts rather than diagnostic logic; the 10.9 pp gap to MedSynapse-V confirms that prior injection and causal calibration are prerequisites for effective latent reasoing in medicine.
+Latent methods require domain priors. Among adapted latent baselines, the hierarchy Coconut (44.5%) < MCOUT-Multi (47.9%) < IVT-LR (50.5%) tracks optimization sophistication, yet even IVT-LR barely exceeds zero-shot Qwen3-VL-8B (48.6%). This inversion reveals that latent compression without clinical grounding encodes statistical shortcuts rather than diagnostic logic; the 10.9 pp gap to MedSynapse-V confirms that prior injection and causal calibration are prerequisites for effective latent reasoning in medicine.
 
 > **关键实验发现 — 纯潜空间推理在医学场景的反转**: IVT-LR 是最复杂的通用潜空间方法，但仅略高于 zero-shot baseline (50.5% vs. 48.6%)。这说明在医学领域，**没有领域先验的潜空间压缩编码的是统计捷径而非诊断逻辑**。10.9 pp 的差距证明了先验注入和因果校准是医学潜空间推理的必要前提。
 
-**Scaling efficiency.** MedSynapse-V-4B (w/ $\mathcal{E}_{ana}$) reaches 54.7% with roughly half the parameters of 7B baselines; after encoder removal the IMT variant still achieves 52.7%, surpassing MediX-R1-8B (49.9%). This efficiency stems from a structural advantage: diagnostic expertise is distilled into 16 compact memory vectors consumed in a single forward pass, rather than spread across 150+ verbose reasoing tokens.
+**Scaling efficiency.** MedSynapse-V-4B (w/ $\mathcal{E}_{ana}$) reaches 54.7% with roughly half the parameters of 7B baselines; after encoder removal the IMT variant still achieves 52.7%, surpassing MediX-R1-8B (49.9%). This efficiency stems from a structural advantage: diagnostic expertise is distilled into 16 compact memory vectors consumed in a single forward pass, rather than spread across 150+ verbose reasoning tokens.
 
 > **Scaling Eficiency 解读**: 4B 参数的 IMT 版本 (52.7%) 超过 8B 的 MediX-R1 (49.9%)。优势来自结构设计而非参数规模——16 个 memory vector 在一次前向传播中被消费，而非扩散在 150+ 冗余推理 token 中。
 
@@ -79,7 +79,7 @@ Table 2 reports comprehensive ablation study results.
 > - 效果集中在放射学 benchmark：因为这些任务最依赖视觉 grounding
 > - 效果在 IMT 后仍然保持：**更强的 memory 利用模式通过蒸馏更忠实地传递**
 
-**(iii) Encoder retention vs. removal.** IMT achieves near-lossless removal: only 1.4 pp degradation (69.1 -> 67.7) while latency drops 39% and memory decreases 6.3 GB. The gap is not uniform: core VQA metrics degrade minimally, whereas MedXpert and GMAI suffer more, suggesting complex reasoing depends more on encoder-derived priors than closed-ended recognition.
+**(iii) Encoder retention vs. removal.** IMT achieves near-lossless removal: only 1.4 pp degradation (69.1 -> 67.7) while latency drops 39% and memory decreases 6.3 GB. The gap is not uniform: core VQA metrics degrade minimally, whereas MedXpert and GMAI suffer more, suggesting complex reasoning depends more on encoder-derived priors than closed-ended recognition.
 
 **(iv) Anatomical encoder choice.** MedSAM3 outperforms SAM-Med2D by 4.4 pp (67.7 vs. 63.3), reflecting richer spatial representations from multi-organ segmentation pretraining. Random initialization yields only 52.0, confirming that gains originate from what the encoder knows, rather than how memory is aggregated.
 
@@ -93,7 +93,7 @@ Table 2 reports comprehensive ablation study results.
 
 ### 3.4 In-Depth Case Analysis
 
-As illustrated in Fig. 5, we compare MedSynapse-V with Med-R1 [47] and MMedExpert-R1 [15] across three distinct imaging modalities. Both baselines produce verbose CoT reasoing (~185-238 tokens) yet arrive at incorrect diagnoses due to hallucinated observations erroneously propagating through the chain. In the CT case, Med-R1 fabricates pleural thickening in the left upper lobe, while MMedExpert-R1 hallucinates a laminated calcification pattern and mischaracterizes the nodule as a benign granuloma. In the MRI case, Med-R1 misidentifies the extra-axial mass as intra-axial and concludes glioblastoma, whereas MMedExpert-R1 fabricates ring enhancement with central necrosis, both missing the classic meningioma presentation. In the ultrasound case, Med-R1 hallucinates gallbladder wall thickening to over-diagnose acute cholecystitis, while MMedExpert-R1 denies posterior acoustic shadowing and misdiagnoses a gallbladder polyp. In contrast, MedSynapse-V generates concise, correct answers (~34-44 tokens) without explicit CoT, demonstrating that diagnostic implicit memory provides sufficient latent guidance while avoiding the hallucination cascades inherent in token-level CoT.
+As illustrated in Fig. 5, we compare MedSynapse-V with Med-R1 [47] and MMedExpert-R1 [15] across three distinct imaging modalities. Both baselines produce verbose CoT reasoning (~185-238 tokens) yet arrive at incorrect diagnoses due to hallucinated observations erroneously propagating through the chain. In the CT case, Med-R1 fabricates pleural thickening in the left upper lobe, while MMedExpert-R1 hallucinates a laminated calcification pattern and mischaracterizes the nodule as a benign granuloma. In the MRI case, Med-R1 misidentifies the extra-axial mass as intra-axial and concludes glioblastoma, whereas MMedExpert-R1 fabricates ring enhancement with central necrosis, both missing the classic meningioma presentation. In the ultrasound case, Med-R1 hallucinates gallbladder wall thickening to over-diagnose acute cholecystitis, while MMedExpert-R1 denies posterior acoustic shadowing and misdiagnoses a gallbladder polyp. In contrast, MedSynapse-V generates concise, correct answers (~34-44 tokens) without explicit CoT, demonstrating that diagnostic implicit memory provides sufficient latent guidance while avoiding the hallucination cascades inherent in token-level CoT.
 
 > **案例分析解读 — CoT 幻觉级联 vs. Latent Memory 准确简洁**:
 >
@@ -109,7 +109,7 @@ As illustrated in Fig. 5, we compare MedSynapse-V with Med-R1 [47] and MMedExper
 
 ### 3.5 Efficiency, RL Dynamics, and Latent Space
 
-**Performance-efficiency trade-off.** As shown in Fig. 6, MedSynapse-V (IMT) achieves 59.6% at 2.6 s/sample, comparable to zero-shot Qwen3-VL-8B (48.6%, 2.8 s) since both share the same backbone and the 16 memory vectors add negligible overhead. Full-scale 7-8B CoT methods (MediX-R1, MMedExpert-R1) require 5.8 s each due to 300-400 autoregressive reasoing tokens, while smaller CoT models (MedVLM-R1 2B, Med-R1 3B) offset verbosity with faster per-token speed yet remain 18-21 pp below MedSynapse-V. This confirms that compact latent memory provides diagnostic grounding without the token-generation overhead of full-scale CoT.
+**Performance-efficiency trade-off.** As shown in Fig. 6, MedSynapse-V (IMT) achieves 59.6% at 2.6 s/sample, comparable to zero-shot Qwen3-VL-8B (48.6%, 2.8 s) since both share the same backbone and the 16 memory vectors add negligible overhead. Full-scale 7-8B CoT methods (MediX-R1, MMedExpert-R1) require 5.8 s each due to 300-400 autoregressive reasoning tokens, while smaller CoT models (MedVLM-R1 2B, Med-R1 3B) offset verbosity with faster per-token speed yet remain 18-21 pp below MedSynapse-V. This confirms that compact latent memory provides diagnostic grounding without the token-generation overhead of full-scale CoT.
 
 > **效率-性能权衡的核心对比**:
 > - 标准 VLM zero-shot: 48.6% @ 2.8s

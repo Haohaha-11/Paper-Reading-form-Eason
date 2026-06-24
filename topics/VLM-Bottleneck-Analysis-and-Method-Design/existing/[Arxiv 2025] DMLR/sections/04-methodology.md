@@ -6,7 +6,7 @@
 
 DMLR 的核心方法论包含三部分：
 1. **Problem Formulation** (4.1): 定义潜思维令牌和测试时优化目标
-2. **Dynamic Multimodal Latent Reasoing** (4.2): 核心算法，包含初始化、Reward formulation、策略梯度优化、动态视觉注入
+2. **Dynamic Multimodal Latent Reasoning** (4.2): 核心算法，包含初始化、Reward formulation、策略梯度优化、动态视觉注入
 3. **Theoretical Analysis** (4.3): 两个定理提供理论支撑
 
 ---
@@ -15,11 +15,11 @@ DMLR 的核心方法论包含三部分：
 
 ### 4.1 Problem Formulation
 
-Given a text input sequence Q = (q1, ..., qk) and a set of visual embeddings Z = (z1, ..., zI) extracted by a visual encoder, the MLLM pi_theta encodes the text sequence into embeddings and incorporates visual features to generate the reasoing sequence X = (x1, x2, ..., xN).
+Given a text input sequence Q = (q1, ..., qk) and a set of visual embeddings Z = (z1, ..., zI) extracted by a visual encoder, the MLLM pi_theta encodes the text sequence into embeddings and incorporates visual features to generate the reasoning sequence X = (x1, x2, ..., xN).
 
 ![Equation: Probabilistic formulation](../images/182dafc43b550a7802db1ebb9cf8e18ce18faa87a1bc614894113b377f332c71.jpg)
 
-where x<n denotes the sequence of tokens preceding position n. Different from approaches that use the last hidden state of the previous reasoing step as latent think tokens [44, 18], we introduce L learnable latent think tokens into the input sequence, whose embeddings after projection are denoted as T = [tau1, tau2, ..., tauL]. These tokens are concatenated with the original inputs and fed into the model. During test-time inference, our core idea is to keep model parameters fixed and improve reasoing solely by optimizing the embeddings of the latent think tokens. Motivated by the observations in Section 3, we define a reward function R to quantify the confidence of the current latent reasoing state. This leads to the following test-time optimization objective:
+where x<n denotes the sequence of tokens preceding position n. Different from approaches that use the last hidden state of the previous reasoning step as latent think tokens [44, 18], we introduce L learnable latent think tokens into the input sequence, whose embeddings after projection are denoted as T = [tau1, tau2, ..., tauL]. These tokens are concatenated with the original inputs and fed into the model. During test-time inference, our core idea is to keep model parameters fixed and improve reasoning solely by optimizing the embeddings of the latent think tokens. Motivated by the observations in Section 3, we define a reward function R to quantify the confidence of the current latent reasoning state. This leads to the following test-time optimization objective:
 
 ![Equation: Optimization objective](../images/5bf58b516111a1f9b4093f6463192c63bdd8626520a80f2a32a550b9abe91893.jpg)
 
@@ -32,7 +32,7 @@ In practice, the model iteratively update the latent think tokens for T steps, a
 > - **与 baseline 的关键区别**: 不同于 COCONUT 使用上一步推理的 last hidden state 作为潜令牌，DMLR 引入独立的可优化潜令牌，迭代 T 步
 > - **数据流**: Q + Z + T → 模型前向 → R(T) → 梯度更新 T → 重复 → 最终 T* 用于解码
 
-### 4.2 Dynamic Multimodal Latent Reasoing
+### 4.2 Dynamic Multimodal Latent Reasoning
 
 In light of the observations in Section 3, DMLR comprises two key processes: dynamic visual injection strategy for RQ1, and confidence-guided optimization of latent think tokens for RQ2, as shown in Figure 5 and Algorithm 1.
 
@@ -61,11 +61,11 @@ where sigma^2 is a variance hyperparameter that controls the magnitude of explor
 > - **关键设计**: 噪声是**乘性**的，添加到当前潜令牌上，而不是完全随机初始化
 > - **超参数**: sigma (默认 0.1 = 10%)，控制探索幅度
 
-**Reward Formulation.** We propose a confidence-guided reward that dynamically optimizes latent think tokens during reasoing. In contrast to prior approaches [45, 30] that use confidence only for post-hoc evaluation, we treats it as an intrinsic feedback signal that continuously guides latent reasoing optimization. Given the latent think state T^(t), the query q, and visual features z, the model pi_theta generates token-level probability distributions Pi^(t) over the vocabulary w. We further quantify the model's confidence for each latent think token by computing the truncated entropy over its top-k most probable tokens, defined as:
+**Reward Formulation.** We propose a confidence-guided reward that dynamically optimizes latent think tokens during reasoning. In contrast to prior approaches [45, 30] that use confidence only for post-hoc evaluation, we treats it as an intrinsic feedback signal that continuously guides latent reasoning optimization. Given the latent think state T^(t), the query q, and visual features z, the model pi_theta generates token-level probability distributions Pi^(t) over the vocabulary w. We further quantify the model's confidence for each latent think token by computing the truncated entropy over its top-k most probable tokens, defined as:
 
 ![Equation: Truncated entropy](../images/e7ac891d0c8f436a999b5042fe877f2b8a19428482ec91507f0b846f6d09205e.jpg)
 
-where Topk(*) denotes the set of the k tokens with the highest probabilities. A lower value of the entropy Hk(*) corresponds to higher confidence in the model's prediction at that position. The reward for the entire latent reasoing sequence is defined as the complement of the mean truncated entropy computed over all L latent think tokens:
+where Topk(*) denotes the set of the k tokens with the highest probabilities. A lower value of the entropy Hk(*) corresponds to higher confidence in the model's prediction at that position. The reward for the entire latent reasoning sequence is defined as the complement of the mean truncated entropy computed over all L latent think tokens:
 
 ![Equation: Reward function](../images/f1da04f0b780af96c3706e382cc20ba218bcf7babd158b22064056ec92f95194.jpg)
 
@@ -79,7 +79,7 @@ where Topk(*) denotes the set of the k tokens with the highest probabilities. A 
 >   2. Reward 是 **intrinsic feedback**，不需要 ground-truth 标注 → training-free 的关键
 >   3. 置信度作为优化信号，形成闭环：优化 → 更确定 → 更高 reward → 继续优化
 
-**Test-Time Latent Optimization.** Recent works [15, 46, 38] have explored test-time gradient optimization to enable adaptation in language tasks, whereas we focus on optimization processes for multimodal latent reasoing. Specifically, during the test-time inference, guided by the objective defined in Equation 7, we adopt a REINFORCE-based [47] direct policy gradient method to adaptively optimize the latent think tokens T^(t). Assuming that each latent think token is independent, the update rule is formulated as:
+**Test-Time Latent Optimization.** Recent works [15, 46, 38] have explored test-time gradient optimization to enable adaptation in language tasks, whereas we focus on optimization processes for multimodal latent reasoning. Specifically, during the test-time inference, guided by the objective defined in Equation 7, we adopt a REINFORCE-based [47] direct policy gradient method to adaptively optimize the latent think tokens T^(t). Assuming that each latent think token is independent, the update rule is formulated as:
 
 ![Equation: Update rule](../images/aac71e2a4fef46a1c01fbb40567ea4bb727bcd0c3395d886dd4ea63d83b3ccd0.jpg)
 
@@ -97,7 +97,7 @@ where eta denotes the learning rate. According to the Policy Gradient Theorem an
 
 ![Equation: Visual injection reward](../images/a67312b4144f126b0010992c888ae6cfb026ddcf43e8601376898c01c6bb58aa.jpg)
 
-As the iterations progress, the best visual patch converges to the regions most relevant to the latent think state, guiding the latent reasoing toward more effective optimization.
+As the iterations progress, the best visual patch converges to the regions most relevant to the latent think state, guiding the latent reasoning toward more effective optimization.
 
 > 💡 **机制拆解 — 动态视觉注入策略 (DVI) 的完整流程**:
 >
@@ -118,11 +118,11 @@ As the iterations progress, the best visual patch converges to the regions most 
 
 ---
 
-**Algorithm 1: Dynamic Multimodal Latent Reasoing**
+**Algorithm 1: Dynamic Multimodal Latent Reasoning**
 
 ![Algorithm 1](../images/6058ba2c49e62579e79912e9207c11b6912684c0ae4b9e35d604800d22df7f0f.jpg)
 
-*Algorithm 1: Dynamic Multimodal Latent Reasoing*
+*Algorithm 1: Dynamic Multimodal Latent Reasoning*
 
 > 💡 **算法流程解读**:
 >
@@ -144,13 +144,13 @@ X ← Decode(T(t), Z, Q) return X
 
 To further understand why DMLR achieves high efficiency and robust performance, we provide theoretical explanations through the following two theorems.
 
-Theorem 4.1 (Confidence Reflects Reasoing Quality). Let h denote the latent reasoing state in DMLR, where C(h) represents the model's confidence level and Q(h) denotes the corresponding reasoing quality. If and only if the gradients of C(h) and Q(h) are positively aligned, the DMLR update along the confidence ascent direction will consequently improve the reasoing quality:
+Theorem 4.1 (Confidence Reflects Reasoning Quality). Let h denote the latent reasoning state in DMLR, where C(h) represents the model's confidence level and Q(h) denotes the corresponding reasoning quality. If and only if the gradients of C(h) and Q(h) are positively aligned, the DMLR update along the confidence ascent direction will consequently improve the reasoning quality:
 
 ![Equation: Theorem 4.1](../images/d6702c0f75dd606a498e71442f9b10f6a4cefe64f3ff9a83a2e3711d183ca873.jpg)
 
 > 💡 **Theorem 4.1 批读**: 定理表述了一个充分必要条件：当且仅当置信度 C(h) 和推理质量 Q(h) 在潜状态 h 处的梯度正对齐 (gradient dot product > 0) 时，沿置信度上升方向更新 h 也会提升推理质量。这为"用置信度作为优化目标"提供了理论保证——前提是梯度的正对齐假设成立。Section 3 的实证分析（Observation 1-3）为这个假设提供了经验支持。
 
-Theorem 4.2. (Visual Injection Enhances Confidence). Let tau be the latent reasoing states, tau_hat denote the updated states after visual injection, and z_v be the visual features. Visual injection in DMLR increases the mutual information between latent states and visual features, thereby enhancing the expected confidence J_conf(T), satisfying:
+Theorem 4.2. (Visual Injection Enhances Confidence). Let tau be the latent reasoning states, tau_hat denote the updated states after visual injection, and z_v be the visual features. Visual injection in DMLR increases the mutual information between latent states and visual features, thereby enhancing the expected confidence J_conf(T), satisfying:
 
 ![Equation: Theorem 4.2](../images/e596e3c5c523bbedc8b8f4b68eaf0e721af8a1f5cace280495811aa21c3d2c82.jpg)
 

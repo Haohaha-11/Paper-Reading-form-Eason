@@ -57,7 +57,7 @@ Training pipeline: Stage I: 50K PubMedVision image-text pairs (radiology + patho
 
 #### 8.1 Per-Modality Breakdown on OmniMedVQA
 
-Table 4: MedSynapse-V achieves consistent gains across all 8 OmniMedVQA modalities, with largest gains on radiology-centric modalities (CT: +14.4, MRI: +14.9, X-ray: +13.1). MMedExpert-R1 gains are modest on challenging modalities (OCT +5.6, Fundus +5.6) where explicit CoT struggles with subtle spatial patterns. MedSynapse-V's latent memory yields substantially larger gains (OCT +11.9, Fundus +11.8), confirming continuous diagnostic memory encodes fine-grained anatomical features more effectively than discrete token reasoing.
+Table 4: MedSynapse-V achieves consistent gains across all 8 OmniMedVQA modalities, with largest gains on radiology-centric modalities (CT: +14.4, MRI: +14.9, X-ray: +13.1). MMedExpert-R1 gains are modest on challenging modalities (OCT +5.6, Fundus +5.6) where explicit CoT struggles with subtle spatial patterns. MedSynapse-V's latent memory yields substantially larger gains (OCT +11.9, Fundus +11.8), confirming continuous diagnostic memory encodes fine-grained anatomical features more effectively than discrete token reasoning.
 
 > **按模态分解的关键发现**: 放射学中心模态 (CT/MRI/X-ray) 获益最大，因为结构化解剖先验在这些模态上最信息丰富。OCT/眼底等细粒度空间模式模态上 CoT 的提升有限(+5.6)，而 latent memory 提升显著(+11.8-11.9)，证实了连续隐空间记忆编码细粒度特征的优越性。
 
@@ -166,9 +166,9 @@ $\lambda_{causal}$ ∈ [0.3, 0.7] 内性能鲁棒，峰值在 0.5。$\lambda_{ca
 
 论文将相关工作分为四个领域，覆盖了非常广泛的文献：
 
-1. **Latent Computation and Memory-Augmented Reasoing**: COCONUT, CoDi, Heima, latent regulated generation (Seek in the Dark, Deliberation in Latent Space), memory evolution (RGMem), prompt-based continual learning, counterfactual explanation, causal dynamics of modality arbitration.
+1. **Latent Computation and Memory-Augmented Reasoning**: COCONUT, CoDi, Heima, latent regulated generation (Seek in the Dark, Deliberation in Latent Space), memory evolution (RGMem), prompt-based continual learning, counterfactual explanation, causal dynamics of modality arbitration.
 
-2. **RL for VLMs**: PPO, DPO, GRPO + medical applications (MedVLM-R1, Med-R1, MediX-R1, MMedExpert-R1), spatial reasoing, cognitive supersensing, hallucination mitigation, ofine RL methods (federated, conservative estimation, collapse suppression).
+2. **RL for VLMs**: PPO, DPO, GRPO + medical applications (MedVLM-R1, Med-R1, MediX-R1, MMedExpert-R1), spatial reasoning, cognitive supersensing, hallucination mitigation, ofine RL methods (federated, conservative estimation, collapse suppression).
 
 3. **Medical Image Understanding and Efficient Deployment**: medical segmentation (annotation efficient, semi-supervised, federated), medical diagnosis (knowledge enhanced, domain adaptive), clinical workflow analysis, efficient inference (speculative decoding, quantization, NPU co-design).
 
