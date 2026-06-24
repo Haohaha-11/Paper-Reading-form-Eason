@@ -57,26 +57,23 @@ CARES 是一个轻量级、模型无关的预处理模块：给定图像-问题�
 
 ## 数据流：输入 → 中间表示 → 输出
 
-| 阶段 | 输入 | 关键变换 | 输出 |
-|------|------|----------|------|
-| 1. Low-res pass | (image x, query q)，r_min=384 | 传递给 proxy VLM（SmolVLM-500M layer 1-16），提取 layer 16 最后一个 token 的 hidden state | joint image-query representation z |
-| 2. Resolution selection | hidden state z | 轻量 classifier 输出 logits l(z)，softmax → 概率分布 p | 离散概率分布 p over Rd |
-| 3. Continuous interpolation | 概率分布 p | r_tilde = SUM(p_k * r_k)，连续分辨率估计 | 连续分辨率 r_tilde in [r_min, r_max] |
-| 4. Image resize | 原始 image x + r_tilde | 将 x 按 r_tilde resize（largest dimension = r_tilde），round up 到 VLM 支持的尺寸 | x^(r_tilde) |
-| 5. Target VLM inference | x^(r_tilde) + query q | 目标 VLM F 正常推理，使用适配后的分辨率 | 最终答案 y |
-
-**训练时的额外阶段**：
-
-| 阶段 | 输入 | 关键变换 | 输出 |
-|------|------|----------|------|
-| A. 多分辨率 rollout | (x, q)，Rd = {384, 768, 1024} | target VLM F 在三个固定分辨率下分别生成答案 | y_384, y_768, y_1024 |
-| B. ANLS 评估 | y_k + GT answer | 计算每个分辨率的 ANLS score u_k | u_384, u_768, u_1024 |
-| C. 标签指派 | u_k scores | 选择最低分辨率使得 u_k >= tau 且 max_{l>k}(u_l - u_k) <= delta | 监督标签 r* |
-| D. 训练 CARES | z (SmolVLM features) + label r* | CE loss + label smoothing 0.05 | 训练好的 classifier weights |
-
-**整体输入**：原始图像 + 自然语言 query。
-**整体中间表示**：低分辨率 joint image-query hidden state（来自 proxy VLM 中间层）。
-**整体输出**：连续分辨率估计值，用于控制目标 VLM 的输入像素数量。
+```mermaid
+flowchart TD
+    A["输入: 图片 + 查询"] --> B["低分辨率预扫描"]
+    B --> B1["384px 单次前向"]
+    B1 --> B2["提取 hidden state"]
+    B2 --> C["分辨率选择器"]
+    C --> C1["轻量 MLP 分类器"]
+    C1 --> C2["输出概率分布 p"]
+    C2 --> D{"选择最优分辨率"}
+    D -->|"离散标注训练"| E["最小充分分辨率"]
+    D -->|"连续推理"| F["平滑分辨率插值"]
+    E --> G["高分辨率重新编码"]
+    F --> G
+    G --> H["输出: 精准回答"]
+    style C fill:#ff9,stroke:#333
+    style G fill:#9f9,stroke:#333
+```
 
 ## 优缺点与还能做什么
 

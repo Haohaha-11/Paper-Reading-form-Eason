@@ -60,38 +60,17 @@ iGVLM 提出解耦双分支视觉编码架构（frozen static branch + AdaLN dyn
 
 ## Architecture Data Flow
 
-```
-| 阶段 | 描述 |
-|------|------|
-| 1. iGVLM Data Flow |  |
-| 2. [Input] |  |
-
-Text Instruction T                                          │
-│                                                                    │
-│  [Text Encoding]                                                   │
-│    ├── CLIP Text Encoder → [CLS] token embedding c_t              │
-│    └── Linear Projection: ĉ_t = H_t(Norm(c_t))                    │
-│                                                                    │
-│  [Dual-Branch Vision Encoding]                                     │
-│    ├── Static Branch: Frozen ViT → y₀                             │
-│    │     (task-agnostic visual priors preserved)                   │
-│    └── Dynamic Branch: AdaLN-ViT → y_ct                           │
-│          (ĉ_t modulates Scale/Shift in every transformer layer)    │
-│                                                                    │
-│  [Feature Fusion]                                                  │
-│    └── y_I = Z(Norm(y_ct)) + y₀                                   │
-│          (Z is Zero-Initialized Linear Projection)                 │
-│                                                                    │
-│  [LLM Integration]                                                 │
-│    ├── Project y_I to LLM embedding space via Linear Layer        │
-│    └── Concatenate with instruction tokens → LLM → Response       │
-│                                                                    │
-│  [Key Design Properties]                                           │
-│    ├── At t=0: Z=0 → y_I = y₀ = LLaVA-1.5 baseline               │
-│    ├── During training: Z gradually injects instruction modulation │
-│    └── Worst case: model gracefully degrades to LLaVA-1.5         │
-│                                                                    │
-└──────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A["输入: 图片 + 指令查询"] --> B["双分支架构"]
+    B --> B1["静态分支: 全局编码"]
+    B --> B2["动态分支: 指令感知编码"]
+    B1 --> C["AdaLN 调制融合"]
+    B2 --> C
+    C --> D["Zero-FFN 平滑过渡"]
+    D --> E["输出: 问题感知的多模态理解"]
+    style C fill:#ff9,stroke:#333
+    style E fill:#9f9,stroke:#333
 ```
 
 ## Pros/Cons & Future Work

@@ -56,33 +56,19 @@ FUTURE-L1 提出了一种**交错式潜空间视觉推理 (Interleaved Latent Vi
 
 ## Data Flow: Input → Intermediate → Output
 
-```
-| 阶段 | 描述 |
-|------|------|
-| 1. FUTURE-L1 Data Flow |  |
-| 2. [Stage 1 | Data Curation] |
-| 3. TwiFF-2.7M → Visual-Gain Probe (pv - pt) → Top 50K |  |
-| 4. → FUTURE-L1-50K (interleaved text-latent format) |  |
-| 5. [Stage 2 | SFT] |
-| 6. Input | Observed Video V + Question q |
-| 7. Training Format |  |
-| 8. <reason>[Text CoT 0]</reason> |  |
-| 9. <|latent_start|>[Latent States 1]<|latent_end|> |  |
-| 10. <reason>[Text CoT 1]</reason> ... |  |
-| 11. <answer>[Prediction]</answer> |  |
-| 12. Loss | L_CE (text tokens) + λ * L_Latent (MSE to future-frame |
-| 13. visual embeddings) |  |
-| 14. [Stage 3 | LA-DAPO RL] |
-| 15. Group of G=8 rollouts → |  |
-| 16. Rewards | λa*Racc + λf*Rfmt + λc*Rctr + λd*Rdiv |
-| 17. Rctr | hardest-positive InfoNCE across correct/incorrect |
-| 18. Rdiv | -mean(cos²(b_m, b_{m+1})) across latent spans |
-| 19. [Inference] |  |
-| 20. Autoregressive decoding alternates |  |
-| 21. text tokens → <|latent_start|> → h_t (fed back to input) |  |
-| 22. → ... → <|latent_end|> → text tokens → final answer |  |
-
-┘
+```mermaid
+flowchart TD
+    A["输入: 视频帧"] --> B["阶段1: 文本SFT"]
+    B --> B1["学习基本推理能力"]
+    B1 --> C["阶段2: 潜空间想象"]
+    C --> C1["Latent Span 生成"]
+    C1 --> C2["预测未来视觉状态"]
+    C2 --> D["LA-DAPO RL优化"]
+    D --> D1["对比学习奖励"]
+    D1 --> D2["多样性正则化"]
+    D2 --> E["输出: 视频事件预测"]
+    style C fill:#ff9,stroke:#333
+    style E fill:#9f9,stroke:#333
 ```
 
 ## Pros/Cons & Future Work

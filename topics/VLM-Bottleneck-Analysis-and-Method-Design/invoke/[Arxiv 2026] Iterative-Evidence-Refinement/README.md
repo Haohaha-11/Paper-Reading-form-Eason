@@ -59,36 +59,18 @@ SIEVE 提出了一种端到端的自回访 (self-revisit) 框架，完全摒弃�
 
 ## Data Flow: Input → Intermediate → Output
 
-```
-| 阶段 | 描述 |
-|------|------|
-| 1. SIEVE Data Flow |  |
-| 2. [Phase I | Visual Evidence Discovery (pre-training)] |
-| 3. → Select top-k salient tokens as textual anchors A |  |
-| 4. H̄ = mean of middle-layer hidden states |  |
-| 5. For each anchor q_i ∈ A |  |
-| 6. s_ij = cos(x̂_j, q̂_i)  →  w_ij = softmax(s_ij/τ) |  |
-
-5. Cache: E_i = Concat(patch embeddings in region R_i)    │
-│                                                                   │
-│  [Phase II: Visually-Grounded RL Training (rollouts)]             │
-│    │                                                              │
-│    ├── Per rollout step t:                                        │
-│    │   a_t ~ π_θ(· | s_t), s_t = I || (x_1||E_1) || ... || (x_{t-1}||E_{t-1})
-│    │   │                                                          │
-│    │   ├── Action: produce text OR trigger embedding insertion    │
-│    │   ├── If trigger: inject cached E into reasoning stream      │
-│    │   └── Terminate: final answer or max turns reached           │
-│    │                                                              │
-│    ├── Reward: R(τ) = 0.6·R_res + 0.3·R_fmt + 0.5·R_emb + 0.2·R_act
-│    │                                                              │
-│    └── On failure w/ evidence: re-discover evidence with updated model
-│                                                                   │
-│  [Output]                                                         │
-│    └── Model learns to: WHEN to insert, WHICH region to insert,  │
-│        produce correct answer with visual evidence support         │
-│                                                                   │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A["输入: 图片 + 问题"] --> B["初始推理生成"]
+    B --> C{"需要更多视觉证据?"}
+    C -->|"是"| D["梯度显著性定位"]
+    D --> D1["跨模态匹配筛选区域"]
+    D1 --> D2["证据缓存更新"]
+    D2 --> C
+    C -->|"否"| E["输出: 精炼后的答案"]
+    style C fill:#f9f,stroke:#333
+    style D fill:#ff9,stroke:#333
+    style E fill:#9f9,stroke:#333
 ```
 
 ## Pros/Cons & Future Work

@@ -57,42 +57,18 @@
 
 ## Data Flow: Visual Encoding → Dual Ordering → Intervention
 
-```
-| 阶段 | 描述 |
-|------|------|
-| 1. Spatial Variable Binding Data Flow |  |
-| 2. [Input | Image + Spatial Query] |
-| 3. e.g., "The color of the square to the left of the green square is" |  |
-| 4. Vision Encoder |  |
-| 5. LM Backbone (intermediate layers, ~11-20) |  |
-| 6. LM Backbone (later layers, ~23-27) |  |
-
-Ordering info distributed across object + BG tokens│          │
-│  └──────────────────────────┬──────────────────────────────┘          │
-│                              ↓                                        │
-│  ┌─────────────────────────────────────────────────────────┐          │
-│  │  LM Backbone (intermediate layers, ~11-20)                │          │
-│  │    ├── Consumes vision-derived ordering (PRIMARY)         │          │
-│  │    ├── Forms LOCAL ordering over object tokens (SECONDARY)│          │
-│  │    └── Transfers ordering to final token position (~20-22)│          │
-│  └──────────────────────────┬──────────────────────────────┘          │
-│                              ↓                                        │
-│  ┌─────────────────────────────────────────────────────────┐          │
-│  │  LM Backbone (later layers, ~23-27)                       │          │
-│  │    └── Retrieves color/attribute based on ordering         │          │
-│  └──────────────────────────┬──────────────────────────────┘          │
-│                              ↓                                        │
-│  [Output: "Red"]                                                      │
-│                                                                        │
-│  ═══════════════ Intervention Path ═══════════════                     │
-│                                                                        │
-│  [Failure Correction]                                                  │
-│    ├── Train linear probes on vision embeddings to predict positions   │
-│    ├── Amplify probe directions: emb_t += α_i · probe_i                │
-│    ├── Applied GLOBALLY to all visual tokens (no object localization)   │
-│    └── Corrects up to 55% of previous failures                         │
-│                                                                        │
-└──────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A["输入: 多张图片"] --> B["视觉编码器: 空间位置编码"]
+    B --> C["双重排序机制"]
+    C --> C1["LM Backbone: 序列位置编码"]
+    C1 --> C2["属性检索绑定"]
+    C2 --> D{"存在排序冲突?"}
+    D -->|"是"| E["探针放大干预"]
+    D -->|"否"| F["直接答案"]
+    E --> F
+    style C fill:#ff9,stroke:#333
+    style F fill:#9f9,stroke:#333
 ```
 
 ## Pros/Cons & Future Work

@@ -60,37 +60,16 @@ RegionReasoner 提出了一种面向多轮视觉推理的强化学习框架，�
 
 ## Data Flow: Input → Structured Trajectory → Reward → Update
 
-```
-| 阶段 | 描述 |
-|------|------|
-| 1. RegionReasoner Data Flow |  |
-| 2. [Input at turn t] |  |
-
-Dialogue Memory M_{t-1} (prior turns' structured outputs)         │
-│                                                                           │
-│  [Policy π_θ: Structured Generation]                                     │
-│    ├── <scene> s_t: 全局场景描述                                          │
-│    ├── <focus> f_t: 参考区域局部描述 (if B_t^ref ≠ ∅)                    │
-│    ├── <think> h_t: 推理过程 (必须显式引用参考框坐标 + 空间关系)          │
-│    └── <answer> a_t: JSON 格式定位输出 (bbox/points)                     │
-│                                                                           │
-│  [Reward Computation]                                                     │
-│    ├── R_base(t): Format, Non-Repeat, BboxesIoU/L1, PointsL1              │
-│    ├── R_ref(t): Citation reward + hallucination penalty                   │
-│    │     └── 检查 h_t 中是否显式引用 B_t^ref 中的坐标                     │
-│    └── R_cons(t): Global--local semantic alignment                        │
-│          ├── Ov(s_t, h_t): 全局-推理关键词重叠                           │
-│          ├── Ov(f_t, h_t): 局部-推理关键词重叠 (+ if B_t^ref ≠ ∅)       │
-│          └── ℓ(h_t): 空间/比较/定位词表先验                             │
-│                                                                           │
-│  [Memory Update]                                                          │
-│    └── M_t = M_{t-1} ∪ {(s_t, f_t, h_t, a_t)}                           │
-│                                                                           │
-│  [GRPO Optimization]                                                      │
-│    └── Episode return = Σ_t R(t)                                         │
-│    └── Clipped policy gradient + GAE advantage + KL penalty               │
-│                                                                           │
-└─────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A["输入: 图片 + 问题"] --> B["初始检测/分割"]
+    B --> C["多轮区域推理"]
+    C --> C1["全局-局部一致性奖励"]
+    C1 --> C2["参考定位思考"]
+    C2 --> D["GRPO 训练更新"]
+    D --> E["输出: 区域定位推理链"]
+    style C fill:#ff9,stroke:#333
+    style E fill:#9f9,stroke:#333
 ```
 
 ## Pros/Cons & Future Work

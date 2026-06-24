@@ -51,34 +51,17 @@ Perceval 提出以感知为中心的过程奖励模型 (Perception-centric PRM)�
 
 ## Data Flow: Input → Intermediate → Output
 
-```
-| 阶段 | 描述 |
-|------|------|
-| 1. Perceval 数据流 |  |
-| 2. [Phase 1 | PRM Training] |
-
-SFT: 以标准 SFT 目标微调 Perceval backbone                  │
-│                                                                     │
-│  [Phase 2: Training — Process-Supervised GRPO]                     │
-│    │                                                                │
-│    ├── Step 1: Rollout — Policy π_θ 生成响应 o_i                   │
-│    ├── Step 2: PRM 检测 — Perceval 返回 hallucinated substrings    │
-│    │      └── <think>...claim-by-claim 分析...</think>             │
-│    │      └── <answer>["错误 span1", "错误 span2"]</answer>          │
-│    ├── Step 3: Mask 构建 — 精确字符串匹配定位 token span → M_i     │
-│    ├── Step 4: Token-level Advantage — Â'_{i,t} = Â_i - α · m_i,t · |Â_i| │
-│    └── Step 5: GRPO Update — 代入 clip objective (Eq.2)            │
-│                                                                     │
-│  [Phase 3: Inference — Test-time Scaling]                          │
-│    │                                                                │
-│    ├── Truncate-then-Regenerate:                                   │
-│    │     Perceval 检测到错误 span → 截断至该 span 前 →             │
-│    │     Policy 基于截断前缀重新生成 → 迭代直至无新错误或达 k 次   │
-│    │                                                                │
-│    └── Truncate-Thinking-then-Regenerate:                          │
-│          同上 + 在截断处插入引导反思文本 (Perceval 输出的错误原因) │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A["输入: 图片 + 问题"] --> B["模型生成推理链"]
+    B --> C["Perceval PRM 评估"]
+    C --> C1["错误检测: 定位感知错误"]
+    C1 --> C2["Token级优势重分配"]
+    C2 --> D["GRPO 策略更新"]
+    D --> E["测试时扩展推理"]
+    E --> F["输出: 更准确的推理链"]
+    style C fill:#ff9,stroke:#333
+    style F fill:#9f9,stroke:#333
 ```
 
 ## Pros/Cons & Future Work

@@ -54,39 +54,22 @@
 
 ## Framework Overview: S-BOED → Coverage-Resolution → FOVEA
 
+```mermaid
+flowchart TD
+    A["输入: 图片 + 用户Query"] --> B["低分辨率快速扫描"]
+    B --> C{"信息是否充分?"}
+    C -->|"充分"| D["直接输出答案"]
+    C -->|"不足"| E["S-BOED 主动推理"]
+    E --> E1["选择候选高分辨率区域"]
+    E1 --> E2["重新观察 + 信念更新"]
+    E2 --> C
+    E2 --> F["FOVEA 训练无关实现"]
+    F --> G["输出: 精准答案 + 效率最优"]
+    style C fill:#f9f,stroke:#333
+    style E fill:#ff9,stroke:#333
+    style G fill:#9f9,stroke:#333
 ```
-| 阶段 | 描述 |
-|------|------|
-| 1. S-BOED Active Visual Reasoning Pipeline |  |
-| 2. [Problem] Perceptual Bandwidth Bottleneck |  |
 
-Fixed token budget B → field-of-view vs. resolution trade-off │
-│                                                                       │
-│  [Formulation] S-BOED (Sequential Bayesian Optimal Exp. Design)      │
-│    ├── θ = {ℓ, y} : latent location + semantic target                │
-│    ├── d = [u,v,w,h] : foveation action / crop design                │
-│    ├── S ∈ {0,1} : visibility event = coverage × resolution         │
-│    └── z : observation gated by S                                    │
-│                                                                       │
-│  [Derivation] Tractable Coverage-Resolution Objective                │
-│    ├── Assumption 2.4: Factorised Belief (ℓ ⊥ y planning)            │
-│    ├── Assumption 3.2: Calibrated Visibility (H(S|z) ≈ 0)           │
-│    ├── Assumption 3.3: Ideal Observer (H(y|z,S=1) ≈ 0)              │
-│    └── Result: I_t(d) = Coverage × φ(d)  (Eq. 8)                     │
-│                                                                       │
-│  [Instantiation] FOVEA                                               │
-│    ├── Resolvability Probing: Î(d) = P(r=1 | I_d, Q) (Eq. 10)       │
-│    ├── FOVEA-Greedy: sample 3 candidates, pick max Î(d)              │
-│    ├── FOVEA-MCMC: Metropolis-Hastings over crop space               │
-│    └── FOVEA-Lookahead: one-step look-ahead Bellman-like planning    │
-│                                                                       │
-│  [Execution] Tool-Integrated Agent                                    │
-│    ├── VLM proposes crop d_prop                                      │
-│    ├── FOVEA intercepts and refines → d*                             │
-│    └── Execute refined crop → tool call → update history H_t         │
-│                                                                       │
-└─────────────────────────────────────────────────────────────────────┘
-```
 
 ## Three Core Assumptions Driving Tractability
 

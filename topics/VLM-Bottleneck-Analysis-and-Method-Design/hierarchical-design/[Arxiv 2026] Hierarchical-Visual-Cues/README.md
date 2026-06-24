@@ -62,46 +62,18 @@ HIVE 是首个将 loop transformer 架构与层级化视觉线索注入相结合
 
 ## Data Flow: Input → Intermediate → Output
 
-```
-| 阶段 | 描述 |
-|------|------|
-| 1. HIVE Data Flow |  |
-| 2. [Input] |  |
-
-Image X_v → ViT (InternViT) → Hierarchical Features            │
-│                                                                        │
-│  [Feature Extraction & Projection]                                     │
-│    ├── Text: e_t = E(x)                              [Embedding Block] │
-│    ├── Visual: e_v = Proj(ViT(X_v))                  [Final Layer]    │
-│    └── Hierarchical:                                     [Layers 6,12,18,24] │
-│         v_l = m_l(h_v^l), l ∈ {6,12,18,24}            [Patch Merger]  │
-│                                                                        │
-│  [Token Construction]                                                  │
-│    └── e = [e_v; e_t]                               [Concatenation]   │
-│                                                                        │
-│  [Recurrent Iteration t = 0...R]                                       │
-│    │                                                                   │
-│    ├── s_0 ~ N(0, σ²I)                          [Random Init]         │
-│    │                                                                   │
-│    └── For t = 0 to R-1:                                              │
-│         ├── Select visual cue:                                         │
-│         │   If R ≥ 4: inject v_{L[t]} for t < 4 (top-down order)      │
-│         │   If R < 4: downsample with interval floor(4/R)              │
-│         │   If t ≥ K: hat(e)_v = 0 (pure language reasoning)           │
-│         ├── s_{r+1} = R-Block(e, hat(e)_v; s_r)  [Recurrent Block]    │
-│         └── [Gradient only through last k iterations]                  │
-│                                                                        │
-│  [Decoding]                                                            │
-│    └── p = H(s_r)                                   [Language Head]   │
-│                                                                        │
-│  [Adaptive Early Exit (Optional)]                                      │
-│    ├── norm_diff = ||h_t - h_{t-1}||_2 / ||h_t||_2    [Convergence]   │
-│    └── Exit if norm_diff < threshold                                  │
-│                                                                        │
-│  [KV-Cache (Optional)]                                                 │
-│    └── latest-m4: periodic retrieval every 4 steps                    │
-│                                                                        │
-└──────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A["输入: 图片 + 文本"] --> B["多粒度视觉编码"]
+    B --> B1["粗粒度全局特征"]
+    B --> B2["细粒度局部特征"]
+    B1 --> C["层级化注入策略"]
+    B2 --> C
+    C --> C1["自适应注入步数"]
+    C1 --> C2["循环潜空间迭代"]
+    C2 --> D["输出: 多尺度融合推理"]
+    style C fill:#ff9,stroke:#333
+    style D fill:#9f9,stroke:#333
 ```
 
 ## Architecture Comparison: HIVE vs Baselines
