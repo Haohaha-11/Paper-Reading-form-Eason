@@ -19,6 +19,7 @@ Haojiang 的文献阅读仓库，按课题组织。每篇论文都有「批读�
 | 2025-06-23 | [ULRFM](./topics/Medical-Compression/%5BArxiv%202026%5D%20ULRFM/) | Medical Compression | ⏳ 待读 | - |
 | 2025-06-23 | [PathoLIC](./topics/Medical-Compression/%5BArxiv%202026%5D%20PathoLIC/) | Medical Compression | ⏳ 待读 | - |
 | 2025-06-24 | [Q-Zoom](./topics/VLM-Bottleneck-Analysis-and-Method-Design/encoding/%5BArxiv%202025%5D%20Q-Zoom/) +14 more | VLM Bottleneck Analysis | ⏳ 待读 | - |
+| 2025-06-28 | [ARPO](./topics/GRPO/%5BArxiv%202025%5D%20ARPO/) | GRPO | ⏳ 待读 | - |
 
 ---
 
@@ -187,6 +188,17 @@ VLM 瓶颈分析与方法设计：系统诊断视觉编码、推理过程、奖�
 | medical | 1 | MedSynapse-V |
 
 📖 [VLM Bottleneck Analysis 详细总结](./topics/VLM-Bottleneck-Analysis-and-Method-Design/README.md)
+
+---
+
+### 🎯 GRPO
+GRPO (Group Relative Policy Optimization) 及其变体在 LLM/VLM 强化学习训练中的应用与改进。
+
+| 论文 | 会议 | 方法特点 |
+|------|------|----------|
+| [ARPO](./topics/GRPO/%5BArxiv%202025%5D%20ARPO/) | Arxiv 2025 | Agentic Reinforced Policy Optimization：将 GRPO 与大模型 Agent 范式结合，用于强化学习策略优化。 |
+
+📖 [GRPO 详细总结](./topics/GRPO/README.md)
 
 ---
 
