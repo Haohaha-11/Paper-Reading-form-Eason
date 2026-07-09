@@ -202,6 +202,17 @@ GRPO (Group Relative Policy Optimization) 及其变体在 LLM/VLM 强化学习�
 
 ---
 
+### 📝 Rebuttal
+论文审稿 rebuttal 与学术论证：多 Agent 协同攻击 LVLM 安全边界。
+
+| 论文 | 会议 | 方法特点 |
+|------|------|----------|
+| [Persuade-in-scene](./topics/Rebuttal/%5BArxiv%202025%5D%20Persuade-in-scene/) | CVPR 2026 | 多 Agent 排版越狱攻击 LVLM，视觉排版 + 文本协同绕过安全检测。 |
+
+📖 [Rebuttal 详细总结](./topics/Rebuttal/README.md)
+
+---
+
 ## 论文文件夹结构
 
 ```text
