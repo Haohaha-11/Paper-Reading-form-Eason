@@ -1,0 +1,18 @@
+[← 返回 README](../README.md)
+
+# 5 Related Work
+
+## 📌 预览
+
+两条主线：(1) 用预训练生成先验做后验采样（explicit guidance 一族 + moment-matching + GLASS）；(2) conditional training 与 restoration bridge（Palette、InDI、I2SB）。本节的价值在于把 EPS 精确地"钉"在这两条线的坐标里——它是 GLASS 的各向异性推广，是 bridge 里"精确解线性高斯后验的那一条特定 bridge"。
+
+---
+
+Posterior sampling with pretrained generative priors. A large literature uses pretrained diffusion or flow models as priors for inverse problems. Explicit guidance methods, including Score-SDE/ALD, RePaint, DDNM, DDRM, DPS, ΠGDM, DAPS, MPGD, and FlowDPS [49, 50, 19, 21, 18, 20, 22, 23, 51, 28], approximate the measurement-matching score $\nabla_{x_t} \log p(y | x_t) \approx - L_t M_t / G_t$ [28], where $M_t$ is a measurement residual, $L_t$ lifts it back to the sample space, and $G_t$ controls the guidance strength. They differ in the form of $M_t, L_t$ and $G_t$, instantiating the template via projections, denoised estimates, Jacobian corrections, or moment approximations of $p(x_0 | x_t)$. Moment-matching variants [26, 27] go beyond first-order Tweedie by approximating $p(x_0 | x_t)$ with an anisotropic Gaussian. Section 3.3 makes precise the gap between all of these and the exact posterior score, namely that each method substitutes the unconditional denoising query for the posterior denoising query, querying the network at $x_t$ rather than at the pivot $\mu_\star$. GLASS [52] is the closest training-free relative, and its equivalent-time formula coincides with EPS in the special case where $A^\top A$ is a scalar multiple of the identity, equivalently when $\Sigma_\star(t)$ is isotropic (Appendix A.6). EPS handles the general operator-dependent anisotropic case at the cost of a training step.
+
+> 💡 **定位批读：EPS 在 guidance 谱系里的坐标 (Hao 批注)**: 这段把 EPS 和一大票 zero-shot 方法的关系说死了。所有 explicit guidance 方法（DPS/DDNM/ΠGDM/DAPS/MPGD/...）都是同一模板 $-L_t M_t/G_t$ 的实例，区别只在 $M_t,L_t,G_t$ 的形式。Section 3.3 的诊断对它们**全部**成立：在 $x_t$ 而非 $\mu_\star$ 评估网络。
+> - **与 GLASS 的关系最值得记**：GLASS（[52]）是最近的 training-free 亲戚，它的"等效时间"公式在 $A^\top A=\gamma^2 I$（即 $\Sigma_\star$ 各向同性）时**与 EPS 重合**（附录 A.6）。也就是说 GLASS 是 EPS 在"各向同性算子"这个特例下的免训练版本；EPS 用一步训练换来了处理**一般各向异性算子**的能力。这个对照点明了 EPS 的边界：训练成本换来的正是各向异性几何的学习。
+
+Conditional training and restoration bridges. Palette and conditional image-to-image diffusion models train a network directly on $(x_t, y)$ pairs [32, 33, 37, 34], and bridge-based restoration methods such as InDI [35] and image-to-image Schrödinger bridges [36] construct trajectories from the measurement distribution to the data distribution. These methods are expressive and avoid hand-designed corrections, but they expose the network to a conditional path whose intermediate marginals do not match the unconditional denoising marginals of the prior, so they cannot leverage a pretrained denoiser as a warm start in a structurally aligned way. EPS instead derives the conditional path induced by the exact linear-Gaussian posterior kernel, which preserves the input/output type of standard denoising pretraining (Section 3.4). This makes both random initialization and warm-starting from a pretrained checkpoint natural training options. We view bridge-based methods as complementary, since they define useful restoration dynamics for general degradations, while EPS identifies the specific bridge that solves the linear-Gaussian posterior exactly.
+
+> 💡 **定位批读：EPS 是"精确解线性高斯后验的那条 bridge" (Hao 批注)**: 对 training-based 一族，作者的定位是——Palette/conditional diffusion 把网络暴露给原始 $(x_t,y)$，bridge 方法（InDI/I2SB）直接构造"测量→数据"的轨迹。它们的中间边缘分布**不匹配**预训练先验的去噪边缘，所以不能结构对齐地 warm-start。EPS 的独特性：它推导出的条件路径正是**线性高斯后验核诱导的那条 bridge**，恰好保留了标准去噪预训练的输入/输出类型 → 既能随机初始化也能 warm-start。一句话总结作者的哲学：**"bridge 方法定义了通用退化的恢复动力学，EPS 找到了精确求解线性高斯后验的那一条特定 bridge。"** 这是一个很克制、很准确的自我定位。

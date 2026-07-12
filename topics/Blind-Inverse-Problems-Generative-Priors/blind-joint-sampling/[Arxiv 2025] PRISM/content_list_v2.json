@@ -1,0 +1,2599 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "PRISM: Probabilistic and Robust Inverse Solver with Measurement-Conditioned Difusion Prior for Blind Inverse Problems"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                102,
+                107,
+                885,
+                188
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Yuanyun Hu<sup>1,2</sup>, Evan Bell<sup>1</sup>, Guijin Wang<sup>2</sup>, and Yu Sun<sup>1,\u0000</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                102,
+                200,
+                619,
+                219
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>1</sup>Johns Hopkins University <sup>2</sup>Tsinghua University"
+                    }
+                ]
+            },
+            "bbox": [
+                102,
+                222,
+                513,
+                241
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>\u0000</sup>Corresponding author: ysun214@jh.edu"
+                    }
+                ]
+            },
+            "bbox": [
+                102,
+                243,
+                400,
+                261
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Abstract"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                104,
+                275,
+                191,
+                294
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Difusion models are now commonly used to solve inverse problems in computational imaging. However, most difusion-based inverse solvers require complete knowledge of the forward operator to be used. In this work, we introduce a novel probabilistic and robust inverse solver with measurement-conditioned difusion prior (PRISM) to efectively address blind inverse problems. PRISM ofers a technical advancement over current methods by incorporating a powerful measurement-conditioned difusion model into a theoretically principled posterior sampling scheme. Experiments on blind image deblurring validate the efectiveness of the proposed method, demonstrating the superior performance of PRISM over state-of-the-art baselines in both image and blur kernel recovery."
+                    }
+                ]
+            },
+            "bbox": [
+                220,
+                275,
+                898,
+                449
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "1 Introduction"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                106,
+                468,
+                282,
+                488
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In computational imaging, reconstructing an image when the forward model is partially unknown remains a significant challenge. Common examples of such unknowns in real applications include the sensitivity map in magnetic resonance image (MRI) reconstruction [1, 2], accurate view angles in Xray computed tomography (CT) [3, 4], and the blur kernel in image deblurring [5, 6]. Mathematically, the reconstruction task can be formulated as a blind inverse problem"
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                502,
+                898,
+                589
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\pmb { y } = H _ { \\varphi } \\pmb { x } + \\pmb { n } , \\quad \\pmb { n } \\sim \\mathcal { N } ( \\mathbf { 0 } , \\sigma _ { y } ^ { 2 } \\pmb { I } ) ,\\tag{1}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/fb444bb1141f496c68444c0b5cb91c55a8be0e22c71f6d5feed165d982a34df7.jpg"
+                }
+            },
+            "bbox": [
+                369,
+                598,
+                630,
+                619
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { x } \\in \\mathbb { R } ^ { n }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is the true underlying signal, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\pmb { y } \\in \\mathbb { R } ^ { m }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is the observed measurement, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "H _ { \\varphi } \\in \\mathbb { R } ^ { m \\times n }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is the forward matrix with unknown parameters "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi \\in \\mathbb { R } ^ { p } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and n is Gaussian measurement noise. The goal here is to recover x as accurately as possible from y, which typically involves jointly estimating "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi ."
+                    }
+                ]
+            },
+            "bbox": [
+                102,
+                628,
+                897,
+                680
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Difusion models have recently emerged as an efective tool for solving inverse problems [7, 8, 9]. Several methods have been developed for blind inverse problems using difusion models, such as BlindDPS [10], GibbsDDRM [11], and Kernel-Dif [12]. Despite their efectiveness, each of these methods comes with certain limitations. For example, BlindDPS uses an unconditional difusion model as a prior for estimating "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", leaving the rich information about "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi"
+                    },
+                    {
+                        "type": "text",
+                        "content": "contained in y unutilized. Similarly, although GibbsDDRM is more theoretically principled, it relies on a simple Laplace prior for "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "which often results in unsatisfactory recovery. Finally, while Kernel-Dif uses a conditional difusion model for estimating "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi"
+                    },
+                    {
+                        "type": "text",
+                        "content": "from "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "^ { \\mathbf { \\alpha } } \\mathbf { \\pmb { y } } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "it resorts to using a traditional non-blind deep network to predict x from y for a fixed estimate of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Since the difusion model is not used as an image prior, any inaccuracies in estimating φ may propagate into substantial errors in the estimate of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "{ \\pmb x } ."
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                680,
+                898,
+                853
+            ]
+        },
+        {
+            "type": "page_aside_text",
+            "content": {
+                "page_aside_text_content": [
+                    {
+                        "type": "text",
+                        "content": "arXiv:2509.16106v1 [eess.IV] 19 Sep 2025"
+                    }
+                ]
+            },
+            "bbox": [
+                22,
+                270,
+                58,
+                724
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Hopkins Computational Imaging Group"
+                    }
+                ]
+            },
+            "bbox": [
+                102,
+                63,
+                449,
+                80
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Pre-print"
+                    }
+                ]
+            },
+            "bbox": [
+                820,
+                63,
+                897,
+                80
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "Yuanyun Hu is a student in the Tsinghua–JHU-BME Dual Degree Program. The work was done when Yuanyun Hu studied at Johns Hopkins University. Evan Bell is supported by the U.S. Department of Energy Computational Science Graduate Fellowship."
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                861,
+                898,
+                904
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "1"
+                    }
+                ]
+            },
+            "bbox": [
+                495,
+                924,
+                504,
+                938
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/5bab756ab892ec3695e22fd29163aef28088f112e5447ffedfc984ad6a7b6cf9.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 1: Visual comparison of the image (x) and kernel (φ) reconstructions obtained by PRISM and baseline methods for the blind motion deblurring task (σ = 0.05). Each reconstruction shown is a single sample generated by each method (single-sample estimation). Note how PRISM recovers fine textures such as hair and skin wrinkles while also retaining high PSNR and SSIM values."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                125,
+                109,
+                875,
+                314
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In this work, we develop a novel difusion-based blind inverse solver termed probabilistic and robust inverse solver with measurement-conditioned difusion prior (PRISM) by extending the Plug-and-Play Difusion Models (PnP-DM) framework introduced in [13] to the blind setting. The resulting approach overcomes the major limitations of BlindDPS, GibbsDDRM, and Kernel-Dif while retaining the best features of each of these algorithms. In particular, the proposed PRISM uses difusion models as priors for reconstructing both x and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi"
+                    },
+                    {
+                        "type": "text",
+                        "content": "(as in BlindDPS), employs a theoretically principled sampling scheme (as in GibbsDDRM), and leverages a powerful conditional difusion model to efectively estimate "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi"
+                    },
+                    {
+                        "type": "text",
+                        "content": "(as in Kernel-Dif). We note that a similarly derived method, Blind-PnPDM [14], was recently proposed; however we demonstrate that PRISM’s use of a measurement-conditioned kernel prior ofers substantial improvements over Blind-PnPDM in terms of both performance and robustness."
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                414,
+                898,
+                587
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2 Method"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                102,
+                607,
+                235,
+                627
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2.1 Blind Bayesian Inverse Problem"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                102,
+                643,
+                446,
+                661
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "From a Bayesian perspective, solving blind inverse problems can be viewed as inferring the joint posterior distribution"
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                671,
+                898,
+                705
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "p ( \\pmb { x } , \\pmb { \\varphi } \\mid \\pmb { y } ) \\propto p ( \\pmb { y } \\mid \\pmb { x } , \\pmb { \\varphi } ) p ( \\pmb { x } ) p ( \\pmb { \\varphi } ) ,\\tag{2}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/11e0397accbdd7b3cdcad846f45290f4cbb08bd56752b11c7be9476a66614816.jpg"
+                }
+            },
+            "bbox": [
+                361,
+                705,
+                637,
+                723
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where the likelihood "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p ( \\pmb { y } \\mid \\pmb { x } , \\pmb { \\varphi } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "enforces data fidelity, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p ( { \\pmb x } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is the prior of the image, and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p ( \\varphi )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is the prior of the unknown parameters. In the negative log domain, we denote "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "g ( \\pmb { x } , \\pmb { \\varphi } ; \\pmb { y } ) = - \\log p ( \\pmb { y } \\mid \\pmb { x } , \\pmb { \\varphi } )"
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "r _ { \\mathbf { x } } ( \\mathbf { x } ) = - \\log p ( \\pmb { x } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "r _ { \\varphi } ( \\varphi ) = - \\log p ( \\varphi )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", giving"
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                731,
+                897,
+                784
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "p ( \\pmb { x } , \\varphi \\mid \\pmb { y } ) \\propto \\exp ( - g ( \\pmb { x } , \\varphi ; \\pmb { y } ) - r _ { \\pmb { x } } ( \\pmb { x } ) - r _ { \\varphi } ( \\varphi ) ) .\\tag{3}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/1a8e5f22fc670f8785227c257d9457df887e00a28a3643fedfd1f7d7adef3590.jpg"
+                }
+            },
+            "bbox": [
+                305,
+                796,
+                691,
+                814
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Directly sampling "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p ( \\pmb { x } , \\pmb { \\varphi } \\mid \\pmb { y } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is dificult due to the strong coupling between x and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and the nonconvex nature of the problem. To overcome this, we adapt the PnP-DM framework [13], which utilizes a split Gibbs sampling (SGS) strategy [15] to decouple the likelihood and priors. This is accomplished by introducing auxiliary variables "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z \\in \\mathbb { R } ^ { n }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m \\in \\mathbb { R } ^ { p }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for x and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and considering the augmented"
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                827,
+                898,
+                897
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "PRISM"
+                    }
+                ]
+            },
+            "bbox": [
+                104,
+                64,
+                156,
+                79
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Hu et al."
+                    }
+                ]
+            },
+            "bbox": [
+                826,
+                64,
+                895,
+                79
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "2"
+                    }
+                ]
+            },
+            "bbox": [
+                493,
+                924,
+                508,
+                936
+            ]
+        }
+    ],
+    [
+        {
+            "type": "algorithm",
+            "content": {
+                "algorithm_caption": [],
+                "algorithm_content": [
+                    {
+                        "type": "text",
+                        "content": "Algorithm 1 PRISM Input: Initialization "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "x ^ { 0 } , m ^ { 0 } ;"
+                    },
+                    {
+                        "type": "text",
+                        "content": "total iterations "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "K ;"
+                    },
+                    {
+                        "type": "text",
+                        "content": "coupling schedules "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\{ \\rho _ { \\pmb { x } } ^ { k } \\} _ { k = 1 } ^ { K } , \\{ \\rho _ { \\varphi } ^ { k } \\} _ { k = 1 } ^ { K } ;"
+                    },
+                    {
+                        "type": "text",
+                        "content": "likelihood potential "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "g ( \\cdot ; y ) ;"
+                    },
+                    {
+                        "type": "text",
+                        "content": "pretrained image difusion model "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathsf { D } ^ { \\boldsymbol { x } } ( \\cdot )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "(unconditional) and kernel difusion model "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathsf { D } ^ { \\varphi } ( \\cdot ; y )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "(conditional on y) Output: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( \\pmb { x } ^ { K } , \\varphi ^ { K } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "as an approximate sample from π "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { \\nabla } ( { \\pmb x } , \\varphi \\mid { \\pmb y } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "1: for "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "k = 1 , 2 , \\dots , K"
+                    },
+                    {
+                        "type": "text",
+                        "content": "do 2: φ<sup>k</sup> ← KernelCondPri "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { . o r } \\big ( { m } ^ { k - 1 } , \\rho _ { \\varphi } ^ { k } , \\mathsf { D } ^ { \\varphi } ( \\cdot ; \\pmb { y } ) \\big )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "3: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z ^ { k }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "← ImageLikelihood "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( \\dot { { \\mathbf x } } ^ { k - 1 } , \\varphi ^ { k } , \\rho _ { { \\mathbf x } } ^ { k } , g ( { \\mathbf \\cdot } ; { \\mathbf y } ) )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "4: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\pmb { x } ^ { k }  \\top \\mathrm { m a g e P r i o r } \\big ( z ^ { k } , \\rho _ { x } ^ { k } , \\mathsf { D } ^ { \\pmb { x } } ( \\cdot ) \\big )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "5: m<sup>k</sup> ← KernelLikelihood "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\big ( \\mathbf { { x } } ^ { k } , \\dot { \\varphi } ^ { k } , \\rho _ { \\varphi } ^ { k } , g ( { \\mathbf { \\cdot } } ; \\mathbf { { y } } ) \\big )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "6: end for"
+                    }
+                ],
+                "algorithm_footnote": []
+            },
+            "bbox": [
+                104,
+                109,
+                897,
+                311
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "distribution"
+                    }
+                ]
+            },
+            "bbox": [
+                102,
+                335,
+                204,
+                352
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { c } { { \\pi ( x , z , \\varphi , m \\mid y ) \\propto \\exp \\bigg ( - g ( z , m ; y ) - r _ { x } ( x ) - r _ { \\varphi } ( \\varphi ) } } \\\\ { { - \\displaystyle \\frac { \\| x - z \\| _ { 2 } ^ { 2 } } { 2 \\rho _ { x } ^ { 2 } } - \\frac { \\| \\varphi - m \\| _ { 2 } ^ { 2 } } { 2 \\rho _ { \\varphi } ^ { 2 } } \\bigg ) , } } \\end{array}\\tag{4}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/06a4d7ec5e60524d369ef0353a4f66aeb32bc34f5792b553974188a7efb31570.jpg"
+                }
+            },
+            "bbox": [
+                282,
+                361,
+                717,
+                438
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\rho _ { x } , \\rho _ { \\varphi } > 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": "control the coupling between "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( { \\pmb x } , z )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( \\varphi , m )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The advantage of sampling from this distribution, rather than directly from "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p ( \\pmb { x } , \\varphi \\mid \\pmb { y } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", is that the resulting updates for x and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi"
+                    },
+                    {
+                        "type": "text",
+                        "content": "only involve the prior, while the corresponding updates for z and m only involve the likelihood. This strategy is analogous to the variable splitting technique used in Half-Quadratic Splitting [16] and ADMM [17], which has been shown to be efective for non-convex problems [18]."
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                446,
+                898,
+                535
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2.2 Proposed Method: PRISM"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                102,
+                549,
+                393,
+                569
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The proposed PRISM aims to sample from (4) by alternating between four conditional updates, which are outlined in the remainder of this section. In each update step, only one variable is updated while the others are kept fixed."
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                577,
+                898,
+                628
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Kernel Conditional Prior Step. Given "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "^ { m , }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "the kernel "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is updated by sampling the distribution"
+                    }
+                ]
+            },
+            "bbox": [
+                102,
+                632,
+                857,
+                651
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "p ( \\varphi \\mid m ) \\propto \\exp \\left( - r _ { \\varphi } ( \\varphi ) - \\frac { \\| \\varphi - m \\| _ { 2 } ^ { 2 } } { 2 \\rho _ { \\varphi } ^ { 2 } } \\right) .\\tag{5}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/40187b3cc64e31dbef444288ea3f78bf331ef10dd56d6d18fafedb31ad519517.jpg"
+                }
+            },
+            "bbox": [
+                334,
+                660,
+                661,
+                699
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The key insight in the PnP-DM framework is that right hand side of (5) is the likelihood of a Gaussian denoising problem with noise variance "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\rho _ { \\varphi } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", prior "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p ( \\varphi )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and noisy observation m. Explicitly, this can be seen by rewriting the right hand side as"
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                708,
+                898,
+                761
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\exp \\Biggl ( - r _ { \\varphi } ( \\varphi ) - \\frac { \\| \\varphi - m \\| _ { 2 } ^ { 2 } } { 2 \\rho _ { \\varphi } ^ { 2 } } \\Biggr ) \\propto p ( \\varphi ) \\mathcal { N } ( \\varphi ; m , \\rho _ { \\varphi } ^ { 2 } I ) .\\tag{6}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/e7ebe2367787d73d68bd2efa26c06fc209d4e177bb0fe724ec947a5f99a5a466.jpg"
+                }
+            },
+            "bbox": [
+                299,
+                770,
+                699,
+                809
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "It is then straightforward to sample from this distribution using a difusion model. In particular, [13] showed that one can simply initialize the reverse process with "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi"
+                    },
+                    {
+                        "type": "text",
+                        "content": "(up to a scaling factor) and then run the reverse process from an appropriately chosen time point corresponding to a noise level of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\rho _ { \\varphi }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". We refer to [13] for complete details of how this can be performed with arbitrary difusion models. In PRISM, we implement this step with a measurement-conditioned difusion model denoted by "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathsf { D } ^ { \\varphi } ( \\cdot ; y )"
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                818,
+                898,
+                906
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "PRISM"
+                    }
+                ]
+            },
+            "bbox": [
+                104,
+                63,
+                156,
+                79
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Hu et al."
+                    }
+                ]
+            },
+            "bbox": [
+                826,
+                64,
+                895,
+                79
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "3"
+                    }
+                ]
+            },
+            "bbox": [
+                493,
+                924,
+                508,
+                938
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Empirically, we found that measurement conditioning is not a minor design choice, but is critical to the success of the proposed approach. This is demonstrated in Fig. 2, where we show that Blind-PnPDM, which is conceptually similar to PRISM but uses an unconditional kernel prior, yields poor convergence and fails to find a reasonable solution when "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is initialized randomly."
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                113,
+                898,
+                184
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Image Likelihood Step. Given x and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "the latent z is drawn from"
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                185,
+                638,
+                203
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "p ( z \\mid \\pmb { y } , \\varphi , \\pmb { x } ) \\propto \\mathrm { e x p } \\left( - \\frac { \\| H _ { \\varphi } z - \\pmb { y } \\| _ { 2 } ^ { 2 } } { 2 \\sigma _ { y } ^ { 2 } } - \\frac { \\| \\pmb { x } - z \\| _ { 2 } ^ { 2 } } { 2 \\rho _ { x } ^ { 2 } } \\right) .\\tag{7}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/5dd5d2e19a2060c6634f3a6b68104682fa5d11fff2416cd29a8bd0a79a41862c.jpg"
+                }
+            },
+            "bbox": [
+                297,
+                208,
+                699,
+                247
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "When "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "H _ { \\varphi }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is linear, this distribution is Gaussian with covariance and mean specified by"
+                    }
+                ]
+            },
+            "bbox": [
+                102,
+                253,
+                794,
+                272
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\pmb { \\Sigma } _ { z } ^ { - 1 } = \\frac { 1 } { \\sigma _ { y } ^ { 2 } } H _ { \\varphi } ^ { \\top } H _ { \\varphi } + \\frac { 1 } { \\rho _ { x } ^ { 2 } } I , \\quad \\mu _ { z } = \\pmb { \\Sigma } _ { z } \\left( \\frac { 1 } { \\sigma _ { y } ^ { 2 } } H _ { \\varphi } ^ { \\top } \\pmb { y } + \\frac { 1 } { \\rho _ { x } ^ { 2 } } \\pmb { x } \\right) .\\tag{8}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/c3680fe6c11e4524b01b00c562f271709be4d8f95d75c9c3cf359db4bee70a4b.jpg"
+                }
+            },
+            "bbox": [
+                277,
+                279,
+                718,
+                318
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Importantly, all of the operations in (8) can be implemented eficiently using the Fast Fourier Transform (FFT). For non-linear "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "H _ { \\varphi }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "or non-Gaussian noise, gradient-based MCMC methods such as Langevin dynamics can be used to efectively draw samples [19, 13, 20]."
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                324,
+                898,
+                376
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Image Prior Step. Given "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "the image x is updated by sampling from"
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                378,
+                655,
+                397
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "p ( \\pmb { x } \\mid z ) \\propto \\exp \\left( - r _ { \\pmb { x } } ( \\pmb { x } ) - \\frac { \\| \\pmb { x } - z \\| _ { 2 } ^ { 2 } } { 2 \\rho _ { \\pmb { x } } ^ { 2 } } \\right) .\\tag{9}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/2cb77fc51917e56d6135460c50444cf711ff6e48a42cf6556621dfc977e67a54.jpg"
+                }
+            },
+            "bbox": [
+                343,
+                402,
+                651,
+                440
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The implementation of this step is essentially identical to the Kernel Prior Step, and is achieved by running the reverse process of a pretrained difusion model, which we denote by "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathsf { D } ^ { \\boldsymbol { x } } ( \\cdot )"
+                    }
+                ]
+            },
+            "bbox": [
+                102,
+                445,
+                897,
+                482
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Kernel Likelihood Step. Given x and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varphi ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "the kernel m is drawn from"
+                    }
+                ]
+            },
+            "bbox": [
+                102,
+                483,
+                656,
+                501
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "p ( \\boldsymbol { m } \\mid \\boldsymbol { y } , \\varphi , \\boldsymbol { x } ) \\propto \\exp \\left( - \\frac { \\| H _ { m } \\boldsymbol { x } - \\boldsymbol { y } \\| _ { 2 } ^ { 2 } } { 2 \\sigma _ { y } ^ { 2 } } - \\frac { \\| \\boldsymbol { m } - \\boldsymbol { \\varphi } \\| _ { 2 } ^ { 2 } } { 2 \\rho _ { \\varphi } ^ { 2 } } \\right) .\\tag{10}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/8e50f4956ed48a6f49dd60a57c3bf5ba7646d22f28df4e445df7adb348209bfb.jpg"
+                }
+            },
+            "bbox": [
+                285,
+                507,
+                710,
+                546
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "As in the image likelihood step, this distribution is Gaussian, and its mean and covariance are available in closed form. This can be seen by using the fact that convolution is commutative to treat x as the kernel and m as the signal. In matrix form, we can write "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "H _ { m } \\mathbf { x } = C _ { x } m ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "C _ { x }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is an appropriate Toeplitz matrix constructed from x. We then obtain the covariance and mean exactly as in the image likelihood step"
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                553,
+                898,
+                638
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\Sigma _ { m } ^ { - 1 } = \\frac { 1 } { \\sigma _ { y } ^ { 2 } } C _ { x } ^ { \\top } C _ { x } + \\frac { 1 } { \\rho _ { \\varphi } ^ { 2 } } I , \\quad \\mu _ { m } = \\Sigma _ { m } \\left( \\frac { 1 } { \\sigma _ { y } ^ { 2 } } C _ { x } ^ { \\top } \\pmb { y } + \\frac { 1 } { \\rho _ { \\varphi } ^ { 2 } } \\varphi \\right) .\\tag{11}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/5ecf788e18ea93b7205cdca1d878273ee9e16f5e674e08a9c88948e67c732a31.jpg"
+                }
+            },
+            "bbox": [
+                271,
+                637,
+                727,
+                675
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "More details on how to eficiently compute these quantities and sample from "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { N } ( \\mu _ { m } , \\Sigma _ { m } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "can be found in Appendix C of [13]."
+                    }
+                ]
+            },
+            "bbox": [
+                102,
+                678,
+                898,
+                713
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The complete PRISM procedure is summarized in Algorithm 1. We initialize "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "{ \\boldsymbol { { x } } } ^ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m ^ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", then iterate the four updates with coupling parameters "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\rho _ { { \\pmb x } } ^ { k } , \\bar { \\rho } _ { \\varphi } ^ { \\breve { k } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "annealed from large to small values. This annealing accelerates chain mixing and helps escape poor local minima in highly ill-posed blind inverse problems."
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                715,
+                898,
+                786
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3 Numerical Validation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                102,
+                805,
+                385,
+                827
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.1 Experimental setup"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                102,
+                842,
+                336,
+                861
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We validate PRISM on the task of blind motion deblurring using the FFHQ dataset [21]. We further corrupt the measurements with the additive white Gaussian noise of standard deviation σ. For the image prior, we use the pretrained unconditional image difusion model from [13] as "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathsf { D } ^ { \\boldsymbol { x } } ( \\cdot )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". For the kernel prior, we implement a measurement-conditioned kernel difusion model "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathsf { D } ^ { \\varphi } ( \\cdot ; y )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "based on the architecture in [22]. To train the kernel difusion model, we use a motion blur kernel generator<sup>1</sup> to create a dataset comprising 25 million "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( \\varphi , y )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "pairs. The kernel difusion model is trained for 500, 000 steps with a batch size of 128. For evaluation, we create a test dataset containing 50 randomly selected FFHQ images and 50 motion blur kernels. During inference, the coupling parameters "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\rho _ { x } ^ { \\dot { k } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\rho _ { \\varphi } ^ { k }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "are exponentially annealed. All hyperparameters of PRISM are fine-tuned using a separate validation dataset. Detailed hyperparameter values and model architectures are provided in the "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { c o d e } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "To measure the image reconstruction quality, we use peak signal-to-noise ratio (PSNR) and structural similarity index measure (SSIM). We also employ learned perceptual image patch similarity (LPIPS) for quantifying the human perception quality."
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                869,
+                898,
+                905
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "PRISM"
+                    }
+                ]
+            },
+            "bbox": [
+                104,
+                64,
+                156,
+                79
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Hu et al."
+                    }
+                ]
+            },
+            "bbox": [
+                826,
+                64,
+                895,
+                79
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "4"
+                    }
+                ]
+            },
+            "bbox": [
+                493,
+                924,
+                508,
+                936
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/5278af20520b07ab5ed628fa07066df46d2a332f38d541feaa2ff28cff2ec8b5.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 1: Numerical results obtained by PRISM and baselines for single-sample estimation. All values are averaged over the test dataset. RMSE values are in "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "1 0 ^ { - 3 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "units. Bold marks best results; underlined numbers indicate second best."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td></td><td colspan=\"3\">Image</td><td colspan=\"2\">Kernel</td></tr><tr><td> $\\sigma = 0 . 0 5$ </td><td>PSNR↑</td><td>SSIM ↑</td><td>LPIPS↓</td><td>RMSE↓</td><td>SSIM↑</td></tr><tr><td>GibbsDDRM</td><td>24.990</td><td>0.737</td><td>0.231</td><td>1.621</td><td>0.995</td></tr><tr><td>BlindDPS</td><td>24.561</td><td>0.555</td><td>0.270</td><td>2.202</td><td>0.985</td></tr><tr><td>Kernel-Diff</td><td>20.086</td><td>0.527</td><td>0.415</td><td>2.240</td><td>0.987</td></tr><tr><td>PRISM</td><td>27.317</td><td>0.744</td><td>0.225</td><td>0.788</td><td>0.999</td></tr><tr><td> $\\sigma = 0 . 0 2$ </td><td>PSNR↑</td><td>SSIM↑</td><td>LPIPS↓</td><td>RMSE↓</td><td>SSIM↑</td></tr><tr><td>GibbsDDRM</td><td>25.751</td><td>0.758</td><td>0.214</td><td>1.598</td><td>0.995</td></tr><tr><td>BlindDPS</td><td>25.597</td><td>0.598</td><td>0.246</td><td>2.202</td><td>0.985</td></tr><tr><td>Kernel-Diff</td><td>20.377</td><td>0.525</td><td>0.404</td><td>2.167</td><td>0.989</td></tr><tr><td>PRISM</td><td>27.962</td><td>0.770</td><td>0.209</td><td>0.792</td><td>0.999</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                143,
+                167,
+                856,
+                372
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/0afa59e3c9dd88be27c9fcf5e9aea7f95bf6e33efcc6247932fec2eb5fe33007.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 2: Numerical results obtained by PRISM and baselines for posterior mean estimation. All values are averaged over the test dataset. RMSE values are in "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "1 0 ^ { - 3 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "units. Bold marks best results; underlined numbers indicate second best."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td rowspan=\"2\"></td><td colspan=\"3\">Image</td><td colspan=\"2\">Kernel</td></tr><tr><td>PSNR↑</td><td>SSIM↑</td><td>LPIPS↓</td><td>RMSE↓</td><td>SSIM↑</td></tr><tr><td>GibbsDDRM</td><td>28.053</td><td>0.824</td><td>0.247</td><td>2.092</td><td>0.987</td></tr><tr><td>BlindDPS</td><td>26.706</td><td>0.779</td><td>0.295</td><td>0.838</td><td>0.998</td></tr><tr><td>Kernel-Diff</td><td>23.136</td><td>0.665</td><td>0.428</td><td>1.936</td><td>0.991</td></tr><tr><td>PRISM</td><td>29.341</td><td>0.837</td><td>0.194</td><td>0.768</td><td>0.999</td></tr><tr><td> $\\sigma = 0 . 0 2$ </td><td>PSNR↑</td><td>SSIM↑</td><td>LPIPS↓</td><td>RMSE↓</td><td>SSIM↑</td></tr><tr><td>GibbsDDRM</td><td>28.238</td><td>0.836</td><td>0.233</td><td>2.087</td><td>0.987</td></tr><tr><td>BlindDPS</td><td>27.692</td><td>0.805</td><td>0.273</td><td>0.905</td><td>0.997</td></tr><tr><td>Kernel-Diff</td><td>23.527</td><td>0.676</td><td>0.411</td><td>1.874</td><td>0.991</td></tr><tr><td>PRISM</td><td>29.736</td><td>0.845</td><td>0.205</td><td>0.766</td><td>0.999</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                142,
+                443,
+                854,
+                646
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                101,
+                660,
+                900,
+                852
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "5"
+                    }
+                ]
+            },
+            "bbox": [
+                493,
+                924,
+                508,
+                938
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "PRISM"
+                    }
+                ]
+            },
+            "bbox": [
+                104,
+                63,
+                156,
+                79
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Hu et al."
+                    }
+                ]
+            },
+            "bbox": [
+                826,
+                64,
+                897,
+                79
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>1</sup>https://github.com/LeviBorodenko/motionblur"
+                    }
+                ]
+            },
+            "bbox": [
+                122,
+                858,
+                457,
+                875
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>2</sup>Code will be released upon paper acceptance."
+                    }
+                ]
+            },
+            "bbox": [
+                122,
+                875,
+                434,
+                890
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/c20e84c33c96930cc9a785d3da110ded5d73037fb0efb727891408f93ee2f464.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 2: Convergence comparison between PRISM and Blind-PnPDM [14]. Results for Blind-PnPDM are shown for three diferent initialization settings. Note that Blind-PnPDM struggles to converge to a reasonable image with fully random initializations, while PRISM achieves steady convergence to a high-quality image."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                243,
+                111,
+                754,
+                332
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.2 Experimental Results"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                102,
+                401,
+                349,
+                420
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Reconstruction Performance. We evaluate the reconstruction performance of PRISM for both the image and the blur kernel. We compare PRISM with three state-of-the-art baselines: GibbsDDRM [11], BlindDPS [10], and Kernel-Dif [12]. In particular, we report the numerical results for two scenarios: (i) single-sample estimate (Table 1), which considers only one posterior sample "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( x , \\varphi )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for each method; and (ii) posterior mean estimate (Table 2), where PRISM averages 20 posterior samples "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\{ ( \\pmb { x } _ { i } , \\pmb { \\varphi } _ { i } ) \\} _ { i = 1 } ^ { 2 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "from one converged chain while baselines average the output of 20 independent runs (see further explanation in Uncertainty Quantification). The first scenario matches more real-world use cases, while the second one aims to approximate the mean of the posterior for optimal performance in terms of mean squared error (MSE) and PSNR. Fig. 1 presents a visual comparison of results obtained by PRISM and the baseline methods. Across all estimation scenarios and noise levels, PRISM consistently achieves superior numerical performance in both image reconstruction and kernel estimation. Notably, PRISM outperforms GibbsDDRM (the best baseline) by more than 2 dB in PSNR for single-sample estimation. In addition, PRISM accurately restores the blur kernel, attaining the lowest root MSE (RMSE) and highest SSIM values. The visual results in Fig. 1 further demonstrate PRISM’s outstanding performance. Note the accurate recovery of fine image textures such as hair and skin wrinkles, as well as the blur kernel itself."
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                429,
+                900,
+                704
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Robustness & Convergence. In this section, we show that the inclusion of the measurement y as a condition in the kernel difusion prior is critical for ensuring the robustness and convergence of PRISM. Fig. 2 plots the PSNR and SSIM obtained by PRISM and Blind-PnPDM [14] across 200 iterations; the final images are also visualized for comparison. We implemented Blind-PnPDM following the pseudocode and hyperparameter configurations provided in [14]. While PRISM is initialized only with random "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "{ \\boldsymbol { { x } } } ^ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { \\hat { \\Pi } } _ { m } ^ { 0 } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ", we consider three diferent initializations for Blind-PnPDM to ensure full exploration of its potential: (i) random "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "{ \\boldsymbol { { x } } } ^ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m ^ { 0 } , ( i i ) \\thinspace x ^ { 0 } = y"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and random "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m ^ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and (iii) the outputs of BlindDPS as "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "{ \\boldsymbol { { x } } } ^ { \\dot { 0 } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m ^ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". As shown in the Fig 2, PRISM converges to a high-quality image from the random initializations, with steady gains until saturation. On the other hand, Blind-PnPDM fails to converge to a reasonable image in this case. By ofering better initializations, we observe that the performance of Blind-PnPDM improves; see images (b) and (c) in Fig 2. Nevertheless, it still yields to inferior reconstructions to PRISM and shows unwanted sensitivity to diferent initializations. Note how image (a) provides better visual quality compared to images (b), (c), and (d)."
+                    }
+                ]
+            },
+            "bbox": [
+                99,
+                707,
+                900,
+                897
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "PRISM"
+                    }
+                ]
+            },
+            "bbox": [
+                104,
+                64,
+                156,
+                79
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Hu et al."
+                    }
+                ]
+            },
+            "bbox": [
+                826,
+                64,
+                897,
+                79
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "6"
+                    }
+                ]
+            },
+            "bbox": [
+                493,
+                924,
+                508,
+                938
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/ac38b335b54c10df53a6010b2eacb960b762cb678a02324bcd1269d7d4788101.jpg"
+                },
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "bbox": [
+                241,
+                108,
+                758,
+                414
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/1a3cd2f9618157f4d11b2f563e48506ec410ddf996344efd44980928c85af175.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 3: Visualization of the pixel-wise statistics associated with the image reconstruction (x) shown in Fig. 1 (1st row). The left columns plot the absolute error (|x¯ − x|) and standard deviation (SD), and the right columns plot the 3-SD credible interval with the outlying pixels highlighted in red."
+                    },
+                    {
+                        "type": "text",
+                        "content": "Figure 4: Visualization of the pixel-wise statistics associated with the kernel reconstruction (φ) shown in Fig. 1 (1st row). From left to right, the plots show the sample mean, absolute error "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( | \\bar { \\varphi } - \\varphi | )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", standard deviation (SD), and error-to-SD ratio, where the outlying pixels are highlighted in red."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                240,
+                479,
+                758,
+                723
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                102,
+                791,
+                897,
+                827
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Uncertainty Quantification. We lastly discuss the uncertainty quantification (UQ) enabled by PRISM as a posterior sampling method. We considered GibbsDDRM [11], BlindDPS [10], and Kernel-Dif [12] as baselines, all of which are based on the reverse difusion framework. PRISM difers from these methods by adopting a Markov chain Monte Carlo (MCMC) formulation, allowing samples to be drawn from a single converged chain rather than requiring multiple runs of the algorithm for generating diferent samples. To quantitatively measure the quality of UQ, we compute the normalized negative log-likelihood (NLL) [23] of the ground truth x, assuming independent pixel-wise Gaussian distributions characterized by sample mean x¯ and standard deviation SD. Note that better UQ algorithms minimize NLL by producing an accurate x¯ and avoiding an excessively large SD. Table. 3 summarizes the averaged NLL values obtained by all methods. We additionally summarize the pixel-wise absolute error (|x¯ −x|) and standard deviation (SD) for completeness. The results show that PRISM achieves competitive UQ performance compared with baselines. In particular, PRISM yields more accurate sample mean and avoids large SD. Fig. 3 visualizes the pixel-wise statistics associated with the image reconstruction in Fig. 1 (1st row). In the right column, we plot the 3-SD credible interval, with outside pixels highlighted in red. Note that around 99% of the pixels in the ground-truth image lie in the 3-SD interval produced by PRISM, which is superior to that achieved by GibbsDDRM and BlindDPS. Fig. 4 further visualizes the pixel-wise statistics of the reconstructed motion kernel, including the sample mean, absolute error, SD, and error-SD ratio. First, GibbsDDRM is overly confident in its inaccurate mean, as evidenced by its large absolute error and excessively small SD. While BlindDPS improves the accuracy of the sample mean, it yields large SDs for most pixels in the kernel region. In contrast, PRISM achieves both an accurate sample mean and a small SD."
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                828,
+                900,
+                898
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "PRISM"
+                    }
+                ]
+            },
+            "bbox": [
+                104,
+                63,
+                156,
+                79
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Hu et al."
+                    }
+                ]
+            },
+            "bbox": [
+                825,
+                64,
+                897,
+                79
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "7"
+                    }
+                ]
+            },
+            "bbox": [
+                493,
+                922,
+                508,
+                936
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/29b3eb37c4ae2d4637edcaca278d9ab95fd3d4a7221fffc226415431b8ab7922.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 3: The averaged absolute error (|x¯ − x|), SD and NLL values obtained by PRISM and baselines for image reconstruction. All values are averaged over the test dataset. Bold marks best results; underlined numbers indicate second best."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td></td><td colspan=\"3\">σ = 0.05</td><td colspan=\"3\">σ = 0.02</td></tr><tr><td>Method</td><td>|x −x|↓</td><td>SD↓</td><td>NLL↓</td><td>|x −x|↓</td><td>SD↓</td><td>NLL↓</td></tr><tr><td>GibbsDDRM</td><td>0.026</td><td>0.029</td><td>-1.935</td><td>0.026</td><td>0.026</td><td>-1.922</td></tr><tr><td>BlindDPS</td><td>0.030</td><td>0.030</td><td>-1.861</td><td>0.027</td><td>0.027</td><td>-2.008</td></tr><tr><td>Kernel-Diff</td><td>0.048</td><td>0.055</td><td>-0.987</td><td>0.047</td><td>0.053</td><td>-1.092</td></tr><tr><td>PRISM</td><td>0.024</td><td>0.023</td><td>-1.997</td><td>0.023</td><td>0.020</td><td>-1.857</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                142,
+                167,
+                854,
+                281
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                99,
+                296,
+                900,
+                606
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4 Conclusion"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                102,
+                627,
+                274,
+                647
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In this work, we introduced PRISM as a novel method for solving blind inverse problems with difusion models. The proposed method is based on split Gibbs sampling, and the resulting algorithm consists of four sampling steps: a measurement-conditioned kernel prior step, an image likelihood step, an image prior step, and a kernel likelihood step. The likelihood steps involve closed-form updates that are readily computed, while the image prior step employs a pre-trained image difusion model and the kernel prior step uses a measurement-conditioned kernel difusion model. We empirically validated the efectiveness of PRISM on the blind deblurring task using the FFHQ dataset. Experimental results show that PRISM ofers improved recovery of both the image and blur kernel over existing stateof-the-art methods. Furthermore, PRISM demonstrates strong robustness to initialization. Stable convergence to a high-quality image solution is observed even with fully random initialization. Additional experiments on UQ further corroborate PRISM’s capability as a sampling method to generate reliable samples for both the image and kernel."
+                    }
+                ]
+            },
+            "bbox": [
+                99,
+                660,
+                900,
+                869
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "PRISM"
+                    }
+                ]
+            },
+            "bbox": [
+                104,
+                64,
+                156,
+                79
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Hu et al."
+                    }
+                ]
+            },
+            "bbox": [
+                826,
+                64,
+                897,
+                79
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "8"
+                    }
+                ]
+            },
+            "bbox": [
+                493,
+                924,
+                508,
+                938
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "References"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                102,
+                111,
+                238,
+                132
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[1] K. P. Pruessmann, M. Weiger, M. B. Scheidegger, and P. Boesiger, “SENSE: Sensitivity encoding for fast MRI,” Magn. Reson. Med., vol. 42, no. 5, pp. 952–962, Nov. 1999."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[2] Y. Hu, W. Gan, C. Ying, T. Wang, C. Eldeniz, J. Liu, Y. Chen, H. An, and U. S. Kamilov, “Spicer: Self-supervised learning for mri with automatic coil sensitivity estimation and reconstruction,” Magnetic resonance in medicine, vol. 92, no. 3, pp. 1048–1063, 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[3] S. Basu and Y. Bresler, “Uniqueness of tomography with unknown view angles,” IEEE transactions on image processing, vol. 9, no. 6, pp. 1094–1106, 2000."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[4] M. Xie, J. Liu, Y. Sun, W. Gan, B. Wohlberg, and U. S. Kamilov, “Joint reconstruction and calibration using regularization by denoising with application to computed tomography,” in Proceedings of the IEEE/CVF International Conference on Computer Vision, 2021, pp. 4028–4037."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[5] R. Fergus, B. Singh, A. Hertzmann, S. T. Roweis, and W. T. Freeman, “Removing camera shake from a single photograph,” in ACM SIGGRAPH 2006 Papers, ser. SIGGRAPH ’06. New York, NY, USA: Association for Computing Machinery, 2006, p. 787–794. [Online]. Available: https://doi.org/10.1145/1179352.1141956"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[6] L. Chen, F. Fang, T. Wang, and G. Zhang, “Blind image deblurring with local maximum gradient prior,” in Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, 2019, pp. 1742–1750."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[7] H. Chung, J. Kim, M. T. Mccann, M. L. Klasky, and J. C. Ye, “Difusion posterior sampling for general noisy inverse problems,” in International Conference on Learning Representations, 2023."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[8] B. Kawar, M. Elad, S. Ermon, and J. Song, “Denoising difusion restoration models,” in Advances in Neural Information Processing Systems, 2022."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[9] Y. Wang, J. Yu, and J. Zhang, “Zero-shot image restoration using denoising difusion null-space model,” The Eleventh International Conference on Learning Representations, 2023."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[10] H. Chung, J. Kim, S. Kim, and J. C. Ye, “Parallel difusion models of operator and image for blind inverse problems,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, 2023, pp. 6059–6069."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[11] N. Murata, K. Saito, C.-H. Lai, Y. Takida, T. Uesaka, Y. Mitsufuji, and S. Ermon, “Gibbsddrm: A partially collapsed gibbs sampler for solving blind inverse problems with denoising difusion restoration,” in International conference on machine learning. PMLR, 2023, pp. 25 501–25 522."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[12] Y. Sanghvi, Y. Chi, and S. H. Chan, “Kernel difusion: An alternate approach to blind deconvolution,” in European Conference on Computer Vision. Springer, 2024, pp. 1–20."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[13] Z. Wu, Y. Sun, Y. Chen, B. Zhang, Y. Yue, and K. L. Bouman, “Principled probabilistic imaging using difusion models as plug-and-play priors,” in Advances in Neural Information Processing Systems, 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[14] A. Li, W. Gan, and U. S. Kamilov, “Plug-and-play posterior sampling for blind inverse problems,” arXiv preprint arXiv:2505.22923, 2025."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                145,
+                898,
+                180
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "PRISM"
+                    }
+                ]
+            },
+            "bbox": [
+                104,
+                63,
+                156,
+                79
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Hu et al."
+                    }
+                ]
+            },
+            "bbox": [
+                825,
+                64,
+                897,
+                79
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "9"
+                    }
+                ]
+            },
+            "bbox": [
+                493,
+                924,
+                508,
+                936
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[15] M. Vono, N. Dobigeon, and P. Chainais, “Split-and-augmented gibbs sampler—application to large-scale inference problems,” IEEE Transactions on Signal Processing, vol. 67, no. 6, pp. 1648– 1661, 2019."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[16] D. Geman and C. Yang, “Nonlinear image recovery with half-quadratic regularization,” IEEE transactions on Image Processing, vol. 4, no. 7, pp. 932–946, 1995."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[17] S. Boyd, N. Parikh, E. Chu, B. Peleato, J. Eckstein et al., “Distributed optimization and statistical learning via the alternating direction method of multipliers,” Foundations and Trends® in Machine learning, vol. 3, no. 1, pp. 1–122, 2011."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[18] Y. Wang, W. Yin, and J. Zeng, “Global convergence of admm in nonconvex nonsmooth optimization,” Journal of Scientific Computing, vol. 78, no. 1, pp. 29–63, 2019. [Online]. Available: https://doi.org/10.1007/s10915-018-0757-z"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[19] R. Laumont, V. D. Bortoli, A. Almansa, J. Delon, A. Durmus, and M. Pereyra, “Bayesian imaging using plug & play priors: When langevin meets tweedie,” SIAM J. Imaging Sci., vol. 15, no. 2, pp. 701–737, 2022."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[20] Y. Sun, Z. Wu, Y. Chen, B. T. Feng, and K. L. Bouman, “Provable probabilistic imaging using score-based generative priors,” IEEE Transactions on Computational Imaging, vol. 10, pp. 1290–1305, 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[21] T. Karras, S. Laine, and T. Aila, “A style-based generator architecture for generative adversarial networks,” in 2019 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2019, pp. 4396–4405."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[22] C. Saharia, J. Ho, W. Chan, T. Salimans, D. J. Fleet, and M. Norouzi, “Image super-resolution via iterative refinement,” IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 45, no. 4, pp. 4713–4726, 2023."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[23] B. Lakshminarayanan, A. Pritzel, and C. Blundell, “Simple and scalable predictive uncertainty estimation using deep ensembles,” Advances in neural information processing systems, vol. 30, 2017."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                106,
+                113,
+                898,
+                164
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "PRISM"
+                    }
+                ]
+            },
+            "bbox": [
+                104,
+                64,
+                156,
+                79
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Hu et al."
+                    }
+                ]
+            },
+            "bbox": [
+                825,
+                64,
+                897,
+                79
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "10"
+                    }
+                ]
+            },
+            "bbox": [
+                490,
+                922,
+                513,
+                938
+            ]
+        }
+    ]
+]

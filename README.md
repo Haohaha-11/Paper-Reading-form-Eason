@@ -25,6 +25,27 @@ Haojiang 的文献阅读仓库，按课题组织。每篇论文都有「批读�
 
 ## 课题列表
 
+### 🎯 Blind Inverse Problems with Generative Priors
+生成先验下的参数化盲逆问题：算子未知时联合恢复图像 $x$、低维算子参数 $\varphi$ 与噪声 $\sigma$ 的后验，主线是 gauge-aware 联合后验采样与 SBC/coverage/CRPS 校准——追问何时真的得到联合贝叶斯后验，何时只是一组看似合理的样本。
+
+| 论文 | 会议 | 方法特点 |
+|------|------|----------|
+| [BlindDPS](./topics/Blind-Inverse-Problems-Generative-Priors/blind-joint-sampling/%5BCVPR%202023%5D%20BlindDPS/) | CVPR 2023 | 图像与核各建扩散模型、同一数据一致项并行 DPS 引导；偏差入口为 Jensen 点估计 + 独立先验，无 gauge/σ 联合/校准。核心基线。 |
+| [GibbsDDRM](./topics/Blind-Inverse-Problems-Generative-Priors/blind-joint-sampling/%5BICML%202023%5D%20GibbsDDRM/) | ICML 2023 | 部分塌缩 Gibbs：图像块 DDRM 谱域 + 算子块 Langevin，Prop 3.1 保平稳分布；与本课题联合核结构最接近。 |
+| [PRISM](./topics/Blind-Inverse-Problems-Generative-Priors/blind-joint-sampling/%5BArxiv%202025%5D%20PRISM/) | Arxiv 2025 | measurement-conditioned diffusion prior + split-Gibbs，报告像素级 SD/NLL/覆盖；不确定性最直接竞品，但低噪声过自信、缺 SBC/CRPS。 |
+| [Fast-Diffusion-EM](./topics/Blind-Inverse-Problems-Generative-Priors/blind-joint-sampling/%5BWACV%202024%5D%20Fast-Diffusion-EM/) | WACV 2024 | 扩散 E 步 + 快速 EM，核为共享单核 MAP 点估计；"用了不确定性却只输出点估计"的对照锚点。 |
+| [Survey-Diffusion-Inverse](./topics/Blind-Inverse-Problems-Generative-Priors/survey/%5BArxiv%202024%5D%20Survey-Diffusion-Inverse/) | Arxiv 2024 | Daras 等综述：条件采样器家族图谱，渐近精确家族是校准最有意义的落点。 |
+| [Diffusion-Models-for-Inverse-Problems](./topics/Blind-Inverse-Problems-Generative-Priors/survey/%5BArxiv%202025%5D%20Diffusion-Models-for-Inverse-Problems/) | Arxiv 2025 | Chung 等综述：把每个方法归结为"对似然 score 做了什么近似"，梳理盲逆三法谱系。 |
+| [Beyond-Accuracy-Posterior-Fidelity](./topics/Blind-Inverse-Problems-Generative-Priors/posterior-calibration/%5BArxiv%202026%5D%20Beyond-Accuracy-Posterior-Fidelity/) | Arxiv 2026 | Qiu 等：精度≠分布一致，提出无需真后验的 score-KSD 诊断。 |
+| [Simulation-Based-Calibration](./topics/Blind-Inverse-Problems-Generative-Priors/posterior-calibration/%5BArxiv%202018%5D%20Simulation-Based-Calibration/) | Arxiv 2018 | Talts 等 SBC：rank histogram 检验模型内校准，"算法错误 vs 模型错误"的第一道闸门。 |
+| [Feynman-Kac-Bias-Stability](./topics/Blind-Inverse-Problems-Generative-Priors/posterior-calibration/%5BArxiv%202026%5D%20Feynman-Kac-Bias-Stability/) | Arxiv 2026 | Delgadino 等：Feynman–Kac 证明即便 prior score 精确 DPS 仍系统偏差、漏模态。 |
+| [Principled-Posterior-Matching](./topics/Blind-Inverse-Problems-Generative-Priors/posterior-calibration/%5BArxiv%202026%5D%20Principled-Posterior-Matching/) | Arxiv 2026 | Bai 等：近似目标致 mode collapse，提出目标级无偏 PPM；"样本离散≠已校准"。 |
+| [Exact-Posterior-Score](./topics/Blind-Inverse-Problems-Generative-Priors/posterior-calibration/%5BArxiv%202026%5D%20Exact-Posterior-Score/) | Arxiv 2026 | Mammadov 等：低维+可解析先验+已知线性算子下后验解析可得，作 SBC/coverage/CRPS 的 gold-standard 参考后验。 |
+
+📖 [Blind Inverse Problems with Generative Priors 详细总结](./topics/Blind-Inverse-Problems-Generative-Priors/README.md)
+
+---
+
 ### ⚡ One-Step Diffusion Super-Resolution
 单步 diffusion / flow 超分辨率：在保持生成先验感知质量的同时解决推理效率、保真-真实感权衡和可控性。
 
