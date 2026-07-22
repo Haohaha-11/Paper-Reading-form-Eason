@@ -1,0 +1,54 @@
+{
+  "paperId": "3008be7598614b60f81742bc80a47d63d1c604b7",
+  "externalIds": {
+    "ArXiv": "2604.06169",
+    "CorpusId": 287209501
+  },
+  "url": "https://www.semanticscholar.org/paper/3008be7598614b60f81742bc80a47d63d1c604b7",
+  "title": "In-Place Test-Time Training",
+  "venue": "",
+  "year": 2026,
+  "referenceCount": 61,
+  "citationCount": 1,
+  "influentialCitationCount": 0,
+  "openAccessPdf": {
+    "url": "",
+    "status": null,
+    "license": null,
+    "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2604.06169, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "tldr": {
+    "model": "tldr@v2.0.0",
+    "text": "This work introduces In-Place Test-Time Training (In-Place TTT), a framework that seamlessly endows LLMs with Test-Time Training ability, and replaces TTT's generic reconstruction objective with a tailored, theoretically-grounded objective explicitly aligned with the Next-Token-Prediction task governing autoregressive language modeling."
+  },
+  "authors": [
+    {
+      "authorId": "2205796820",
+      "name": "Guhao Feng"
+    },
+    {
+      "authorId": "2108801920",
+      "name": "Shengjie Luo"
+    },
+    {
+      "authorId": "2356545135",
+      "name": "Kai Hua"
+    },
+    {
+      "authorId": "2372768602",
+      "name": "Ge Zhang"
+    },
+    {
+      "authorId": "2266036459",
+      "name": "Di He"
+    },
+    {
+      "authorId": "2239245627",
+      "name": "Wenhao Huang"
+    },
+    {
+      "authorId": "2344748320",
+      "name": "Tianle Cai"
+    }
+  ]
+}

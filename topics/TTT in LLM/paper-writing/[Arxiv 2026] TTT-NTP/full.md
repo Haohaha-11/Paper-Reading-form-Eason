@@ -1,0 +1,415 @@
+# Test-Time Training with Next-Token Prediction
+
+Xuan Ouyang<sup>\*</sup> Zefan Cai<sup>\*</sup> Junjie Hu<sup>B</sup>
+
+<sup>\*</sup>Equal Contribution  Corresponding Author
+
+University of Wisconsin–Madison
+
+## Abstract
+
+Next-token prediction is the self-supervised signal that trains language models, and every observed prompt token provides the same signal at test time. We study whether this signal can define the inner-loop objective for test-time training (TTT) in pretrained long-context language models. Many TTT architectures require models to be trained with test-time adaptation in mind, limiting their direct applicability to released LLM checkpoints. While recent in-place TTT methods make fastweight adaptation possible for pretrained LLMs without redesigning the backbone, they leave a central question unresolved: what should each test-time write store? Existing recipes train the fast weight to match a learned local value proxy but they are not directly tied to the self-supervised next-token prediction signal. We introduce Test-Time Training with Next-Token Prediction (TTT-NTP), a drop-in fastweight adaptation method for pretrained LLMs that instead supervises updates using the model’s own next contextual hidden state. This makes each local write follow the same causal computation that supports next-token prediction: the value target is a pointwise linear projection of a single next-position contextual state. On RULER Full-13 (averaged over 4k, 8k, 16k, and 32k context lengths), TTT-NTP is the only method that consistently improves the released backbone across four models spanning three families and a 0.6–8B size range: Llama-3.1-8B (+3.9), Mistral-7B-v0.3 (+3.0), and the Qwen3 series (Qwen3-4B +4.1, Qwen3-0.6B +2.9). On the real-world LongBench-v2 long-document QA benchmark, TTT-NTP improves over the base model on both Llama-3.1-8B (+5.6) and Mistral-7B-v0.3 (+3.7), while preserving commonsense and knowledge performance.
+
+## 1 Introduction
+
+Language models are trained by next-token prediction (NTP): given a prefix, predict the next observed token. The same self-supervised signal is present at test time for every token in a prompt. Before the model generates a response, the prompt itself provides many prefix–next-token pairs that can adapt the model to the current document, topic, style, or retrieval problem. This makes NTP a natural training signal for test-time training (TTT) in language models.
+
+The need for such adaptation is clearest in long-context settings. Modern large language models (LLMs) support long context windows (Grattafiori et al., 2024), and positionalextension methods (Su et al., 2024; Peng et al., 2024; Ding et al., 2024) and long-document continual pretraining (Chen et al., 2024; Fu et al., 2024) have substantially increased their nominal context lengths. Yet long-context benchmarks show that models still fail to use information that lies inside the available window (Liu et al., 2024; Hsieh et al., 2024; Bai et al., 2024). These failures are not simply failures of context capacity: the evidence is present, but the model’s computation does not carry it forward reliably enough to affect the next-token distribution.
+
+Test-time training offers a direct mechanism for changing how prompt information is represented during inference. Instead of relying only on attention over a fixed key–value cache, the model writes observations into fast weights (Schmidhuber, 1992; Ba et al., 2016; Ramsauer et al., 2020) that are read by later tokens. This dynamic-memory view is closely related to linear and recurrent sequence models (Katharopoulos et al., 2020; Gu & Dao, 2023; Dao & Gu, 2024; Sun et al., 2023; Peng et al., 2023; Yang et al., 2024) and to broader test-time memory systems (Behrouz et al., 2026). Recent TTT methods make fast-weight adaptation practical for pretrained LLMs by placing fast weights at selected MLP down-projections and accumulating chunk-parallel rank-one writes (Feng et al., 2026). However, the objective that drives these writes remains misaligned with the model’s own prediction objective. Existing recipes are trained with an outer language-modeling loss, but the inner loop writes a learned local activation proxy into the fast weight. The proxy is useful as an engineering device, but it is not the representation target that the model itself uses when performing next-token prediction.
+
+We introduce Test-Time Training with Next-Token Prediction (TTT-NTP). TTT-NTP aligns the fast-weight inner loop with the same self-supervised prediction problem used to train the backbone. Directly taking full next-token cross-entropy gradients through every adapted layer at test time would be expensive and would destroy the chunk-parallel structure that makes in-place TTT attractive. TTT-NTP therefore uses a layer-local form of the NTP signal: at an adapted MLP block, the key is the current gated MLP activation, and the value target is the same layer’s contextual hidden state at the next position. This state is produced by the causal forward pass on the observed next token. Because it lies on the representation trajectory used to form later next-token distributions, it provides a dense, model-native target without aggregating over a neighborhood of positions.
+
+During continual pretraining, TTT-NTP learns this chunk-parallel causal write. At inference time, the same next-position rule yields a closed-form fast-weight write computed from cached gated activations, which we apply before decoding. On RULER Full-13 (averaged over 4k, 8k, 16k, and 32k context lengths), TTT-NTP is the only method that consistently improves the released backbone across four models from three families spanning 0.6–8B, and on the real-world LongBench-v2 long-document QA benchmark it is again the only method that improves over the base model on both Llama-3.1-8B and Mistral-7B-v0.3. Under matched data, compute, fast-weight placement, and chunk size, the prior in-place TTT method does not improve over the released backbone, supporting the importance of the next-token-prediction-aligned target. General capability on ARC (Clark et al., 2018), PIQA (Bisk et al., 2020), MMLU (Hendrycks et al., 2020), and HellaSwag (Zellers et al., 2019) remains comparable in aggregate.
+
+## Contributions.
+
+• We formulate TTT-NTP, a test-time-training framework that aligns fast-weight writes in pretrained LLMs with next-token prediction, instantiated with a layerlocal next-position target that pairs each current MLP activation with the next contextual hidden state produced by the causal forward pass.
+
+• Across four backbones from three families spanning 0.6–8B, TTT-NTP is the only method that consistently improves RULER Full-13 over the released model—Llama-3.1-8B (+3.9), Mistral-7B-v0.3 (+3.0, an already-strong long-context baseline on which other baselines regress), Qwen3-4B (+4.1), and Qwen3-0.6B (+2.9)—while keeping aggregate commonsense and knowledge performance comparable.
+
+• On the real-world LongBench-v2 long-document QA benchmark (medium split, 32k context budget), TTT-NTP attains the best overall accuracy on both backbones and is the only method that improves over Base on both—Llama-3.1-8B (+5.6) and Mistral-7B-v0.3 (+3.7).
+
+• A target ablation isolates the supervisory signal from the rank-one machinery: under matched placement, update mechanics, data, and compute, next-position supervision outperforms Past-5, Next-5, and Bi-dir-5 convolutional targets by at least five RULER points at every evaluated length.
+
+## 2 Related Work
+
+## 2.1 Test-Time Training for Language Models
+
+Test-time training adapts a model on each test input using a self-supervised objective (Sun et al., 2020). In later architectural forms, the hidden state of a recurrent layer is itself a set of fast weights updated by an online learner (Sun et al., 2024). This view connects naturally to fast-weight programmers (Schmidhuber, 1992; Ba et al., 2016), the fast-weight interpretation of linear transformers (Schlag et al., 2021), modern Hopfield networks (Ramsauer et al., 2020), and linear-state sequence models such as linear attention (Katharopoulos et al., 2020), RetNet (Sun et al., 2023), RWKV (Peng et al., 2023), DeltaNet (Yang et al., 2024; 2025b), and state-space models (Gu & Dao, 2023; Dao & Gu, 2024). All maintain a compact state that is written by earlier tokens and read by later tokens.
+
+Recent work makes TTT practical for long-context language models through large-chunk or in-place fast-weight updates (Zhang et al., 2025; Tandon et al., 2025; Behrouz et al., 2026); most directly, In-Place TTT (Feng et al., 2026) updates existing MLP down-projections with chunk-parallel rank-one writes. These methods largely fix the fast-weight location and the efficient update mechanics. Because the write mechanism and the placement are now largely standardized across recent in-place TTT recipes, the supervisory target is the open design axis where method choices most directly determine downstream performance. Prior in-place recipes use the current representation or a locally constructed value proxy, often built from neighboring activations by a small auxiliary network (Behrouz et al., 2026). TTT-NTP changes this supervision target. Instead of asking the fast weight to reconstruct a local proxy, we use the next-position contextual hidden state at the same layer: a model-native representation produced by the causal forward pass after observing the next prompt token.
+
+## 2.2 Next-Token Prediction and Long Context
+
+Next-token prediction is the standard objective for autoregressive language modeling, but optimizing the objective on long documents does not by itself ensure reliable long-context utilization. One line of work extends effective context windows through rotary position embeddings (Su et al., 2024), positional interpolation (Chen et al., 2023), frequency-aware rescaling (Peng et al., 2024; Ding et al., 2024), or ALiBi (Press et al., 2021), often combined with efficient attention kernels (Dao et al., 2022). A second line modifies attention with local or sparse patterns (Beltagy et al., 2020; Zaheer et al., 2021), or replaces attention with recurrent or linear-state mechanisms (Katharopoulos et al., 2020; Gu & Dao, 2023; Dao & Gu, 2024; Sun et al., 2023; Peng et al., 2023; Yang et al., 2024). A third performs continual pretraining on long documents with tuned data mixtures and long-context recipes (Chen et al., 2024; Fu et al., 2024; Grattafiori et al., 2024; Yang et al., 2025a).
+
+Despite these advances, evaluation suites such as RULER and LongBench show substantial degradation inside the nominal context window (Hsieh et al., 2024; Bai et al., 2024; Liu et al., 2024). The relevant evidence is often in the prompt, but the model fails to keep it available for the future next-token decisions that need it. TTT-NTP is complementary to context-window extension and data selection (Wang et al., 2026): it keeps the pretrained backbone and context window fixed, then uses the prompt’s own next-token pairs to update a compact fast-weight memory.
+
+## 2.3 Predictive Targets in Representation Space
+
+TTT-NTP uses an NTP-aligned signal but implements it through a representation-space target. This follows a broader lesson from self-supervised learning: predictive targets need not be raw observations. BYOL predicts another view’s embedding (Grill et al., 2020); I-JEPA predicts masked image regions in latent space (Assran et al., 2023); and DINOv2 uses large-scale latent-space distillation for visual representation learning (Oquab et al., 2024).
+
+Masked autoencoders (He et al., 2022) reconstruct through a decoder bottleneck, sharing the idea that an intermediate representation can carry richer and more stable supervision than the input alone.
+
+For LLM TTT, directly writing vocabulary-level targets into a layer-local fast weight is poorly matched to the MLP down-projection where the fast weight lives. The next contextual hidden state is a better interface: it is dense, same-dimensional as the MLP output stream, and causally determined by the next observed token. Unlike hidden-state distillation losses that only shape static parameters during training, TTT-NTP uses the next hidden state as the value target for a fast weight that is rewritten on each prompt.
+
+## 3 Method
+
+TTT-NTP places a small fast weight inside selected MLP blocks and updates it from a nexttoken signal while reading the input. During continual pretraining the fast-weight write is learned in a chunk-parallel causal form (§3.1–3.3); at inference the same target yields a closed-form prompt write applied before decoding (§3.4).
+
+## 3.1 From TTT to Next-Token Prediction
+
+Test-time training updates a small subset of model parameters on the test input itself using a self-supervised loss (Sun et al., 2020; 2024). For an autoregressive language model, the most natural self-supervised signal is already present: for every observed prompt token $x _ { t + 1 }$ , the prefix $x _ { 1 : t }$ defines the next-token prediction loss
+
+$$
+\mathcal { L } _ { \mathrm { N T P } } ( x _ { 1 : t + 1 } ) = - \log p _ { \theta } ( x _ { t + 1 } \mid x _ { 1 : t } ) .\tag{1}
+$$
+
+A naive TTT implementation could take gradient steps on eq. (1) while reading the prompt. However, this is computationally expensive for large decoders, hard to parallelize, and touches a broad portion of the network. We therefore confine the adaptation to a compact fast weight W inside each adapted MLP block. Given a key k<sub>t</sub> and a value target $v _ { t } ,$ we take a single gradient step that aligns the key’s linear projection $W k _ { t }$ with the target,
+
+$$
+\ b { W }  \ b { W } - \eta \nabla _ { \ b { W } } \mathcal { L } \big ( \ b { W } \ b { k } _ { t } , \ b { v } _ { t } \big ) , \qquad \ b { \mathcal { L } } \big ( \ b { W } \ b { k } _ { t } , \ b { v } _ { t } \big ) = - \big \langle \ b { W } \ b { k } _ { t } , \ b { v } _ { t } \big \rangle .\tag{2}
+$$
+
+In practice we accumulate these rank-one writes over chunks of tokens for parallelism, rather than applying a separate update at every position (details in §3.3).
+
+The remaining design choice is the target $v _ { t } ,$ , which determines what the fast weight stores. TTT-NTP uses the model’s own next-position contextual state: when $x _ { t + 1 }$ enters the causal forward pass, it produces—at the adapted layer—the hidden state the model would propagate next, and we write that state into the fast weight rather than a separately learned target. Because this state lies on the same causal trajectory the model uses to form later next-token distributions, the write nudges the MLP output along the model’s own predictive path, and it is available densely at every position from a single forward pass.
+
+## 3.2 TTT-NTP Fast-Weight Write
+
+Following Feng et al. (2026), we instantiate TTT-NTP in selected SwiGLU MLP blocks inside the transformer layers. Let $\boldsymbol { h } _ { \ell , t } \in \mathbb { R } ^ { d }$ be the post-normalization input to the MLP block at layer ℓ and position t. The pretrained MLP computes:
+
+$$
+z _ { \ell , t } = \phi \mathopen { } \mathclose \bgroup \left( W _ { \ell } ^ { \mathrm { g a t e } } h _ { \ell , t } \aftergroup \egroup \right) \odot \mathopen { } \mathclose \bgroup \left( W _ { \ell } ^ { \mathrm { u p } } h _ { \ell , t } \aftergroup \egroup \right) \in \mathbb { R } ^ { d _ { \mathrm { f f } } } ,\tag{3}
+$$
+
+$$
+\begin{array} { r } { \pmb { \mathscr { o } } _ { \ell , t } = \pmb { W } _ { \ell } ^ { \mathrm { d o w n } } \pmb { z } _ { \ell , t } \in \mathbb { R } ^ { d } , } \end{array}\tag{4}
+$$
+
+![](images/507bf97f804d714c971bc3802a471ae98b30d67090ff3453c36988a5bccd70b6.jpg)  
+Figure 1: Pipeline of TTT-NTP. At each adapted MLP block, the current gated activation $z _ { \ell , t }$ is the key. The write target is the next position’s same-layer contextual state $h _ { \ell , t + 1 } ,$ passed through a small learned linear projection $W _ { \ell } ^ { \mathrm { p r o j } }$ before being written into the downprojection fast weight. Writes are accumulated causally as an exclusive chunk prefix sum.
+
+where $\phi$ is SiLU and $W _ { \ell } ^ { \mathrm { d o w n } } \in \mathbb { R } ^ { d \times d _ { \mathrm { f f } } }$ . We place one fast weight at each adapted layer $\ell \in { \mathcal { A } }$ by reusing the down-projection itself, i.e., $\pmb { W } _ { \ell } = \pmb { W } _ { \ell } ^ { \mathrm { d o w n } }$ . The key vector is the current gated activation $z _ { \ell , t } ,$ and the write to the fast weight at position t is the negative-gradient step on the inner-loop loss of eq. (2), which has a rank-one form:
+
+$$
+\begin{array} { r } { \Delta \boldsymbol { W } _ { \ell , t } : = - \nabla _ { \boldsymbol { W } _ { \ell } } \mathcal { L } \big ( \boldsymbol { W } _ { \ell } \boldsymbol { z } _ { \ell , t } , \boldsymbol { v } _ { \ell , t } \big ) = \boldsymbol { v } _ { \ell , t } \boldsymbol { z } _ { \ell , t } ^ { \top } . } \end{array}\tag{5}
+$$
+
+The TTT-NTP value target is derived from the same layer’s next contextual hidden state, $\displaystyle h _ { \ell , t + 1 }$ . This state is computed under the causal mask in the same forward pass after the model observes token $x _ { t + 1 } ,$ , and serves as the value target for the fast-weight write. We keep a lightweight learned linear projection $W _ { \ell } ^ { \mathrm { p r o j } } \in \mathbb { R } ^ { d \times d }$ between the target state and the down-projection fast weight:
+
+$$
+\begin{array} { r } { \boldsymbol { v } _ { \ell , t } ^ { \mathrm { N T P } } = \boldsymbol { W } _ { \ell } ^ { \mathrm { p r o j } } \boldsymbol { h } _ { \ell , t + 1 } . } \end{array}\tag{6}
+$$
+
+By instantiating $\boldsymbol { v } _ { \ell , t } = \boldsymbol { v } _ { \ell , t } ^ { \mathrm { N T P } }$ in eq. (5), the TTT-NTP single-position write to $W _ { \ell }$ is
+
+$$
+\begin{array} { r } { \Delta W _ { \ell , t } ^ { \mathrm { N T P } } : = \big ( W _ { \ell } ^ { \mathrm { p r o j } } h _ { \ell , t + 1 } \big ) z _ { \ell , t } ^ { \top } . } \end{array}\tag{7}
+$$
+
+We initialize $\boldsymbol { W _ { \ell } ^ { \mathrm { p r o j } } }$ and train it jointly with the backbone during continual pretraining. The outer loss remains the standard next-token cross-entropy; the inner-loop target in eq. (6) is the per-layer next-token state transition induced by that next-token objective. After continual pretraining, $W _ { \ell } ^ { \mathrm { p r o j } }$ is frozen for the test-time training phase.
+
+This choice removes the need to aggregate the target over a neighborhood of positions. Prior recipes do exactly that, typically through a learned convolution that combines hidden states at several positions around t into a value vector. In TTT-NTP, context enters through the causal forward pass itself: $h _ { \ell , t + 1 }$ is already the model’s contextual representation after the next observed token, and $W _ { \ell } ^ { \mathrm { p r o j } }$ is only a pointwise linear projection of that single state into the fast-weight write space. The resulting write pushes the layer’s MLP output along the same trajectory the model itself follows under next-token prediction, so the fast weight stores predictive state rather than a learned reconstruction proxy.
+
+## 3.3 Chunk-Parallel Causal Update
+
+To preserve throughput, writes are accumulated at the chunk level. We partition the long sequence into chunks of length $K ,$ and define a list of the token positions in a chunk c as:
+
+$$
+\mathcal { T } _ { c } = [ ( c - 1 ) K + 1 , \ldots , c K ] , \forall c \in [ 1 , C ] .\tag{8}
+$$
+
+Because position t is paired with the next position $t + 1 .$ , we only consider within-chunk token pairs for fast weight update; thus, we exclude the last token from the updates.
+
+$$
+\mathcal T _ { c } ^ { - } = [ ( c - 1 ) K + 1 , \ldots , c K - 1 ] , \forall c \in [ 1 , C ] .\tag{9}
+$$
+
+The per-chunk NTP accumulator to the fast weight is computed as:
+
+$$
+\Delta W _ { \ell } ^ { ( c ) } : = \sum _ { t \in \mathcal { T } _ { c } ^ { - } } \Delta W _ { \ell , t } ^ { \mathrm { N I P } } = W _ { \ell } ^ { \mathrm { p r o j } } \sum _ { t \in \mathcal { T } _ { c } ^ { - } } h _ { \ell , t + 1 } z _ { \ell , t } ^ { \top } \in \mathbb { R } ^ { d \times d _ { \mathrm { f f } } } .\tag{10}
+$$
+
+Since TTT-NTP updates the fast weight $W _ { \ell }$ chunk by chunk, it writes per-chunk accumulators to W<sub>ℓ</sub> sequentially. Let ${ W _ { \ell } ^ { ( c ) } }$ denote the snapshot of the fast weight used to process chunk c. ${ \cal W } _ { \ell } ^ { ( 1 ) }$ is reusing $W _ { \ell } ^ { \mathrm { d o w n } }$ in place at chunk 1, and then ${ W _ { \ell } ^ { ( c ) } }$ is computed as the exclusive prefix sum of updates from all preceding chunks:
+
+$$
+\begin{array} { r } { \boldsymbol { W } _ { \ell } ^ { ( 1 ) } = \boldsymbol { W } _ { \ell } ^ { \mathrm { d o w n } } , } \end{array}\tag{11}
+$$
+
+$$
+\boldsymbol { W } _ { \ell } ^ { ( c ) } = \boldsymbol { W } _ { \ell } ^ { \mathrm { d o w n } } + \eta \sum _ { c ^ { \prime } < c } \Delta \boldsymbol { W } _ { \ell } ^ { ( c ^ { \prime } ) } .\tag{12}
+$$
+
+Note that each position $t \in \mathcal { T } _ { c }$ then uses ${ \cal W } _ { \ell } ^ { ( c ) } z _ { \ell , t }$ in place of the original $W _ { \ell } ^ { \mathrm { d o w n } } z _ { \ell , t }$ in eq. (4).
+
+The update is causal. Across chunks, chunk c can only read writes from chunks $c ^ { \prime } < c$ Within a chunk, all positions share the same fast weight, which excludes writes produced by that chunk. The restricted set $\mathcal { T } _ { c }$ <sup>−</sup> prevents a write from crossing into the next chunk. Although the target for position t is $h _ { \ell , t + 1 } ,$ , the resulting write never affects the computation of position t + 1 itself; it is available only for later chunks or later inference-time generation. Thus the method uses observed next tokens as test-time supervision without leaking future information into their own predictions.
+
+## 3.4 Inference-Time Closed-Form Write
+
+The chunk-parallel update in eq. (10) sums bare outer products and drops the residual term that would appear in a literal least-squares regression step. For a single position $t ,$ the gradient of the regression loss $\begin{array} { r } { \frac { 1 } { 2 } \| \mathbf { W } z _ { \ell , t } - \mathbf { \dot { v } } _ { \ell , t } ^ { \mathrm { N T P } } \| ^ { 2 } } \end{array}$ w.r.t. W is
+
+$$
+\begin{array} { r } { \nabla _ { W } \mathcal { L } _ { 2 } \big ( W z _ { \ell , t } , v _ { \ell , t } ^ { \mathrm { N T P } } \big ) = W z _ { \ell , t } z _ { \ell , t } ^ { \top } - v _ { \ell , t } ^ { \mathrm { N T P } } z _ { \ell , t } ^ { \top } , } \end{array}\tag{13}
+$$
+
+An exact regression step would descend this gradient, i.e. add $\begin{array} { r } { v _ { \ell , t } ^ { \mathrm { N T P } } z _ { \ell , t } ^ { \top } - W z _ { \ell , t } z _ { \ell , t } ^ { \top } ; } \end{array}$ the chunk write keeps only the target outer product $\boldsymbol { v } _ { \ell , t } ^ { \mathrm { N T P } } \boldsymbol { z } _ { \ell , t } ^ { \top }$ and drops the W-dependent term, which is not prefix-summable. This is exactly the simplification that makes the chunk update parallel across positions, and it recovers the inner-product write of eq. (5).
+
+Training and inference therefore optimize the same next-position target with different objectives, for a deliberate reason: the per-token training write must drop the W-dependent term to stay prefix-summable, but the prompt is observed in full at inference, so we can afford to solve the complete squared-error regression (eq. (16)) once and restore that term. Section 4.5.2 confirms this design choice.
+
+Given a prompt $x _ { 1 : T } ,$ , we run one forward pass and cache, at each adapted layer $\ell ,$ the gated MLP intermediates $\{ z _ { \ell , t } \} _ { t = 1 } ^ { T }$ and the MLP-input hidden states $\{ h _ { \ell , t } \} _ { t = 1 } ^ { T }$ . In practice, for efficiency on long prompts, we fit the regression on a suffix of at most 8,192 prefill tokens; the formulation is otherwise the same as if we used the full prompt. Using the same next-position alignment as in training, we stack
+
+$$
+\begin{array} { r } { \pmb { X } _ { \ell } = [ z _ { \ell , 1 } , \dots , z _ { \ell , T - 1 } ] \in \mathbb { R } ^ { d _ { \mathrm { f f } } \times ( T - 1 ) } , } \end{array}\tag{14}
+$$
+
+$$
+\pmb { Y } _ { \ell } = \pmb { W } _ { \ell } ^ { \mathrm { p r o j } } [ \pmb { h } _ { \ell , 2 } , \dots , \pmb { h } _ { \ell , T } ] \in \mathbb { R } ^ { d \times ( T - 1 ) } .\tag{15}
+$$
+
+Each column of $Y _ { \ell }$ is the same per-position value target $\boldsymbol { v } _ { \ell , t } ^ { \mathrm { N T P } } = \boldsymbol { W } _ { \ell } ^ { \mathrm { p r o j } } \boldsymbol { h } _ { \ell , t + 1 }$ used during pretraining. Training and inference therefore share a single target form; the closed-form solve fits one ∆W to that target jointly over the prompt, instead of accumulating per-position outer products.
+
+We fit a prompt-specific perturbation of the down-projection by ridge regression:
+
+$$
+\operatorname* { m i n } _ { \Delta W } \left\| \mathbf { \boldsymbol { Y } } _ { \ell } - ( \mathbf { \boldsymbol { W } } _ { \ell } ^ { \mathrm { d o w n } } + \Delta \mathbf { \boldsymbol { W } } ) \mathbf { \boldsymbol { X } } _ { \ell } \right\| _ { F } ^ { 2 } + \lambda \left\| \Delta \mathbf { \boldsymbol { W } } \right\| _ { F } ^ { 2 } ,\tag{16}
+$$
+
+with closed form
+
+$$
+\begin{array} { r } { \Delta \boldsymbol { W } _ { \ell } ^ { \mathrm { C F } } = ( \boldsymbol { Y } _ { \ell } - \boldsymbol { W } _ { \ell } ^ { \mathrm { d o w n } } \boldsymbol { X } _ { \ell } ) \boldsymbol { X } _ { \ell } ^ { \top } ( \boldsymbol { X } _ { \ell } \boldsymbol { X } _ { \ell } ^ { \top } + \lambda \boldsymbol { I } ) ^ { - 1 } , } \end{array}\tag{17}
+$$
+
+or its dual form when $T \textless d _ { \mathrm { f f } }$ . This regression is meaningful only because the downprojection was shaped during TTT-NTP pretraining to be read in this way.
+
+We apply $W _ { \ell } ^ { \mathrm { d o w n } } \gets W _ { \ell } ^ { \mathrm { d o w n } } + \eta \Delta W _ { \ell } ^ { \mathrm { C F } }$ , decode the answer, and restore the original weight after each sample. Because we reuse the original prompt key–value cache, the write affects decode-time tokens without recomputing prompt activations under the modified MLP.
+
+## 4 Experiments
+
+We evaluate Test-Time Training with Next-Token Prediction (TTT-NTP) from three angles. We first measure long-context retrieval, where the next-position signal should matter most, on the synthetic RULER suite, and then ask whether the same gains carry over to real-world long-document question answering on LongBench-v2. We next isolate what drives the gains through controlled ablations of the supervisory target and the inference-time write. Finally, we verify on standard commonsense and knowledge benchmarks that the long-context improvements do not come at a cost to the base model’s general capability. Throughout, every method is compared under matched data and compute against the released backbone and three adaptation baselines.
+
+## 4.1 Experimental Setup
+
+Backbones. We evaluate TTT-NTP across four open backbones from three model families spanning a 0.6–8B size range, so the results probe generality rather than a single model: Llama-3.1-8B-Base (Grattafiori et al., 2024), Mistral-7B-v0.3 (Jiang et al., 2023), Qwen3-4B-Base, and Qwen3-0.6B-Base (Yang et al., 2025a). All are full-attention decoders with SwiGLU MLPs; evaluating across families and sizes tests whether the next-position fast-weight signal is a general property of pretrained decoders.
+
+Continual pretraining (CPT). All trained variants share an identical recipe: continual pretraining on long-document text from the Long-Data-Collections corpus (Fu et al., 2024) at 32,768-token sequence length, with a per-backbone token budget of 0.4B (Llama-3.1-8B), 0.1B (Mistral-7B-v0.3), 2B (Qwen3-4B), and 0.2B (Qwen3-0.6B). The CPT baseline applies this recipe without fast-weight updates; In-Place TTT and TTT-NTP share the same data, optimizer, compute, fast-weight placement, chunk size, and inner-loop learning rate, so the only difference between them is the fast-weight target. Full hyperparameters appear in section A.
+
+Evaluation. Long-context retrieval is measured by RULER (Hsieh et al., 2024) Full-13 (the official 13-task aggregate over needle-in-a-haystack (NIAH) retrieval variants, variable tracking (VT), frequent-word extraction (FWE), common-word extraction (CWE), and question-answering tasks), at context lengths 4k, 8k, 16k, and 32k. All rows use the same RULER evaluation harness; each adaptive method applies its specified inference-time update. We further assess real-world long-document QA on LongBench-v2 (Bai et al., 2025) (medium split: 215 multiple-choice questions over documents of 33k–128k words, across six task domains), evaluated under a common 32k-token context budget with head+tail truncation. For general capability we evaluate the trained backbone on HellaSwag (Zellers et al., 2019), ARC (Clark et al., 2018), PIQA (Bisk et al., 2020), and MMLU (Hendrycks et al., 2020), under the standard lm-evaluation-harness protocols.
+
+## 4.2 Baselines
+
+We compare against four points spanning learned-update and extra inference-time adaptation settings:
+
+• Base: Qwen3-4B-Base used directly, without any continual pretraining or inferencetime adaptation, under the same RULER evaluation harness.
+
+• query-side TTT (qTTT) (Bansal et al., 2025): an inference-only baseline that finetunes a low-rank adapter on the prompt with a few self-supervised steps before answering, applied on top of Base.
+
+• CPT: continual pretraining with no fast-weight TTT, following the recipe of section 4.1. Our primary no-TTT baseline.
+
+• In-Place TTT (Feng et al., 2026): continual pretraining with the published fastweight TTT recipe, whose inner-loop target is a small learned convolution over a local window of hidden states around each position, matched to our method in budget, optimizer, fast-weight placement, chunk size.
+
+Our method is TTT-NTP, which combines the chunk-parallel fast-weight update of sections 3.2 and 3.3 with the closed-form inference-time write of section 3.4. Table 1 reports its long-context retrieval scores.
+
+## 4.3 Long-Context Retrieval Results
+
+We test whether next-position supervision yields long-context retrieval gains that hold across model families and scales, comparing TTT-NTP against the released backbone (Base), plain continual pretraining (CPT), the convolutional-target In-Place TTT, and inference-time qTTT on RULER Full-13 (table 1).
+
+Consistent gains across backbones. TTT-NTP is the only adaptation that improves the released model on every backbone, whereas the alternatives are unreliable: continued pretraining and the convolutional In-Place target frequently degrade long-context retrieval, and inference-time qTTT barely moves it. Since In-Place TTT is trained on the same data and compute and differs only in its supervisory target, the gap between the two attributes the improvement to next-position supervision itself rather than to additional tokens or the rank-one write.
+
+Largest where retrieval is hardest. On every backbone the improvement grows with context length and peaks at 16k–32k (up to +11.7 at 16k), the only consistent cost being a small dip at 4k that trades short-range for long-range capacity. This is precisely the regime the next-position target is meant to strengthen, and where the largest margins over Base and over every baseline appear.
+
+Robust to backbone strength and scale. On a weak long-context base, where naive adaptation instead backfires, TTT-NTP adds nearly four points; on the strongest bases—where CPT, In-Place TTT, and qTTT each shed several points—it is the only method that still improves, saturating after a fraction of the token budget. The same ranking holds from 8B down to 0.6B, so the benefit depends on neither the backbone family nor its capacity, consistent with next-position supervision being a general property of pretrained decoders.
+
+<table><tr><td>Model</td><td>Tokens</td><td>4k</td><td>8k</td><td>16k</td><td>32k</td><td>Avg</td></tr><tr><td colspan="7">Llama-3.1-8B-Base</td></tr><tr><td>Base</td><td>0</td><td>65.05</td><td>56.98</td><td>46.94</td><td>54.22</td><td>55.80</td></tr><tr><td>qTTT</td><td>0</td><td> $6 4 . 7 2 \downarrow 0 . 3 3 $ </td><td> $5 6 . 7 8 \textmu 0 . 2 0 $ </td><td> $4 7 . 5 5 \uparrow 0 . 6 1$ </td><td> $5 5 . 1 0 \mathrm { \Omega } \mathrm { \cdot } 0 . 8 8 \mathrm { \Omega }$ </td><td> $5 6 . 0 4 \uparrow 0 . 2 4$ </td></tr><tr><td>CPT</td><td>0.4B</td><td> $5 5 . 0 9 \downarrow 9 . 9 6 $ </td><td> $5 1 . 1 4 \downarrow 5 . 8 4$ </td><td> $4 6 . 6 1 \downarrow 0 . 3 3$ </td><td> $4 6 . 9 3 \downarrow 7 . 2 9$ </td><td> $4 9 . 9 4 \downarrow 5 . 8 6$ </td></tr><tr><td>In-Place TTT</td><td>0.4B</td><td> $5 7 . 8 2 \downarrow 7 . 2 3$ </td><td> $5 2 . 6 5 \downarrow 4 . 3 3$ </td><td> $4 7 . 2 3 \uparrow 0 . 2 9$ </td><td> $4 9 . 3 4 \downarrow 4 . 8 8 $ </td><td> $5 1 . 7 6 \downarrow 4 . 0 4$ </td></tr><tr><td>TTT-NTP</td><td>0.4B</td><td> $6 3 . 3 9 \downarrow 1 . 6 6$ </td><td> ${ \bf 5 9 . 7 7 } \mathrm { \uparrow 2 . 7 9 }$ </td><td> $5 3 . 9 0 \mathrm { \uparrow } 6 . 9 6$ </td><td> $\mathbf { 6 1 . 7 3 } \uparrow 7 . 5 1$ </td><td> $5 9 . 7 0 \substack { \mathrm { \uparrow 3 . 9 0 } }$  一</td></tr><tr><td colspan="7">Mistral-7B-v0.3</td></tr><tr><td>Base</td><td>0</td><td>73.26</td><td>76.76</td><td>72.24</td><td>60.13</td><td>70.60</td></tr><tr><td>qTTT</td><td>0</td><td> $6 8 . 5 9 \downarrow 4 . 6 7$ </td><td> $7 0 . 6 3 \textdownarrow 6 . 1 3$ </td><td> $6 7 . 0 9 \downarrow 5 . 1 5$ </td><td> $5 7 . 2 3 \textmu 2 . 9 0$ </td><td> $6 5 . 8 9 \downarrow 4 . 7 1$ </td></tr><tr><td>CPT</td><td>0.1B</td><td> $6 9 . 2 5 \substack { \downarrow 4 . 0 1 }$ </td><td> $6 8 . 4 4 \downarrow 8 . 3 2 $ </td><td> $6 1 . 8 8 \downarrow 1 0 . 3 6$ </td><td> $5 2 . 1 5 \downarrow 7 . 9 8$ </td><td> $6 2 . 9 3 \downarrow 7 . 6 7$ </td></tr><tr><td>In-Place TTT</td><td>0.1B</td><td> $6 8 . 4 1 \downarrow 4 . 8 5$ </td><td> $6 6 . 6 1 \downarrow 1 0 . 1 5$ </td><td> $6 2 . 2 7 \downarrow 9 . 9 7$ </td><td> $5 1 . 3 1 \downarrow 8 . 8 2 $ </td><td> $6 2 . 1 5 \downarrow 8 . 4 5$ </td></tr><tr><td>TTT-NTP</td><td>0.1B</td><td> $\mathbf { 8 1 . 5 1 } \uparrow 8 . 2 5$ </td><td> ${ \bf 7 9 . 1 3 } \mathrm { \uparrow } 2 . 3 7$ </td><td> $7 2 . 6 4 \mathrm { \uparrow 0 . 4 0 }$ </td><td> ${ \bf 6 1 . 2 3 \mathrm { \uparrow 1 . 1 0 } }$ </td><td> $7 3 . 6 3 \uparrow 3 . 0 3$  一</td></tr><tr><td colspan="7">Qwen3-4B-Base</td></tr><tr><td>Base</td><td>0</td><td>93.23</td><td>84.03</td><td>74.96</td><td>75.47</td><td>81.92</td></tr><tr><td>qTTT</td><td>0</td><td> $9 3 . 7 5 \mathrm { \uparrow } 0 . 5 2 $ </td><td> $8 4 . 8 8 \uparrow 0 . 8 5$ </td><td> $7 5 . 3 4 \mathrm { \uparrow 0 } . 3 8 $ </td><td> $7 6 . 1 8 \mathrm { \uparrow 0 } . 7 1$ </td><td> $8 2 . 5 3 \uparrow 0 . 6 1$ </td></tr><tr><td>CPT</td><td>2B</td><td> $8 8 . 2 7 \downarrow 4 . 9 6$ </td><td> $8 2 . 9 3 \textmu 1 . 1 0$ </td><td> $7 1 . 3 2 \downarrow 3 . 6 4$ </td><td> $6 8 . 3 1 \downarrow 7 . 1 6$ </td><td> $7 7 . 7 1 \downarrow 4 . 2 1$ </td></tr><tr><td>In-Place TTT</td><td>2B</td><td> $8 7 . 9 8 \downarrow 5 . 2 5$ </td><td> $8 4 . 7 1 \uparrow 0 . 6 8 $ </td><td> $7 0 . 0 4 \downarrow 4 . 9 2$ </td><td> $6 6 . 5 9 \downarrow 8 . 8 8$ </td><td> $7 7 . 3 3 \downarrow 4 . 5 9$ </td></tr><tr><td>TTT-NTP</td><td>2B</td><td> $8 9 . 6 9 \downarrow 3 . 5 4 $ </td><td> $8 7 . 4 3 \uparrow 3 . 4 0$ </td><td> $8 6 . 7 0 \mathrm { \ } \mathrm { \uparrow } 1 1 . 7 4$ </td><td> $\mathbf { 8 0 . 0 8 } \uparrow 4 . 6 1$ </td><td> ${ \pmb 8 5 . 9 8 \uparrow 4 . 0 6 }$  一</td></tr><tr><td colspan="7">Qwen3-0.6B-Base</td></tr><tr><td>Base</td><td>0</td><td>81.83</td><td>70.95</td><td>65.24</td><td>56.20</td><td>68.55</td></tr><tr><td>qTTT</td><td>0</td><td> $8 1 . 9 9 \mathrm { \uparrow 0 . 1 6 }$ </td><td> $7 1 . 5 7 \uparrow 0 . 6 2$ </td><td> $6 5 . 4 3 \mathrm { \uparrow 0 . 1 9 }$ </td><td> $5 6 . 7 4 \mathrm { \uparrow 0 } . 5 4$ </td><td> $6 8 . 9 3 \mathrm { \uparrow 0 } . 3 8 $ </td></tr><tr><td>CPT</td><td>0.2B</td><td> $8 2 . 0 8 \uparrow 0 . 2 5$ </td><td> $7 0 . 3 3 \textmu 0 . 6 2$ </td><td> $6 5 . 6 3 \uparrow 0 . 3 9$ </td><td> $5 7 . 3 8 \uparrow 1 . 1 8$ </td><td> $6 8 . 8 6 \mathrm { \uparrow } 0 . 3 1$ </td></tr><tr><td>In-Place TTT</td><td>0.2B</td><td> $7 2 . 4 1 \downarrow 9 . 4 2$ </td><td> $6 8 . 4 0 \AA 2 . 5 5$ </td><td> $6 7 . 5 7 \uparrow 2 . 3 3$ </td><td> ${ \bf 5 9 . 1 8 } \mathrm { \uparrow } 2 . 9 8 \mathrm { \Omega }$ </td><td> $6 6 . 8 9 \textmu 1 . 6 6$ </td></tr><tr><td>TTT-NTP</td><td>0.2B</td><td> $\mathbf { 8 2 . 7 1 } \mathrm { \uparrow 0 . 8 8 }$ </td><td> ${ 7 3 . 3 1 \uparrow 2 . 3 6 }$ </td><td> $7 1 . 3 9 \uparrow 6 . 1 5$ </td><td> $5 8 . 3 0 \uparrow 2 . 1 0$ </td><td> ${ \bf 7 1 . 4 3 \mathrm { \ : \cdot } } 2 . 8 8 $  </td></tr></table>
+
+Table 1: RULER Full-13 accuracy across four backbones (Llama-3.1-8B-Base, Mistral-7B-v0.3, Qwen3-4B-Base, and Qwen3-0.6B-Base; blocks ordered by model size). Subscript arrows give the absolute percentage-point change relative to Base for each backbone (↑ improvement, ↓ decline); the best result in each column is in bold. The Tokens column gives the continual-pretraining budget. All rows use the same RULER evaluation harness; In-Place TTT and TTT-NTP share the same fast-weight placement, chunk size, and inner-loop learning rate.
+
+## 4.4 Real-World Long-Document QA
+
+RULER is synthetic. To test whether the same inference-time write transfers to naturally occurring long documents, we additionally evaluate on LongBench-v2 (Bai et al., 2025), a multiple-choice long-document QA benchmark spanning six task domains. We report its medium-length split (33k–128k words; 215 questions) under a common 32k-token context budget—inputs longer than the budget are middle-truncated (head+tail)—so every backbone is compared at the same effective input length. Table 2 breaks accuracy down by domain.
+
+Transfer to real long documents. On both backbones TTT-NTP attains the best overall accuracy and is the only method that improves over Base on both (+5.6 on Llama-3.1-8B, +3.7 on Mistral-7B-v0.3), ahead of CPT, In-Place TTT, and qTTT; the next-position write thus helps on naturally occurring long-document QA, not only on synthetic needle retrieval.
+
+<table><tr><td>Method</td><td>Single- Doc</td><td>Multi- Doc</td><td>ICL</td><td>Dialogue Code</td><td></td><td>Struct</td><td>Overall</td></tr><tr><td colspan="8">Llama-3.1-8B-Base</td></tr><tr><td>Base</td><td>26.0</td><td>25.0</td><td>27.9</td><td>15.8</td><td>33.3</td><td>26.1</td><td>25.6</td></tr><tr><td>CPT</td><td>31.2↑5.2</td><td>27.3↑2.3</td><td>25.6↓2.3</td><td>31.6↑15.8</td><td>44.4↑11.1</td><td>26.1</td><td>29.3↑3.7</td></tr><tr><td>In-Place TTT</td><td>35.1↑9.1</td><td>20.5↓4.5</td><td>27.9</td><td>21.1↑5.3</td><td>44.4↑11.1</td><td>26.1</td><td>28.8↑3.2</td></tr><tr><td>qTTT</td><td>28.6↑2.6</td><td>25.0</td><td>27.9</td><td>15.8</td><td>33.3</td><td>26.1</td><td>26.5↑0.9</td></tr><tr><td>TTT-NTP (Ours)</td><td>33.8↑7.8</td><td>29.5↑4.5</td><td>30.2↑2.3</td><td>21.1↑5.3</td><td>33.3</td><td>34.8↑8.7</td><td>31.2↑5.6</td></tr><tr><td colspan="8">Mistral-7B-v0.3</td></tr><tr><td>Base</td><td>29.9</td><td>25.0</td><td>25.6</td><td>31.6</td><td>33.3</td><td>13.0</td><td>26.5</td></tr><tr><td>CPT</td><td>35.1↑5.2</td><td>25.0</td><td>25.6</td><td>10.5↓21.1</td><td>33.3</td><td>21.7↑8.7</td><td>27.4↑0.9</td></tr><tr><td>In-Place TTT</td><td>32.5↑2.6</td><td>29.5↑4.5</td><td>25.6</td><td>15.8↓15.8</td><td>33.3</td><td>17.4↑4.4</td><td>27.4↑0.9</td></tr><tr><td>qTTT</td><td>31.2↑1.3</td><td>25.0</td><td>18.6↓7.0</td><td>31.6</td><td>22.2↓11.1</td><td>13.0</td><td>25.1↓1.4</td></tr><tr><td>TTT-NTP (Ours)</td><td>32.5↑2.6</td><td>31.8↑6.8</td><td>23.3↓2.3</td><td>31.6</td><td>33.3</td><td>30.4↑17.4</td><td>30.2↑3.7</td></tr></table>
+
+Table 2: LongBench-v2 medium split, by task domain. Multiple-choice accuracy on the 215 medium questions (33k–128k words), evaluated under a common 32k-token context budget (head+tail truncation). Per-domain question counts: Single-Doc QA 77, Multi-Doc QA 44, In-context Learning (ICL) 43, Dialogue History 19, Code Repository 9, Structured Data 23. Subscripts give the per-domain change relative to Base for each backbone (↑ improvement, ↓ decline); TTT-NTP (Ours) values are in bold.
+
+Retrieval-oriented domains drive the gain. Single- and multi-document QA and long structured-data understanding account for most of the improvement (e.g. Mistral rises from 13.0 to 30.4 on structured data), mirroring the RULER results, whereas the smallest splits—code (9 questions) and dialogue (19)—are too small to read much into.
+
+## 4.5 Ablation Study
+
+## 4.5.1 Choice of Supervision Target
+
+TTT-NTP supervises the inner-loop write with the next position’s same-layer contextual hidden state $\mathsf { \bar { h } } _ { \ell , t + 1 } .$ . To isolate the contribution of this specific choice—and not the rank-one mechanism, the placement, or the chunk-parallel schedule—we ablate the target while holding the training data, token budget, optimizer, fast-weight placement, chunk size, inner-loop learning rate, and update mechanism fixed at the values of section 4.1, varying only how the layer-local target is constructed:
+
+• Past-5: target aggregated from the five preceding positions $\{ h _ { \ell , t - 1 } , \ldots , h _ { \ell , t - 5 } \}$ via a learned causal convolution.
+
+• Next-5: target aggregated from the five following positions $\{ h _ { \ell , t + 1 } , \ldots , h _ { \ell , t + 5 } \}$ via a learned forward convolution.
+
+• Bi-dir-5: target aggregated from the symmetric 11-position window $\{ h _ { \ell , t - 5 } , \dots , h _ { \ell , t + 5 } \}$ via a learned bidirectional convolution. This is a symmetric convolutional value-proxy baseline inspired by local-target TTT recipes (Feng et al., 2026).
+
+• TTT-NTP (Ours): target is the single next position’s hidden state $h _ { \ell , t + 1 }$ , with no convolution; the signal enters the rank-one write through the learned linear projection $W _ { \ell } ^ { \mathrm { p r o j } } \left( \mathrm { e q . } \left( 6 \right) \right)$
+
+Figure 2 shows that the single next-position target outperforms every convolutional aggregation at all four evaluated lengths. The gap is already at least five points at 4k (86.9–87.6 vs. 92.8), grows to roughly nine points at 16k (68.9–73.3 vs. 82.4), and remains five to eight points at 32k (69.9–72.9 vs. 77.8). The three convolutional aggregations cluster together at every length: smoothing the target through a learned convolution, in any direction, hurts long-context retrieval relative to writing the next contextual state directly. This ablation pins the gain of table 1 to the supervisory target rather than the rank-one mechanism or the local context window.
+
+![](images/51c9da33c2539b05bb2bed8a82c6141cfa2b27f8ce3424e804f83257fbab2dd0.jpg)  
+Figure 2: Target ablation on RULER Full-13 (Qwen3-4B-Base). All four variants share the same training data, token budget, fast-weight placement, chunk size, inner-loop learning rate, and rank-one update mechanism; only the layer-local target differs. Past-5 and Next-5 aggregate five preceding or following positions through a learned unidirectional convolution; Bi-dir-5 aggregates a symmetric 11-position window through a bidirectional convolution. TTT-NTP (ours) writes the single next position $\boldsymbol { h } _ { \ell , t + 1 }$
+
+## 4.5.2 Closed-Form Inference Write: Solver and Regularization
+
+The inference-time write of eq. (17) is the ridge least-squares solution for the prompt-specific perturbation: over the fit window it minimizes $\lVert \bar { \boldsymbol { Y } _ { \ell } } - ( \boldsymbol { W } _ { \ell } ^ { \mathrm { d o w n } } + \Delta \boldsymbol { W } ) \bar { \boldsymbol { X } _ { \ell } } \rVert _ { F } ^ { 2 } + \bar { \lambda } \lVert \bar { \boldsymbol { \Delta } } \boldsymbol { W } \rVert _ { F } ^ { 2 } ,$ where $X _ { \ell }$ stacks the cached keys and $Y _ { \ell }$ the next-position targets. To isolate the role of the solver—not the trained target, placement, or perturbation scale $\eta ,$ all held fixed—we compare three ways of mapping the residual $\pmb { R } _ { \ell } = \pmb { Y } _ { \ell } - \pmb { W } _ { \ell } ^ { \mathrm { d o w n } } \pmb { X } _ { \ell }$ to a write.
+
+Writing this closed form in terms of the residual makes the solver explicit:
+
+$$
+\begin{array} { r } { \Delta { W } _ { \ell } ^ { \mathrm { C F } } = \underbrace { \underline { { R _ { \ell } } } { X _ { \ell } ^ { \top } } } _ { \mathrm { r e s i d u a l - k e y ~ c o r r e l a t i o n } } \underbrace { \left( { X _ { \ell } } { X _ { \ell } ^ { \top } } + \lambda I \right) ^ { - 1 } } _ { \mathrm { k e y ~ w h i t e n i n g } } . } \end{array}\tag{18}
+$$
+
+The numerator $R _ { \ell } X _ { \ell } ^ { \top }$ is a Hebbian, correlational write—the same outer-product form as the inner-product (linear) training loss in eq. (2)—and the Gram inverse whitens it by the key second moment. The two ablations each switch off one of these factors: Inner-product keeps only the un-whitened correlation $R _ { \ell } X _ { \ell } ^ { \top }$ , and no regularization keeps the inverse but sets $\lambda \to 0$ . The inner-product write is exactly the per-token training-time update of eq. (2) applied once over the whole prompt; testing it at inference therefore asks whether the training loss can be reused for the one-shot write. Table 3 reports all three against each backbone’s released Base.
+
+Whitening is decisive. Dropping the Gram inverse collapses retrieval at every length, with the average falling to 71.22 on Qwen3-4B and 12.61 on Llama-3.1-8B—far below Base.
+
+<table><tr><td>Inference write</td><td>4k</td><td>8k</td><td>16k</td><td>32k</td><td>Avg</td></tr><tr><td colspan="6">Llama-3.1-8B</td></tr><tr><td>Base</td><td>65.05</td><td>56.98</td><td>46.94</td><td>54.22</td><td>55.80</td></tr><tr><td>Inner-product</td><td> $7 . 1 9 \downarrow 5 7 . 8 6$ </td><td>9.86↓47.12</td><td> $2 0 . 7 6 \downarrow 2 6 . 1 8$ </td><td> $1 2 . 6 3 \downarrow 4 1 . 5 9$ </td><td>12.61↓43.19</td></tr><tr><td>Ridge, no reg.</td><td> $6 2 . 8 1 \downarrow 2 . 2 4 $ </td><td> $5 6 . 7 6 \textmu 0 . 2 2$ </td><td> $5 1 . 7 4 \mathrm { \uparrow 4 . 8 0 }$ </td><td> $5 3 . 1 3 \textmu 1 . 0 9$ </td><td>56.11↑0.31</td></tr><tr><td>Ridge (Ours)</td><td> $6 3 . 3 9 \downarrow 1 . 6 6$ </td><td> ${ \bf 5 9 . 7 7 } \mathrm { \uparrow 2 . 7 9 }$ </td><td> $5 3 . 9 0 \mathrm { \uparrow } 6 . 9 6 $ </td><td>61.73↑7.51</td><td>59.70↑3.90</td></tr><tr><td colspan="6">Qwen3-4B</td></tr><tr><td>Base</td><td>93.23</td><td>84.03</td><td>74.96</td><td>75.47</td><td>81.92</td></tr><tr><td>Inner-product</td><td>75.96↓17.27</td><td>75.79↓8.24</td><td>67.75↓7.21</td><td>65.38↓10.09</td><td>71.22↓10.70</td></tr><tr><td>Ridge, no reg.</td><td>89.52↓3.71</td><td> $8 7 . 8 9 \uparrow 3 . 8 6$ </td><td>86.29↑11.33</td><td>79.98↑4.51</td><td> $8 5 . 9 2 \mathrm { \uparrow 4 . 0 0 }$ </td></tr><tr><td>Ridge (Ours)</td><td>89.69↓3.54</td><td>87.43↑3.40</td><td> $8 6 . 7 0 \mathrm { \ } \mathrm { \uparrow } 1 1 . 7 4$ </td><td>80.08↑4.61</td><td> ${ \pmb 8 5 . 9 8 \uparrow 4 . 0 6 }$ </td></tr></table>
+
+Table 3: Closed-form inference-write ablation (RULER Full-13, per length). Varying only the solver for the prompt write ∆W; subscripts are the change vs. Base (↑/↓), best write rule per column in bold. The Hebbian inner-product write (no Gram whitening) collapses, and dropping the ridge regularizer also hurts; only the full regularized solve (Ours) improves over Base.
+
+The factor $( X _ { \ell } X _ { \ell } ^ { \top } + \lambda I ) ^ { - 1 }$ rescales the write to equalize the key directions; without it the Hebbian write is amplified along the highest-variance (most frequent or repeated) keys rather than solving for the target, so a few directions dominate the patched down-projection and the outputs degenerate. This is the same Hebbian form TTT-NTP trains with: dense, small per-position writes are stable during co-adapted chunk-parallel training, but the identical un-whitened form fails as a single one-shot prompt write—which is exactly why inference solves the full squared-error objective rather than reusing the training loss.
+
+Regularization matters. Keeping the whitening while setting λ → 0 stays close to the full solve and well above the inner-product write, yet only the complete regularized ridge (Ours) is consistently at or above Base across lengths. Both the whitening and a non-zero λ are therefore needed for a stable one-shot prompt write.
+
+## 4.6 General Capability Evaluation
+
+Table 4 evaluates each TTT-NTP-trained backbone on standard commonsense and knowledge benchmarks, to check whether the long-context retrieval gains of table 1 come at a cost to general capability.
+<table><tr><td>Backbone</td><td>Method</td><td>HellaSwag</td><td>ARC-e</td><td>ARC-c</td><td>PIQA</td><td>MMLU</td><td>Avg</td></tr><tr><td>Llama-3.1-8B</td><td>Base TTT-NTP</td><td>71.15 71.50↑0.35</td><td>80.40 80.80↑0.40 58.70↑0.68</td><td>58.02</td><td>83.40 83.40</td><td>63.45</td><td>71.28 63.37↓0.08 71.56↑0.27</td></tr><tr><td>Mistral-7B-v0.3</td><td>Base TTT-NTP</td><td>72.85 69.05↓3.80</td><td>78.20 78.40↑0.20 59.64↓0.60 85.00↑0.80 58.27↓1.37 70.07↓0.96</td><td>60.24</td><td>84.20</td><td>59.64</td><td>71.03</td></tr><tr><td>Qwen3-4B</td><td>Base TTT-NTP</td><td>65.20 64.40↓0.80</td><td>74.20 77.20↑3.00 49.20↓1.00</td><td>50.20</td><td>79.60 79.20↓0.4073.00↓0.80</td><td>73.80</td><td>68.60 68.60</td></tr><tr><td>Qwen3-0.6B</td><td>Base TTT-NTP</td><td>53.53 54.03↑0.50</td><td>57.87 59.72↑1.85 38.48↓0.34</td><td>38.82</td><td>70.13 70.13</td><td>50.24</td><td>54.12 50.56↑0.32 54.59↑0.47</td></tr></table>
+
+Table 4: General-capability evaluation comparing each released backbone (Base) to its TTT-NTP-trained backbone on standard commonsense and knowledge benchmarks (lmevaluation-harness). Subscript arrows give the per-benchmark change of TTT-NTP relative to Base (↑ improvement, ↓ decline); TTT-NTP values that beat Base are in bold. Aggregate scores are essentially unchanged across all four backbones.
+
+Long-context gains do not cost general capability. Across all four backbones the aggregate over HellaSwag, ARC, PIQA, and MMLU shifts by at most about one point after TTT-NTP, and on three of the four it is flat or slightly higher (Qwen3-0.6B +0.47, Llama-3.1-8B +0.27, Qwen3-4B unchanged). Per-task movements are similarly small—the largest is a few points on ARC-e—so the fast-weight write reshapes the long-context pathway without disturbing the model’s knowledge and commonsense behaviour.
+
+The only notable regression is on Mistral. Its aggregate slips by 0.96, as a HellaSwag drop outweighs gains on ARC-e and PIQA; this is the same backbone whose released checkpoint is already the strongest long-context model, where the inference-time write is pushed hardest. Even here the change is within roughly one point, so the long-context improvements of table 1 come at no measurable general-capability cost across backbones.
+
+## 5 Conclusion
+
+This work shows that long-context LLMs can benefit when test-time adaptation is tied more directly to next-token prediction. TTT-NTP uses the observed next token to train each adapted layer toward the next contextual state the model already computes during a causal forward pass. Across four backbones from three families spanning 0.6–8B, it is the only adaptation that consistently improves RULER Full-13 over the released model, with the gains concentrated at the longest contexts and carrying over to real-world long-document QA on LongBench-v2, while general capability is preserved. Two controlled ablations locate the source of the gain: holding the training setup fixed and changing only the value target (§4.5.1) shows the next-position target is what helps, and varying only the inference-time solver (§4.5.2) shows the gain is realized by a regularized closed-form write whose key whitening, not the rank-one correlation alone, is decisive. These results suggest that better long-context use may come not only from larger windows, but from adaptation signals that match how the model learned to predict text in the first place.
+
+## Future Work
+
+Several directions follow naturally. Our study spans four backbones up to 8B and a single long-document corpus at a fixed token budget; scaling TTT-NTP to larger checkpoints and more diverse pretraining mixtures, and sweeping the data composition and compute, would test how far the next-position signal carries. On the architecture side, our fast-weight write is developed for full-attention decoders, and extending it to sliding-window and linear-attention backbones—where the key statistics the closed-form solve relies on are local rather than global—is an open and promising direction. Finally, the closed-form inference-time write invites study in combination with native long-context windows and retrieval-augmented pipelines, and broader evaluation beyond retrieval (e.g. factuality and robustness) before deployment in consequential settings.
+
+## References
+
+Mahmoud Assran, Quentin Duval, Ishan Misra, Piotr Bojanowski, Pascal Vincent, Michael Rabbat, Yann LeCun, and Nicolas Ballas. Self-supervised learning from images with a joint-embedding predictive architecture. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pp. 15619–15629, 2023.
+
+Jimmy Ba, Geoffrey E Hinton, Volodymyr Mnih, Joel Z Leibo, and Catalin Ionescu. Using fast weights to attend to the recent past. Advances in neural information processing systems, 29, 2016.
+
+Yushi Bai, Xin Lv, Jiajie Zhang, Hongchang Lyu, Jiankai Tang, Zhidian Huang, Zhengxiao Du, Xiao Liu, Aohan Zeng, Lei Hou, et al. Longbench: A bilingual, multitask benchmark for long context understanding. In Proceedings of the 62nd annual meeting of the association for computational linguistics (volume 1: Long papers), pp. 3119–3137, 2024.
+
+Yushi Bai, Shangqing Tu, Jiajie Zhang, Hao Peng, Xiaozhi Wang, Xin Lv, Shulin Cao, Jiazheng Xu, Lei Hou, Yuxiao Dong, Jie Tang, and Juanzi Li. Longbench v2: Towards deeper understanding and reasoning on realistic long-context multitasks, 2025. URL https: //arxiv.org/abs/2412.15204.
+
+Rachit Bansal, Aston Zhang, Rishabh Tiwari, Lovish Madaan, Sai Surya Duvvuri, Devvrit Khatri, David Brandfonbrener, David Alvarez-Melis, Prajjwal Bhargava, Mihir Sanjay Kale, and Samy Jelassi. Let’s (not) just put things in context: Test-time training for long-context llms, 2025. URL https://arxiv.org/abs/2512.13898.
+
+Ali Behrouz, Peilin Zhong, and Vahab Mirrokni. Titans: Learning to memorize at test time. Advances in Neural Information Processing Systems, 38:113506–113543, 2026.
+
+Iz Beltagy, Matthew E. Peters, and Arman Cohan. Longformer: The long-document transformer, 2020. URL https://arxiv.org/abs/2004.05150.
+
+Yonatan Bisk, Rowan Zellers, Jianfeng Gao, Yejin Choi, et al. Piqa: Reasoning about physical commonsense in natural language. In Proceedings of the AAAI conference on artificial intelligence, volume 34, pp. 7432–7439, 2020.
+
+Shouyuan Chen, Sherman Wong, Liangjian Chen, and Yuandong Tian. Extending context window of large language models via positional interpolation. arXiv preprint arXiv:2306.15595, 2023.
+
+Yukang Chen, Shengju Qian, Haotian Tang, Xin Lai, Zhijian Liu, Song Han, and Jiaya Jia. Longlora: Efficient fine-tuning of long-context large language models. In International Conference on Learning Representations, volume 2024, pp. 8220–8238, 2024.
+
+Peter Clark, Isaac Cowhey, Oren Etzioni, Tushar Khot, Ashish Sabharwal, Carissa Schoenick, and Oyvind Tafjord. Think you have solved question answering? try arc, the ai2 reasoning challenge. arXiv preprint arXiv:1803.05457, 2018.
+
+Tri Dao and Albert Gu. Transformers are ssms: Generalized models and efficient algorithms through structured state space duality. arXiv preprint arXiv:2405.21060, 2024.
+
+Tri Dao, Daniel Y. Fu, Stefano Ermon, Atri Rudra, and Christopher Re. Flashattention: Fast´ and memory-efficient exact attention with io-awareness, 2022. URL https://arxiv.org/ abs/2205.14135.
+
+Yiran Ding, Li Lyna Zhang, Chengruidong Zhang, Yuanyuan Xu, Ning Shang, Jiahang Xu, Fan Yang, and Mao Yang. Longrope: Extending llm context window beyond 2 million tokens. arXiv preprint arXiv:2402.13753, 2024.
+
+Guhao Feng, Shengjie Luo, Kai Hua, Ge Zhang, Di He, Wenhao Huang, and Tianle Cai. In-place test-time training. arXiv preprint arXiv:2604.06169, 2026.
+
+Yao Fu, Rameswar Panda, Xinyao Niu, Xiang Yue, Hannaneh Hajishirzi, Yoon Kim, and Hao Peng. Data engineering for scaling language models to 128k context. arXiv preprint arXiv:2402.10171, 2024.
+
+Aaron Grattafiori, Abhimanyu Dubey, Abhinav Jauhri, Abhinav Pandey, Abhishek Kadian, Ahmad Al-Dahle, Aiesha Letman, Akhil Mathur, Alan Schelten, Alex Vaughan, et al. The llama 3 herd of models. arXiv preprint arXiv:2407.21783, 2024.
+
+Jean-Bastien Grill, Florian Strub, Florent Altche, Corentin Tallec, Pierre Richemond, Elena´ Buchatskaya, Carl Doersch, Bernardo Avila Pires, Zhaohan Guo, Mohammad Gheshlaghi Azar, et al. Bootstrap your own latent-a new approach to self-supervised learning. Advances in neural information processing systems, 33:21271–21284, 2020.
+
+Albert Gu and Tri Dao. Mamba: Linear-time sequence modeling with selective state spaces. arXiv preprint arXiv:2312.00752, 2023.
+
+Kaiming He, Xinlei Chen, Saining Xie, Yanghao Li, Piotr Dollar, and Ross Girshick. Masked´ autoencoders are scalable vision learners. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pp. 16000–16009, 2022.
+
+Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou, Mantas Mazeika, Dawn Song, and Jacob Steinhardt. Measuring massive multitask language understanding. arXiv preprint arXiv:2009.03300, 2020.
+
+Cheng-Ping Hsieh, Simeng Sun, Samuel Kriman, Shantanu Acharya, Dima Rekesh, Fei Jia, Yang Zhang, and Boris Ginsburg. Ruler: What’s the real context size of your long-context language models? arXiv preprint arXiv:2404.06654, 2024.
+
+Albert Q Jiang, Alexandre Sablayrolles, Arthur Mensch, Chris Bamford, Devendra Singh Chaplot, Diego de las Casas, Florian Bressand, Gianna Lengyel, Guillaume Lample, Lucile Saulnier, et al. Mistral 7b. arXiv preprint arXiv:2310.06825, 2023.
+
+Angelos Katharopoulos, Apoorv Vyas, Nikolaos Pappas, and Franc¸ois Fleuret. Transformers are rnns: Fast autoregressive transformers with linear attention. In International conference on machine learning, pp. 5156–5165. PMLR, 2020.
+
+Nelson F Liu, Kevin Lin, John Hewitt, Ashwin Paranjape, Michele Bevilacqua, Fabio Petroni, and Percy Liang. Lost in the middle: How language models use long contexts. Transactions of the association for computational linguistics, 12:157–173, 2024.
+
+Maxime Oquab, Timothee Darcet, Th´ eo Moutakanni, Huy V. Vo, Marc Szafraniec, Vasil´ Khalidov, Pierre Fernandez, Daniel HAZIZA, Francisco Massa, Alaaeldin El-Nouby, Mido Assran, Nicolas Ballas, Wojciech Galuba, Russell Howes, Po-Yao Huang, Shang-Wen Li, Ishan Misra, Michael Rabbat, Vasu Sharma, Gabriel Synnaeve, Hu Xu, Herve Jegou, Julien Mairal, Patrick Labatut, Armand Joulin, and Piotr Bojanowski. DINOv2: Learning robust visual features without supervision. Transactions on Machine Learning Research, 2024. ISSN 2835-8856. URL https://openreview.net/forum?id=a68SUt6zFt. Featured Certification.
+
+Bo Peng, Eric Alcaide, Quentin Anthony, Alon Albalak, Samuel Arcadinho, Stella Biderman, Huanqi Cao, Xin Cheng, Michael Chung, Leon Derczynski, et al. Rwkv: Reinventing rnns for the transformer era. In Findings of the association for computational linguistics: EMNLP 2023, pp. 14048–14077, 2023.
+
+Bowen Peng, Jeffrey Quesnelle, Honglu Fan, and Enrico Shippole. Yarn: Efficient context window extension of large language models. In International Conference on Learning Representations, volume 2024, pp. 31932–31951, 2024.
+
+Ofir Press, Noah A Smith, and Mike Lewis. Train short, test long: Attention with linear biases enables input length extrapolation. arXiv preprint arXiv:2108.12409, 2021.
+
+Hubert Ramsauer, Bernhard Schafl, Johannes Lehner, Philipp Seidl, Michael Widrich,¨ Thomas Adler, Lukas Gruber, Markus Holzleitner, Milena Pavlovic, Geir Kjetil Sandve,´ et al. Hopfield networks is all you need. arXiv preprint arXiv:2008.02217, 2020.
+
+Imanol Schlag, Kazuki Irie, and Jurgen Schmidhuber. Linear transformers are secretly fast ¨ weight programmers, 2021. URL https://arxiv.org/abs/2102.11174.
+
+Jurgen Schmidhuber. Learning to control fast-weight memories: An alternative to dynamic¨ recurrent networks. Neural Computation, 4(1):131–139, 1992.
+
+Jianlin Su, Murtadha Ahmed, Yu Lu, Shengfeng Pan, Wen Bo, and Yunfeng Liu. Roformer: Enhanced transformer with rotary position embedding. Neurocomputing, 568:127063, 2024.
+
+Yu Sun, Xiaolong Wang, Zhuang Liu, John Miller, Alexei Efros, and Moritz Hardt. Test-time training with self-supervision for generalization under distribution shifts. In International conference on machine learning, pp. 9229–9248. PMLR, 2020.
+
+Yu Sun, Xinhao Li, Karan Dalal, Jiarui Xu, Arjun Vikram, Genghan Zhang, Yann Dubois, Xinlei Chen, Xiaolong Wang, Sanmi Koyejo, et al. Learning to (learn at test time): Rnns with expressive hidden states. arXiv preprint arXiv:2407.04620, 2024.
+
+Yutao Sun, Li Dong, Shaohan Huang, Shuming Ma, Yuqing Xia, Jilong Xue, Jianyong Wang, and Furu Wei. Retentive network: A successor to transformer for large language models. arXiv preprint arXiv:2307.08621, 2023.
+
+Arnuv Tandon, Karan Dalal, Xinhao Li, Daniel Koceja, Marcel Rød, Sam Buchanan, Xiaolong Wang, Jure Leskovec, Sanmi Koyejo, Tatsunori Hashimoto, et al. End-to-end test-time training for long context. arXiv preprint arXiv:2512.23675, 2025.
+
+Shaobo Wang, Xuan Ouyang, Tianyi Xu, Yuzheng Hu, Jialin Liu, Guo Chen, Tianyu Zhang, Junhao Zheng, Kexin Yang, Xingzhang Ren, Dayiheng Liu, and Linfeng Zhang. Opus: Towards efficient and principled data selection in large language model pre-training in every iteration. arXiv preprint arXiv:2602.05400, 2026.
+
+An Yang, Anfeng Li, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo Zheng, Bowen Yu, Chang Gao, Chengen Huang, Chenxu Lv, et al. Qwen3 technical report. arXiv preprint arXiv:2505.09388, 2025a.
+
+Songlin Yang, Bailin Wang, Yu Zhang, Yikang Shen, and Yoon Kim. Parallelizing linear transformers with the delta rule over sequence length. Advances in neural information processing systems, 37:115491–115522, 2024.
+
+Songlin Yang, Jan Kautz, and Ali Hatamizadeh. Gated delta networks: Improving mamba2 with delta rule. In International Conference on Learning Representations, volume 2025, pp. 29687–29707, 2025b.
+
+Manzil Zaheer, Guru Guruganesh, Avinava Dubey, Joshua Ainslie, Chris Alberti, Santiago Ontanon, Philip Pham, Anirudh Ravula, Qifan Wang, Li Yang, and Amr Ahmed. Big bird: Transformers for longer sequences, 2021. URL https://arxiv.org/abs/2007.14062.
+
+Rowan Zellers, Ari Holtzman, Yonatan Bisk, Ali Farhadi, and Yejin Choi. Hellaswag: Can a machine really finish your sentence? In Proceedings of the 57th annual meeting of the association for computational linguistics, pp. 4791–4800, 2019.
+
+Tianyuan Zhang, Sai Bi, Yicong Hong, Kai Zhang, Fujun Luan, Songlin Yang, Kalyan Sunkavalli, William T Freeman, and Hao Tan. Test-time training done right. arXiv preprint arXiv:2505.23884, 2025.
+
+## A Training Hyperparameters
+
+CPT, the In-Place TTT baseline, and TTT-NTP share the continual-pretraining recipe in table 5; the per-backbone token budget is the only setting that varies across models. Each batch element is a single document of at least 32,768 tokens (no packing), and the outer loss is standard next-token cross-entropy. The Qwen3-0.6B checkpoint is a shared step-100 snapshot used as a smaller-scale consistency check rather than a compute-scaling study.
+
+<table><tr><td>Setting</td><td>Value</td></tr><tr><td>Corpus</td><td>Long-Data-Collections (Fu et al., 2024)</td></tr><tr><td>Sequence length</td><td>32,768</td></tr><tr><td>Global batch size</td><td>64</td></tr><tr><td>Optimizer</td><td>AdamW, weight decay 0.1</td></tr><tr><td>Peak learning rate Precision / sharding</td><td>5 × 10−6, 5% linear warm-up, cosine decay to 0 bf16, FSDP</td></tr><tr><td>Token budget</td><td>0.4B (Llama-3.1-8B), 0.1B (Mistral-7B-v0.3), 2B (Qwen3-4B), 0.2B (Qwen3-0.6B)</td></tr></table>
+
+Table 5: Continual-pretraining hyperparameters, shared by CPT, In-Place TTT, and TTT-NTP.
+
+## B Fast-Weight TTT Hyperparameters
+
+Both fast-weight variants (In-Place TTT and TTT-NTP) reuse each adapted layer’s MLP down-projection as the fast weight, $\pmb { W } _ { \ell } = \pmb { W } _ { \ell } ^ { \mathrm { d o w n } }$ , with the current gated activation $z _ { \ell , t }$ as the key (no extra key projection). They differ only in the value target: TTT-NTP uses the next-position state $h _ { \ell , t + 1 }$ through a learned d×d interface $W _ { \rho } ^ { \mathrm { p r o j } } .$ , while In-Place TTT uses the published convolutional proxy. Under the inner-product inner loss (eqs. (2) and (5)), η scales the rank-one write directly rather than acting as a gradient step, so its tuned value varies widely across backbones (table 6).
+
+Writes are accumulated chunk-parallel (chunks of 1024; an exclusive prefix sum lets chunk c see only earlier chunks; section 3.3). $W _ { \ell } ^ { \mathrm { p r o j } }$ is identity-initialized and trained jointly under the standard next-token CPT loss—the only TTT-NTP-specific parameter, adding a negligible $| { \mathcal { A } } | d ^ { 2 }$ weights.
+<table><tr><td>Backbone</td><td>TTT layers</td><td>Inner-loop η</td></tr><tr><td>Llama-3.1-8B (32 layers)</td><td>{0, 6, 12, 18, 24, 30}</td><td>0.3</td></tr><tr><td>Mistral-7B-v0.3 (32 layers)</td><td>{0, 6, 12, 18, 24, 30}</td><td>0.15</td></tr><tr><td>Qwen3-4B (36 layers)</td><td>{0, 6, 12, 18, 24, 30}</td><td>0.05</td></tr><tr><td>Qwen3-0.6B (28 layers)</td><td>{0, 4, 8, 12, 16, 20, 24}</td><td>2.6</td></tr></table>
+
+Table 6: Per-backbone fast-weight placement and inner-loop learning rate $\eta ,$ shared by In-Place TTT and TTT-NTP (chunk size 1024 throughout).
+
+## C Inference-Time Configurations
+
+Table 7 lists the inference-time settings for our closed-form write and for the qTTT baseline; CPT and In-Place TTT add no inference-time adaptation and follow tables 5 and 6. The closed-form write uses one fixed configuration across all context lengths and backbones, and reusing the prompt key–value cache means it affects decode-time computation without recomputing prompt activations under the updated down-projection.
+
+<table><tr><td>Setting</td><td>Value</td></tr><tr><td colspan="2">Closed-form inference write (TTT-NTP)</td></tr><tr><td>Ridge regularizer λ 1.0</td><td></td></tr><tr><td>Base step size η</td><td>0.1, per-layer cap  $\| \eta _ { \ell } \Delta W _ { \ell } \| _ { F } / \| W _ { \ell } \| _ { F } \le 0 . 1$ </td></tr><tr><td>Fit windđow</td><td>last 8,192 prefill tokens</td></tr><tr><td>Decode KV cache</td><td>reused (prompt activations not recomputed)</td></tr><tr><td colspan="2">Query-side TTT (qTTT) baseline</td></tr><tr><td>Adapter</td><td>low-rank, on top of Base</td></tr><tr><td>Inner steps / span</td><td>32 / 128</td></tr><tr><td>Learning rate</td><td> $1 \times 1 0 ^ { - 5 }$  (weight decay 0.01, grad clip 1.0)</td></tr></table>
+
+Table 7: Inference-time configurations: the TTT-NTP closed-form write (top) and the qTTT baseline (bottom).

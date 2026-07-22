@@ -1,0 +1,17 @@
+{
+  "dir": "[Arxiv 2025] TTT-E2E",
+  "title": "End-to-End Test-Time Training for Long Context",
+  "short": "TTT-E2E",
+  "authors": "Arnuv Tandon; Karan Dalal; Xinhao Li; Daniel Koceja; Marcel Rød; Sam Buchanan; Xiaolong Wang; Jure Leskovec; Sanmi Koyejo; Tatsunori Hashimoto; Carlos Guestrin; Jed McCaleb; Yejin Choi; Yu Sun",
+  "venue": "arXiv",
+  "year": "2025",
+  "arxiv": "2512.23675",
+  "links": [
+    "https://arxiv.org/abs/2512.23675",
+    "https://arxiv.org/pdf/2512.23675",
+    "https://github.com/test-time-training/e2e"
+  ],
+  "reading_order": "TTT in LLM topic paper 2",
+  "one_liner_hint": "TTT-E2E 将 long-context LM 视为 continual learning：标准 sliding-window Transformer 在测试时用 next-token prediction 持续更新权重，并在训练时用 meta-learning 学会适合测试时学习的初始化。",
+  "mineru_task": "8c56bc79-8f25-4d21-bccc-b8dc349b9770"
+}

@@ -1,0 +1,673 @@
+# Let’s (not) just put things in Context: Test-Time Training for Long-Context LLMs
+
+Rachit Bansal2 3 ∗ Aston Zhang4 ∗
+
+Rishabh Tiwari5 ∗ Lovish Madaan1 Sai Surya Duvvuri6 ∗ Devvrit Khatri6 ∗
+
+David Brandfonbrener1 David Alvarez-Melis2 3 Prajjwal Bhargava1 Mihir Sanjay Kale1 Samy Jelassi2
+
+1Meta, 2Harvard University, 3Kempner Institute at Harvard, 4OpenAI, 5UC Berkeley, 6UT Austin ∗Work done while at Meta
+
+Progress on training and architecture strategies have enabled LLMs with millions of tokens in context length. However, empirical evidence suggests that such long-context LLMs can consume far more text than they can reliably use. On the other hand, it has been shown that inference-time compute can be used to scale performance of LLMs, often by generating thinking tokens, on challenging tasks involving multi-step reasoning. Through controlled experiments on sandbox long-context tasks, we find that such inference-time strategies show rapid diminishing returns, and fail at long context. We attribute these failures to score dilution, a phenomenon inherent to static self-attention. Further, we show that current inference-time strategies cannot retrieve relevant long-context signals under certain conditions. We propose query-only test-time-training (qTTT) that, through targeted gradients updates on the given context, provably overcomes limitations of static self-attention. We find that this simple shift in how inference-time compute is spent leads to consistently large performance improvements across models and long-context benchmarks. qTTT leads to massive 12.6% and 14.1% points improvements for Qwen3-4B on average across subsets of LongBench-v2 and ZeroScrolls benchmarks. The takeaway is practical: for long context, a small amount of context-specific training is a better use of inference compute than current inference-time scaling strategies like producing more thinking tokens.
+
+Correspondence: rachitbansal@g.harvard.edu, az@astonzhang.com
+
+∞ Meta
+
+## 1 Introduction
+
+Many ambitious LLM use-cases are rooted in long context: analyzing scientific corpora (Katz et al., 2023; Taylor et al., 2022), synthesizing books (Kryscinski et al., 2022), maintaining rich multi-turn histories (Park et al., 2023; Zhou et al., 2024), and reasoning over large multi-file code repositories (Jimenez et al., 2024; Zhang et al., 2023). Recent progress in pre-training and architectural strategies have enabled context windows with millions of tokens (Yang et al., 2025; Ding et al., 2024; Reid et al., 2024; Anthropic, 2024). In practice, however, persistent failure modes remain: models miss clauses buried in lengthy documents, overlook function definitions deep in repositories, or fail to retrieve facts from prior turns even when the relevant content is present “in context” (Liu et al., 2024; Hsieh et al., 2024; Kamradt, 2024).
+
+Concurrently, there is a growing interest in using inference-time compute to overcome limitations of vanilla transformer models. Methods such as chain-of-thought “thinking" tokens (Wei et al., 2022b), best-of-n (Nakano et al., 2021; Stiennon et al., 2020), and other “thinking" strategies (Zelikman et al., 2024) have shown promise. However, all these methods generate additional tokens with the same static attention mechanism that is already under-allocating mass to the evidence.
+
+We design two realistic sandbox tasks to perform controlled experiments and diagnose long-context failure modes. We identify that standard “in-context only” settings fail with growing context length (Figure 1). We formalize this as a limitation of static, finite-precision self-attention, and term it score dilution: In presence of “distractor” tokens, logit on a “target” is insufficiently separated from the distractor logits, weakening the target probability mass. We establish that as context length T grows, the target–distractor logit margin must scale as Ω(log T ) to avoid vanishing target probability. We extend this analysis to show that vanilla compute-scaling strategies, such as “thinking” tokens, cannot retrieve the signal from buried target tokens.
+
+With Thinking With Query-only Test-Time Training (qTTT)  
+![](images/89846a70ca3972eca0ccab41999120a12d0ba9511891822f58dd48b1faec4329.jpg)  
+In-Context Only  
+(a) Bug tracing in code repository
+
+![](images/b7eec2166614212b9eaa71abfbbc514b59494cc75f8fed1dd265751482ba0007.jpg)  
+(b) Bug tracing in transaction logs
+
+![](images/822e9c4230c19c874b9a9749364a54ee9326167939a680ae63c983fa1c6ab643.jpg)  
+(c) LongBench-v2 + ZeroScrolls  
+Figure 1 Query-only test-time training uses inference-time compute more effectively than “thinking” tokens for long contexts. (a, b) We construct two tasks to perform controlled long-context analysis: (a) bug localization in large code repositories, and (b) anomaly detection in transaction logs. As context length T grows, in-context accuracy drops and thinking tokens show diminishing returns; with the same FLOP budget, qTTT consistently improves performance. (c) qTTT shows improvements across domains and model sizes on LongBench-v2 and ZeroScrolls benchmarks.
+
+Hence, a natural question arises: How can we best use inference-time compute to improve long-context retrieval and reasoning? We revisit test-time training (TTT) (Liu et al., 2021; Hardt and Sun, 2024; Akyürek et al., 2024) as a way to adapt the model to a given long-context input rather than produce more text from an unchanged model. Our key idea, query-only TTT (qTTT ), is a computationally frugal approach: Perform a single prefill to cache keys and values, followed by a few lightweight gradient updates exclusively on the query projection matrices in the attention layers, keeping all other parameters fixed and reusing the key-value cache (Figure 2). We show theoretically that this targeted adaptation directly increases the separation between target and distractor logits for the specific context at hand, counteracting the limitations of vanilla in-context learning.
+
+We perform evaluations on 15+ real-world datasets from popular long-context benchmarks, ZeroScrolls (Shaham et al., 2023) and LongBench-v2 (Bai et al., 2023b), with Qwen3 models spanning 1.7B–8B parameters. We observe consistently large performance gains across model sizes and datasets. Under FLOP-matched inferencetime compute budgets, qTTT consistently surpasses standard inference-time thinking strategies (Figure 1c) with more than 20% improvements on code comprehension, multi-document QA, and other multi-hop reasoning tasks. Our results call for reallocating inference-time budget from thousands of “thinking” tokens to a small number of query updates for long-context retrieval and reasoning without altering pre-training, architecture, or data.
+
+## Contributions.
+
+• We construct sandbox tasks to demonstrate long-context failure modes (§2.1). We formalize score dilution in static, finite-precision self-attention and prove a logarithmic margin requirement: the target–distractor logit gap must scale as Ω(log T ) to avoid vanishing target probability (§2.3).
+
+• We show theoretically and empirically that current inference-time compute scaling strategies primarily scale decoding and cannot reliably meet the margin requirement; in particular, they cannot amplify the signal from buried targets beyond an ε-fraction (§2).
+
+• We introduce query-only TTT (qTTT): a compute-frugal TTT procedure that performs one prefill to cache K/V, then applies a few gradient updates only to query projections while reusing the KV cache, directly increasing target–distractor separation (§3).
+
+• On 15+ real-world datasets from ZeroScrolls and LongBench-v2, using Qwen3 models (1.7B–8B), query-only TTT consistently improves long-context performance and under FLOP-matched budgets, outperforms intermediate thinking-token baselines (Figure 1c; §4).
+
+Since qTTT takes place at inference-time, it can easily be applied on top of other existing strategies for longcontext modeling: architectural changes such as sliding window attention (Dai et al., 2019; Beltagy et al., 2020), adaptive positional encoding (Press et al., 2022; Su et al., 2024), training tweaks for longer windows (Chen et al., 2023; Peng et al., 2024), or retrieval augmented generation (Borgeaud et al., 2022; Izacard et al., 2022).
+
+## 2 Vanilla Compute-Scaling Strategies Fail for Long Contexts
+
+In this section, we analyze how increasing context length T affects static quadratic-attention LLMs and common inference-time compute–scaling strategies. Using controlled synthetic tasks that mirror realistic long-context retrieval, we observe sharp performance degradation as T grows, while generating intermediate “thinking" tokens yields rapidly diminishing returns. We then provide a theoretical explanation: with static, finite-precision self-attention, the target logit suffers score dilution as distractors accumulate, and avoiding this requires a logarithmic margin requirement—the worst-case target–distractor logit gap must scale as Ω(log T ). Decoding-based inference strategies do not reliably meet this requirement; in contrast, small gradient-based adaptations can increase the margin, which motivates our methodology (developed in §3). All proofs are provided in Appendix B.
+
+## 2.1 Empirical Analysis on Synthetic Long-Context Tasks
+
+First, we empirically analyze the effect of context length on vanilla transformer models and current inference time compute-scaling strategies. We study two synthetic retrieval tasks that mirror realistic long-context use cases while allowing control over the context length T . For each example, the relevant evidence (“needle") is held fixed and only the surrounding “haystack" grows, isolating the effect of length on retrieval. We provide examples from our datasets in Appendix A.
+
+Bug Localization in a Code Repository. Starting from a large open-source repository1, we inject a single-line logical bug and ask the model to identify and fix it. Examples of bugs include missing softmax temperature scaling in the attention mechanism and layernorm misplacement in the Transformer block (see Appendix for details). We vary the context length by the number of lines L exposed to the model. For a given bug instance, we sample a span of L lines around the bug, extending to other files in the directory for large L. We create splits of the dataset with L ranging from 5 to 10000. Across length conditions, the bug location and content are held fixed; only the surrounding code (the “haystack”) grows to introduce realistic, semantically relevant distractors.
+
+Error in a Log of Transactions. We synthesize multi-account banking logs with an initial state and a sequence of operations, each line recording old→new balances and indexed with a TX\_ID. Valid logs must satisfy invariants: conservation of total funds, non-negative balances, and arithmetic correctness. We inject exactly one anomaly and consider the following bug types: CALC\_ERROR (incorrect arithmetic), NEGATIVE\_- BAL (over-debit), LOST\_UPDATE (stale write overwrites a prior commit) and DUPLICATE\_TXN (same payment applied twice). The model must output the bug type and offending TX\_ID. Context length is controlled by the number of operations n; we sweep from 25 operations to 500 operations which varies the number of tokens from O(102) to O(104).
+
+Findings. We evaluate Qwen3 models ranging from 1.7B to 8B parameters on these synthetic tasks. Figure 1 shows the results for the Qwen3-4B model. For both tasks, we see clear consistent trends: (i) As the context lengths increases (number of code lines/transaction logs), the standard in-context performance (i.e., without any additional inference-time compute) decreases sharply. (ii) Further, using inference-time compute via thinking tokens improves performance for shorter contexts, but shows clear diminishing returns as the context length increases, asymptotically converging close to the standard model performance for long contexts.
+
+Empirical Takeaway: Across both controlled tasks, holding the needle fixed and increasing the haystack length T yields a sharp, monotonic drop in in-context accuracy. Allocating inference-time budget to “thinking" tokens offers only short-horizon gains with clear saturation at large T . These trends suggest a structural limitation of static attention in long contexts.
+
+We now formalize this limitation as score dilution and derive the resulting logarithmic margin requirement, which explains why decoding-based scaling fails to recover retrieval (§2.3).
+
+## 2.2 Preliminaries
+
+Recall, for a sequence of $T$ tokens with hidden representations $\{ h _ { i } \} _ { i = 1 } ^ { T } \in \mathbb { R } ^ { d }$ , each Transformer layer ℓ computes query, key, and value projections:
+
+$$
+\begin{array} { r } { q _ { i } ^ { ( \ell ) } = W _ { Q } ^ { ( \ell ) } h _ { i } , \quad k _ { j } ^ { ( \ell ) } = W _ { K } ^ { ( \ell ) } h _ { j } , \quad v _ { j } ^ { ( \ell ) } = W _ { V } ^ { ( \ell ) } h _ { j } , } \end{array}\tag{2.1}
+$$
+
+where $W _ { Q } ^ { ( \ell ) } , W _ { K } ^ { ( \ell ) } \in \mathbb { R } ^ { d _ { k } \times d }$ and $W _ { V } ^ { ( \ell ) } \in \mathbb { R } ^ { d _ { v } \times d }$ are learned projection matrices. Further, the scaled dot product between query $q _ { i }$ and key $k _ { j }$ gives the attention logits $z _ { i , j }$ that are normalized via softmax to obtain attention weights $\alpha _ { i , j }$ . Finally, the output $o _ { i }$ is a weighted sum of value vectors:
+
+$$
+z _ { i , j } : = \frac { q _ { i } ^ { \top } k _ { j } } { \sqrt { d _ { k } } } , \qquad \alpha _ { i , j } : = \frac { \exp ( z _ { i , j } ) } { \sum _ { \ell = 1 } ^ { T } \exp ( z _ { i , \ell } ) } , \qquad o _ { i } = \sum _ { j = 1 } ^ { T } \alpha _ { i , j } v _ { j } .\tag{2.2}
+$$
+
+In the autoregressive setting, causal masking enforces $j \leq i ,$ , so that each position i can only aggregate information from its past. Multi-head attention extends this computation across several subspaces, allowing the model to capture diverse forms of dependency.
+
+In-Context Learning. This attention-based retrieval is the foundation of in-context learning (ICL; (Dong et al., 2023)). By inserting task demonstrations, instructions, or relevant passages directly into the input, LLMs can adapt their outputs without parameter updates. For applications such as analyzing codebases, synthesizing long documents, or sustaining multi-turn dialogues, the model must effectively identify and use information scattered across contexts of length $1 0 ^ { 4 }$ –106 tokens.
+
+Thinking Tokens. Given a prefix $x _ { 1 : i }$ and a target at position i+1, thinking-token methods (Wei et al., 2022a; Kojima et al., 2022; Wang et al., 2023a) append $M \geq 0$ auxiliary tokens at indices $t \in \{ i { + } 1 , \ldots , i { + } M \}$ before producing the final answer at $a = i { + } M { + } 1$ Each token t is generated with static parameters and the same attention kernel as in equation (2.2), yielding logits $z _ { t , j }$ , weights $\alpha _ { t , j }$ , and outputs $o _ { t }$ over the augmented sequence of length ${ \cal T } ^ { \prime } { = } T { + } M$
+
+Definition 2.1 (Retrieval). When predicting token $x _ { i + 1 }$ , the relevant information may lie in a specific key–value pair $( k _ { j ^ { \ast } } , v _ { j ^ { \ast } } )$ (the ‘needle’) at some earlier position $j ^ { * } < i$ . For a threshold $\tau \in ( 0 , 1 )$ , we say that retrieval at position i succeeds if $\alpha _ { i , j ^ { \star } } \ \geq \ \tau$ . Equivalently, in margin form define $\begin{array} { r } { \gamma _ { i } : = z _ { i , j ^ { \star } } - \log \sum _ { j \not = j ^ { \star } } e ^ { z _ { i , j } } } \end{array}$ then retrieval succeeds iff
+
+$$
+\gamma _ { i } \geq \log \left( \frac { \tau } { 1 - \tau } \right) .
+$$
+
+All other positions $j \neq j ^ { \star }$ are distractors, contributing competing logits $\{ z _ { i , j } \} _ { j \neq j ^ { \star } }$
+
+## 2.3 Theoretical Limitations of Static Attention and Thinking Tokens
+
+Informed by the empirical findings in §2.1, we now analyze a single attention layer as in equation (2.2) on the retrieval task (Definition 2.1). We formalize the fundamental challenge of score dilution, which arises when “near-tie” distractors inflate the softmax denominator, causing even a unique maximal logit to receive vanishingly small attention mass.
+
+Lemma 2.2 (Score dilution). If at least m distractor keys satisfy $z _ { i , j } \ge z _ { i , j ^ { \star } } - \Delta$ for some $\Delta \geq 0$ , then
+
+$$
+\alpha _ { i , j ^ { \star } } \leq \frac { 1 } { 1 + m e ^ { - \Delta } } .
+$$
+
+In particular, $i f m \geq c T$ for some $c > 0$ and $\Delta = O ( 1 )$ , then $\alpha _ { i , j ^ { \star } }  0$ as $T \to \infty$
+
+This lemma formalizes a simple intuition: When a constant fraction of tokens are within $O ( 1 )$ logit of the needle, the attention budget cannot concentrate and the needle’s mass vanishes with $T$
+
+This dilution effect imposes a strict requirement on how much the target logit must stand out from all other distractors. The following corollary quantifies this necessary separation, showing that the required margin between needle and distractor must grow with the context length.
+
+Lemma 2.3 (Logarithmic margin requirement). Fix $\varepsilon \in ( 0 , 1 )$ . If
+
+$$
+\operatorname* { m i n } _ { j \neq j ^ { \star } } \big ( z _ { i , j ^ { \star } } - z _ { i , j } \big ) \ \geq \ \log \Big ( \frac { ( T - 1 ) ( 1 - \varepsilon ) } { \varepsilon } \Big ) ,
+$$
+
+then $\alpha _ { i , j ^ { \star } } \geq 1 - \varepsilon$ . In particular, guaranteeing a fixed target mass against worst-case distractors requires a gap that scales as $\Omega ( \log T )$
+
+Achieving a margin that scales logarithmically is difficult for a model with static attention. Next, we evaluate the strategy of generating thinking tokens in satisfying the logarithmic margin requirement.
+
+Proposition 2.4 (Needle-signal bound for generated tokens). For any thinking token $t \in \{ i { + } 1 , \ldots , i { + } M \}$ and any $u \in \mathbb { R } ^ { d _ { v } }$ ,
+
+$$
+\left. u , o _ { t } \right. \leq \alpha _ { t , j ^ { \star } } \left. u , v _ { j ^ { \star } } \right. + \left( 1 - \alpha _ { t , j ^ { \star } } \right) \operatorname* { m a x } _ { j \neq j ^ { \star } } \big \langle u , v _ { j } \big \rangle .
+$$
+
+Corollary 2.5 (Specialization under small margin). If the margin at token t satisfies $\gamma _ { t } \le \log \bigl ( \varepsilon / ( 1 - \varepsilon ) \bigr )$ (equivalently, $\alpha _ { t , j ^ { \star } } \leq \varepsilon$ by Definition 2.1), then
+
+$$
+\left. u , o _ { t } \right. \ : \leq \ : \varepsilon \left. u , v _ { j ^ { \star } } \right. + ( 1 - \varepsilon ) \operatorname* { m a x } _ { j \neq j ^ { \star } } \left. u , v _ { j } \right. .
+$$
+
+Moreover, by Lemma 2.2, if at least m distractors satisfy $z _ { t , j } \ge z _ { t , j ^ { \star } } - \Delta$ , then $\alpha _ { t , j ^ { \star } } \leq 1 / ( 1 + m e ^ { - \Delta } )$ , yielding the same bound with $\varepsilon { = } 1 / ( 1 + m e ^ { - \Delta } )$ .
+
+Proposition 2.4 shows the fraction of needle signal any generated token can carry is at most its own attention mass on the needle. Under dilution (small margin), this mass is provably tiny (Corollary 2.5), so attending to thinking tokens cannot materially increase the final answer’s effective margin unless some intermediate token first assigns non-trivial attention to the needle.
+
+Takeaways: (i) With fixed weights, worst-case retrieval requires a logit margin that grows like $\Omega ( \log T )$ failing to achieve this leads to score dilution and vanishing $\alpha _ { i , j ^ { \star } }$ (ii) Autoregressively generating additional tokens with the same static attention does not repair missing access to the evidence. (iii) Any successful inference-time strategy must change the similarity $q _ { i } ^ { \top } k _ { j } ~ \mathrm { ( e . g . } ~$ , by updating queries) rather than sampling more tokens with unchanged parameters.
+
+## 3 Efficient Test-Time Adaptation via Query-Only Updates
+
+Having established that existing inference-time scaling strategies on vanilla transformer models fail for long contexts, we now investigate an alternate strategy of allocating inference-time compute via test-time training (TTT). First, we establish why a standard TTT approach, involving several forward and backward passes over the model, is computationally infeasible for long contexts. We introduce query-only TTT $\left( \mathrm { q T T T } \right)$ that captures the benefits of TTT while minimizing the computational overhead by re-using the KV cache and only changing the query projections. We present theoretical (§3.2) and empirical (§4) evidence for the efficacy of $\mathrm { q T T T }$ over vanilla ICL and thinking tokens.
+
+Naïve Test-Time Training is Infeasible for Long Contexts. A natural first-step is full-parameter TTT: update FFN and all attention projections $( W _ { Q } , W _ { K } , W _ { V } )$ on the long input $x _ { 1 : T }$ . We find that this is impractical for long-context regimes: every update alters keys/values across the sequence, invalidating the KV cache and forcing fresh forward–backward passes over the entire context at each step, with prohibitive compute and activation memory.
+
+Compute-wise, our FLOP calculations $\left( { \mathrm { A p p e n d i x ~ C } } \right)$ shows that even one such full-parameter TTT step over a T -token context is equivalent to generating about $1 . 2 \times T$ decoding tokens. That is, for a context of about $T \approx 1 0 ^ { 5 }$ tokens, this makes a single training step FLOP equivalent to generating ∼ 120K decoding tokens—rendering full-parameter TTT untenable.
+
+Algorithm 1 Query-Only Test-Time Training for Long Context   
+1: Input: model $f _ { \theta } ,$ , long context $x _ { 1 : T }$ , number of steps NTTT, span length k, step size η   
+2: $\{ K ^ { ( \ell ) } , V ^ { ( \ell ) } \} _ { \ell = 1 } ^ { L } $ ForwardPassAndCache $\left( f _ { \theta } , x _ { 1 : T } \right)$ ▷ Single $O ( T ^ { 2 } )$ operation   
+3: for $n = 1$ to $N _ { \mathrm { T T T } }$ do   
+4: Sample a random span $x _ { s } = x _ { t : t + k }$ from $x _ { 1 : T }$   
+5: Compute $\mathcal { L } _ { \mathrm { T T T } } ( \theta ; x _ { s } )$ using the frozen $\{ K ^ { ( \ell ) } , V ^ { ( \ell ) } \}$   
+6: Update only the query parameters: $\{ W _ { Q } ^ { ( \ell ) } \}  \{ W _ { Q } ^ { ( \ell ) } \} - \eta \nabla _ { \{ W _ { Q } ^ { ( \ell ) } \} } \mathcal { L } _ { \mathrm { T T T } }$   
+7: end for   
+8: return adapted model $f _ { \theta ^ { \prime } }$ to generate the final answer
+
+These constraints motivate a cache-preserving alternative. Our approach, query-only TTT (qTTT), performs a single prefill to cache $\{ K , V \}$ and then adapts only the query projections on short spans, keeping the attention evidence pathway fixed while reshaping access to it. This retains the benefits of TTT without repeated full-context passes; we describe and formalize this procedure next.
+
+## 3.1 Query-Only TTT for Long Context
+
+The core idea of query-only TTT is to avoid repeated, costly forward and backward passes over the long context. Instead, we perform a single expensive prefill to cache the context’s key and value representations and then execute a series of much cheaper, targeted gradient updates. The procedure, also outlined in Algorithm 1 and Figure 2, is as follows:
+
+1. Single-Pass KV Cache Generation. Given a long context $x _ { 1 : T }$ , we perform exactly one full forward pass with the pre-trained model $f _ { \theta }$ . During this pass, for each layer ℓ in the model, we compute and store the Key and Value projection tensors, $\dot { K } ^ { ( \ell ) } \in \mathbb { R } ^ { T \times d _ { k } }$ and $V ^ { ( \ell ) } \in \mathbb { R } ^ { T \times d _ { v } }$ These cached tensors represent the complete contextual information and remain frozen for the duration of the adaptation process.
+
+![](images/9d65b82d48685da3299ff761d7d6fa2721e17f975e3642f4a8c41c49d59249e6.jpg)
+
+2. Span-Sampled, Query-OnlyObjective. With the KV cache held constant, we perform $N _ { \mathrm { T T T } }$ steps of gradient descent. In each step, we update only the query projection
+
+Figure 2 Overview of query-only TTT.
+
+matrices $\{ W _ { Q } ^ { ( \ell ) } \} _ { \ell = 1 } ^ { L }$ The objective is the standard next-token prediction loss, computed over a small, randomly sampled contiguous span of tokens $x _ { s } = x _ { t : t + k } .$ , where the span length $k \ll T ;$
+
+$$
+\mathcal { L } _ { \mathrm { T T T } } ( \theta ; x _ { s } ) = - \sum _ { i = t } ^ { t + k - 1 } \log p _ { \theta } ( x _ { i + 1 } \mid x _ { 1 : i } ; \{ K ^ { ( \ell ) } , V ^ { ( \ell ) } \} _ { \ell = 1 } ^ { L } )\tag{3.1}
+$$
+
+Crucially, the gradients $\nabla _ { \boldsymbol { \theta } } \mathcal { L } _ { \mathrm { T T T } }$ are computed and applied only with respect to the parameters $\{ W _ { Q } ^ { ( \ell ) } \}$ leaving all other model weights, including the now-static KV cache, unchanged.
+
+## 3.2 Why Query-Only Test-Time Training is Effective
+
+Section 2 showed that long-context failures arise from score dilution and the resulting need for a growing target–distractor margin. Query-only TTT targets this bottleneck directly: only adapt the query projections while holding keys/values fixed (from a single prefill). This leaves the evidence (K,V) unchanged and instead reshapes query to it by modifying the similarity $q _ { i } ^ { \top } k _ { j }$ for a given input (Proposition 3.1; Figure 3).
+
+![](images/f337f55a12f65ad1c86d8d2df8c4ee6c0930ce3151ea4c066d5421833c59d15e.jpg)  
+∇q ℓ ∝ µ − t∗ ⇒ gradient descent moves q toward t∗ (needle) and away from $\mu .$  
+Figure 3 A visual representation of Proposition 3.1 showing how qTTT improves the logit margin. The gradient updates via qTTT directly move the query projection weights towards the target needles and counteracts score dilution.
+
+Proposition 3.1 (Query update). For loss $\ell _ { i } = - \log \alpha _ { i , j } ,$ ⋆ with fixed K, the gradient w.r.t. $q _ { i }$ is
+
+$$
+\nabla _ { q _ { i } } \ell _ { i } = \frac { 1 } { \sqrt { d _ { k } } } \Big ( \underbrace { \sum _ { \ell = 1 } ^ { T } \alpha _ { i , \ell } k _ { \ell } } _ { \mu _ { i } } - k _ { j ^ { \star } } \Big ) .
+$$
+
+A descent step $q _ { i } \gets q _ { i } - \eta \nabla _ { q _ { i } } \ell _ { i }$ moves $q _ { i }$ toward $k _ { j ^ { \star } }$ and away from the attention-weighted mean $\mu _ { i }$ , explicitly counteracting dilution. (The statement holds per head and aggregates across heads.)
+
+Lemma 3.2 (Margin improvement). Let $M _ { i } ( q _ { i } ) : = - \ell _ { i } ( q _ { i } )$ denote the logit margin. For sufficiently small $\eta > 0$
+
+$$
+M _ { i } \big ( q _ { i } - \eta \nabla _ { q _ { i } } \ell _ { i } \big ) = M _ { i } ( q _ { i } ) + \eta \| \nabla _ { q _ { i } } \ell _ { i } \| _ { 2 } ^ { 2 } + O ( \eta ^ { 2 } ) .
+$$
+
+Hence the margin strictly increases whenever $\nabla _ { q _ { i } } \ell _ { i } \neq 0$ , with the gain proportional to $\| \boldsymbol { k } _ { j ^ { \star } } - \boldsymbol { \mu } _ { i } \| _ { 2 } ^ { 2 }$ . Improvements are therefore largest precisely when attention is most diffuse, $i . e .$ , in the long-context regimes where score dilution is severe.
+
+Takeaway: Query-only TTT reallocates inference-time compute into margin-raising updates: with fixed {K, V } from a single prefill, each step moves $q _ { i }$ toward $k _ { j ^ { \star } }$ and provably increases the target–distractor logit margin. It thus directly mitigates score dilution, most when attention is most diffuse, without re-encoding the context or growing the KV cache.
+
+## 3.3 FLOP Equivalence: Thinking Tokens vs. Query-Only TTT
+
+We compare two ways to spend inference-time compute after a single prefill: (i) generate $T _ { \mathrm { t h i n k } }$ thinking tokens with frozen weights, or (ii) run $N _ { \mathrm { q T T T } }$ query-only updates on spans of length $k \ll T$ while reusing the KV cache. For long T , FLOP equivalence (Appendix C) yields the rule of thumb
+
+$$
+T _ { \mathrm { t h i n k } } \approx 2 \ : N _ { \mathrm { q T T T } } k \qquad ( \log T , \mathrm { s p a n } k \ll T ) .\tag{3.2}
+$$
+
+Consider a dense model of about 8B parameters on a long context $T = 1 0 ^ { 5 }$ and an inference-time budget budget to decode 8K thinking tokens after the prefill. From equation (3.2), the FLOPs equate to about $N _ { \mathrm { q T T T } } = 1 6$ query-only TTT steps on spans of $k = 1 2 8$ , and $N _ { \mathrm { q T T T } } { = } 8$ for $k = 5 1 2$ . In both cases, thinking tokens grow the KV cache by thousands of positions without changing attention, whereas query-only TTT keeps the cache length fixed at $T$ and uses the matched FLOPs to reshape queries against the existing keys/values, directly targeting the margin bottleneck from §2.
+
+![](images/73bf1bbfca0d2ae5c28e5a8a834297eccc06772b059dc379b8494aa32fe99020.jpg)  
+(a) Comparison on LongBench-v2 subsets for Qwen3-8B. (b) Variation of performance across model size on Using qTTT consistently outperforms standard in-context LongBench-v2 subsets. qTTT improves performance conand FLOP-matched thinking settings. sistently across model sizes.
+
+Figure 4 LongBench-v2 (Bai et al., 2023b) provides a testbed to evaluate long-context abilities across a diverse set of context types. Here, we report evaluations across all six subsets of the benchmark for Qwen3-{1.7/4/8B} models. qTTT shows consistent improvements over both standard in-context learning and FLOP-matched thinking tokens across the different context types.
+
+## 4 Experimental Results
+
+In this section, we discuss experimental results across a suit of long-context tasks. Firstly, we callback the synthetic long-context setup from §2.1. Figure 1 shows that spending inference-time compute via query-only TTT results in significant performance improvements on top of just in-context decoding. We observe that the improvements are consistent across context lengths unlike thinking tokens that show rapid diminishing returns. In the rest of this section, we discuss our findings on long-context benchmarks that involve nuanced n-hop retrieval, reasoning, and comprehension.
+
+Further, we empirically verify that these improvements with qTTT are indeed a result of margin improvement and reducing score dilution. Appendix E (Table 2) shows an analysis of attention mass on the target tokens with and without qTTT. Particularly, we aggregate the attention scores for the target tokens (well defined for these synthetic tasks) across model layers to study the influence of qTTT against vanilla attention. We observe that as number of input tokens increases (hence the number of distractors), the performance as well as attention mass for vanilla attention goes down drastically. However, qTTT helps preserve attention mass significantly across context lengths.
+
+Setup and Evaluation Protocol. We evaluate query-only TTT (qTTT) on long-context tasks against two baselines: (i) In-context—standard decoding with no intermediate tokens; and (ii) Thinking—a chain-of thought variant whose extra tokens are compute-matched to qTTT via the FLOP equivalence in §3.3. Our experiments are performed over Qwen3 models across 1.7B, 4B, and 8B parameters, and cover all subsets of LongBench-v2 (Bai et al., 2023b) (six categories) and ZeroSrolls (Shaham et al., 2023) (eight datasets). Unless stated otherwise, we use $\scriptstyle { T _ { \mathrm { t h i n k } } = 8 1 9 2 , k = 1 2 8 , N _ { \mathrm { q T T T } } = 3 2 }$ , and a common budget of 512 tokens to generate the final answer2.
+
+LongBench-v2. LongBench-v2 (Bai et al., 2023b) evaluates long-context reasoning across diverse context types. The benchmark probes whether models can locate and use dispersed evidence to answer multiple-choice questions across a variety of context types: given multi-file project trees in the Code Repositories setting, to resolve arguments of a particular function; and given the context as a set of related documents in the Multi-Document QA setting, synthesize spans across sources to answer a question. This allows us to assess the applicability of qTTT across forms of input contexts.
+
+Model Size (B)  
+![](images/76c3fa7b407dfb7e75865c373ea40da7e9e7baa1b1c3f42a31a5408cc725a045.jpg)  
+(a) Comparison on ZeroScrolls subsets for Qwen3-8B. Using qTTT consistently outperforms standard in-context and FLOP-matched thinking settings.
+
+![](images/944aeb770f183be13c1bbd15286e1f2cd0938aef2a4436b42a7c3690a5da6d36.jpg)
+
+![](images/1cbdb0d1d703669a2d27b77315a22a4a8499efbb82058154901e923639dcd9ff.jpg)
+
+![](images/e65a0e8edbe670497fdc049b4621cb827b3caa687461726b5f00c8f31b316fb7.jpg)
+
+![](images/e1cf142c63445f317635ea4d0ce32218dd116c5e6173626bcd4e18a803ca9667.jpg)
+
+![](images/7f89bf96248e9e95ab5b2bf206f9ebbd433f3d9433920f226eb52ceca4e18013.jpg)  
+Model Size (B)
+
+![](images/4d3fad58cae437150bab68fd5270146a5ce34ac341b758f36b0232a76434287a.jpg)  
+With Query-only Test-Time Training (qTTT)  
+(b) Variation of performance across model size on Zero-Scrolls subsets. qTTT improves performance consistently across sizes, often greater for larger models.  
+Figure 5 ZeroScrolls (Shaham et al., 2023) evaluates a diverse set of tasks and model abilities over long context inputs. We report evaluations across six subsets for Qwen3-{1.7/4/8B} models. qTTT shows consistent improvements over both standard in-context learning and FLOP-matched thinking tokens, especially for retrieval-based multi-hop reasoning and long form comprehension tasks.
+
+Figure 4 shows that, under compute-matched budgets, qTTT delivers consistent and often substantial gains across model sizes. On Long Dialogue History and Multi-Document QA, where evidence is most diffuse, qTTT outperforms standard in-context and thinking by wide margins (e.g., for Qwen3-4B: 30.8 → 43.6 on Long Dialogue History; 40.0 → 46.0 on Multi-Document QA). In Code Repositories, qTTT scales especially well with model size (for Qwen3-8B: 30.0 → 44.0 → 52.0). Overall, the LongBench-v2 results indicate that qTTT fares well across markedly different context types.
+
+ZeroScrolls. ZeroScrolls (Shaham et al., 2023) evaluates long-context reasoning across diverse tasks. We group the datasets into three categories: (i) Multi-hop reasoning (MuSiQue, QASPER, NarrativeQA), which require locating and composing evidence spread across long documents; (ii) Long-form summarization (GovReport, QMSum, SQuALITY), which emphasize distilling lengthy inputs; and (iii) Long-passage comprehension (QAuLITY), which measures multiple-choice accuracy over extended contexts. In contrast to LongBench-v2, this suite of tests evaluates the ability to utilize some long context to solve a variety of different tasks.
+
+Figure 9 shows that qTTT consistently outperforms vanilla thinking on multi-hop QA and comprehension tasks, with gains that strengthen with model size. On summarization-style datasets, improvements are smaller and comparable to thinking, suggesting that when generation quality, not retrieval, is the primary bottleneck, reweighting attention yields limited returns. Overall, we see significant performance gains across datasets and model scales.
+
+The full set of results on LongBench-v2 and ZeroScrolls are elaborated in Appendix F. Moreover, we include additional test-time compute baselines such as best-of-N and beam search in Appendix G. We also perform a comprehensive latency and wall-clock time comparison of qTTT with other approaches in Appendix H.
+
+Takeaways: (i) We see consistent gains in performance across benchmarks and model sizes, qTTT yields the best average performance under matched FLOPs (Figure 8, Figure 9). (ii) Retrieval-driven tasks benefit the most, validating the score dilution diagnosis and the margin increase with qTTT (§2, §3.2). (iii) Thinking tokens are not a reliable substitute: they sometimes help but can also trail In-context, especially in very long contexts. (iv) qTTT is a more effective use of inference-time compute; without changing architecture, data, or pre-training.
+
+## 5 Prior Work
+
+Long-Context LLMs. Context windows have expanded rapidly, with models reaching million-token scale (Reid et al., 2024), usually extending limits via RoPE scaling (Chen et al., 2023; Bai et al., 2023a). Parallel efforts reduce quadratic attention with sparse/structured patterns (Beltagy et al., 2020; Zaheer et al., 2020). Evaluation has coalesced around long-context suites such as LongBench/LongBench-v2 (Bai et al., 2023b), ZeroScrolls (Shaham et al., 2023), RULER, and domain-specific code benchmarks like SWE-bench variants (Jimenez et al., 2024). However, these LLMs still exhibit strong position sensitivity, yielding the “lost in the middle" effect (Liu et al., 2024). Needle-in-a-haystack–style tests show that a single relevant span can be overwhelmed by many distractors, and this persists across languages and document structures (Kamradt, 2024). Our work targets this retrieval failure by addressing how attention mass is allocated over very long inputs.
+
+Inference-Time Compute Scaling. A common approach is to spend more compute at inference via chain-ofthought (Wei et al., 2022c), self-consistency (Wang et al., 2023b), best-of-n (Nakano et al., 2021), or other strategies (Zelikman et al., 2024; Zweiger et al., 2025; Kang et al., 2025). While often helpful, these methods scale decoding and can be compute-heavy with diminishing returns (Snell et al., 2024; Liu et al., 2025). Another way to spend inference-compute is via test-time training (Sun et al., 2020; Hardt and Sun, 2024; Akyürek et al., 2024). While typically done to handle distribution shifts, recent work has started focusing on long-context LLM use cases (Sun et al., 2024; Zuo et al., 2025). To our knowledge, our work is first to re-purpose TTT to micro-distribution of individual inputs via a query-only variant tailored to long-context.
+
+## 6 Discussion
+
+We identify score dilution in static quadratic attention as a core cause of long-context failures. We design synthetic tasks to study long-context behavior controllably and show that accuracy falls sharply with context length T and “thinking” tokens show diminishing returns (§2). We proposed query-only TTT (qTTT) to reallocate inference-time budget via few query-only updates that provably increase the target–distractor margin (§3). Under matched FLOPs, qTTT consistently outperforms in-context and thinking on LongBench-v2 and ZeroSCROLLS, with the largest gains on retrieval and multi-hop reasoning (§4). In short, adapting queries is a more effective use of inference-time compute than generating more tokens for long context tasks.
+
+Future directions. (1) We evaluate a single point on the (k, NTTT) trade-off; exploring budget schedules across span size and steps is immediate. (2) Our compute-matched baseline focuses on “thinking” tokens; extending to self-consistency and best-of-n within the same framework is future work. (3) Gains are task-dependent; developing simple predictors for when to prefer qTTT (vs. decoding-based scaling) is a practical next step.
+
+## 7 Acknowledgments
+
+This work was done when RB, RT, SSD, and DK were summer interns at Meta. RB would like to thank other interns in the legacy GenAI team for the exchange of ideas and brainstorming that shaped this project. Namely: Irene Zhang, Winnie Yang, Julian Coda-Forno, Sriyash Poddar, Arushi Rai, and others in the Research Club. We thank Sharan Narang, Prateek Yadav, and Mike Lewis for their guidance. RB would like to thank Yonatan Belinkov, Nihal Nayak, Lyndon Lam, Sunny Qin, Bingbin Liu, and other members of the ML Foundations group and the Kempner Institute at Harvard for their feedback on the manuscript.
+
+## References
+
+Ekin Akyürek, Mehul Damani, Adam Zweiger, Linlu Qiu, Han Guo, Jyothish Pari, Yoon Kim, and Jacob Andreas. The surprising effectiveness of test-time training for few-shot learning, 2024. https://arxiv.org/abs/2411.07279.
+
+Anthropic. Claude 3: Extended context windows for enterprise applications, 2024. Technical Report.
+
+Jinze Bai, Shuai Bai, Yunfei Chu, Zeyu Cui, Kai Dang, Xiaodong Deng, et al. Qwen technical report. ArXiv preprint, abs/2309.16609, 2023a. https://arxiv.org/abs/2309.16609.
+
+Yushi Bai, Xin Zheng, Tingyu Lv, Yuran Cui, and Wei Chen. Longbench: A bilingual, multitask benchmark for long context understanding. ArXiv preprint, abs/2308.14508, 2023b. https://arxiv.org/abs/2308.14508.
+
+Iz Beltagy, Matthew E Peters, and Arman Cohan. Longformer: The long-document transformer. ArXiv preprint, abs/2004.05150, 2020. https://arxiv.org/abs/2004.05150.
+
+Sebastian Borgeaud, Arthur Mensch, Jordan Hoffmann, Trevor Cai, Eliza Rutherford, Katie Millican, George van den Driessche, Jean-Baptiste Lespiau, Bogdan Damoc, Aidan Clark, Diego de Las Casas, Aurelia Guy, Jacob Menick, Roman Ring, Tom Hennigan, Saffron Huang, Loren Maggiore, Chris Jones, Albin Cassirer, Andy Brock, Michela Paganini, Geoffrey Irving, Oriol Vinyals, Simon Osindero, Karen Simonyan, Jack W. Rae, Erich Elsen, and Laurent Sifre. Improving language models by retrieving from trillions of tokens. In Kamalika Chaudhuri, Stefanie Jegelka, Le Song, Csaba Szepesvári, Gang Niu, and Sivan Sabato, editors, International Conference on Machine Learning, ICML 2022, 17-23 July 2022, Baltimore, Maryland, USA, volume 162 of Proceedings of Machine Learning Research, pages 2206–2240. PMLR, 2022. https://proceedings.mlr.press/v162/borgeaud22a.html.
+
+Shouyuan Chen, Sherman Ding, Chen Wang, Lulu Li, Dayi Zha, and Li Wang. Extending context window of large language models via positional interpolation. ArXiv preprint, abs/2306.15595, 2023. https://arxiv.org/abs/2306. 15595.
+
+Zihang Dai, Zhilin Yang, Yiming Yang, Jaime Carbonell, Quoc Le, and Ruslan Salakhutdinov. Transformer-XL: Attentive language models beyond a fixed-length context. In Anna Korhonen, David Traum, and Lluís Màrquez, editors, Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics, pages 2978–2988, Florence, Italy, 2019. Association for Computational Linguistics. doi: 10.18653/v1/P19-1285. https://aclanthology. org/P19-1285.
+
+Yiran Ding, Li Lyna Zhang, Chengruidong Zhang, Yuanyuan Xu, Ning Shang, Jiahang Xu, Fan Yang, and Mao Yang. Longrope: Extending LLM context window beyond 2 million tokens. In Forty-first International Conference on Machine Learning, ICML 2024, Vienna, Austria, July 21-27, 2024. OpenReview.net, 2024. https://openreview. net/forum?id=ONOtpXLqqw.
+
+Qingxiu Dong, Lei Li, Damai Dai, Ce Zheng, Jingyuan Ma, Rui Li, Heming Xia, Jingjing Xu, Zhiyong Wu, Tianyu Liu, Baobao Chang, Xu Sun, Lei Li, and Zhifang Sui. A survey on in-context learning, 2023. https://arxiv.org/ abs/2301.00234.
+
+Moritz Hardt and Yu Sun. Test-time training on nearest neighbors for large language models. In The Twelfth Interna tional Conference on Learning Representations, ICLR 2024, Vienna, Austria, May 7-11, 2024. OpenReview.net, 2024. https://openreview.net/forum?id=CNL2bku4ra.
+
+Cheng-Ping Hsieh, Simeng Sun, Samuel Kriman, Shantanu Acharya, Dima Rekesh, Fei Jia, Yang Zhang, and Boris Ginsburg. Ruler: What’s the real context size of your long-context language models? ArXiv preprint, abs/2404.06654, 2024. https://arxiv.org/abs/2404.06654.
+
+Gautier Izacard et al. Atlas: Few-shot learning with retrieval augmented language models. ArXiv preprint, abs/2208.03299, 2022. https://arxiv.org/abs/2208.03299.
+
+Carlos E. Jimenez, John Yang, Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir Press, and Karthik R. Narasimhan. Swe-bench: Can language models resolve real-world github issues? In The Twelfth International Conference on Learning Representations, ICLR 2024, Vienna, Austria, May 7-11, 2024. OpenReview.net, 2024. https://openreview. net/forum?id=VTF8yNQM66.
+
+Greg Kamradt. Pressure testing llms: Needle in a haystack. https://blog.gregkamradt.com/ llm-leaderboard-and-evals/pressure-testing-llms-with-a-needle-in-a-haystack, 2024. Accessed: 2025-09-04.
+
+Zhewei Kang, Xuandong Zhao, and Dawn Song. Scalable best-of-n selection for large language models via self-certainty, 2025. https://arxiv.org/abs/2502.18581.
+
+Daniel Martin Katz, Michael J Bommarito, Shang Gao, and Pablo Arredondo. Natural language processing in the legal domain. ArXiv preprint, abs/2302.12039, 2023. https://arxiv.org/abs/2302.12039.
+
+Takeshi Kojima, Shixiang Shane Gu, Machel Reid, Yutaka Matsuo, and Yusuke Iwasawa. Large language models are zero-shot reasoners. In Sanmi Koyejo, S. Mohamed, A. Agarwal, Danielle Belgrave, K. Cho, and A. Oh, editors, Advances in Neural Information Processing Systems 35: Annual Conference on Neural Information Processing Systems 2022, NeurIPS 2022, New Orleans, LA, USA, November 28 - December 9, 2022, 2022. http://papers.nips. cc/paper\_files/paper/2022/hash/8bb0d291acd4acf06ef112099c16f326-Abstract-Conference.html.
+
+Wojciech Kryscinski, Nazneen Rajani, Divyansh Agarwal, Caiming Xiong, and Dragomir Radev. BOOKSUM: A collection of datasets for long-form narrative summarization. In Yoav Goldberg, Zornitsa Kozareva, and Yue Zhang, editors, Findings of the Association for Computational Linguistics: EMNLP 2022, pages 6536–6558, Abu Dhabi, United Arab Emirates, 2022. Association for Computational Linguistics. doi: 10.18653/v1/2022.findings-emnlp.488. https://aclanthology.org/2022.findings-emnlp.488.
+
+Nelson F. Liu, Kevin Lin, John Hewitt, Ashwin Paranjape, Michele Bevilacqua, Fabio Petroni, and Percy Liang. Lost in the middle: How language models use long contexts. Transactions of the Association for Computational Linguistics, 12:157–173, 2024. doi: 10.1162/tacl\_a\_00638. https://aclanthology.org/2024.tacl-1.9.
+
+Runze Liu, Junqi Gao, Jian Zhao, Kaiyan Zhang, Xiu Li, Biqing Qi, Wanli Ouyang, and Bowen Zhou. Can 1b LLM surpass 405b LLM? rethinking compute-optimal test-time scaling, 2025. https://arxiv.org/abs/2502.06703.
+
+Yuejiang Liu, Parth Kothari, Bastien van Delft, Baptiste Bellot-Gurlet, Taylor Mordan, and Alexandre Alahi. TTT++: when does self-supervised test-time training fail or thrive? In Marc’Aurelio Ranzato, Alina Beygelzimer, Yann N. Dauphin, Percy Liang, and Jennifer Wortman Vaughan, editors, Advances in Neural Information Processing Systems 34: Annual Conference on Neural Information Processing Systems 2021, NeurIPS 2021, December 6-14, 2021, virtual, pages 21808–21820, 2021. https://proceedings.neurips.cc/paper/2021/hash/ b618c3210e934362ac261db280128c22-Abstract.html.
+
+Reiichiro Nakano et al. Webgpt: Browser-assisted question-answering with human feedback. ArXiv preprint, abs/2112.09332, 2021. https://arxiv.org/abs/2112.09332.
+
+Joon Sung Park, Joseph C O’Brien, Carrie J Cai, Meredith Ringel Morris, Percy Liang, and Michael S Bernstein. Generative agents: Interactive simulacra of human behavior. ArXiv preprint, abs/2304.03442, 2023. https: //arxiv.org/abs/2304.03442.
+
+Bowen Peng, Jeffrey Quesnelle, Honglu Fan, and Enrico Shippole. Yarn: Efficient context window extension of large language models. In The Twelfth International Conference on Learning Representations, ICLR 2024, Vienna, Austria, May 7-11, 2024. OpenReview.net, 2024. https://openreview.net/forum?id=wHBfxhZu1u.
+
+Ofir Press et al. Alibi: Attention with linear biases enables input length extrapolation. ICLR, 2022.
+
+M. Reid, Gemini T. Team, et al. Gemini 1.5: Unlocking multimodal understanding across millions of tokens of context. ArXiv preprint, abs/2403.05530, 2024. https://arxiv.org/abs/2403.05530.
+
+Uri Shaham, Maor Ivgi, Avia Efrat, Jonathan Berant, and Omer Levy. ZeroSCROLLS: A zero-shot benchmark for long text understanding. In Houda Bouamor, Juan Pino, and Kalika Bali, editors, Findings of the Association for Computational Linguistics: EMNLP 2023, pages 7977–7989, Singapore, 2023. Association for Computational Linguistics. doi: 10.18653/v1/2023.findings-emnlp.536. https://aclanthology.org/2023.findings-emnlp.536.
+
+Charlie Snell, Jaehoon Lee, Kelvin Xu, and Aviral Kumar. Scaling LLM test-time compute optimally can be more effective than scaling model parameters, 2024. https://arxiv.org/abs/2408.03314.
+
+Nisan Stiennon, Long Ouyang, Jeffrey Wu, Daniel M. Ziegler, Ryan Lowe, Chelsea Voss, Alec Radford, Dario Amodei, and Paul F. Christiano. Learning to summarize with human feedback. In Hugo Larochelle, Marc’Aurelio Ranzato, Raia Hadsell, Maria-Florina Balcan, and Hsuan-Tien Lin, editors, Advances in Neural Information Processing Systems 33: Annual Conference on Neural Information Processing Systems 2020, NeurIPS 2020, December 6-12, 2020, virtual, 2020. https://proceedings.neurips.cc/paper/2020/hash/1f89885d556929e98d3ef9b86448f951-Abstract.html.
+
+Jianlin Su, Murtadha Ahmed, Yu Lu, Shengfeng Pan, Wen Bo, and Yunfeng Liu. Roformer: Enhanced transformer with rotary position embedding. Neurocomputing, 568:127063, 2024.
+
+Yu Sun, Xiaolong Wang, Zhuang Liu, John Miller, Alexei A. Efros, and Moritz Hardt. Test-time training with self-supervision for generalization under distribution shifts. In Proceedings of the 37th International Conference on Machine Learning, ICML 2020, 13-18 July 2020, Virtual Event, volume 119 of Proceedings of Machine Learning Research, pages 9229–9248. PMLR, 2020. http://proceedings.mlr.press/v119/sun20b.html.
+
+Yu Sun, Xinhao Li, Karan Dalal, Jiarui Xu, Arjun Vikram, Genghan Zhang, Yann Dubois, Xinlei Chen, Xiaolong Wang, Sanmi Koyejo, Tatsunori Hashimoto, and Carlos Guestrin. Learning to (learn at test time): RNNs with expressive hidden states, 2024. https://arxiv.org/abs/2407.04620.
+
+Ross Taylor, Marcin Kardas, Guillem Cucurull, Thomas Scialom, Anthony Hartshorn, Elvis Saravia, Andrew Poulton, Viktor Kerkez, and Robert Stojnic. Galactica: A large language model for science. ArXiv preprint, abs/2211.09085, 2022. https://arxiv.org/abs/2211.09085.
+
+Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc V. Le, Ed H. Chi, Sharan Narang, Aakanksha Chowdhery, and Denny Zhou. Self-consistency improves chain of thought reasoning in language models. In The Eleventh International Conference on Learning Representations, ICLR 2023, Kigali, Rwanda, May 1-5, 2023. OpenReview.net, 2023a. https://openreview.net/pdf?id=1PL1NIMMrw.
+
+Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc V. Le, Ed H. Chi, Sharan Narang, Aakanksha Chowdhery, and Denny Zhou. Self-consistency improves chain of thought reasoning in language models. In The Eleventh International Conference on Learning Representations, ICLR 2023, Kigali, Rwanda, May 1-5, 2023. OpenReview.net, 2023b. https://openreview.net/pdf?id=1PL1NIMMrw.
+
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia, Ed H. Chi, Quoc V. Le, and Denny Zhou. Chain-of-thought prompting elicits reasoning in large language models. In Sanmi Koyejo, S. Mohamed, A. Agarwal, Danielle Belgrave, K. Cho, and A. Oh, editors, Advances in Neural Information Processing Systems 35: Annual Conference on Neural Information Processing Systems 2022, NeurIPS 2022, New Orleans, LA, USA, November 28 - December 9, 2022, 2022a. http://papers.nips.cc/paper\_files/paper/2022/hash/ 9d5609613524ecf4f15af0f7b31abca4-Abstract-Conference.html.
+
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia, Ed H. Chi, Quoc V. Le, and Denny Zhou. Chain-of-thought prompting elicits reasoning in large language models. In Sanmi Koyejo, S. Mohamed, A. Agarwal, Danielle Belgrave, K. Cho, and A. Oh, editors, Advances in Neural Information Processing Systems 35: Annual Conference on Neural Information Processing Systems 2022, NeurIPS 2022, New Orleans, LA, USA, November 28 - December 9, 2022, 2022b. http://papers.nips.cc/paper\_files/paper/2022/hash/ 9d5609613524ecf4f15af0f7b31abca4-Abstract-Conference.html.
+
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia, Ed H. Chi, Quoc V. Le, and Denny Zhou. Chain-of-thought prompting elicits reasoning in large language models. In Sanmi Koyejo, S. Mohamed, A. Agarwal, Danielle Belgrave, K. Cho, and A. Oh, editors, Advances in Neural Information Processing Systems 35: Annual Conference on Neural Information Processing Systems 2022, NeurIPS 2022, New Orleans, LA, USA, November 28 - December 9, 2022, 2022c. http://papers.nips.cc/paper\_files/paper/2022/hash/ 9d5609613524ecf4f15af0f7b31abca4-Abstract-Conference.html.
+
+Bowen Yang, Bharat Venkitesh, Dwarak Talupuru, Hangyu Lin, David Cairuz, Phil Blunsom, and Acyr Locatelli. Rope to nope and back again: A new hybrid attention strategy, 2025. https://arxiv.org/abs/2501.18795.
+
+Manzil Zaheer, Guru Guruganesh, Kumar Avinava Dubey, Joshua Ainslie, Chris Alberti, Santiago Ontañón, Philip Pham, Anirudh Ravula, Qifan Wang, Li Yang, and Amr Ahmed. Big bird: Transformers for longer sequences. In Hugo Larochelle, Marc’Aurelio Ranzato, Raia Hadsell, Maria-Florina Balcan, and Hsuan-Tien Lin, editors, Advances in Neural Information Processing Systems 33: Annual Conference on Neural Information Processing Systems 2020, NeurIPS 2020, December 6-12, 2020, virtual, 2020. https://proceedings.neurips.cc/paper/2020/ hash/c8512d142a2d849725f31a9a7a361ab9-Abstract.html.
+
+Eric Zelikman, Georges Harik, Yijia Shao, Varuna Jayasiri, Nick Haber, and Noah D Goodman. Quiet-star: Language models can teach themselves to think before speaking. ArXiv preprint, abs/2403.09629, 2024. https://arxiv.org/ abs/2403.09629
+
+Fengji Zhang, Bei Chen, Yue Zhang, Jacky Keung, Jin Liu, Daoguang Zan, Yi Mao, Jian-Guang Lou, and Weizhu Chen. RepoCoder: Repository-level code completion through iterative retrieval and generation. In Houda Bouamor, Juan Pino, and Kalika Bali, editors, Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing, pages 2471–2484, Singapore, 2023. Association for Computational Linguistics. doi: 10.18653/v1/2023. emnlp-main.151. https://aclanthology.org/2023.emnlp-main.151.
+
+Shuyan Zhou, Frank F. Xu, Hao Zhu, Xuhui Zhou, Robert Lo, Abishek Sridhar, Xianyi Cheng, Tianyue Ou, Yonatan Bisk, Daniel Fried, Uri Alon, and Graham Neubig. Webarena: A realistic web environment for building autonomous agents. In The Twelfth International Conference on Learning Representations, ICLR 2024, Vienna, Austria, May 7-11, 2024. OpenReview.net, 2024. https://openreview.net/forum?id=oKn9c6ytLx.
+
+Yuxin Zuo, Kaiyan Zhang, Li Sheng, Shang Qu, Ganqu Cui, Xuekai Zhu, Haozhan Li, Yuchen Zhang, Xinwei Long, Ermo Hua, Biqing Qi, Youbang Sun, Zhiyuan Ma, Lifan Yuan, Ning Ding, and Bowen Zhou. TTRL: Test-time reinforcement learning, 2025. https://arxiv.org/abs/2504.16084
+
+Adam Zweiger, Jyothish Pari, Han Guo, Ekin Akyürek, Yoon Kim, and Pulkit Agrawal. Self-adapting language models, 2025. https://arxiv.org/abs/2506.10943.
+
+Bug Description: The attention mechanism fails to properly normalize attention scores, leading to   
+numerical instability and gradient explosion during training. The attention weights grow unbounded,   
+causing immediate training divergence.   
+Code context:   
+olmo/model.py   
+L335: def \_scaled\_dot\_product\_attention(   
+L336: self,   
+L337: q: torch.Tensor,   
+L338: k: torch.Tensor,   
+L339: v: torch.Tensor,   
+L340: attn\_mask: Optional[torch.Tensor] = None,   
+L341: dropout\_p: float = 0.0,   
+L342: is\_causal: bool = False,   
+L343: ) -> torch.Tensor:   
+L344:   
+L345: attn\_weights = torch.matmul(q, k.transpose(-2, -1))   
+L346:   
+L347: if is\_causal:   
+L348: assert attn\_mask is None   
+L349: query\_len, key\_len = q.shape[-2], k.shape[-2]   
+Target: Given the above code context, please identify the exact location of the bug.   
+Model output: olmo/model.py:L345  
+Figure 6 An example of the code bug localization synthetic task.
+
+## Appendix
+
+## A Synthetic Tasks
+
+We illustrate two representative synthetic tasks used in our study. Figure 6 shows the code bug localization task: the model receives a brief natural-language bug description together with a minimal, line-numbered code context and must return the exact file-and-line of the offending statement. In the example, the model correctly identifies the line where attention scores are computed without proper normalization (olmo/model.py:L345).
+
+Figure 7 shows the transaction-log consistency task: given an initial account state, a set of invariants (e.g., conservation of total funds, no negative balances), and a short sequence of transfers, the model must select a single bug type and pinpoint the first offending transaction. In the example, the model outputs NEGATIVE\_BAL at TX004, where the balance of account A becomes negative, violating the stated rules.
+
+Together, these examples illustrate the input/output format of our synthetic tasks, the kind of structured context provided to the model, and the expected concise targets (a specific line for code or a {bug\_type, TX\_id} pair for logs). We use similarly formatted instances throughout our evaluation.
+
+## B Proofs for Section 2
+
+Notation. For a fixed query qi, logits are $\begin{array} { r } { z _ { i , j } = \frac { q _ { i } ^ { \top } k _ { j } } { \sqrt { d _ { k } } } } \end{array}$ , attention weights $\begin{array} { r } { \alpha _ { i , j } = \frac { e ^ { z _ { i , j } } } { \sum _ { \ell } e ^ { z _ { i , \ell } } } } \end{array}$ , and $o _ { i } = \textstyle \sum _ { j } \alpha _ { i , j } v _ { j }$ We write $\begin{array} { r } { \mu _ { i } = \sum _ { \ell } \alpha _ { i , \ell } k _ { \ell } } \end{array}$
+
+Task Description: Analyze this banking transaction log for bugs.   
+Initial state: {"account\_A": 4000, "account\_B": 4200, "total": 8200}   
+Rules: 1. Total money must remain constant (conservation)   
+2. No account can go negative   
+3. All calculations must be mathematically correct   
+Transaction logs:   
+[TX001]: Transfer \$107: A=4000 → 3893, B=4200 → 4307   
+[TX002]: Transfer \$204: A=3893 → 3689, B=4307 → 4511   
+[TX003]: Transfer \$780: A=3689 → 2909, B=4511 → 5291   
+[TX004]: Transfer \$2925:A=2909 → -16, B=5291 → 8216   
+[TX005]: Transfer \$699: B=8216 → 7517, A=-16 → 683   
+Possible bug types (choose exactly one):   
+CALC\_ERROR: Mathematical calculation is incorrect   
+NEGATIVE\_BAL: Account balance becomes negative   
+– LOST\_UPDATE: Concurrent update causes lost transaction   
+DUPLICATE\_TXN: Same transaction processed multiple times   
+Target: Please identify the bug type and location.   
+Model output: {"bug\_type": NEGATIVE\_BAL, "bug\_location": TX004}  
+Figure 7 An example of the log transactions synthetic task.
+
+Proof of Lemma 2.3 (Score dilution). Let $S = \{ j \neq j ^ { \star } : z _ { i , j } \geq z _ { i , j ^ { \star } } - \Delta \}$ with $| S | = m$ . Then
+
+$$
+\sum _ { \ell = 1 } ^ { T } e ^ { z _ { i , \ell } } \geq e ^ { z _ { i , j ^ { \star } } } + \sum _ { j \in S } e ^ { z _ { i , j } } \geq e ^ { z _ { i , j ^ { \star } } } \big ( 1 + m e ^ { - \Delta } \big ) ,
+$$
+
+hence $\begin{array} { r } { \alpha _ { i , j ^ { \star } } = \frac { e ^ { z _ { i , j ^ { \star } } } } { \sum _ { \ell } e ^ { z _ { i , \ell } } } \le \frac { 1 } { 1 + m e ^ { - \Delta } } } \end{array}$ . If $m \geq c T$ with $c > 0$ and $\Delta = O ( 1 )$ , then $\alpha _ { i , j ^ { \star } }  0$ as $T \to \infty$
+
+Proof of Lemma 2.3 (Logarithmic margin requirement). Let $\begin{array} { r } { \gamma = \operatorname* { m i n } _ { j \neq j ^ { \star } } ( z _ { i , j ^ { \star } } - z _ { i , j } ) } \end{array}$ . Then $\sum _ { j \neq j ^ { \star } } e ^ { z _ { i , j } } \ \leq$ $( T - 1 ) e ^ { z _ { i , j } \star - \gamma }$ , so
+
+$$
+\alpha _ { i , j ^ { \star } } = \frac { 1 } { 1 + \sum _ { j \neq j ^ { \star } } e ^ { z _ { i , j } - z _ { i , j ^ { \star } } } } \geq \frac { 1 } { 1 + ( T - 1 ) e ^ { - \gamma } } .
+$$
+
+Rearranging $\frac { 1 } { 1 + ( T - 1 ) e ^ { - \gamma } } \geq 1 - \varepsilon .$ yields $\begin{array} { r } { \gamma \geq \log \big ( \frac { ( T - 1 ) ( 1 - \varepsilon ) } { \varepsilon } \big ) } \end{array}$
+
+Proof of Proposition 2.4 (Needle-signal bound). For any thinking token t,
+
+$$
+o _ { t } = \sum _ { j < t } \alpha _ { t , j } v _ { j } = \alpha _ { t , j ^ { \star } } v _ { j ^ { \star } } + ( 1 - \alpha _ { t , j ^ { \star } } ) \sum _ { j \neq j ^ { \star } } \tilde { \alpha } _ { t , j } v _ { j } , \quad \tilde { \alpha } _ { t , j } = \frac { \alpha _ { t , j } } { 1 - \alpha _ { t , j ^ { \star } } } .
+$$
+
+For any $u \in \mathbb { R } ^ { d _ { v } }$ , take inner products and upper bound the convex combination by its maximum term:
+
+$$
+\left. u , o _ { t } \right. \leq \alpha _ { t , j ^ { \star } } \left. u , v _ { j ^ { \star } } \right. + \left( 1 - \alpha _ { t , j ^ { \star } } \right) \operatorname* { m a x } _ { j \neq j ^ { \star } } \langle u , v _ { j } \rangle .
+$$
+
+Proof of Corollary 2.5 (Specialization under small margin). By Definition 2.1, $\gamma _ { t } \leq \log \left( \varepsilon / ( 1 - \varepsilon ) \right) \operatorname* { i f } \alpha _ { t , j ^ { \star } } \leq \varepsilon$ Substitute $\alpha _ { t , j ^ { \star } } \leq \varepsilon$ in Proposition 2.4 to obtain
+
+$$
+\langle u , o _ { t } \rangle \leq \varepsilon \langle u , v _ { j ^ { \star } } \rangle + ( 1 - \varepsilon ) \operatorname* { m a x } _ { j \neq j ^ { \star } } \langle u , v _ { j } \rangle .
+$$
+
+Moreover, Claim 2.3 implies $\alpha _ { t , j ^ { \star } } \leq 1 / ( 1 + m e ^ { - \Delta } )$ when at least m distractors satisfy $z _ { t , j } \ge z _ { t , j ^ { \star } } - \Delta$ , yielding the bound with $\varepsilon = 1 / ( 1 + m e ^ { - \Delta } )$
+
+Proof of Claim 3.1 (Directional query update). With $\begin{array} { r } { z _ { i , \ell } = \frac { q _ { i } ^ { \top } k _ { \ell } } { \sqrt { d _ { k } } } } \end{array}$
+
+$$
+\ell _ { i } ( q _ { i } ) = - \log \alpha _ { i , j ^ { \star } } = - z _ { i , j ^ { \star } } + \log \sum _ { \ell = 1 } ^ { T } e ^ { z _ { i , \ell } } .
+$$
+
+Differentiating w.r.t. qi and using $\begin{array} { r } { \frac { \partial z _ { i , \ell } } { \partial q _ { i } } = \frac { k _ { \ell } } { \sqrt { d _ { k } } } } \end{array}$
+
+$$
+\nabla _ { q _ { i } } \ell _ { i } = - \frac { k _ { j ^ { \star } } } { \sqrt { d _ { k } } } + \frac { 1 } { \sum _ { \ell ^ { \prime } } e ^ { z _ { i } } , \ell ^ { \prime } } \sum _ { \ell = 1 } ^ { T } e ^ { z _ { i , \ell } } \frac { k _ { \ell } } { \sqrt { d _ { k } } } = \frac { 1 } { \sqrt { d _ { k } } } \Big ( \sum _ { \ell = 1 } ^ { T } \alpha _ { i , \ell } k _ { \ell } - k _ { j ^ { \star } } \Big ) = \frac { 1 } { \sqrt { d _ { k } } } ( \mu _ { i } - k _ { j ^ { \star } } ) .
+$$
+
+Thus a descent step moves $q _ { i }$ toward $k _ { j } ,$ ⋆ and away from $\mu _ { i }$
+
+Proof of Lemma 3.2 (Monotone margin improvement). Define $M _ { i } ( q _ { i } ) = - \ell _ { i } ( q _ { i } )$ . Then $\nabla M _ { i } ( q _ { i } ) = - \nabla \ell _ { i } ( q _ { i } )$ For a step $q _ { i } ^ { + } = q _ { i } - \eta \nabla \ell _ { i } ( q _ { i } )$ , a first-order expansion gives
+
+$$
+M _ { i } ( q _ { i } ^ { + } ) = M _ { i } ( q _ { i } ) + \eta \| \nabla \ell _ { i } ( q _ { i } ) \| _ { 2 } ^ { 2 } + O ( \eta ^ { 2 } ) .
+$$
+
+Using Claim 3.1, $\begin{array} { r } { \| \nabla _ { q _ { i } } \ell _ { i } \| _ { 2 } ^ { 2 } = \frac { 1 } { d _ { k } } \| k _ { j ^ { \star } } - \mu _ { i } \| _ { 2 } ^ { 2 } } \end{array}$ , which is strictly positive unless $k _ { j ^ { \star } } = \mu _ { i \cdot } \mathrm { ~ H ~ V ~ } \ell _ { i }$ is L-Lipschitz, choosing $\eta \in ( 0 , 1 / L ]$ ensures $\begin{array} { r } { \ddot { M } _ { i } ( q _ { i } ^ { + } ) \geq M _ { i } ( q _ { i } ) + \frac { \eta } { 2 } \| \nabla \ell _ { i } ( q _ { i } ) \| _ { 2 } ^ { 2 } } \end{array}$
+
+Remarks on multi-head attention. All statements apply per head. Let superscript h index heads and define per-head logits/weights $\{ z _ { i , j } ^ { ( h ) } , \alpha _ { i , j } ^ { ( h ) } \}$ . Claims on dilution and margin hold headwise; aggregation across heads is via concatenation and an output projection, which preserves the directional and margin-improvement arguments by linearity.
+
+## C FLOP Derivations for §3.3
+
+We outline FLOP models for two inference-time modes and derive the equivalence summarized in Eq. equation 3.2. Consider a dense Transformer with L layers, hidden size d, MLP ratio r (so $d _ { \mathrm { f f } } = r d )$ , and long context length T . Let $T _ { \mathrm { t h i n k } }$ be the number of autoregressively generated “thinking” tokens, $N _ { \mathrm { q T T T } }$ the number of query-only updates, and k the span size per update.
+
+Cost coefficients. Ignoring lower-order terms (layer norms, biases), we collect the dominant costs as
+
+$$
+C _ { \mathrm { q u s d } } = 2 L d \quad ( \mathrm { q u a d r a t i c ~ a t t e n t i o n ~ t e r m } ) , \qquad C _ { \mathrm { t o k } } = ( 4 + 2 r ) L d ^ { 2 } \quad ( \mathrm { p e r . t o k e n ~ p r o j e c t i o n s / M L P } ) .
+$$
+
+A parallel forward over T tokens (the prefill) costs
+
+$$
+F _ { \mathrm { p r e f l l } } ( T ) = C _ { \mathrm { q u a d } } T ^ { 2 } + C _ { \mathrm { t o k } } T .
+$$
+
+Case A (autoregressive “thinking”). After one prefill, generating $T _ { \mathrm { t h i n k } }$ tokens with a KV cache costs
+
+$$
+F _ { \mathrm { g e n } } ( T _ { \mathrm { t h i n k } } ; T ) ~ = ~ C _ { \mathrm { q u a d } } \biggl ( T _ { \mathrm { t h i n k } } T + { \frac { T _ { \mathrm { t h i n k } } ( T _ { \mathrm { t h i n k } } - 1 ) } { 2 } } \biggr ) ~ + ~ C _ { \mathrm { t o k } } T _ { \mathrm { t h i n k } } ,
+$$
+
+so the total is $F _ { A } = F _ { \mathrm { p r e f l l } } ( T ) + F _ { \mathrm { g e n } } ( T _ { \mathrm { t h i n k } } ; T )$
+
+Case C (query-only TTT: query-only with cached K/V). With one prefill, each query-only pass recomputes queries for k positions that attend to cached {K, V } and backpropagates only into $\{ W _ { Q } \}$ . The per-pass cost is
+
+$$
+\ G _ { \mathrm { p a r t i a l } } ( k ; T ) \ \approx \ 2 \Bigl ( C _ { \mathrm { q u a d } } k T \ + \ ( 2 { + } 2 r ) L k d ^ { 2 } \Bigr ) ,
+$$
+
+and the total is $F _ { C } \ = \ F _ { \mathrm { p r e f i l l } } ( T ) + N _ { \mathrm { q T T T } } G _ { \mathrm { p a r t i a l } } ( k ; T )$ (If the span also attends within itself, add $+ C _ { \mathrm { q u a d } } k ^ { 2 }$ and $+ 2 L k d ^ { 2 }$ inside $G _ { \mathrm { p a r t i a l } }$ , which are dominated by kT when $k \ll T . )$
+
+Equivalence (A vs. C). Cancelling the shared prefill and equating $F _ { \mathrm { g e n } } ( T _ { \mathrm { t h i n k } } ; T ) = N _ { \mathrm { q T T T } } G _ { \mathrm { p a r t i a l } } ( k ; T )$ yields
+
+$$
+\begin{array} { r } { C _ { \mathrm { q u a d } } \Big ( T _ { \mathrm { t h i n k } } T + \frac { T _ { \mathrm { t h i n k } } ( T _ { \mathrm { t h i n k } } - 1 ) } { 2 } \Big ) + C _ { \mathrm { t o t } } T _ { \mathrm { t h i n k } } = \ 2 N _ { \mathrm { q T T T } } k \Big ( C _ { \mathrm { q u a d } } T + ( 2 + 2 r ) L d ^ { 2 } \Big ) . } \end{array}
+$$
+
+For long contexts with $T \gg d$ and spans $k \ll T$ (hence $T _ { \mathrm { t h i n k } } \ll T$ in matched regimes), the dominant terms give
+
+$$
+T _ { \mathrm { t h i n k } } \approx 2 \ : N _ { \mathrm { q T T T } } \ : k ,
+$$
+
+which is Eq. equation 3.2. First-order corrections are $O \Big ( \frac { T _ { \mathrm { t h i n k } } } { T } \Big )$ from the $\frac { T _ { \mathrm { t h i n k } } ( T _ { \mathrm { t h i n k } } - 1 ) } { 2 }$ term and $O \big ( \frac { d } { T } \big )$ from $C _ { \mathrm { t o k } }$
+
+Sanity check (numeric instantiation). Take $L { = } 3 2 , d { = } 4 0 9 6 , r { = } 4 \mathrm { ( a ~ { \sim } 7 B }$ dense model) and $T { = } 1 0 ^ { 5 }$ If the application budget allows decoding $T _ { \mathrm { t h i n k } } { = } 8 , 0 0 0$ thinking tokens after prefill, the matched query-only schedules include, e.g., $( N _ { \mathrm { q T T T } } { = } 1 0 , k { = } 4 0 0 )$ since $2 \cdot 1 0 \cdot 4 0 0 \approx 8 { , } 0 0 0$ This reallocation keeps the KV cache length fixed at T and spends the same FLOPs to reshape queries against the existing $\{ K , V \}$ instead of growing the cache with additional tokens.
+
+## D Experimental Details
+
+Models and tokenization. We evaluate Qwen3-{1.7B, 4B, 8B} with their native tokenizers and maximum supported context windows. All prompts use UTF-8, and inputs are delimited with explicit section headers (e.g., [CONTEXT], [QUESTION]). Unless otherwise noted, we evaluate on the official validation/dev splits and follow each benchmark’s scoring script.
+
+Decoding and “Thinking” budget. We adopt model-recommended decoding parameters: Thinking: temperature=0.6, top-p=0.95, top-k=20; Non-thinking: temperature=0.7, top-p=0.8, top-k=20. We cap total generation length so that Thinking consumes exactly $T _ { \mathrm { t h i n k } }$ intermediate tokens plus the final answer; for compute matching, we use $T _ { \mathrm { t h i n k } } = 8 1 9 2$ unless otherwise stated. Self-consistency/best-of-n are disabled by default to keep $\mathrm { F L O P s }$ matched.
+
+Query-only TTT (query-only TTT) hyperparameters. We update only $W _ { Q }$ in all attention layers using AdamW (weight decay 0.01) with a sweep over learning rates $\{ 3 \mathrm { e } { - } 4 , 3 \mathrm { e } { - } 5 , 1 \mathrm { e } { - } 5 , 3 \mathrm { e } { - } 6 , 1 \mathrm { e } { - } 6 , 3 \mathrm { e } { - } 7 \}$ ; we report the best per-dataset LR selected on a held-out portion of the validation set. Batch size is 1 (long contexts). We perform $N _ { \mathrm { T T T } }$ span updates of length k with a single prefill/cached $\{ K , V \}$ ; unless stated otherwise, $( k , N _ { \mathrm { T T T } } ) \ : = \ : ( 1 2 8 , 3 2 )$ compute-matched to Thinking via $T _ { \mathrm { t h i n k } } \approx 2 N _ { \mathrm { T T T } } k$ (§3.3). Spans are sampled uniformly over [1, T −k]; gradient clipping at 1.0; bf16 precision. Additionally, we perform a sensitivity analysis of qTTT across learning rates. Table 1 shows the variation of accuracy on our synthetic tasks across context lengths. We find that qTTT is not very sensitive to the choice of LR: the performance is relatively consistent between [1e−5, 1e−6] and only falls on the extreme values of LR.
+
+Evaluation metrics. We use official scripts per subset: EM/F1 or dataset-specific accuracy for QA; ROUGE-{1,2,L} or benchmark-provided summary metrics for summarization; multiple-choice accuracy for QAuLITY. When a subset defines both EM and F1, we report the primary metric specified by the benchmark.
+
+Prompts and templates. Below we provide the base non-thinking and thinking templates used per task family. All runs share the same template within a family across methods; Thinking adds a scratchpad section but the final answer must appear after a Final: tag.
+
+Non-thinking (base)
+
+[SYSTEM]
+
+You are a careful assistant. Use only the provided context.
+
+Table 1 Sensitivity to Learning Rate (η). Performance of qTTT across varying learning rates. Extreme rates cause instability (high η) or insufficient adaptation (low η), with the optimal range typically between 1e-6 and 1e-5.
+<table><tr><td rowspan=1 colspan=7>Task /Context | 1e-4 | 3e-5| 1e-5 3e-61e-6 3e-7</td></tr><tr><td rowspan=1 colspan=7>Bank Transactions</td></tr><tr><td rowspan=1 colspan=1>512</td><td rowspan=1 colspan=1>4.2</td><td rowspan=1 colspan=1>26.5</td><td rowspan=1 colspan=1>28.0</td><td rowspan=1 colspan=1>27.2</td><td rowspan=1 colspan=1>26.8</td><td rowspan=1 colspan=1>15.5</td></tr><tr><td rowspan=1 colspan=1>2,536</td><td rowspan=1 colspan=1>1.5</td><td rowspan=1 colspan=1>13.8</td><td rowspan=1 colspan=1>14.4</td><td rowspan=1 colspan=1>14.0</td><td rowspan=1 colspan=1>12.5</td><td rowspan=1 colspan=1>6.2</td></tr><tr><td rowspan=1 colspan=1>5,120</td><td rowspan=1 colspan=1>0.8</td><td rowspan=1 colspan=1>10.0</td><td rowspan=1 colspan=1>9.2</td><td rowspan=1 colspan=1>8.5</td><td rowspan=1 colspan=1>7.8</td><td rowspan=1 colspan=1>3.5</td></tr><tr><td rowspan=1 colspan=1>9,560</td><td rowspan=1 colspan=1>0.0</td><td rowspan=1 colspan=1>7.8</td><td rowspan=1 colspan=1>8.4</td><td rowspan=1 colspan=1>7.9</td><td rowspan=1 colspan=1>7.0</td><td rowspan=1 colspan=1>1.2</td></tr><tr><td rowspan=1 colspan=7>OLMo Code Bugs</td></tr><tr><td rowspan=1 colspan=1>512</td><td rowspan=1 colspan=1>8.5</td><td rowspan=1 colspan=1>42.0</td><td rowspan=1 colspan=1>44.5</td><td rowspan=1 colspan=1>45.7</td><td rowspan=1 colspan=1>43.2</td><td rowspan=1 colspan=1>22.0</td></tr><tr><td rowspan=1 colspan=1>2,050</td><td rowspan=1 colspan=1>5.1</td><td rowspan=1 colspan=1>38.5</td><td rowspan=1 colspan=1>40.2</td><td rowspan=1 colspan=1>41.6</td><td rowspan=1 colspan=1>39.5</td><td rowspan=1 colspan=1>18.5</td></tr><tr><td rowspan=1 colspan=1>7,450</td><td rowspan=1 colspan=1>2.2</td><td rowspan=1 colspan=1>25.0</td><td rowspan=1 colspan=1>28.0</td><td rowspan=1 colspan=1>27.5</td><td rowspan=1 colspan=1>24.8</td><td rowspan=1 colspan=1>10.5</td></tr><tr><td rowspan=1 colspan=1>10,000</td><td rowspan=1 colspan=1>1.0</td><td rowspan=1 colspan=1>18.2</td><td rowspan=1 colspan=1>20.2</td><td rowspan=1 colspan=1>19.5</td><td rowspan=1 colspan=1>17.8</td><td rowspan=1 colspan=1>5.2</td></tr></table>
+
+If the answer is not supported, output "unknown".   
+[TASK]   
+{TASK\_DESCRIPTION} # e.g., short answer QA / summary / MCQ   
+[CONTEXT]   
+{CONTEXT\_BLOCKS} # e.g., {DOCUMENTS}|{DIALOGUE}|{CODE}|{TABLE}   
+[QUESTION or INSTRUCTION]   
+{QUESTION\_OR\_INSTRUCTION} # prompt for the required output   
+[CONSTRAINTS]   
+[ANSWER]   
+Thinking (base)   
+[SYSTEM]   
+Reason privately in [SCRATCHPAD],   
+then provide a single final output after "Final:".   
+If not supported by the context, output "Final: unknown".   
+[TASK]   
+{TASK\_DESCRIPTION}   
+[CONTEXT]   
+{CONTEXT\_BLOCKS}   
+[QUESTION or INSTRUCTION]   
+{QUESTION\_OR\_INSTRUCTION}   
+[SCRATCHPAD]   
+.. # hidden chain-of-thought tokens (capped to T\_think)   
+[FINAL]   
+Final:
+
+Post-processing and extraction. For “thinking” runs, we extract the substring after Final: (trim, strip quotes). For MCQ, we regex-match [ABCD]; for extractive QA, we normalize punctuation/whitespace (SQuAD-style). For summarization, we truncate to the requested budget (e.g., 200 words) and use the benchmark scorer verbatim.
+
+Compute matching and seeds. Unless otherwise specified, Thinking uses $T _ { \mathrm { t h i n k } } = 8 1 9 2$ and query-only TTT uses $( k , N _ { \mathrm { T T T } } ) = ( 1 2 8 , 3 2 )$ so that $T _ { \mathrm { t h i n k } } \approx 2 N _ { \mathrm { T T T } } k$ . We fix the random seed for span sampling and decoding across methods per run; results are averaged over one run per configuration (low variance in our setting).
+
+Table 2 Bank Transactions (Qwen3-4B): Accuracy (%) and attention mass vs. context length with and without ${ \mathrm { R o P E } } ,$ and with qTTT.
+<table><tr><td rowspan="2">Context Tokens</td><td colspan="2">Thinking (RoPE)</td><td colspan="2">Thinking (No-RoPE)</td><td colspan="2">qTTT (Ours)</td></tr><tr><td>Acc</td><td>Mass</td><td>Acc</td><td>Mass</td><td>Acc</td><td>Mass</td></tr><tr><td>512</td><td>36.00</td><td> $0 . 4 6 \pm 0 . 0 4$ </td><td>34.00</td><td> $0 . 4 4 \pm 0 . 0 4$ </td><td>28.00</td><td> $0 . 4 2 \pm 0 . 0 6$ </td></tr><tr><td>2,536</td><td>6.00</td><td> $0 . 2 2 \pm 0 . 0 3$ </td><td>5.00</td><td> $0 . 2 0 \pm 0 . 0 2$ </td><td>14.40</td><td> $0 . 4 1 \pm 0 . 0 8$ </td></tr><tr><td>5,120</td><td>2.50</td><td> $0 . 1 1 \pm 0 . 0 2$ </td><td>0.80</td><td> $0 . 0 3 \pm 0 . 0 1$ </td><td>10.00</td><td> $0 . 3 6 \pm 0 . 0 9$ </td></tr><tr><td>9,560</td><td>1.00</td><td> $0 . 0 4 \pm 0 . 0 1$ </td><td>0.50</td><td> $0 . 0 1 \pm 0 . 0 0$ </td><td>8.40</td><td> $0 . 2 5 \pm 0 . 0 9$ </td></tr></table>
+
+Table 3 OLMo Code Bugs (Qwen3-4B): Accuracy (%) and attention mass vs. context length with and without RoPE, and with qTTT.
+<table><tr><td rowspan="2">Context Tokens</td><td colspan="2">Thinking (RoPE)</td><td colspan="2">Thinking (No-RoPE)</td><td colspan="2">qTTT (Ours)</td></tr><tr><td>Acc</td><td>Mass</td><td>Acc</td><td>Mass</td><td>Acc</td><td>Mass</td></tr><tr><td>512</td><td>50.00</td><td> $0 . 6 4 \pm 0 . 0 5$ </td><td>47.40</td><td> $0 . 6 1 \pm 0 . 0 5$ </td><td>45.70</td><td> $0 . 5 8 \pm 0 . 0 6$ </td></tr><tr><td>2,050</td><td>21.60</td><td> $0 . 3 8 \pm 0 . 0 7$ </td><td>16.20</td><td> $0 . 2 9 \pm 0 . 0 4$ </td><td>41.60</td><td> $0 . 5 1 \pm 0 . 0 8$ </td></tr><tr><td>7,450</td><td>17.20</td><td> $0 . 2 6 \pm 0 . 0 6$ </td><td>10.60</td><td> $0 . 1 4 \pm 0 . 0 2$ </td><td>28.00</td><td> $0 . 4 2 \pm 0 . 0 9$ </td></tr><tr><td>10,000</td><td>10.00</td><td> $0 . 1 2 \pm 0 . 0 3$ </td><td>3.00</td><td> $0 . 0 4 \pm 0 . 0 1$ </td><td>20.20</td><td> $0 . 3 5 \pm 0 . 0 9$ </td></tr></table>
+
+## E Score Dilution Evidence on Long Contexts
+
+Motivation. Long-context failures could be a result of a multitude of reasons and design choices. Past literature in long-context modeling has primarily focused on tuning positional encoding to improve long-context abilities. Here we present some evidence supporting our claim that score dilution is one of the primary reasons for long-context failure. We show that as the context grows, attention mass on the target collapses, and accuracy falls even when rotary position embeddings (RoPE) are present and the model is not changed otherwise. We further show that qTTT counteracts this collapse suggesting that our approach actually counteracts score dilution in practice.
+
+Experimental setting (RoPE ablation). We evaluate Qwen3-4B on two tasks (Bank Transactions; OLMo Code Bugs) under three test-time regimes: (1) Thinking-only with a fixed thinking budget (4k or 8k tokens), (2) $q T T T$ (ours) with a brief query-only adaptation while reusing the prefetched KV cache, and (3) a No-RoPE ablation where we disable rotary phase application to $Q / K$ at inference (identity rotation), keeping all weights, prompts, and budgets unchanged and without any additional fine-tuning. This isolates the role of positional encoding while holding training and data fixed.
+
+Attention-mass metric. For each decode step t, layer ℓ, and head h, let $A _ { t , \tau } ^ { ( \ell , h ) }$ denote the softmax attention from the current query to context position τ . Given a labeled set of target indices T , we define the attention mass at step t as $\textstyle \sum _ { \tau \in \mathcal { T } } A _ { t , \tau } ^ { ( \ell , h ) }$ , then average over all layers and heads; for multi-token answers we average over their output steps. We report mean ± std across multiple runs.
+
+Findings. Tables 2 and 3 show that thinking-only accuracy and attention mass both decay sharply with context length. Disabling RoPE accelerates this collapse (lower mass and accuracy), but even with RoPE the decline is substantial. In contrast, qTTT sustains markedly higher attention mass as context grows and correspondingly improves accuracy. These results support the view that score dilution, rather than training-data scarcity alone, is the dominant failure mode in these settings.
+
+## F ZeroScrolls and LongBench-v2: All models and subsets.
+
+This appendix reports the complete breakdowns for all benchmarks, models, and inference settings. We compare three modes—vanilla in-context, chain-of-thought “Thinking”, and our test-time training method (qTTT)—for Qwen3-1.7B/4B/8B across LongBench-v2 and ZeroScrolls. Unless otherwise noted, higher is better and bold indicates the best within each row/condition.
+
+LongBench-v2: Results across Models and Domains  
+![](images/cdfeff07438635e9793072230b535125e36a7b5a42aea5650f4d06536256429a.jpg)  
+Figure 8 FLOP-matched comparison on LongBench-v2 (Bai et al., 2023b) across six domains for Qwen3-1.7B/4B/8B under vanilla in-context only, with thinking (CoT), and with test-time training (TTT). TTT consistently yields the best accuracy across domains and model sizes, with the largest gains on long-dialogue and document-QA tasks, and benefits growing with model size.
+
+Table 4 Full LongBench-v2 results for Qwen3-1.7B/4B/8B under In-context, Thinking, and qTTT. Scores follow benchmark-defined metrics; bold marks the best within each row/condition.
+<table><tr><td></td><td colspan="3">Qwen3-1.7B</td><td colspan="3">Qwen3-4B</td><td colspan="3">Qwen3-8B</td></tr><tr><td></td><td>In-context</td><td>Thinking</td><td>qTTT</td><td>In-context</td><td>Thinking</td><td>qTTT</td><td>In-context</td><td>Thinking</td><td>qTTT</td></tr><tr><td>Code Repositories</td><td>26.0</td><td>18.0</td><td>26.0</td><td>25.0</td><td>28.0</td><td>32.0</td><td>30.0</td><td>44.0</td><td>52.0</td></tr><tr><td>Long Dialogue History</td><td>23.1</td><td>30.8</td><td>46.2</td><td>20.5</td><td>30.8</td><td>43.6</td><td>33.3</td><td>53.8</td><td>58.5</td></tr><tr><td>Long Structured Data</td><td>27.3</td><td>30.3</td><td>30.3</td><td>30.3</td><td>35.3</td><td>35.3</td><td>34.3</td><td>38.2</td><td>42.4</td></tr><tr><td>Long In-Context</td><td>18.0</td><td>20.0</td><td>28.0</td><td>21.0</td><td>25.0</td><td>33.0</td><td>32.0</td><td>40.0</td><td>44.0</td></tr><tr><td>Multi-Document QA</td><td>26.0</td><td>26.0</td><td>42.0</td><td>30.0</td><td>40.0</td><td>46.0</td><td>32.0</td><td>34.0</td><td>50.0</td></tr><tr><td>Single-Document QA</td><td>32.0</td><td>34.0</td><td>38.0</td><td>35.0</td><td>42.0</td><td>48.0</td><td>32.0</td><td>44.0</td><td>46.0</td></tr><tr><td>Average</td><td>25.4</td><td>26.5</td><td>35.1</td><td>27.0</td><td>33.5</td><td>39.6</td><td>32.3</td><td>42.3</td><td>48.8</td></tr></table>
+
+Figure 8 shows a FLOP-matched overview of LongBench-v2 results across its six domains. The detailed per-domain numbers that underlie this figure appear in Table 4. Figure 9 summarizes the observed results on ZeroScrolls. The complete per-dataset numbers, including retrieval-heavy and summarization tasks, are provided in Table 5.
+
+Tables 6 and 7 shows results on the Qwen3-32B model. We see that similar trends hold across subsets of the two datasets, validating the efficacy of qTTT across model sizes.
+
+## G Additional Test-Time Scaling Baselines
+
+Baselines. We compare Best-of-N (BoN) and Beam Search to our method under strict compute parity. BoN / Self-Consistency (SC-N): we run N independent decodes, each with an equal share of the extra reasoning budget, and select the final answer by majority vote (ties broken by sequence log-prob). Beam-k: we run left-to-right beam search of width k; to enforce parity with other test-time scaling, the total added “thinking” tokens across all beams is fixed.
+
+Design choices (strict matching). We match all methods to a fixed extra budget corresponding to $T _ { \mathrm { t h i n k } }$ = 8192 tokens beyond the vanilla decode. SC-N allocates ≈ 8192/N tokens to each sample; Beam-k allocates ≈ 8192/k tokens per beam. All results use the same prompt, output length (128 tokens); latencies are reported separately in §H. This protocol removes budget-induced confounders and isolates the effect of test-time scaling itself.
+
+ZeroScrolls: Results across Models and Domains  
+![](images/045fb32cc951638e08d79a9d22ed7359617c9398e6786384bd59e8274e246679.jpg)  
+Figure 9 FLOP-matched comparison on the ZeroScrolls benchmark (Shaham et al., 2023) for Qwen3-1.7B/4B/8B under long contexts, with thinking (CoT), and with test-time training (TTT). TTT achieves the highest scores on nearly all datasets—especially on the retrieval-focused tasks, with a general increase with model size.
+
+Table 5 Full ZeroScrolls results across eight datasets for Qwen3-1.7B/4B/8B under In-context, Thinking, and qTTT. Datasets span retrieval and summarization; bold marks the best within each row/condition (higher is better).
+<table><tr><td></td><td colspan="3">Qwen3-1.7B</td><td colspan="3">Qwen3-4B</td><td colspan="3">Qwen3-8B</td></tr><tr><td></td><td>In-context</td><td>Thinking</td><td>qTTT</td><td>In-context</td><td>Thinking</td><td>qTTT</td><td>In-context</td><td>Thinking</td><td>qTTT</td></tr><tr><td>GovReport</td><td>22.5</td><td>21.8</td><td>26.0</td><td>24.9</td><td>20.2</td><td>33.5</td><td>22.0</td><td>17.8</td><td>29.8</td></tr><tr><td>MuSiQue</td><td>11.6</td><td>22.6</td><td>26.2</td><td>17.1</td><td>7.5</td><td>30.5</td><td>22.5</td><td>43.9</td><td>48.9</td></tr><tr><td>NarrativeQA</td><td>15.0</td><td>8.9</td><td>11.7</td><td>11.0</td><td>30.0</td><td>38.0</td><td>18.9</td><td>35.1</td><td>42.8</td></tr><tr><td>QASPER</td><td>25.7</td><td>21.4</td><td>31.1</td><td>23.2</td><td>24.7</td><td>34.0</td><td>19.6</td><td>21.1</td><td>26.1</td></tr><tr><td>QMSum</td><td>6.2</td><td>7.5</td><td>9.5</td><td>10.9</td><td>7.7</td><td>8.6</td><td>9.8</td><td>8.6</td><td>8.6</td></tr><tr><td>QUALITY</td><td>47.6</td><td>61.9</td><td>76.2</td><td>40.5</td><td>76.2</td><td>87.0</td><td>71.4</td><td>90.5</td><td>94.5</td></tr><tr><td>S SQuALITY</td><td>9.2</td><td>14.6</td><td>18.0</td><td>9.9</td><td>16.8</td><td>18.7</td><td>18.1</td><td>15.3</td><td>18.3</td></tr><tr><td>SummScreen-FD</td><td>8.2</td><td>7.2</td><td>7.4</td><td>9.9</td><td>8.3</td><td>9.9</td><td>10.4</td><td>7.9</td><td>7.9</td></tr><tr><td>Average</td><td>18.3</td><td>20.7</td><td>25.8</td><td>18.4</td><td>23.9</td><td>32.5</td><td>24.1</td><td>30.0</td><td>34.6</td></tr></table>
+
+Conclusion. Across both LongBench-v2 and ZeroScrolls (Qwen3-4B), qTTT is competitive with or better than strictly FLOP-matched BoN and Beam. SC-N helps when single-run accuracy is already high (e.g., Single Document QA, QUALITY ), but often degrades when the per-sample accuracy is below 50%. Beam-k provides only modest gains under equal budgets due to correlated beams and imperfect ranking, and frequently trails qTTT.
+
+## H Latency and Compute-Matched Measurements
+
+Setup. All latency numbers were measured on a single NVIDIA A100 GPU in standard inference mode. We report wall-clock time in seconds (mean ± std) for three different context lengths. For a given model size and context length, we perform latency analysis based on the amount of FLOPs, $F _ { q T T T }$ , it takes to run $N _ { q T T T } = 3 2$ steps for k = 128 on a single evaluation example. We report the following metrics:
+
+Table 6 Qwen3-32B on LongBench-v2. Comparison of In-context, Thinking, and qTTT. These findings demonstrate that that the improvements with qTTT hold across model scales.
+<table><tr><td></td><td>In-context</td><td>Thinking</td><td>qTTT</td></tr><tr><td>Code Repositories</td><td>36.00</td><td>61.00</td><td>74.00</td></tr><tr><td>Long In-Context</td><td>44.00</td><td>56.00</td><td>57.00</td></tr><tr><td>Long Structured Data</td><td>39.30</td><td>42.20</td><td>51.50</td></tr><tr><td>Long Dialogue History</td><td>47.10</td><td>77.90</td><td>75.50</td></tr><tr><td>Multi Document QA</td><td>35.00</td><td>41.00</td><td>56.00</td></tr><tr><td>Single Document  $\mathrm { Q A }$ </td><td>36.00</td><td>47.00</td><td>49.00</td></tr></table>
+
+Table 7 Qwen3-32B on ZeroScrolls. Comparison of In-context, Thinking, and qTTT. These findings demonstrate that that the improvements with qTTT hold across model scales.
+<table><tr><td></td><td>In-context</td><td>Thinking</td><td>qTTT</td></tr><tr><td>Gov Report</td><td>26.70</td><td>24.80</td><td>26.00</td></tr><tr><td>Musique</td><td>28.90</td><td>54.90</td><td>59.20</td></tr><tr><td>Narrative QA</td><td>27.70</td><td>42.40</td><td>49.60</td></tr><tr><td>Qasper</td><td>24.10</td><td>35.00</td><td>42.40</td></tr><tr><td>QMSum</td><td>11.90</td><td>9.90</td><td>10.80</td></tr></table>
+
+$N _ { \mathrm { t h i n k } } { : }$ : Number of thinking tokens that can be generated to match $F _ { q T T T }$ FLOPs.
+
+$N _ { \mathrm { B o N } } { : }$ Number of best-of-N trajectories that can be generated to match $F _ { q T T T }$ FLOPs.
+
+$t _ { \mathrm { I C L } }$ : Wall-clock time for a vanilla in-context pass on single example. This roughly corresponds to the prefill time.
+
+$t _ { \mathrm { t h i n k } } \colon$ Wall-clock time to generate $N _ { \mathrm { t h i n k } }$ tokens, given a single example.
+
+$t _ { \mathrm { B o N } } \mathrm { : }$ The amount of time to compute best-of-N via self-consistency for $N _ { \mathrm { B o N } }$ trajectories given a single example.
+
+$t _ { \mathrm { q T T T } } \mathrm { : }$ The amount of time to perform $N _ { q T T T } = 3 2$ steps of qTTT steps with span length $k = 1 2 8$ for a single example.
+
+Tables 10, 11, 12 show the results of the measurements on Qwen3-1.7B, 4B, and 8B, respectively. We find that the wall-clock time for all three test-time compute strategies—qTTT, thinking, and best-of-N—is quite similar. We also note that prefilling the KV cache, which is approximately equal to tICL dominates most of the decoding time, especially for longer sequence lengths. This motivates the frozen $\mathrm { K } / \mathrm { V }$ attention weights in our setup, without which the prefill would need to be recomputed with every training step.
+
+Table 8 LongBench-v2 (Qwen3-4B): Strict FLOP-matched test-time scaling. Numbers are accuracies (%). SC-N uses 8192/N tokens per sample; Beam-k uses 8192/k tokens per beam.
+<table><tr><td>Task</td><td>Thinking</td><td>qTTT</td><td>SC-8</td><td>SC-16</td><td>SC-32</td><td>Beam-8</td><td>Beam-16</td><td>Beam-32</td></tr><tr><td>Code Repositories</td><td>28.0</td><td>32.0</td><td>30.5</td><td>18.4</td><td>5.2</td><td>27.5</td><td>15.1</td><td>4.8</td></tr><tr><td>Long In-Context</td><td>25.0</td><td>33.0</td><td>28.5</td><td>20.1</td><td>8.5</td><td>26.0</td><td>18.5</td><td>7.2</td></tr><tr><td>Long Structured Data</td><td>35.3</td><td>35.3</td><td>36.1</td><td>30.5</td><td>12.2</td><td>34.8</td><td>28.1</td><td>11.0</td></tr><tr><td>Long Dialogue History</td><td>30.8</td><td>43.6</td><td>34.2</td><td>31.0</td><td>15.5</td><td>29.5</td><td>25.2</td><td>12.0</td></tr><tr><td>Multi Document QA</td><td>40.0</td><td>46.0</td><td>44.5</td><td>41.2</td><td>25.8</td><td>39.8</td><td>35.5</td><td>22.1</td></tr><tr><td>Single Document QA</td><td>42.0</td><td>48.0</td><td>45.5</td><td>49.2</td><td>51.8</td><td>43.5</td><td>44.2</td><td>41.0</td></tr><tr><td>Avg.</td><td>33.5</td><td>39.7</td><td>36.6</td><td>31.7</td><td>19.8</td><td>33.5</td><td>27.8</td><td>16.4</td></tr></table>
+
+Table 9 ZeroScrolls (Qwen3-4B): Strict FLOP-matched test-time scaling. Numbers are accuracies (%). SC-N uses 8192/N tokens per sample; Beam-k uses 8192/k tokens per beam.
+<table><tr><td>Task</td><td>Thinking</td><td>qTTT</td><td>SC-8</td><td>SC-16</td><td>SC-32</td><td>Beam-8</td><td>Beam-16</td><td>Beam-32</td></tr><tr><td>gov report</td><td>20.2</td><td>33.5</td><td>24.5</td><td>15.2</td><td>2.1</td><td>22.8</td><td>12.5</td><td>1.8</td></tr><tr><td>musique</td><td>7.5</td><td>30.5</td><td>18.2</td><td>12.5</td><td>4.5</td><td>14.5</td><td>9.8</td><td>3.2</td></tr><tr><td>narrative qa</td><td>30.0</td><td>38.0</td><td>35.5</td><td>32.0</td><td>22.5</td><td>31.2</td><td>25.5</td><td>18.1</td></tr><tr><td>qasper</td><td>24.7</td><td>34.0</td><td>28.5</td><td>22.1</td><td>10.5</td><td>26.5</td><td>19.5</td><td>9.2</td></tr><tr><td>qmsum</td><td>7.7</td><td>8.6</td><td>9.2</td><td>5.1</td><td>0.8</td><td>8.5</td><td>4.5</td><td>0.7</td></tr><tr><td>quality</td><td>76.2</td><td>87.0</td><td>82.5</td><td>85.1</td><td>84.5</td><td>78.5</td><td>76.2</td><td>70.1</td></tr><tr><td>squality</td><td>16.8</td><td>18.7</td><td>17.5</td><td>19.2</td><td>20.5</td><td>17.1</td><td>17.5</td><td>17.8</td></tr><tr><td>summ screen fd</td><td>8.3</td><td>9.9</td><td>9.5</td><td>6.5</td><td>1.2</td><td>8.8</td><td>5.5</td><td>1.1</td></tr><tr><td>Avg.</td><td>23.9</td><td>32.5</td><td>28.2</td><td>24.7</td><td>18.3</td><td>26.0</td><td>21.4</td><td>15.3</td></tr></table>
+
+Table 10 Latency and wall-clock time comparisons given a fixed FLOP budget for Qwen3-1.7B.
+<table><tr><td>Context Length</td><td> $\mathrm { \sf ~ \ t _ { \mathrm { I C L } } ~ } ( \mathsf { s } )$ </td><td> $t _ { \mathsf { q T T T } } ( \mathsf { s } )$ </td><td>think (s)</td><td> $t _ { \mathsf { B o N } } ( \mathsf { s } )$ </td><td> $N _ { \mathbf { t h i n k } }$ </td><td> $N _ { \mathsf { B o N } }$ </td></tr><tr><td>8,000</td><td> $8 . 7 3 \pm 0 . 3 5$ </td><td> $1 6 . 9 2 \pm 0 . 6 8$ </td><td> $1 6 . 9 3 \pm 0 . 6 8$ </td><td> $1 6 . 0 5 \pm 0 . 6 4$ </td><td>1,434</td><td>11</td></tr><tr><td>32,000</td><td> $3 4 . 9 3 \pm 1 . 4 0$ </td><td> $4 3 . 1 2 \pm 1 . 7 2$ </td><td> $4 3 . 1 1 \pm 1 . 7 2$ </td><td> $4 0 . 7 8 \pm 1 . 6 3$ </td><td>358</td><td>3</td></tr><tr><td>128,000</td><td> $1 3 9 . 7 0 \pm 5 . 5 9$ </td><td> $1 4 7 . 8 9 \pm 5 . 9 2$ </td><td> $1 4 7 . 9 3 \pm 5 . 9 2$ </td><td> $1 3 9 . 7 0 \pm 5 . 5 9$ </td><td>90</td><td>1</td></tr></table>
+
+Table 11 Latency and wall-clock time comparisons given a fixed FLOP budget for Qwen3-4B.
+<table><tr><td>Context Length</td><td>tIcL (s)</td><td> $t _ { \mathsf { q T T T } } ( \mathsf { s } )$ </td><td> $t _ { \tt t h i n k } \left( \mathsf { s } \right)$ </td><td> $t _ { \mathsf { B o N } } ( \mathsf { s } )$ </td><td> $N _ { \mathbf { t h i n k } }$ </td><td> $N _ { \mathsf { B o N } }$ </td></tr><tr><td>8,000</td><td> $1 4 . 6 1 \pm 0 . 5 8$ </td><td> $2 8 . 2 7 \pm 1 . 1 3$ </td><td> $2 8 . 2 6 \pm 1 . 1 3$ </td><td> $2 7 . 4 1 \pm 1 . 1 0$ </td><td>1,365</td><td>11</td></tr><tr><td>32,000</td><td> $5 8 . 4 5 \pm 2 . 3 4$ </td><td> $7 2 . 1 1 \pm 2 . 8 8$ </td><td> $7 2 . 0 9 \pm 2 . 8 8$ </td><td> $6 8 . 6 9 \pm 2 . 7 5$ </td><td>341</td><td>3</td></tr><tr><td>128,000</td><td> $2 3 3 . 8 1 \pm 9 . 3 5$ </td><td> $2 4 7 . 4 7 \pm 9 . 9 0$ </td><td> $2 4 7 . 4 1 \pm 9 . 9 0$ </td><td> $2 3 3 . 8 1 \pm 9 . 3 5$ </td><td>85</td><td>1</td></tr></table>
+
+Table 12 Latency and wall-clock time comparisons given a fixed $\mathrm { F L O P }$ budget for Qwen3-8B.
+<table><tr><td>Context Length</td><td> $\smash { t _ { \mathrm { l C L } } ( \mathsf { s } ) }$ </td><td> $t _ { \mathsf { q T T } } ( \mathsf { s } )$ </td><td> $t _ { \tt t h i n k } \left( \mathsf { s } \right)$ </td><td> $t _ { \mathsf { B o N } } ( \mathsf { s } )$ </td><td> $N _ { \mathbf { t h i n k } }$ </td><td> $N _ { \mathsf { B o N } }$ </td></tr><tr><td>8,000</td><td> $2 2 . 1 3 \pm 0 . 8 9$ </td><td> $4 2 . 6 1 \pm 1 . 7 0$ </td><td> $4 2 . 6 2 \pm 1 . 7 0$ </td><td> $4 1 . 3 3 \pm 1 . 6 5$ </td><td>1,229</td><td>10</td></tr><tr><td>32,000</td><td> $8 8 . 5 3 \pm 3 . 5 4$ </td><td> $1 0 9 . 0 1 \pm 4 . 3 6$ </td><td> $1 0 9 . 0 0 \pm 4 . 3 6$ </td><td> $9 7 . 0 7 \pm 3 . 8 8$ </td><td>307</td><td>2</td></tr><tr><td>128,000</td><td> $3 5 4 . 1 3 \pm 1 4 . 1 7$ </td><td> $3 7 4 . 6 1 \pm 1 4 . 9 8$ </td><td> $3 7 4 . 6 7 \pm 1 4 . 9 9$ </td><td> $3 5 4 . 1 3 \pm 1 4 . 1 7$ </td><td>77</td><td>1</td></tr></table>

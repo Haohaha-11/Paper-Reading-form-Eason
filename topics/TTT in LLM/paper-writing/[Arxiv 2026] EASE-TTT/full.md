@@ -1,0 +1,350 @@
+# EASE-TTT: Evidence-Aligned Selective Test-Time Training for Long-Context Question Answering
+
+Xiaopeng Yuan<sup>1</sup>, Zebin Wang<sup>2</sup>, Suwen Wang<sup>3</sup>, Zongxin Yang<sup>2</sup>, Haohan Wang<sup>1</sup>, Yushun Dong\*<sup>4</sup> <sup>1</sup>University of Illinois Urbana-Champaign <sup>2</sup>Harvard University <sup>3</sup>Brion, ASML US LP <sup>4</sup>Florida State University
+
+## Abstract
+
+Long-context question answering (QA) remains challenging for smaller language models even when answer-bearing evidence is already present in the input. Existing withincontext retrieval methods localize and expose candidate evidence chunks for the question, but they stop at input-level evidence exposure rather than adapting the query-side attention pa rameters that control how the model allocates attention over full-context positions. In con trast, lightweight test-time adaptation methods, such as query-only test-time training (qTTT), leave evidence localization unresolved because their generic span-level self-supervised objectives do not identify which context positions support the current answer. In this paper, we propose Evidence-Aligned SElective Test-Time Training (EASE-TTT), a within-context retrieval-augmented test-time training framework that converts selected evidence chunks into a soft attention supervision target over their token positions. Instead of replacing the full context with retrieved chunks, EASE-TTT uses the resulting attention target to guide queryside adaptation, with the adapted model generating the final answer from the original full context. Experiments on six LongBench QA tasks and three small decoder-only language models show that EASE-TTT achieves the strongest macro-average performance among full-context inference, retrieval-only baselines, and qTTT, supporting evidence-aligned testtime adaptation in long-context QA.
+
+## 1 Introduction
+
+Large language models have made rapid progress in extending their context windows, enabling them to process inputs that contain tens or even hundreds of thousands of tokens(Ding et al., 2024; Team et al., 2024; Chen et al., 2024). However, a longer context window does not necessarily translate into better long-context question-answering performance. In many long-context question answering tasks, the answer-bearing evidence is already present in the input, yet the model still fails to access it correctly(Liu et al., 2024; Hsieh et al., 2024; Modarressi et al., 2025). This issue is particularly important for smaller language models, which often have more limited capacity to maintain reliable evidence use in long, distractor-heavy contexts (Gao et al., 2026). In such cases, the bottleneck is not simply whether the model can fit the context, but whether it can reliably access and prioritize the evidence needed for the current question.
+
+![](images/e3224f9e36bb33a41e499dc14a465eb7bf2cd776cd654ea41a660942d64b0578.jpg)  
+Figure 1: Motivation of EASE-TTT. Retrieval-only and prompt-editing methods expose candidate evidence at the input level, but do not adapt the model’s contextaccess behavior. Test-time training methods can adapt model parameters at inference time, but their objectives are often not explicitly aligned with question-relevant evidence. EASE-TTT bridges this gap by using retrieved evidence to guide test-time adaptation.
+
+A natural way to address this issue is to perform retrieval within the input context. Withincontext retrieval methods segment the long input into chunks, localize candidate evidence chunks from the same context, and use the selected chunks to construct a shorter or more focused input (Jiang et al., 2024; Li et al., 2023; Nair et al., 2023). These methods do not rely on an external corpus; instead, they treat the given long context itself as the retrieval source. They are effective when the selected chunks contain sufficient answerbearing evidence for generation. However, they typically use retrieval only as an input-level operation: selected chunks are used to replace, shorten, or prepend to the original context (Sheng et al., 2025; Liskavets et al., 2025; Wang et al., 2023; Chirkova et al., 2025). As a result, the model’s parameters and context-access behavior remain unchanged. Moreover, hard chunk selection may discard useful surrounding information, which is risky in long-context QA where evidence may be distributed across multiple parts of the input (Sarthi et al., 2024; Tian et al., 2025; Saad-Falcon et al., 2024; Luo et al., 2025; Wang et al., 2024).
+
+This limitation suggests that evidence access should not be treated only as an inference-time input selection problem. For smaller models in particular, failures under long contexts may reflect a mismatch between the model’s current contextaccess behavior and the evidence required by the question (Zhu et al., 2025; Lee et al., 2025; An et al., 2024; Li et al., 2024b). Test-time adaptation provides a natural way to address this mismatch because it allows a model to change its behavior for each test instance at inference time. In this work, we focus on test-time training (TTT), a gradient-based form of test-time adaptation that performs instance-specific parameter updates (Sun et al., 2020; Wang et al., 2020; Hardt and Sun, 2024; Akyürek et al., 2024). Recent query-only test-time training further shows that inference-time compute need not be spent only on additional generated to kens; it can also be used for query-side adaptation, allowing the model to change how it allocates attention over a given long context (Bansal et al., 2025). This perspective is especially relevant to long-context QA, where the evidence may already be present in the input but insufficiently prioritized by the model. However, existing test-time adap tation objectives are typically driven by generic self-supervised, task-level, or retrieval-oriented sig nals, rather than evidence-localized supervision that identifies which full-context positions support the current answer (Zhang et al., 2024; Feng et al., 2026; Jeong et al., 2023; Sun et al., 2026). These objectives may adapt the model to the current input, but they do not explicitly indicate which context positions support the current answer. Therefore, there remains a gap between within-context evidence localization and test-time adaptation: withincontext retrieval can localize potentially relevant chunks, while query-side test-time training can adapt model behavior, but existing methods do not directly use question-relevant evidence as supervision for instance-specific adaptation.
+
+We propose Evidence-Aligned Selective Test-Time Training (EASE-TTT), a within-context retrieval-augmented test-time training framework that turns question-relevant evidence into direct supervision for long-context adaptation. Given a long-context question answering instance, EASE-TTT first selects chunks in the input context that are most relevant to the question. Instead of replacing the original context with these chunks, it constructs a soft attention target that assigns greater probability mass to selected evidence positions while still preserving nonzero mass over the remaining context. At test time, EASE-TTT updates lightweight query-side adapters with the base model frozen. After adaptation, the model generates the answer from the original full context. This design turns retrieval from an input-filtering mechanism into an evidence-aligned supervision signal for instancespecific adaptation.
+
+## Our contributions.
+
+• We identify evidence-use failure as a key bottleneck in long-context reasoning for smaller language models: relevant evidence may be present in the input, but the model still fails to use it under distractor-heavy contexts.
+
+• We propose EASE-TTT, a within-context retrieval-augmented test-time training framework that converts question-relevant chunks into soft supervision for query-side adaptation. Unlike retrieval-only methods, EASE-TTT does not replace the context with chunks; instead, it uses them to guide adaptation while preserving full-context generation.
+
+• We conduct an evaluation on long-context QA benchmarks across multiple small language models. Our results show that EASE-TTT improves answer quality over full-context inference, retrieval-only baselines, and qTTT, with further analyses demonstrating the effects of evidence selection, soft attention supervision, and test-time training.
+
+## 2 Related Work
+
+Within-Context Retrieval and Evidence Selection. A common approach to long-context question answering is to localize question-relevant evidence within the input context before generation (Li et al., 2024a; Qiu et al., 2025; Lee et al., 2024). Unlike standard retrieval-augmented generation (Lewis et al., 2020), which retrieves passages from an external corpus, within-context retrieval treats the given long input itself as the retrieval source (Qian et al., 2024; Taguchi et al., 2025). Prior work has explored related strategies such as prompt compression, context pruning, discourse-based document selection, and hierarchical retrieval to reduce distractors and expose useful evidence to the model (Jiang et al., 2023; Zhao et al., 2024; Yoon et al., 2024). Efficiency-oriented variants also rely on selecting, compressing, or reorganizing input passages before generation (Xu et al., 2023; Pan et al., 2024). However, these methods treat evidence access mainly as an input-level operation: retrieved chunks are used to replace, shorten, reorder, or prepend to the original context. As a result, the model’s parameters and context-access behavior remain unchanged. This is limiting when answer-bearing evidence is already present in the context window but is still not reliably accessed by the model. Moreover, hard selection can introduce a new bottleneck: selected chunks may omit useful surrounding context, separate evidence distributed across distant regions, or remove information needed to interpret the retrieved span (Günther et al., 2024; Tian et al., 2025). Thus, retrieval and prompt editing can change what the model sees, but they do not change how the model attends to and uses evidence in the full context.
+
+![](images/8d8fee3239c5a3206a87823eca276b95ea7cac8d59e309c4a9eea9f6d79f0acc.jpg)  
+Figure 2: Overview of EASE-TTT. Given a long context and a question, EASE-TTT selects question-relevant evidence chunks, converts them into a soft attention target over full-context positions, and updates query-side LoRA adapters at test time. The adapted model then generates the answer from the original full context.
+
+Test-Time Training. Test-time training (TTT) improves model behavior at inference time by updating parameters using self-supervised signals derived from the test input itself (Hu et al., 2025;
+
+Zhang et al., 2025). These approaches have been explored in settings such as distribution shift, domain adaptation, and reasoning-time adaptation, where fixed pretrained parameters may be insufficient for the input at hand (Hübotter et al., 2025; Agarwal et al., 2025; Li et al., 2025). In the long-context setting, TTT is especially relevant because each test instance may exhibit different local structures, evidence layouts, and distraction patterns (Muhtar et al., 2024). However, parameterlevel adaptation alone does not solve evidence access unless the training signal is aligned with the evidence required by the current question. Applying TTT to long contexts is therefore nontrivial: the adaptation signal is often local, partial, and potentially noisy, while broad parameter updates may introduce instability or unnecessary computational overhead (Su et al., 2023; Zhang et al., 2024). These challenges make targeted and evidence-aligned test-time training important for long-context inference. Query-only test-time training (qTTT) narrows the update to the query projections in self-attention rather than adapting the full model (Bansal et al., 2025). However, qTTT still relies on generic self-supervised objectives rather than explicit supervision from question-relevant evidence. As a result, it can update query-side attention parameters, but it does not specify which full-context positions should guide the update. This creates a mismatch for long-context QA: the model is adapted, but the adaptation is not anchored to the evidence needed to answer the question.
+
+Gap and Motivation. These two lines of work address different sides of the long-context evidenceaccess problem, but neither resolves it alone. Within-context retrieval and prompt editing operate at the input level: they can localize or expose candidate evidence, but they leave the model’s contextaccess behavior unchanged. This is insufficient when the relevant content is already inside the context window but the model fails to attend to it. Query-only test-time training operates at the parameter level: it can adapt query-side attention behavior, but its objectives are not tied to the evidence positions required by the current question. Consequently, existing methods either select evidence without adapting the model, or adapt the model without explicit evidence guidance. Our method bridges this gap by using retrieved evidence chunks not as a replacement for the full context, but as supervision for query-side test-time training. The final answer is still generated from the original full context, while the retrieved evidence guides how the model updates its attention behavior.
+
+## 3 Preliminary
+
+## 3.1 Long-Context Question Answering and Evidence Use
+
+We study test-time training for long-context question answering. Let a test instance be $z = ( c , q )$ , where $c = ( c _ { 1 } , c _ { 2 } , . . . , c _ { T } )$ denotes a long input context and $q$ denotes the question or instruction. Given a pretrained language model $f _ { \theta } ,$ the goal is to generate an answer y conditioned on both the full context c and the question $q , \mathrm { i . e . , } y \sim p _ { \theta } ( \cdot \mid c , q )$
+
+In long-context QA, the relevant evidence needed to answer $q$ may already be contained in $^ { c , }$ but the model may still fail to identify or use it correctly. This failure is especially problematic when the context contains many distractors or when the useful evidence is distributed across distant regions of the input. Therefore, the key challenge is not only whether the model can fit the full context, but whether it can reliably access the evidence needed for the current question.
+
+A common way to improve evidence access is to perform retrieval within the given context. Let $\boldsymbol { S } = \{ s _ { 1 } , s _ { 2 } , \ldots , s _ { M } \}$ denote a set of candidate chunks segmented from $c ,$ where each chunk $s _ { j } = ( c _ { b _ { j } } , \ldots , c _ { e _ { j } } ) $ covers a contiguous span of context tokens. A within-context retrieval module ranks these chunks according to their relevance to $q$ and selects a subset $E = \{ s _ { j _ { 1 } } , s _ { j _ { 2 } } , . . . , s _ { j _ { K } } \}$ Retrieval-only methods typically use $E$ to construct a shorter input for generation. In contrast, our goal is not to replace the original context with the selected chunks. Instead, we use the selected evidence chunks as a supervision signal for test-time adaptation, while final answer generation remains conditioned on the original full context c.
+
+## 3.2 Query-Only Test-Time Adaptation
+
+Test-time training adapts a model independently for each test instance at inference time, using signals derived from the test input itself. In the longcontext setting, full-parameter adaptation is expensive because each gradient update may change the key and value representations of the entire context, requiring repeated computation over the full input.
+
+Query-only test-time training provides a lightweight alternative. Instead of updating all model parameters, it updates only query-side parameters in self-attention while keeping the rest of the model frozen. Let $\Theta _ { Q } = \bar { \{ W _ { Q } ^ { ( 1 ) } , W _ { Q } ^ { ( 2 ) } , \dots , W _ { Q } ^ { ( L ) } \} }$ denote the query projection parameters across the $L$ transformer layers. Given the long context $^ { c , }$ the model constructs key-value representations $\{ K ^ { ( \ell ) } , V ^ { ( \ell ) } \} _ { \ell = 1 } ^ { L } ,$ which remain fixed during adaptation. Updating only $\Theta _ { Q }$ changes how the model forms queries over these fixed key-value representations, thereby modifying how it accesses information in the context without recomputing the full context after every gradient step. Standard query-only test-time training usually relies on generic self-supervised objectives. For example, it may sample a span $s ~ = ~ ( c _ { t } , c _ { t + 1 } , \ldots , c _ { t + m } )$ from the context and optimize a next-token prediction loss:
+
+$$
+\mathcal { L } _ { \mathrm { s p a n } } ( \Theta _ { Q } ; s ) = - \sum _ { i = t } ^ { t + m - 1 } \log p _ { \theta , \Theta _ { Q } } ( c _ { i + 1 } \mid c _ { \le i } ) .
+$$
+
+This objective can adapt the model to the current input, but it does not explicitly indicate which parts of the context are useful for answering the current question. As a result, query-only adaptation can modify context-access behavior, but the adaptation signal remains largely question-agnostic.
+
+## 3.3 From Evidence Selection to Adaptation Supervision
+
+The above discussion suggests a gap between within-context retrieval and query-only test-time adaptation. Within-context retrieval can identify candidate evidence chunks for the current question, but retrieval-only methods usually use these chunks to modify the input rather than the model. Queryonly test-time training can adapt how the model accesses the context, but its generic span-based objectives do not directly specify which context positions are question-relevant.
+
+Our method connects these two components by using retrieved evidence chunks as supervision for query-side test-time adaptation. Let E denote the selected evidence chunks, and let $\Omega ( E ) \ \subseteq$ $\{ 1 , 2 , \ldots , T \}$ denote the indices of context tokens covered by these chunks. Instead of replacing the original context with E, we use $\Omega ( E )$ to guide adaptation toward evidence-bearing positions. The detailed construction of the soft attention target and the corresponding adaptation objective are introduced in the next section.
+
+## 4 EASE-TTT
+
+## 4.1 Method Overview
+
+We propose EASE-TTT, an evidence-selective variant of query-only test-time training for longcontext question answering. Unlike prior qTTT methods, which adapt query-side parameters using generic self-supervised losses over randomly sampled spans, our method identifies question-relevant evidence and uses it to guide test-time attention adaptation. Given a context c and a question q, EASE-TTT segments the context into candidate spans and ranks them by their question-conditioned utility. The top-K spans are selected as evidence chunks and used to define a soft target attention distribution over context positions. During test-time adaptation, EASE-TTT updates only query-side adaptation parameters according to this evidencealigned attention target. Final prediction is still performed on the original full context, so the selected chunks guide attention without truncating the input.
+
+## 4.2 Within-Context Evidence Selection
+
+A central challenge in long-context reasoning is that useful evidence is often buried among large amounts of irrelevant content. To obtain a more targeted adaptation signal, we first identify candidate evidence chunks from the full context.
+
+Given the context token sequence $c \quad = { }$ $( c _ { 1 } , \ldots , c _ { T } )$ , we segment it into spans using tokenlevel negative log-likelihood (NLL) spikes. Specifically, we run a forward pass over c and compute the NLL of each context token. After smoothing the resulting NLL curve, we detect boundary candidates using a threshold of the form $\mu + \kappa \sigma$ where µ and σ are the mean and standard deviation of the smoothed curve, and κ is a spike factor. Together with a minimum chunk-length constraint $m _ { \mathrm { m i n } }$ , this yields a set of candidate spans $\boldsymbol { S } = \{ s _ { 1 } , \ldots , s _ { M } \}$
+
+Algorithm 1 EASE-TTT with Evidence Selection   
+and Soft Attention Supervision   
+Require: Base model $f _ { \theta } ,$ context c, question $q ,$   
+update steps N , top-K, attention layer ℓ, mass   
+$\alpha ,$ learning rate η   
+1: Insert trainable LoRA adapters into query pro  
+jections; freeze all other parameters   
+2: Segment the context into candidate spans S   
+3: for each span $s \in { \mathcal { S } }$ do   
+4: Compute question-conditioned utility   
+score $r ( s )$   
+5: end for   
+6: $E \gets \mathrm { T o p K } ( \boldsymbol { S } , \boldsymbol { r } , K )$ ▷ selected evidence   
+chunks   
+7: $\Omega ( E ) $ {context token positions covered by $E \}$   
+8: Construct soft target distribution π over con  
+text positions using $\Omega ( E )$ and α   
+9: for $t = 1$ to N do   
+10: Obtain attention distribution a over context   
+positions at layer ℓ   
+11: ${ \mathcal { L } } \gets D _ { \mathrm { K L } } ( \pi \| a )$   
+12: Update query-side LoRA parameters with   
+learning rate η   
+13: end for   
+14: Generate the final answer using the full context
+
+We then score each span by how much it helps the model condition on the question. For a candidate span s, we define its question-conditioned utility as
+
+$$
+r ( s ) = \mathcal { L } _ { \mathrm { N T P } } ( [ \mathrm { B O S } , q ] ) - \mathcal { L } _ { \mathrm { N T P } } ( [ s , \mathrm { B O S } , q ] ) ,
+$$
+
+where $\mathcal { L } _ { \mathrm { N T P } } ( \cdot )$ denotes the next-token prediction loss on the question tokens. Intuitively, if prepending s reduces the question modeling loss, then s likely contains evidence relevant to answering q.
+
+We rank all spans by $r ( s )$ and retain the top-K spans:
+
+$$
+E = \mathrm { T o p K } ( S , r , K ) ,
+$$
+
+where E denotes the selected evidence chunks. These chunks are not used to replace the full context at inference time; instead, they provide a focused supervision signal for the subsequent adaptation stage.
+
+## 4.3 Soft-Target Attention Alignment
+
+Existing qTTT methods typically optimize generic self-supervised objectives such as next-token prediction over sampled spans. While lightweight, such objectives only indirectly encourage the model to allocate attention toward questionrelevant evidence. To make the adaptation target more explicit, we supervise attention directly using the selected evidence chunks.
+
+Let $q = ( q _ { 1 } , \ldots , q _ { R } )$ denote the tokenized question. At each test-time adaptation step, we prefill the model on the sequence $\left[ c ; q _ { 1 : R - 1 } \right]$ and decode the final question token $q _ { R }$ . From a chosen attention layer $\ell ,$ we extract the attention distribution over context positions, average across heads, and normalize it into a probability distribution $a \in \mathbb { R } ^ { T }$
+
+Let $\Omega ( E )$ be the set of context token positions covered by the selected evidence chunks E. We define a soft target attention distribution π over context positions by assigning most of the probability mass to $\Omega ( E )$
+
+$$
+\pi _ { i } = \left\{ \begin{array} { l l } { \alpha / | \Omega ( E ) | , } & { i \in \Omega ( E ) , } \\ { ( 1 - \alpha ) / ( T - | \Omega ( E ) | ) , } & { i \notin \Omega ( E ) , } \end{array} \right.
+$$
+
+where $\alpha \in ( 0 , 1 )$ controls how strongly attention is biased toward the selected evidence.
+
+We then optimize the Kullback–Leibler divergence
+
+$$
+\begin{array} { r } { \mathcal { L } _ { \mathrm { a t t n } } = D _ { \mathrm { K L } } ( \pi \| a ) , } \end{array}
+$$
+
+which explicitly encourages the model to reallocate attention toward evidence-bearing context positions while still preserving a small amount of mass on the rest of the context. Compared with hard masking, this soft target is more stable and avoids forcing the model to ignore potentially useful non-selected tokens entirely.
+
+## 5 Experiments
+
+## 5.1 Setup
+
+Evaluation Datasets. We evaluate our method on six English long-context question answering tasks from LongBench (Bai et al., 2024): MuSiQue, HotpotQA, 2WikiMultihopQA, QASPER, NarrativeQA, and MultiFieldQA-en. These tasks cover multi-hop question answering, single-document question answering, narrative understanding, and long-context information extraction. They require models to locate, aggregate, and reason over relevant evidence in extended input contexts. We report the official task-level evaluation scores and compute the macro-average across the six datasets.
+
+LLMs and Baselines. We conduct experiments on three small decoder-only language models: Qwen3- 0.6B, Qwen3-1.7B (Yang et al., 2025), and Llama-3.2-1B (Grattafiori et al., 2024). We compare EASE-TTT with four baselines. Full-context directly generates the answer from the full input context, without retrieval or test-time parameter updates. Within-Context Retrieval-Augmented Generation (Within-Context RAG) retrieves the top-ranked chunks from the same input context using the question as the retrieval query, concatenates the retrieved chunks as a shortened context, and generates the answer without accessing any external corpus or updating model parameters. In-Context Retrieval (ICR) retrieves relevant segments from the given long input and uses the retrieved segments, together with the corresponding prompting strategy, to answer the question (Agrawal et al., 2024). Query-Only Test-Time Training (qTTT) performs query-only testtime training by updating query-side parameters using a generic self-supervised next-token prediction objective on sampled context spans (Bansal et al., 2025). EASE-TTT updates only query-side adaptation parameters, but replaces generic spanbased supervision with evidence-guided soft attention supervision constructed from question-relevant chunks selected within the input context. Unlike retrieval-only baselines, EASE-TTT uses selected chunks only to guide test-time adaptation, while final answer generation is performed over the original full context.
+
+Implementation Details. For all methods, we truncate the input context to at most 32,768 tokens and the question to at most 1,024 tokens. The maximum answer length is set to 128 tokens, and we use deterministic decoding. For EASE-TTT, we insert LoRA adapters into the query projection modules while keeping the base model frozen. Unless otherwise specified, we use LoRA rank 8, a scaling factor of 16, and a dropout rate of 0.05. Test-time adaptation is performed for 15 update steps with AdamW, using a learning rate of $1 \times 1 0 ^ { - 4 }$ and weight decay of 0.01. We use 512 tokens as the target chunk size, with a minimum chunk size of 128 tokens, a maximum chunk size of 1,024 tokens, and an overlap of 64 tokens. We then rank candidate chunks by the utility score in Section 4 and select the top 4 chunks for evidence-guided adaptation. By default, we use layer ℓ = 14 for attention alignment. The soft attention target uses a mass parameter of $\alpha = 0 . 6$
+
+Table 1: Main results on six LongBench QA tasks: MuSiQue, HotpotQA, 2WikiMultihopQA, QASPER, Narra tiveQA, and MultiFieldQA-en, across Qwen3-0.6B, Qwen3-1.7B, and Llama-3.2-1B. RAG denotes Within-Context Retrieval-Augmented Generation.
+<table><tr><td>Model</td><td>Method</td><td>MuSiQue</td><td>HotpotQA</td><td>2WikiMQA</td><td>QASPER</td><td>NarrativeQA</td><td>MultiFieldQA</td><td>Avg.</td></tr><tr><td rowspan="5">Qwen3-0.6B</td><td>Full-context</td><td>8.0</td><td>17.9</td><td>17.0</td><td>26.0</td><td>9.6</td><td>38.8</td><td>19.5</td></tr><tr><td>RAG</td><td>7.2</td><td>17.9</td><td>17.2</td><td>26.2</td><td>11.6</td><td>37.6</td><td>19.6</td></tr><tr><td>ICR</td><td>6.3</td><td>21.3</td><td>21.4</td><td>11.3</td><td>9.8</td><td>38.5</td><td>18.1</td></tr><tr><td>qTTT</td><td>8.9</td><td>23.6</td><td>20.2</td><td>29.8</td><td>12.1</td><td>39.5</td><td>22.4</td></tr><tr><td>Ours</td><td>9.2</td><td>23.5</td><td>22.1</td><td>32.1</td><td>14.0</td><td>40.4</td><td>23.6</td></tr><tr><td rowspan="5">Qwen3-1.7B</td><td>Full-context</td><td>12.4</td><td>30.4</td><td>22.1</td><td>29.9</td><td>16.1</td><td>39.1</td><td>25.0</td></tr><tr><td>RAG</td><td>12.7</td><td>31.4</td><td>22.7</td><td>28.9</td><td>16.7</td><td>39.1</td><td>25.3</td></tr><tr><td>ICR</td><td>16.0</td><td>33.6</td><td>31.7</td><td>27.1</td><td>13.8</td><td>43.3</td><td>27.6</td></tr><tr><td>qTTT</td><td>13.6</td><td>33.4</td><td>28.2</td><td>37.2</td><td>16.2</td><td>43.3</td><td>28.7</td></tr><tr><td>Ours</td><td>14.9</td><td>36.6</td><td>32.1</td><td>39.2</td><td>16.3</td><td>44.6</td><td>30.6</td></tr><tr><td rowspan="5">Llama-3.2-1B</td><td>Full-context</td><td>11.1</td><td>19.1</td><td>28.9</td><td>16.2</td><td>14.0</td><td>28.9</td><td>19.7</td></tr><tr><td>RAG</td><td>9.9</td><td>22.0</td><td>28.2</td><td>21.0</td><td>16.5</td><td>33.9</td><td>21.9</td></tr><tr><td>ICR</td><td>15.1</td><td>25.3</td><td>26.6</td><td>15.7</td><td>17.1</td><td>39.8</td><td>23.3</td></tr><tr><td>qTTT</td><td>15.4</td><td>27.1</td><td>26.3</td><td>24.8</td><td>17.3</td><td>40.8</td><td>25.3</td></tr><tr><td>Ours</td><td>13.2</td><td>29.3</td><td>26.5</td><td>24.3</td><td>16.0</td><td>45.6</td><td>25.8</td></tr></table>
+
+## 5.2 Main Results
+
+Table 1 reports the main results on six LongBench QA tasks. Overall, EASE-TTT achieves the best average performance on the Qwen3 models, improving over full-context inference, retrieval-only baselines, and qTTT. On Qwen3-0.6B, EASE-TTT obtains an average score of 23.6, outperforming full-context inference by 4.1 points and qTTT by 1.2 points. On Qwen3-1.7B, EASE-TTT achieves an average score of 30.6, improving over Fullcontext by 5.6 points, Within-Context RAG by 5.3 points, ICR by 3.0 points, and qTTT by 1.9 points.
+
+These results support our hypothesis that longcontext QA depends not only on context availability, but also on reliable evidence access. Fullcontext inference is consistently weaker than adaptation-based methods, indicating that simply providing the full input is insufficient. Retrievalonly methods improve some tasks, but their gains are inconsistent. For example, ICR improves MuSiQue and 2WikiMultihopQA on Qwen3- 1.7B, but underperforms full-context inference on QASPER and NarrativeQA, suggesting that shortened retrieved contexts may also discard useful surrounding information.
+
+Compared with qTTT, EASE-TTT improves the macro-average scores on all three models, although the size of the gain varies across model family. This suggests that evidence-localized supervision provides a more targeted adaptation signal than generic span-based self-supervision, while preserving fullcontext generation. The gains are more visible on several tasks that require locating or integrating evidence across long inputs, such as 2WikiMultihopQA, QASPER, and MultiFieldQA-en. These gains show the benefit of anchoring test-time updates to question-relevant evidence.
+
+## 5.3 Efficiency Analysis
+
+Table 2 compares qTTT and EASE-TTT on three profiled LongBench tasks using Qwen3-1.7B. We focus on qTTT because it is the closest adaptationbased baseline: both methods perform query-side test-time adaptation, but use different supervision signals. EASE-TTT improves the average score from 38.0 to 40.1, while increasing the average per-example runtime from 6.7s to 9.1s. This corresponds to a 2.1-point score improvement with an additional 2.4s per example.
+
+The additional cost mainly comes from evidence selection and attention-map supervision. Unlike qTTT, which optimizes a standard next-token prediction loss on sampled spans, EASE-TTT first identifies question-relevant evidence chunks and constructs a soft target over full-context positions. During adaptation, it also extracts and aligns the selected-layer attention distribution with this target, which introduces extra computation beyond the generic span-based objective. Peak GPU memory remains in a comparable range across the profiled runs. Overall, EASE-TTT trades moderate additional latency for better accuracy over qTTT.
+
+![](images/ac13e61d1ab170d5a32f4235a6ecaf79401d311fa903f68b998588bf21304713.jpg)  
+Figure 3: Objective ablation on Qwen3-1.7B. Attn. KL outperforms Chunk NTP, showing the benefit of using selected evidence as explicit attention supervision.
+
+## 5.4 Ablation Study
+
+Loss Objective. Figure 3 evaluates the effect of the adaptation objective. Chunk NTP adapts the model on selected evidence chunks using a standard next-token prediction loss, while Attn. KL directly aligns the model’s attention distribution with the selected evidence positions. Attn. KL consistently outperforms Chunk NTP on all three tasks, improving HotpotQA from 30.5 to 36.6, QASPER from 37.0 to 39.2, and MultiFieldQA from 43.7 to 44.6. This comparison shows that the benefit of EASE-TTT does not come simply from exposing the model to selected evidence during test-time training. If the selected chunks are used only as ordinary next-token prediction data, the adaptation objective remains weakly connected to the final evidence-access problem. In contrast, Attn. KL converts the selected chunks into an explicit supervision signal over full-context positions. This better matches the goal of EASE-TTT: improving how the model attends to evidence while still generating from the original full context.
+
+Effect of Attention Layer. Figure 4 studies how the choice of attention supervision layer affects performance. This choice is not merely an implementation detail, because recent layer-wise analyses suggest that different LLM layers play different functional roles. Lower layers are more involved in gathering information from previous tokens, while upper layers increasingly consolidate the gathered information internally (Artzy and Schwartz, 2024). In addition, intermediate layers can encode stronger task-relevant representations than final layers for downstream tasks (Skean et al., 2025).
+
+Our results are consistent with this view. Very early layers are less effective, likely because their attention patterns are still dominated by low-level context gathering rather than question-specific evidence use. The final layer is also not necessarily optimal, since it may be more closely tied to consolidated representations and final prediction. Intermediate layers provide a better trade-off: they are sufficiently contextualized to reflect questionrelevant evidence, while still leaving room for the alignment signal to influence subsequent computation. This explains why EASE-TTT benefits more from supervising intermediate attention layers than from supervising the earliest or final layers.
+
+![](images/7eb46eaefcd49afba92771f4646e84e30e5a4c452f9df595326588190b359d56.jpg)  
+Figure 4: Effect of attention layer on EASE-TTT using Qwen3-1.7B. The results compare different attention layers while keeping all other hyperparameters fixed.
+
+## 6 Conclusion
+
+We studied long-context question answering for smaller language models, where answer-bearing evidence may already be present in the input but not reliably accessed by the model. We proposed EASE-TTT, a within-context retrievalaugmented test-time training framework that localizes evidence chunks and converts them into soft attention supervision for query-side adaptation. Rather than replacing the full context with retrieved chunks, EASE-TTT uses localized evidence to guide lightweight test-time updates while generating the final answer from the original full context. Experiments on six LongBench QA tasks show that EASE-TTT improves over full-context inference, retrieval-only baselines, and qTTT. Ablation results further show that explicit attention alignment is more effective than next-token prediction on selected chunks, suggesting that localized evidence is most useful when it guides how the model attends to the full context rather than only exposing relevant content. These findings highlight evidence-aware test-time adaptation as a promising direction for smaller long-context models.
+
+## Limitations
+
+This work has several limitations. First, our experiments focus on long-context question answering tasks, where answer-relevant information is usually expected to appear in the input context. Although this setting directly matches our research question, further evaluation is needed to understand how EASE-TTT generalizes to other types of tasks, such as mathematical reasoning, symbolic reasoning, and open-ended generation.
+
+Second, our study mainly evaluates relatively small language models. Since larger models may already have stronger long-context utilization ability, the effect of evidence-guided test-time adaptation may vary across model scales. Future work can examine how the proposed approach behaves on larger models and different model family.
+
+## References
+
+Aradhye Agarwal, Ayan Sengupta, and Tanmoy Chakraborty. 2025. First finish search: Efficient testtime scaling in large language models. arXiv preprint arXiv:2505.18149.
+
+Devanshu Agrawal, Shang Gao, and Martin Gajek. 2024. Can’t remember details in long documents? you need some r&r. In Findings of the Association for Computational Linguistics: EMNLP 2024, pages 12692– 12704.
+
+Ekin Akyürek, Mehul Damani, Adam Zweiger, Linlu Qiu, Han Guo, Jyothish Pari, Yoon Kim, and Jacob Andreas. 2024. The surprising effectiveness of testtime training for few-shot learning. arXiv preprint arXiv:2411.07279.
+
+Shengnan An, Zexiong Ma, Zeqi Lin, Nanning Zheng, Jian-Guang Lou, and Weizhu Chen. 2024. Make your llm fully utilize the context. Advances in Neural Information Processing Systems, 37:62160–62188.
+
+Amit Ben Artzy and Roy Schwartz. 2024. Attend first, consolidate later: On the importance of attention in different llm layers. In Proceedings of the 7th BlackboxNLP Workshop: Analyzing and Interpreting Neural Networks for NLP, pages 177–184.
+
+Yushi Bai, Xin Lv, Jiajie Zhang, Hongchang Lyu, Jiankai Tang, Zhidian Huang, Zhengxiao Du, Xiao Liu, Aohan Zeng, Lei Hou, and 1 others. 2024. Longbench: A bilingual, multitask benchmark for long context understanding. In Proceedings of the 62nd annual meeting of the association for computational linguistics (volume 1: Long papers), pages 3119– 3137.
+
+Rachit Bansal, Aston Zhang, Rishabh Tiwari, Lovish Madaan, Sai Surya Duvvuri, Devvrit Khatri, David
+
+Brandfonbrener, David Alvarez-Melis, Prajjwal Bhargava, Mihir Sanjay Kale, and 1 others. 2025. Let’s (not) just put things in context: Test-time training for long-context llms. arXiv preprint arXiv:2512.13898.
+
+Yukang Chen, Shengju Qian, Haotian Tang, Xin Lai, Zhijian Liu, Song Han, and Jiaya Jia. 2024. Longlora: Efficient fine-tuning of long-context large language models. In International Conference on Learning Representations, volume 2024, pages 8220–8238.
+
+Nadezhda Chirkova, Thibault Formal, Vassilina Nikoulina, and Stéphane Clinchant. 2025. Provence: efficient and robust context pruning for retrieval-augmented generation. arXiv preprint arXiv:2501.16214.
+
+Yiran Ding, Li Lyna Zhang, Chengruidong Zhang, Yuanyuan Xu, Ning Shang, Jiahang Xu, Fan Yang, and Mao Yang. 2024. Longrope: Extending llm context window beyond 2 million tokens. arXiv preprint arXiv:2402.13753.
+
+Guhao Feng, Shengjie Luo, Kai Hua, Ge Zhang, Di He, Wenhao Huang, and Tianle Cai. 2026. In-place testtime training. arXiv preprint arXiv:2604.06169.
+
+Yunfan Gao, Yun Xiong, Wenlong Wu, Bohan Li, Yijie Zhong, and Haofen Wang. 2026. U-niah: Unified rag and llm evaluation for long context needle-in-ahaystack. ACM Transactions on Information Systems, 44(3):1–30.
+
+Aaron Grattafiori, Abhimanyu Dubey, Abhinav Jauhri, Abhinav Pandey, Abhishek Kadian, Ahmad Al-Dahle, Aiesha Letman, Akhil Mathur, Alan Schelten, Alex Vaughan, and 1 others. 2024. The llama 3 herd of models. arXiv preprint arXiv:2407.21783.
+
+Michael Günther, Isabelle Mohr, Daniel James Williams, Bo Wang, and Han Xiao. 2024. Late chunking: contextual chunk embeddings using long-context embedding models. arXiv preprint arXiv:2409.04701.
+
+Moritz Hardt and Yu Sun. 2024. Test-time training on nearest neighbors for large language models. In International Conference on Learning Representations, volume 2024, pages 54625–54640.
+
+Cheng-Ping Hsieh, Simeng Sun, Samuel Kriman, Shantanu Acharya, Dima Rekesh, Fei Jia, Yang Zhang, and Boris Ginsburg. 2024. Ruler: What’s the real context size of your long-context language models? arXiv preprint arXiv:2404.06654.
+
+Jinwu Hu, Zhitian Zhang, Guohao Chen, Xutao Wen, Chao Shuai, Wei Luo, Bin Xiao, Yuanqing Li, and Mingkui Tan. 2025. Test-time learning for large language models. arXiv preprint arXiv:2505.20633.
+
+Jonas Hübotter, Sascha Bongni, Ido Hakimi, and Andreas Krause. 2025. Efficiently learning at test-time: Active fine-tuning of llms. In International Conference on Learning Representations, volume 2025, pages 74978–75035.
+
+Soyeong Jeong, Jinheon Baek, Sukmin Cho, Sung Hwang, and Jong C Park. 2023. Test-time selfadaptive small language models for question answering. In Findings of the Association for Computational Linguistics: EMNLP 2023, pages 15459– 15469.
+
+Huiqiang Jiang, Qianhui Wu, Chin-Yew Lin, Yuqing Yang, and Lili Qiu. 2023. Llmlingua: Compressing prompts for accelerated inference of large language models. In Proceedings of the 2023 conference on empirical methods in natural language processing, pages 13358–13376.
+
+Huiqiang Jiang, Qianhui Wu, Xufang Luo, Dongsheng Li, Chin-Yew Lin, Yuqing Yang, and Lili Qiu. 2024. Longllmlingua: Accelerating and enhancing llms in long context scenarios via prompt compression. In Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1658–1677.
+
+Kuang-Huei Lee, Xinyun Chen, Hiroki Furuta, John Canny, and Ian Fischer. 2024. A human-inspired reading agent with gist memory of very long contexts. arXiv preprint arXiv:2402.09727.
+
+Taewhoo Lee, Chanwoong Yoon, Kyochul Jang, Donghyeon Lee, Minju Song, Hyunjae Kim, and Jaewoo Kang. 2025. Ethic: Evaluating large language models on long-context tasks with high information coverage. In Proceedings of the 2025 Conference of the Nations of the Americas Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers), pages 5497–5512.
+
+Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir Karpukhin, Naman Goyal, Heinrich Küttler, Mike Lewis, Wen-tau Yih, Tim Rocktäschel, and 1 others. 2020. Retrieval-augmented generation for knowledge-intensive nlp tasks. Advances in neural information processing systems, 33:9459– 9474.
+
+Huayang Li, Pat Verga, Priyanka Sen, Bowen Yang, Vijay Viswanathan, Patrick Lewis, Taro Watanabe, and Yixuan Su. 2024a. ALR<sup>2</sup>: A retrieve-thenreason framework for long-context question answering. arXiv preprint arXiv:2410.03227.
+
+Tianle Li, Ge Zhang, Quy Duc Do, Xiang Yue, and Wenhu Chen. 2024b. Long-context llms struggle with long in-context learning. arXiv preprint arXiv:2404.02060.
+
+Yanyang Li, Michael R Lyu, and Liwei Wang. 2025. Learning to reason from feedback at test-time. In Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 5241–5253.
+
+Yucheng Li, Bo Dong, Frank Guerin, and Chenghua Lin. 2023. Compressing context to enhance inference efficiency of large language models. In Proceedings of the 2023 conference on empirical methods in natural language processing, pages 6342–6353.
+
+Barys Liskavets, Maxim Ushakov, Shuvendu Roy, Mark Klibanov, Ali Etemad, and Shane K Luke. 2025. Prompt compression with context-aware sentence encoding for fast and improved llm inference. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 39, pages 24595–24604.
+
+Nelson F Liu, Kevin Lin, John Hewitt, Ashwin Paranjape, Michele Bevilacqua, Fabio Petroni, and Percy Liang. 2024. Lost in the middle: How language models use long contexts. Transactions of the association for computational linguistics, 12:157–173.
+
+Kun Luo, Zheng Liu, Peitian Zhang, Hongjin Qian, Jun Zhao, and Kang Liu. 2025. Does rag really perform bad for long-context processing? arXiv preprint arXiv:2502.11444.
+
+Ali Modarressi, Hanieh Deilamsalehy, Franck Dernoncourt, Trung Bui, Ryan A Rossi, Seunghyun Yoon, and Hinrich Schütze. 2025. Nolima: Long-context evaluation beyond literal matching. arXiv preprint arXiv:2502.05167.
+
+Dilxat Muhtar, Yelong Shen, Yaming Yang, Xiaodong Liu, Yadong Lu, Jianfeng Liu, Yuefeng Zhan, Hao Sun, Weiwei Deng, Feng Sun, and 1 others. 2024. Streamadapter: Efficient test time adaptation from contextual streams. arXiv preprint arXiv:2411.09289.
+
+Inderjeet Nair, Shwetha Somasundaram, Apoorv Saxena, and Koustava Goswami. 2023. Drilling down into the discourse structure with llms for long document question answering. In Findings of the Association for Computational Linguistics: EMNLP 2023, pages 14593–14606.
+
+Zhuoshi Pan, Qianhui Wu, Huiqiang Jiang, Menglin Xia, Xufang Luo, Jue Zhang, Qingwei Lin, Victor Rühle, Yuqing Yang, Chin-Yew Lin, and 1 others. 2024. Llmlingua-2: Data distillation for efficient and faithful task-agnostic prompt compression. In Findings of the Association for Computational Linguistics: ACL 2024, pages 963–981.
+
+Hongjin Qian, Zheng Liu, Kelong Mao, Yujia Zhou, and Zhicheng Dou. 2024. Grounding language model with chunking-free in-context retrieval. In Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1298–1311.
+
+Yifu Qiu, Varun R Embar, Yizhe Zhang, Navdeep Jaitly, Shay B Cohen, and Benjamin Han. 2025. Eliciting incontext retrieval and reasoning for long-context large language models. In Findings of the Association for Computational Linguistics: ACL 2025, pages 3176– 3192.
+
+Jon Saad-Falcon, Daniel Y Fu, Simran Arora, Neel Guha, and Christopher Ré. 2024. Benchmarking and building long-context retrieval models with loco and m2-bert. arXiv preprint arXiv:2402.07440.
+
+Parth Sarthi, Salman Abdullah, Aditi Tuli, Shubh Khanna, Anna Goldie, and Christopher Manning. 2024. Raptor: Recursive abstractive processing for tree-organized retrieval. In International Conference on Learning Representations, volume 2024, pages 32628–32649.
+
+Boheng Sheng, Jiacheng Yao, Meicong Zhang, and Guoxiu He. 2025. Dynamic chunking and selection for reading comprehension of ultra-long context in large language models. In Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 31857– 31876.
+
+Oscar Skean, Md Rifat Arefin, Dan Zhao, Niket Patel, Jalal Naghiyev, Yann LeCun, and Ravid Shwartz-Ziv. 2025. Layer by layer: Uncovering hidden representations in language models. arXiv preprint arXiv:2502.02013.
+
+Yi Su, Yixin Ji, Juntao Li, Hai Ye, and Min Zhang. 2023. Beware of model collapse! fast and stable test-time adaptation for robust question answering. In Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing, pages 12998–13011.
+
+Xin Sun, Zhongqi Chen, Qiang Liu, Shu Wu, Bowen Song, Weiqiang Wang, Zilei Wang, and Liang Wang. 2026. Predict the retrieval! test time adaptation for retrieval augmented generation. arXiv preprint arXiv:2601.11443.
+
+Yu Sun, Xiaolong Wang, Zhuang Liu, John Miller, Alexei Efros, and Moritz Hardt. 2020. Test-time training with self-supervision for generalization under distribution shifts. In International conference on machine learning, pages 9229–9248. PMLR.
+
+Chihiro Taguchi, Seiji Maekawa, and Nikita Bhutani. 2025. Efficient context selection for long-context qa: No tuning, no iteration, just adaptive-k. In Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing, pages 20116–20141.
+
+Gemini Team, Petko Georgiev, Ving Ian Lei, Ryan Burnell, Libin Bai, Anmol Gulati, Garrett Tanzer, Damien Vincent, Zhufeng Pan, Shibo Wang, and 1 others. 2024. Gemini 1.5: Unlocking multimodal understanding across millions of tokens of context. arXiv preprint arXiv:2403.05530.
+
+Runchu Tian, Yanghao Li, Yuepeng Fu, Siyang Deng, Qinyu Luo, Cheng Qian, Shuo Wang, Xin Cong, Zhong Zhang, Yesai Wu, and 1 others. 2025. Distance between relevant information pieces causes bias in long-context llms. In Findings of the Association for Computational Linguistics: ACL 2025, pages 521–533.
+
+Dequan Wang, Evan Shelhamer, Shaoteng Liu, Bruno Olshausen, and Trevor Darrell. 2020. Tent: Fully test-time adaptation by entropy minimization. arXiv preprint arXiv:2006.10726.
+
+Minzheng Wang, Longze Chen, Fu Cheng, Shengyi Liao, Xinghua Zhang, Bingli Wu, Haiyang Yu, Nan Xu, Lei Zhang, Run Luo, and 1 others. 2024. Leave no document behind: Benchmarking long-context llms with extended multi-doc qa. In Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing, pages 5627–5646.
+
+Zhiruo Wang, Jun Araki, Zhengbao Jiang, Md Rizwan Parvez, and Graham Neubig. 2023. Learning to filter context for retrieval-augmented generation. arXiv preprint arXiv:2311.08377.
+
+Fangyuan Xu, Weijia Shi, and Eunsol Choi. 2023. Recomp: Improving retrieval-augmented lms with compression and selective augmentation. arXiv preprint arXiv:2310.04408.
+
+An Yang, Anfeng Li, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo Zheng, Bowen Yu, Chang Gao, Chengen Huang, Chenxu Lv, and 1 others. 2025. Qwen3 technical report. arXiv preprint arXiv:2505.09388.
+
+Chanwoong Yoon, Taewhoo Lee, Hyeon Hwang, Minbyul Jeong, and Jaewoo Kang. 2024. Compact: Compressing retrieved documents actively for question answering. In Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing, pages 21424–21439.
+
+Qingyang Zhang, Yatao Bian, Xinke Kong, Peilin Zhao, and Changqing Zhang. 2024. Come: Test-time adaption by conservatively minimizing entropy. arXiv preprint arXiv:2410.10894.
+
+Qiyuan Zhang, Fuyuan Lyu, Zexu Sun, Lei Wang, Weixu Zhang, Wenyue Hua, Haolun Wu, Zhihan Guo, Yufei Wang, Niklas Muennighoff, and 1 others. 2025. A survey on test-time scaling in large language models: What, how, where, and how well? arXiv preprint arXiv:2503.24235.
+
+Qingfei Zhao, Ruobing Wang, Yukuo Cen, Daren Zha, Shicheng Tan, Yuxiao Dong, and Jie Tang. 2024. Longrag: A dual-perspective retrieval-augmented generation paradigm for long-context question answering. In Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing, pages 22600–22632.
+
+Youxiang Zhu, Ruochen Li, Danqing Wang, Daniel Haehn, and Xiaohui Liang. 2025. Focus directions make your language models pay more attention to relevant contexts. arXiv preprint arXiv:2503.23306.
+
+## A Prompt Templates
+
+<table><tr><td>Instruction: Context-Based Question Answering</td></tr><tr><td>Answer the question based on the given con- text.</td></tr><tr><td>Context: {context}</td></tr><tr><td>Question: {question}</td></tr><tr><td>Please provide the final answer only.</td></tr></table>
+
+We use the following prompt template for all context-based question answering experiments. The placeholder {context} denotes the full input context provided by the benchmark, and {question} denotes the corresponding question. To ensure consistent evaluation, we instruct the model to output only the final answer without additional explanations or intermediate reasoning.
+
+## B Baseline Implementation Details
+
+## B.1 Full-Context Inference
+
+We use full-context inference as the base-model baseline. This baseline directly feeds the benchmark-provided context and question into the pretrained model and generates the answer without retrieval, prompt compression, or test-time parameter updates. For a fair comparison, we use the same model checkpoints, tokenizer, prompt template, context truncation, question truncation, maximum answer length, and decoding strategy as EASE-TTT. Specifically, the input context is truncated to at most 32,768 tokens, the question is truncated to at most 1,024 tokens, and the maximum answer length is set to 128 tokens. We use deterministic decoding for all evaluated models. No LoRA adapters are inserted, and all model parameters remain unchanged during inference.
+
+## B.2 Within-Context RAG
+
+We implement Within-Context RAG as a retrievalonly baseline that uses the same input context as the original long-context QA instance and does not access any external corpus. For a fair comparison with EASE-TTT, we use the same context preprocessing, tokenizer, truncation limits, prompt template, and decoding settings as our method. The input context is first truncated to at most 32,768 tokens, and the question is truncated to at most 1,024 tokens. The maximum answer length is set to 128 tokens, and deterministic decoding is used.
+
+For retrieval, we segment the truncated context into fixed-length chunks of 512 tokens. We then use BM25 to rank these chunks with the question as the retrieval query and select the top 4 chunks as the retrieved context. The selected chunks are concatenated in their original document order and passed to the base model for answer generation. Within-Context RAG does not access any external documents, does not insert LoRA adapters, and does not perform test-time parameter updates.
+
+## B.3 ICR
+
+We implement R&R following the original paper and use the official open-source implementation released by the authors. R&R combines reprompting and in-context retrieval (ICR) to improve longcontext question answering performance. Following the original setup, documents are divided into page-level segments, and the model first performs retrieval by identifying the top-k most relevant pages for the given question before conducting a second QA step on the abbreviated context. Following the default configuration in the original work, we retrieve the top-k = 5 pages during the ICR stage. During reprompting, reminder instruction blocks are periodically inserted throughout the long context to mitigate the lost-in-the-middle effect by reducing the distance between relevant evidence and task instructions. Specifically, reminder prompts are inserted approximately every r = 10k tokens following the implementation described in the original paper. The retrieval stage uses the same two-stage retrieval-and-answering pipeline as the original implementation, where the first LLM call retrieves relevant page IDs and the second LLM call performs QA on the abbreviated context constructed from the retrieved pages. Following the original implementation, we use the official prompt templates, retrieval formatting, and hyperparameter settings provided by the authors for all experiments.
+
+## B.4 QTTT
+
+We implement qTTT following the original paper and use the official open-source implementation released by the authors. Following the original setup, qTTT performs lightweight test-time adaptation on the query projection modules using LoRA adapters rather than updating the full model parameters. During inference, the key and value projections remain frozen, allowing the model to reuse the precomputed KV cache without recomputing full-context representations. Following the default configuration in the original work, qTTT performs $N _ { \mathrm { q T T T } } = 3 2$ gradient update steps during inference using randomly sampled spans of length k = 128 tokens, with a learning rate of $1 \times 1 0 ^ { - 5 }$ . Test-time optimization is applied only to the query-side attention parameters while all remaining model weights stay frozen. The adaptation objective follows the standard next-token prediction loss computed over sampled context spans, using the optimization procedure and default hyperparameter settings provided in the original implementation. Following the motivation of qTTT, this adaptation strategy is designed to mitigate attention score dilution in long-context reasoning by improving retrieval of relevant context tokens during inference while preserving efficient KV-cache reuse.
+
+Table 2: Efficiency comparison on three profiled Long-Bench tasks using Qwen3-1.7B. Time is measured in seconds and memory is measured in GB.
+<table><tr><td>Dataset</td><td>Method</td><td>Score ↑</td><td>Time ↓</td><td>Mem.</td></tr><tr><td>HotpotQA</td><td>qTTT</td><td>33.4</td><td>8.03</td><td>14.0</td></tr><tr><td rowspan="2">QASPER</td><td>Ours</td><td>36.6</td><td>13.80</td><td>11.6</td></tr><tr><td>qTTT</td><td>37.2</td><td>5.70</td><td>7.3</td></tr><tr><td rowspan="2">MultiField</td><td>Ours</td><td>39.2</td><td>5.73</td><td>6.5</td></tr><tr><td>qTTT</td><td>43.3</td><td>6.35</td><td>9.0</td></tr><tr><td></td><td>Ours</td><td>44.6</td><td>7.91</td><td>7.8</td></tr><tr><td rowspan="2">Avg.</td><td>qTTT</td><td>38.0</td><td>6.7</td><td>10.1</td></tr><tr><td>Óurs</td><td>40.1</td><td>9.1</td><td>8.6</td></tr></table>
+
+Table 3: Effect of evidence source on Qwen3-1.7B. Scores are reported on three LongBench QA tasks.
+<table><tr><td>Source</td><td>HotpotQA</td><td>QASPER</td><td>MultiFieldQA</td></tr><tr><td>BM25</td><td>36.5</td><td>38.4</td><td>44.1</td></tr><tr><td>Utility</td><td>36.6</td><td>39.2</td><td>44.6</td></tr></table>
+
+## B.5 Evidence Selection
+
+Table 3 examines the source of evidence used to construct the attention target. Utility-based selection slightly but consistently improves over BM25 across all three tasks. This suggests that BM25 can retrieve useful lexical matches, while the proposed utility score provides a more task-aligned signal for selecting evidence chunks. Since the utility score measures how much a chunk improves question modeling, it is better aligned with the downstream adaptation objective than purely lexical retrieval. The consistent gains support our use of utility-based evidence selection for evidenceguided test-time training.

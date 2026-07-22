@@ -13,6 +13,10 @@ Test-Time Training / Test-Time Learning / long-context continual adaptation：�
 | [TLM](./%5BICML%202025%5D%20TLM/) | ICML 2025 | TLM 把 LLM test-time learning 表述为无标签测试数据的 input perplexity minimization，用高困惑度样本选择和 LoRA 更新做域适应。 |
 | [TTT4LC](./%5BArxiv%202025%5D%20TTT4LC/) | arXiv 2025 | TTT4LC 揭示长上下文 attention 的 score dilution 导致 thinking tokens 失效，提出 Query-Only TTT：对 query 做少量梯度更新即可恢复长上下文信号。 |
 
+## 子专题
+
+- 📝 [paper-writing](./paper-writing/) — 为撰写 TTT 论文精读的核心参考文献集：TTT-NTP、Self-Guided-TTT、EASE-TTT，以及 TTT4LC、In-Place-TTT、TTT-E2E。
+
 ## 课题主线
 
 1. **更新对象不同**：In-Place TTT 更新 MLP final projection fast weights；TTT-E2E 更新 sliding-window Transformer 的部分权重并把 context 压入参数；Absorber LLM 把历史上下文吸收到参数/hidden behavior 中；TLM 和 Layer-Wise Dynamic TTA 则用 LoRA 或受控更新做测试时适应。

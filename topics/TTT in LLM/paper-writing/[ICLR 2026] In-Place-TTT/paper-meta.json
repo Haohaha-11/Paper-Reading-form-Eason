@@ -1,0 +1,17 @@
+{
+  "dir": "[ICLR 2026] In-Place-TTT",
+  "title": "In-Place Test-Time Training",
+  "short": "In-Place-TTT",
+  "authors": "Guhao Feng; Shengjie Luo; Kai Hua; Ge Zhang; Di He; Wenhao Huang; Tianle Cai",
+  "venue": "ICLR Oral",
+  "year": "2026",
+  "arxiv": "2604.06169",
+  "links": [
+    "https://arxiv.org/abs/2604.06169",
+    "https://arxiv.org/pdf/2604.06169",
+    "https://github.com/ByteDance-Seed/In-Place-TTT"
+  ],
+  "reading_order": "TTT in LLM topic paper 1",
+  "one_liner_hint": "In-Place TTT 把 LLM MLP block 的 final projection matrix 当作 fast weights，在推理时用 next-token-aligned objective 和 chunk-wise update 做可插拔 test-time training。",
+  "mineru_task": "84eb7f5d-8e73-4bee-a015-442bcb03ff5c"
+}
