@@ -1,0 +1,551 @@
+# Benchmarking Difusion Annealing-Based Bayesian Inverse Problem Solvers
+
+Evan Scope Crafts<sup>1</sup>, Member, IEEE, and Umberto Villa<sup>1,2</sup>, Member, IEEE
+
+<sup>1</sup>Oden Institute for Computational Engineering and Sciences, The University of Texas at Austin, Austin, TX USA 78712 <sup>2</sup>Dept of Biomedical Engineering, The University of Texas at Austin, Austin, TX USA 78712
+
+Corresponding author: Umberto Villa (email: uvilla@austin.utexas.edu).
+
+This work was supported by the National Institute of Biomedical Imaging and Bioengineering of the National Institutes of Health under award numbers R01EB031585 and R01EB034261. Code is available at: https://doi.org/10.5281/zenodo.14908136. Datasets containing the results of the numerical studies can be found at: https://doi.org/10.7910/DVN/0L5KGB.
+
+## ABSTRACT
+
+In recent years, the ascendance of difusion modeling as a state-of-the-art generative modeling approach has spurred significant interest in their use as priors in Bayesian inverse problems. However, it is unclear how to optimally integrate a difusion model trained on the prior distribution with a given likelihood function to obtain posterior samples. While algorithms developed for this purpose can produce high-quality, diverse point estimates of the unknown parameters of interest, they are often tested on problems where the prior distribution is analytically unknown, making it dificult to assess their performance in providing rigorous uncertainty quantification. Motivated by this challenge, this work introduces three benchmark problems for evaluating the performance of difusion model based samplers. The benchmark problems, which are inspired by problems in image inpainting, x-ray tomography, and phase retrieval, have a posterior density that is analytically known. In this setting, approximate ground-truth posterior samples can be obtained, enabling principled evaluation of the performance of posterior sampling algorithms. This work also introduces a general framework for difusion model based posterior sampling, Bayesian Inverse Problem Solvers through Difusion Annealing (BIPSDA). This framework unifies several recently proposed difusionmodel-based posterior sampling algorithms and contains novel algorithms that can be realized through flexible combinations of design choices. We tested the performance of a set of BIPSDA algorithms, including previously proposed state-of-the-art approaches, on the proposed benchmark problems. The results provide insight into the strengths and limitations of existing difusion model based posterior samplers, while the benchmark problems provide a testing ground for future algorithmic developments.
+
+INDEX TERMS Bayesian inference, difusion models, generative AI, optimization, machine learning, posterior probability, uncertainty quantification
+
+## I. INTRODUCTION
+
+Inverse problems, which aim to estimate an unknown parameter of interest from observed data (measurements), provide a principled way to integrate data with existing scientific knowledge [1], [2]. However, many important inverse problems throughout the sciences are ill-posed [3], [4]—the measurements alone do not contain enough information to uniquely and stably estimate the parameter of interest [5]. In the Bayesian inverse problem framework, this dificulty is addressed through the integration of prior knowledge regarding the parameter of interest, which enables both point estimation of the unknown parameter and rigorous uncertainty quantification [6], [7]. This can facilitate risk-informed analysis and decision making, which is particularly important in the context of safety-critical systems (e.g., medical imaging [8] or earthquake detection [9] systems), where accurate risk assessments can save lives.
+
+The Bayesian framework requires knowledge of the prior probability distribution of the unknown parameter.
+
+However, for many problems of interest (e.g., image reconstruction) the distribution of the unknown parameters has a complex structure that is not easily captured by hand-crafted prior distributions (e.g., Gaussian, total variation, or sparsity-inducing priors). Using an inaccurate prior can lead to biased point estimates of the unknown parameter and incorrect predictions of the parameter uncertainty.
+
+The success of generative modeling [10], [11] in capturing the structure of complex high-dimensional probability distributions in recent years has spurred considerable interest in the use of generative modeling to overcome this limitation [12]. In particular, over the last four years the rise to prominence of difusion modeling [13]–[15] as a state-of-the-art generative modeling approach has been coupled with significant interest in their use as prior distributions in Bayesian inference. Here a common strategy is to obtain posterior samples by pretraining a difusion model on samples from the prior distribution and integrating the pretrained model with the likelihood function (which is assumed to be known analytically) at inference time [16]–[21]. This general strategy has the advantage of enabling the same difusion model to be used in conjunction with many diferent data acquisition designs without retraining, and has shown considerable promise. However, there is no consensus on how to optimally integrate the difusion model and the likelihood function. While several algorithms have been proposed for this purpose, test-bed problems with no analyticallyknown ground-truth prior are often used to illustrate the performance of such methods. In this setting, the performance of the algorithms is often assessed using sample quality metrics like peak signal-to-noise ratio, as well as heuristic arguments regarding the sample diversity. This makes it dificult to assess the accuracy of these methods in capturing the global structure of the posterior.
+
+In this paper, we provide a general framework, Bayesian Inverse Problem Solvers through Difusion Annealing (BIPSDA), which—by abstracting the algorith mic components of the Difusion Annealing Posterior Sampling (DAPS) method described in [22]—provides an unified formulation for developing and analyzing annealing-based solvers for Bayesian inverse problems with priors implicitly defined by a difusion model. The framework generalizes and extends two recently proposed algorithms, DAPS [22] and DifPIR [23], for solving Bayesian inverse problems with difusion models. These two algorithms have achieved strong performance on a number of canonical imaging reconstruction problems, including non-linear problems such as phase retrieval that were previously considered too dificult for difusionmodel-based solvers [22]. In the unified framework, the DAPS and DifPIR algorithms can be recovered through specific design choices, while new algorithms can be unveiled through exploration of the rich algorithmic design space. An original contribution of our work is the use of randomize-then-optimize (RTO) techniques, originally proposed in [24]–[26] for approximate sampling from posterior distributions, to solve a sampling subproblem that arises in the BIPSDA framework. Here the RTO technique transforms this subproblem into an optimization problem (as in DifPIR) that can be solved with “of-the-shelf” deterministic numerical optimization methods, while still accurately accounting for measurement noise statistics (as in the DAPS method).
+
+We systematically evaluated the performance of algorithms in the proposed framework, including the DAPS and DifPIR algorithms and the novel RTO-based algo rithms, on a set of model problems. Each model problem uses a Gaussian mixture prior. This choice of prior has two key advantages. First, under this choice the posterior density is known and approximate ground-truth posterior samples can be obtained, enabling rigorous analysis of the performance of the BIPSDA algorithms. Second, under this choice the noisy prior scores, a key component of difusion models that is learned from data, can be formed analytically. This allows us to decompose the error in the posterior sampler into two components: error inherent to the algorithm, and error due to incorrect modeling of the prior distribution. For the likelihood functions, we considered benchmark problems inspired by classic image restoration/reconstruction problems: simple linear inpainting problems (in both low and high noise regimes), as well as nonlinear x-ray tomography and phase retrieval based problems.
+
+In each experiment, the performance of the BIPSDA algorithms was evaluated by comparing the samples produced by each algorithm with the approximate ground truth samples using four diferent metrics: the central moment discrepancy (CMD) [27], maximum mean discrepancy (MMD) [28], and the errors in both the predicted posterior mean and pointwise variance. This enables principled evaluation of the ability of various BIPSDA algorithms to capture both the local and global posterior structure.
+
+The remainder of this paper is organized as follows. In Section II, we provide relevant background on Bayesian inverse problems and difusion models. In Section III we introduce the proposed BIPSDA framework, discuss its relationship to previously proposed algorithms, and provide examples of algorithms that can be realized within the framework. Section IV provides details regarding the numerical studies, while results are shown in Section V. A discussion of the results and the conclusion is given in Section VI.
+
+## II. BACKGROUND
+
+In this section, we provide relevant background on Bayesian inverse problems and difusion models. We also provide a brief overview of a popular class of algorithms, referred to here as hijacking algorithms, for solving Bayesian inverse problems with difusion models. This overview serves to both motivate the proposed framework and to introduce algorithmic ideas relevant to the present work.
+
+## A. BAYESIAN INVERSE PROBLEMS
+
+In inverse problems, the relationship between the measurements $\mathbf { \bar { y } } ~ \in ~ \mathbb { R } ^ { K }$ and the unknown variable of interest m $\in \mathbb { R } ^ { D }$ is captured by the likelihood function $\pi _ { \mathrm { l i k e } } ( \mathbf { y } \mid \mathbf { m } )$ , where here and throughout the remainder of this work we assume the measurements and the unknown variable lie in finite-dimensional Euclidean spaces. Concretely, under the assumption of additive Gaussian noise, the measurements can be written as
+
+$$
+\begin{array} { r } { \mathbf { y } = f ( \mathbf { m } ) + \mathbf { z } , \quad \mathbf { z } \sim \mathcal { N } ( \mathbf { z } ; \mathbf { 0 } , \Sigma _ { \mathbf { z } } ) , } \end{array}\tag{1}
+$$
+
+where $f : \mathbb { R } ^ { D } \to \mathbb { R } ^ { K }$ is known as the forward model, and $\pmb { \Sigma _ { z } } \in \mathbb { R } ^ { K \times K }$ is the covariance matrix of the noise distribution. The corresponding likelihood function is given as $\pi _ { \mathrm { l i k e } } ( \mathbf { y _ { \alpha } } | \mathbf { \phi } \mathbf { m } ) = \mathcal { N } ( \mathbf { y } ; f ( \mathbf { m } ) , \pmb { \Sigma } _ { \mathbf { z } } )$
+
+By Bayes’ Theorem, the posterior distribution $\pi _ { \mathrm { p o s t } } ( \textbf { m } | \textbf { y } )$ of the unknown variable is related to the likelihood function and prior density function $\pi _ { \mathrm { p r } } ( \mathbf { m } )$ by the following expression:
+
+$$
+\pi _ { \mathrm { p o s t } } ( \mathbf { m } \mid \mathbf { y } ) \propto \pi _ { \mathrm { l i k e } } ( \mathbf { y } \mid \mathbf { m } ) \pi _ { \mathrm { p r } } ( \mathbf { m } ) .\tag{2}
+$$
+
+The goal of Bayesian inverse problems is to characterize the posterior distribution. In particular, depending on the application, various quantities, such as the mean, covariance, or higher-order moments of the posterior, may be of interest. While for certain choices of priors and likelihood functions (e.g., linear-Gaussian likelihood and Gaussian prior), these quantities can be computed in closed form, in general this is not tractable, and in practice Monte Carlo methods are often used to estimate the quantities of interest from samples.
+
+## B. DIFFUSION MODELS
+
+Broadly, the goal of generative modeling can be described as follows: given a set of samples $\mathcal { M } = \{ \mathbf { m } _ { i } \} _ { i = 1 } ^ { N _ { s } }$ from a distribution of interest with density function $\pi _ { 0 } ( \mathbf { m } )$ 2 obtain a set of samples from $\pi _ { 0 } ( \mathbf { m } )$ that are not in M. In difusion modeling, these samples are obtained by reversing a predefined noising process [14], [15]. This noising process can be written as a stochastic diferential equation (SDE). In particular, the variance exploding (VE) form of the difusion SDE can be written as follows [15]:
+
+$$
+d { \bf m } ( t ) = \sqrt { 2 \dot { \sigma } ( t ) \sigma ( t ) } d { \bf w } ( t ) , \quad t \in [ 0 , T ] ,\tag{3}
+$$
+
+where $\sigma ( t )$ is a predefined noise schedule, ${ \bf w } ( t )$ is the Wiener process, and ${ \bf m } ( 0 ) \sim \pi _ { 0 } ( { \bf m } )$ . Under this SDE, the conditional distribution of $\mathbf { m } ( t )$ given m(0) is given by the noising distribution $\pi _ { t | 0 } ( \mathbf { m } ( t ) \mid \mathbf { m } ( 0 ) ) =$ $\mathcal { N } ( \mathbf { m } ( t ) ; \mathbf { m } ( 0 ) , \sigma ^ { 2 } ( t ) \mathbf { I } )$ , where here and throughout the remainder of this work we have assumed $\sigma ( 0 ) = 0$ for simplicity. This implies that solving the forward SDE is equivalent to sampling from a Gaussian. Further, for large enough T , the distribution $\pi _ { T } ( \cdot )$ will be approximately Gaussian.
+
+To sample from $\pi _ { 0 } ( \mathbf { m } )$ , we can first sample from the Gaussian approximation of $\pi _ { T } ( \mathbf { m } ( T ) )$ and then reverse the noising process in (3). Here there are two main methods to reverse the noising process [15]: an SDE-based approach and an ordinary diferential equation (ODE) based approach. The SDE-based approach leverages the remarkable fact [29] that (3) admits a time-reversal that matches the marginal distributions $\pi _ { t } ( \mathbf { m } ( t ) )$ . This SDE takes the following form:
+
+$$
+\begin{array} { r l } & { d \mathbf { m } ( t ) = - 2 \dot { \sigma } ( t ) \sigma ( t ) \nabla _ { \mathbf { m } ( t ) } \log \pi _ { t } ( \mathbf { m } ( t ) ) \ d t } \\ & { \qquad + \sqrt { 2 \dot { \sigma } ( t ) \sigma ( t ) } \ d \mathbf { w } ( t ) . } \end{array}\tag{4}
+$$
+
+The ODE based approach is based on the fact that there exists an ODE that has the same marginal distributions $\pi _ { t } ( \mathbf { m } ( t ) )$ as the forward and reverse SDEs. This ODE, known as the probability flow ODE, has the following form:
+
+$$
+d \mathbf { m } ( t ) = - \dot { \sigma } ( t ) \sigma ( t ) \nabla _ { \mathbf { m } ( t ) } \log \pi _ { t } ( \mathbf { m } ( t ) ) \ d t .\tag{5}
+$$
+
+As the SDE and ODE approaches have the same marginal distributions, they are equivalent in probability when the score $\nabla _ { \mathbf { m } ( t ) } \log \pi _ { t } ( \mathbf { m } ( t ) )$ is known. However, the sample trajectories realized by the two formulations difer, and both empirical and theoretical results have provided evidence that the SDE based approach is more robust to score approximation error [30], [31].
+
+Both the reverse SDE and probability flow ODE depend on $\nabla _ { \mathbf { m } ( t ) } \log \pi _ { t } ( \mathbf { m } ( t ) )$ , the score (the gradient of the log-density) of the time-t marginal distribution of $\mathbf { m } ( t )$ These vector fields are a priori unknown but can be learned from the provided samples using a parameterized model $s _ { \theta } ( \mathbf { m } ( t ) , t ) : \mathbb { R } ^ { D } \times \mathbb { R } _ { + } { \mathrm { ~ \hat { ~ } { ~ \theta ~ } ~ } } \times \mathbb { R } ^ { D }$ (the score model) with parameters $\theta ~ \in ~ \mathbb { R } ^ { P }$ . We use $\pmb { \theta } ^ { * }$ to denote the optimized parameters of the model, which are obtained by minimizing the following objective over the set of samples M [15]:
+
+$$
+L ( \pmb \theta ) = \frac { 1 } { 2 } \int _ { T _ { \mathrm { m i n } } } ^ { T } w ( t ) \sum _ { i = 1 } ^ { N _ { s } } \mathbb { E } _ { \mathbf { z } } \ \left\| s _ { \pmb \theta } ( \mathbf { m } _ { i } ( t ) ; \sigma ( t ) ) + \frac { \mathbf { z } } { \sigma ( t ) } \right\| _ { 2 } ^ { 2 } d t .\tag{6}
+$$
+
+In the above objective, which is based on the denoising score matching objective originally introduced by Vincent [32], $w ( t )$ is a specified weighting function, $\mathbf { m } _ { i } ( t ) =$ ${ \bf m } _ { i } + \boldsymbol { \sigma } ( t ) { \bf z }$ is a sample from the noising distribution $\pi _ { t | 0 } ( \mathbf { m } ( t ) \mid \mathbf { m } ( 0 ) = \mathbf { m } _ { i } )$ , z is white noise, and the lower integral limit $T _ { \mathrm { m i n } } \geq 0$ is needed to ensure the objective is well-conditioned.
+
+## C. HIJACKING APPROACHES
+
+The ascendance of difusion models as a state-of-theart generative modeling technique has spurred significant research on their use in the context of Bayesian inverse problems. In particular, there has been substantial interest in leveraging difusion models trained on the prior distribution of a given inverse problem to sample from the posterior distribution, i.e., setting $\pi _ { 0 } = \pi _ { \mathrm { p r } } ;$ see [21] for a survey of these approaches. This general strategy has the advantage of enabling the same difusion model to be used to sample from many posterior distributions corresponding to diferent choices of likelihood function without retraining the score model. In the remainder of this section, we discuss one algorithmic framework, which we refer to as the hijacking class of approaches,<sup>1</sup> that follows this general strategy.
+
+The main idea of the hijacking approaches is as follows: Given a difusion model for the prior distribution, replace the $\nabla _ { \mathbf { m } ( t ) } \log \pi _ { t } ( \mathbf { m } ( t ) )$ term in (4) with $\nabla _ { \mathbf { m } ( t ) } \log \pi _ { t \mid \mathbf { y } } ( \mathbf { m } ( t ) \mid \dot { \mathbf { y } } )$ to sample from the posterior, and expand the $\pi _ { t \mid \mathbf { y } } ( \mathbf { m } ( t ) \mid \mathbf { y } )$ term using Bayes’ Theorem. This yields the following reverse SDE:
+
+$$
+\begin{array} { r l } & { d \mathbf { m } ( t ) = - 2 \dot { \sigma } ( t ) \sigma ( t ) \nabla _ { \mathbf { m } ( t ) } [ \log \pi _ { t } ( \mathbf { m } ( t ) ) } \\ & { ~ + \log \pi _ { \mathbf { y } \mid t } ( \mathbf { y } \mid \mathbf { m } ( t ) ) ] ~ d t + \sqrt { 2 \dot { \sigma } ( t ) \sigma ( t ) } ~ d \mathbf { w } ( t ) . } \end{array}\tag{7}
+$$
+
+In the above equation, an estimate of $\nabla _ { \mathbf { m } ( t ) } \log \pi _ { t } ( \mathbf { m } ( t ) )$ is given by the score model of the difusion model pretrained on the prior distribution. The $\nabla _ { \mathbf { m } ( t ) } \log \pi _ { \mathbf { y } \mid t } ( \mathbf { y } \mid$ m(t)) term, which is known as the noisy likelihood function [22], then “hijacks” the pre-trained difusion process with information provided by the measurements. However, while the distribution of y given m(0) is given by the likelihood function, the noisy likelihood function is not known. In particular, computation of the noisy likelihood function
+
+$$
+\begin{array} { l } { \pi _ { \mathbf { y } \mid t } ( \mathbf { y } \mid \mathbf { m } ( t ) ) } \\ { \quad = \int \pi _ { \mathrm { l i k e } } ( \mathbf { y } \mid \mathbf { m } ( 0 ) ) \pi _ { 0 \mid t } ( \mathbf { m } ( 0 ) \mid \mathbf { m } ( t ) ) \ d \mathbf { m } ( 0 ) , } \end{array}\tag{8}
+$$
+
+is in general intractable. In practice this issue is resolved by using simple approximations of the denoising distribution $\pi _ { 0 | t } ( \mathbf { m } ( 0 ) | \mathbf { m } ( t ) ) [ 1 9 ] , [ 3 3 ] - [ 3 5 ]$ . For example, in [19], the denoising distribution is modeled as a Dirac delta with mass centered on $\mathbb { E } [ { \bf m } ( 0 ) | { \bf m } ( t ) ]$ and Tweedie’s formula [36] is employed to compute the expectation. In the approach of Boys et al [33], a Gaussian approximation is employed, with the mean and covariance of the Gaussian computed using a generalized version of Tweedie’s formula [37]. However, this approach is only applicable when the likelihood function is linear-Gaussian, as otherwise the integral in (8) cannot be straightforwardly computed.
+
+The approaches in [19] and [33] discussed above use simple approximations of the denoising distribution to make the integral in (8) tractable and enable approximation of the noisy likelihood function. In particular, both approaches use unimodal approximations. While this may be a good approximation for many prior distributions of interest when $t \approx 0$ , if the prior is multimodal then $\pi _ { 0 \mid t } ( \mathbf { m } ( 0 ) | \mathbf { \epsilon } \mathbf { m } ( t ) )$ will be multimodal as well for large enough t. There can therefore be significant errors in the approximation of the noisy likelihood function for large t, which in turn induces errors in the distribution of m(t) in (7). These errors are dificult for subsequent hijacking iterations to correct, as discretizations of the hijacking reverse SDE use small step sizes $\Delta t > 0$ that ensure $\mathbf { m } ( t - \Delta t )$ will be close to m(t). In practice, it has been observed [22] that this can lead to poor performance on certain inverse problems (in particular, nonlinear inverse problems), with samples obtained that are consistent with the likelihood function but lie in low density regions with respect to the prior. These issues have motivated the development of a class of methods that address this issue by decoupling m(t) and $\mathbf { m } ( t { - } \Delta t )$ which we now introduce.
+
+## III. PROPOSED APPROACH
+
+In this section, we introduce the proposed BIPSDA framework for solving Bayesian inverse problems using difusion models. Unlike the hijacking approaches discussed in the previous section, our framework uses a recently introduced technique called decoupled noise annealing [22], [23] to avoid approximation of the noisy likelihood function and prevent samples from getting stuck in low-density regions. In what follows, we first introduce the framework, which generalizes previously introduced decoupled noise annealing approaches [22], [23] and can yield new algorithms through flexible combinations of the framework’s design choices. After discussing the relationship between our framework and previously proposed decoupled noise annealing approaches, we give examples of concrete algorithms that can be realized within our framework.
+
+## A. THE FRAMEWORK
+
+As in other decoupled noise annealing approaches [22], [23], the proposed BIPSDA framework generates a sequence of iterates that are approximate samples from the noisy posterior distribution at a series of decreasing noise levels. Specifically, each iteration is comprised of two stages: a prediction stage that generates a posterior sample that is consistent with the current iterate and the measurements, and a corruption stage in which noise is added back to the predicted posterior sample.
+
+Concretely, given the current iterate m(t) and the measurements y, the goal of the prediction stage is to obtain an approximate sample m(0) from the prediction distribution $\pi _ { 0 | t , \mathbf { y } } ( \mathbf { m } ( 0 ) | \mathbf { \mu } \mathbf { m } ( t ) , \mathbf { y } )$ . In the corruption stage, $\mathbf { m } ( t - \Delta t )$ is obtained by adding noise back to m(0), i.e., by sampling from the Gaussian noising distribution $\pi _ { t - \Delta t | 0 } ( \mathbf { m } ( t - \Delta t ) \mid \mathbf { m } ( 0 ) )$ . In [22], Zhang et al prove that if m(t) is a sample from $\pi _ { t \mid \mathbf { y } } ( \mathbf { m } ( t ) \mid \mathbf { y } )$ then this procedure yields a sample from $\pi _ { t - \Delta t | \mathbf y } ( \mathbf m ( t -$ $\Delta t ) \mid \mathbf { y } )$ . For suficiently large T , once can assume that $\pi _ { T | \mathbf { y } } ( \mathbf { m } ( T ) \mid \mathbf { y } ) \approx { \mathcal { N } } ( \mathbf { m } ( T ) ; \mathbf { 0 } , \sigma ^ { 2 } ( T ) \mathbf { I } )$ . So starting from $\mathbf { m } ( T )$ , the prediction and corruption steps can be iteratively applied with the timestep annealed from T down to 0 to yield a sample from the posterior distribution.
+
+The prediction stage of the algorithm outlined above requires sampling from the prediction distribution $\pi _ { 0 | t , \mathbf { y } } ( \mathbf { m } ( 0 ) \mid \mathbf { m } ( t ) , \mathbf { y } )$ . Using Bayes’ rule and the conditional independence of y from $\mathbf { m } ( t )$ given m(0), it holds that [22]:
+
+$$
+\pi _ { 0 | t , \mathbf { y } } ( \mathbf { m } ( 0 ) \mid \mathbf { m } ( t ) , \mathbf { y } ) \propto \pi _ { \mathrm { l i k e } } ( \mathbf { y } \mid \mathbf { m } ( 0 ) ) \pi _ { 0 | t } ( \mathbf { m } ( 0 ) \mid \mathbf { m } ( t ) ) .
+$$
+
+Unfortunately, while the likelihood function is known, the denoising distribution $\pi _ { 0 \mid t } ( \mathbf { m } ( 0 ) \mid \mathbf { m } ( t ) )$ is not and requires approximation. The prediction stage can therefore be broken down into two substages: approximation of the denoising distribution and sampling from the prediction distribution using the approximate denoising distribution. Here it is worth noting that the hijacking approaches discussed in the previous section also require approximation of the denoising distribution, and approximations used in the hijacking setting can also be used in the BIPSDA setting (e.g., the Tweedie formula based Gaussian approximation of Boys et al [33]). However, approximations in the hijacking setting must be chosen so that the integral in (8) and the subsequent score operation in (7) can be evaluated eficiently. In our setting, there are no such restrictions. In what follows, we use $\pi _ { \mathrm { a p r x } } ( \mathbf { m } ( 0 ) \mid \mathbf { m } ( t ) )$ to denote an approximation of the denoising distribution $\pi _ { 0 \mid t } ( \mathbf { m } ( 0 ) \mid \mathbf { m } ( t ) )$ .
+
+In summary, the BIPSDA framework requires three steps at each iteration: approximation of the denoising distribution, sampling from the prediction distribution using the approximate denoising distribution, and corruption of the predicted sample using the Gaussian noising distribution. A full outline is provided in Algorithm 1. In what follows, we discuss previously proposed methods in the literature that fall within the BIPSDA framework, with particular attention paid to the techniques used for approximating the denoising distribution and for sampling from the approximate prediction distribution. We then give examples of novel algorithms that can be realized in our framework through diferent choices of the approximation distribution and sampling scheme.
+
+Algorithm 1 Bayesian Inverse Problem Solvers through   
+Difusion Annealing (BIPSDA)   
+1: Input: Decreasing timesteps $\left[ t _ { N _ { A } } , t _ { N _ { A } - 1 } , \cdot \cdot \cdot , t _ { 0 } \right]$   
+likelihood function $\pi _ { \mathrm { l i k e } } .$ , noise schedule $\sigma ( t )$ , trained   
+score model $s _ { \theta ^ { \ast } } ( \mathbf { m } ( t ) , t )$   
+2: Output: Approximate sample from the posterior   
+distribution $\pi _ { \mathrm { p o s t } } ( \mathbf { m } \mid \mathbf { y } )$   
+3: Initialize m $\mathbf { \boldsymbol { \mathbf { \ell } } } _ { 1 } ( t _ { N _ { A } } ) \sim \mathcal { N } ( \mathbf { m } ( t _ { N _ { A } } ) ; \mathbf { \boldsymbol { \mathbf { 0 } } } , \sigma ^ { 2 } ( t _ { N _ { A } } ) \mathbf { \boldsymbol { \mathbf { I } } } )$   
+4: for $i = N _ { A } , N _ { A } - 1 , \dots , 1$ do   
+5: Compute $\pi _ { \mathrm { a p r x } }$ as approximation of $\pi _ { 0 \mid t }$ obtained   
+using score model   
+6: Sample $\mathbf { m } ( 0 ) \sim \pi _ { \mathrm { l i k e } } ( \mathbf { y } \mid \mathbf { m } ( 0 ) ) \pi _ { \mathrm { a p r x } } ( \mathbf { m } ( 0 ) \mid \mathbf { m } ( t _ { i } ) )$   
+7: Sample ${ \bf m } ( t _ { i - 1 } ) \sim \mathcal { N } ( { \bf m } ( t _ { i - 1 } ) ; { \bf m } ( 0 ) , \sigma ^ { 2 } ( t _ { i - 1 } ) { \bf I } )$   
+8: end for   
+9: Return m(t<sub>0</sub>)
+
+## B. RELATIONSHIP TO PRIOR WORK
+
+Over the last two years, several difusion-based Bayesian inverse problem solvers have been proposed that use decoupled noise annealing. Of these approaches, the work of Zhang et al [22] is the most closely related to the proposed BIPSDA framework. In their approach, referred to as Decoupled Annealing Posterior Sampling (DAPS), the approximation of the denoising distribution (line 5 in Algorithm 1) takes the form of a Gaussian distribution with mean $\mathbf { m } _ { \mathrm { a p r x } }$ and covariance $\mathbf { C } _ { \mathrm { a p r x } } = \beta ( t ) ^ { 2 } \mathbf { I }$ , where the noise level β(t) is chosen using heuristics. The mean of $\mathbf { m } _ { \mathrm { a p r x } }$ is set as an estimate of $\mathbb { E } _ { 0 \mid t } [ { \bf m } ( 0 ) | \mathrm { ~ \bf ~ m } ( t ) ]$ with the estimate obtained by solving the probability flow ODE in (5) with initial value $\mathbf { m } ( t )$ . To sample from the corresponding approximate prediction distribution (line 6 in Algorithm 1), the DAPS approach uses MCMC algorithms such as the Euler–Maruyama method for discretizing Langevin dynamics (without Metropolis adjustment), or the Hamiltonian Monte Carlo algorithm [38].
+
+Another approach that is closely related to the present work is the DifPIR algorithm of Zhu et al [23]. Like the DAPS algorithm, this approach models the denoising distribution as a Gaussian, with the mean set as an estimate of the conditional mean $\mathbb { E } _ { 0 \mid t } [ \mathbf { m } ( 0 ) \mid \mathbf { m } ( t ) ]$ and the covariance matrix chosen to be a scalar multiple of the identity. However, unlike DAPS, DifPIR estimates the conditional mean using Tweedie’s formula, which is exact up to error in the score model. Another key diference between DAPS and DifPIR is that DifPIR does not use Langevin dynamics to sample from the corresponding prediction distribution. Instead, inspired by plug-and-play algorithms for image restoration (see, $\mathrm { e . g . }$ , [39]), it solves a maximum a posteriori (MAP) estimation problem corresponding to the prediction distri bution. This problem can be eficiently solved using fast numerical optimization methods or, in some cases, closeform proximal operators [40]. While lacking theoretical guarantees, it is empirically observed that DifPIR can produce very diverse samples (see Figure 5 in [23]).
+
+Other difusion-based Bayesian inverse problem solvers that use decoupled noise annealing include those proposed in [41] and [42]. In [41], a prediction-corruption decoupled noise annealing approach, dubbed SITCOM, was proposed. As in the proposed BIPSDA framework, the corruption stage of SITCOM is implemented by sampling from the Gaussian noising distribution. However, the prediction stage difers. In BIPSDA, the prediction stage aims to sample from the prediction distribution $\pi _ { 0 | t , \mathbf { y } } ( \mathbf { m } ( 0 ) | \mathbf { m } ( t ) , \mathbf { y } )$ . In the SITCOM approach, the prediction stage requires first evaluating a proximal operator to obtain a point m(t) that is consistent with the measurement y and close to the current iterate $\mathbf { m } ( t )$ Tweedie’s formula is then applied to m(t) to obtain the prediction m(0). In [42], an approach similar to the DifPIR algorithm was proposed. Unlike DifPIR, however, which solves for the MAP point of the prediction distribution, [42] proposes the use an iterative algorithm to maximize the likelihood function, with $\mathbf { m } _ { \mathrm { a p r x } }$ used to initialize the iterative algorithm.
+
+## C. SPECIFIC VARIANTS OF THE FRAMEWORK
+
+The proposed BIPSDA framework contains many novel algorithms for solving Bayesian inverse problems with difusion models that can be realized through diferent choices of the approximation distribution and sampling scheme. In the following, we discuss these design choices and provide an outline of the algorithms that will be tested in the numerical studies.
+
+## 1) Approximation of the denoising distribution
+
+In this work, we consider three diferent approaches to build a Gaussian approximation to the denoising distribution (c.f. line 5 in Algorithm 1). That is, we consider approximations to $\pi _ { 0 | t } ( \mathbf { m } ( 0 ) | \mathbf { m } ( t ) )$ of the form
+
+$$
+\pi _ { \mathrm { a p r x } } ( \mathbf { m } ( 0 ) \mid \mathbf { m } ( t ) ) = \mathcal { N } ( \mathbf { m } ( 0 ) ; \mathbf { m } _ { \mathrm { a p r x } } , \mathbf { C } _ { \mathrm { a p r x } } ) .\tag{9}
+$$
+
+The rationale for restricting our focus to a Gaussian approximation is that, while in principle arbitrarily complex approximations of the denoising distribution can be realized by first sampling from the denoising distribution $\pi _ { 0 \mid t } ( \mathbf { m } ( 0 ) \mid \mathbf { m } ( t ) )$ using the reverse SDE and then fitting a model to the samples, these approximations may be computationally prohibitive in practice. The approaches considered are denoted as ‘ODE’, Tweedie Uncorrelated (‘TU’), and Tweedie Correlated (‘TC’).
+
+In the ‘ODE’ approach, which is based on the DAPS algorithm, the mean $\mathbf { m } _ { \mathrm { a p r x } }$ is obtained by solving the probability flow ODE in Eq. (5), and the covariance is chosen as $\mathbf { C } _ { \mathrm { a p r x } } ~ = ~ \beta ( t ) ^ { 2 } \mathbf { I }$ , with $\beta ( t ) ~ = ~ \mathcal { O } ( \sigma ( t ) )$
+
+User-provided hyperparameters of this approach are the marginal variance of the denoising distribution $\beta ( t ) ^ { 2 }$ and the schedule of time steps in the discretization of the probability flow ODE.
+
+In the ‘TU’ approach, which is based on the DifPIR algorithm, the mean is obtained using Tweedie’s formula, i.e.,
+
+$$
+\begin{array} { r } { \mathbf { m } _ { \mathrm { a p r x } } = \mathbf { m } ( t ) + \sigma ^ { 2 } ( t ) s _ { \pmb { \theta } ^ { \ast } } ( \mathbf { m } ( t ) , t ) , } \end{array}
+$$
+
+and the covariance is set as $\mathbf { C } _ { \mathrm { a p r x } } = \beta ( t ) ^ { 2 } \mathbf { I }$ , with $\beta ( t ) =$ $\mathcal { O } ( \sigma ( t ) )$ the only user-provided hyperparameter. We note that, as shown in Appendix A, under a particular choice of parametrization and discretization, the probability flow ODE estimate used in the ‘ODE’ approach can be made to coincide with Tweedie formula.
+
+Finally, in the $\mathrm { { } ^ { 6 } T C } ^ { \mathrm { { * } } }$ approach, which borrows some ideas from the hijacking approach of Boys et al [33], the mean $\mathbf { m } _ { \mathrm { a p r x } }$ is set as in the $^ { 6 } \mathrm { T U } ^ { , }$ approach, while the covariance is set using the generalized version of Tweedie’s formula [37], i.e.,
+
+$$
+\mathbf { C } _ { \mathrm { a p r x } } = \sigma ^ { 2 } ( t ) \left[ \mathbf { I } + \sigma ^ { 2 } ( t ) \nabla _ { \mathbf { m } ( t ) } s _ { \pmb { \theta } ^ { * } } ( \mathbf { m } ( t ) , t ) \right] .
+$$
+
+This variant is free from user-provided hyperparameters, but requires access to accurate estimates of the Jacobian of the noisy prior score.
+
+## 2) Sampling from the prediction distribution
+
+The BIPSDA framework also provides considerable flexibility regarding the choice of the sampling scheme. Three variants, denoted as Langevin (‘Lang’), maximum a posteriori estimation (‘MAP’), and randomize-thenoptimize (‘RTO’), are considered here.
+
+The ‘Lang’ variant is based on DAPS [22] and employs Markov chain Monte Carlo (MCMC) algorithms, such as Langevin dynamics or Hamiltonian Monte Carlo [38], to sample the prediction distribution. When using uncorrected Langevin dynamics the step-size and the number of time steps are key user-provided hyperparameters that control the trade-of between accuracy of the samples and computational costs.
+
+The ‘MAP’ variant is based on DifPIR [23] and simply computes the maximum a posteriori (MAP) point of the prediction distribution using a deterministic optimization algorithm, rather than drawing samples. While lacking solid theoretical foundation, this approach is computationally eficient. User-provided hyperparameters depends on the specific choice of the optimizer used, and, as long as the optimization problem is solved with suficient accuracy, have limited efect on the quality of the solution.
+
+Finally, the ‘RTO’ variant is a novel contribution of our work. It is inspired by the randomize-then-optimize (RTO) [24]–[26] algorithm for approximate sampling from the prediction distribution. Here the key idea is to obtain an approximate sample from the prediction distribution by first adding noise to both the measurement and the denoising distribution mean, then solving for the MAP point of the corresponding noise-perturbed prediction distribution. Concretely, assuming the Gaussian approximation of the denoising distribution in Eq. (9) and the Gaussian additive noise model in Eq. (1), ‘RTO’ generates an approximate sample m(0) from the prediction distribution by solving
+
+<table><tr><td colspan="2"></td><td colspan="3">Denoising Dist. Approximation</td></tr><tr><td colspan="2"></td><td>ODE</td><td>TU</td><td>TC</td></tr><tr><td rowspan="3">Sag Sailg</td><td>Lang</td><td>Lang-ODE</td><td>Lang-TU Lang-TC</td><td></td></tr><tr><td>MAP</td><td>MAP-ODE</td><td>MAP-TU</td><td>MAP-TC</td></tr><tr><td>RTO</td><td>RTO-ODE</td><td>RTO-TU</td><td>RTO-TC</td></tr></table>
+
+TABLE 1. Visual representation of the nine example algorithms tested, each of which corresponds to diferent choices of the denoising distribution approximation (line 5 in 1) and sampling scheme (line 6 in 1). Note that ‘Lang-ODE’ is the DAPS algorithm, while ‘MAP-TU’ is the DifPIR algorithm; the other seven variants are novel.
+
+$$
+\mathbf { m } ( 0 ) = \underset { \mathbf { m } } { \mathrm { a r g m a x } } \pi _ { \mathrm { l i k e } } ( \mathbf { y } ^ { \prime } | \mathbf { m } ) \mathcal { N } ( \mathbf { m } ; \mathbf { m } _ { \mathrm { a p r x } } ^ { \prime } , \mathbf { C } _ { \mathrm { a p r x } } ) ,\tag{10}
+$$
+
+where
+
+$$
+\begin{array} { r } { \mathbf { m } _ { \mathrm { a p r x } } ^ { \prime } \sim \mathcal { N } ( \mathbf { m } _ { \mathrm { a p r x } } ^ { \prime } ; \mathbf { m } _ { \mathrm { a p r x } } , \mathbf { C } _ { \mathrm { a p r x } } ) , ~ \mathrm { a n d } } \\ { \mathbf { y } ^ { \prime } \sim \mathcal { N } ( \mathbf { y } ^ { \prime } ; \mathbf { y } , \pmb { \Sigma } _ { \mathbf { z } } ) } \end{array}
+$$
+
+denote the noise-perturbed mean and measurement, respectively. Note that this approach can be viewed as an application of Algorithm 1 in [25] to the subproblem of sampling from the prediction distribution (line 6 in Algorithm 1). Like the ‘MAP’ variant used in DifPIR, it has the advantage of enabling eficient MAP solvers to be employed for sampling from prediction distribution. Further, in the linear-Gaussian likelihood setting, where the corresponding prediction distribution is also Gaussian, it can be proven that this approach corresponds to exact sampling from the prediction distribution [24], [43].
+
+## 3) Analyzed variants
+
+Mixing and matching diferent variants to approximate the denoising distribution with those to sample from the prediction distribution, we obtain the 9 variants summarized in Table 1. The DAPS and DifPIR algorithms correspond to the ‘Lang-ODE’ and ‘MAP-TU’ variants of our framework, respectively.
+
+## IV. NUMERICAL STUDIES
+
+The performance of difusion-model-based posterior sampling algorithms is often evaluated on high-dimensional problems (e.g., imaging problems), where the prior distribution is characterized implicitly through a dataset of examples (samples). In this setting, the posterior density is analytically unknown, making it dificult to evaluate the ability of the algorithm under consideration to capture the global structure of the posterior distribution and facilitate uncertainty quantification. To address this issue, we created a suite of benchmark problems for which the prior distribution, as well as the score of the denoising distribution, is analytically known. Using these benchmark problems, which use a Gaussian mixture as the prior distribution, we can rigorously assess the performance of the algorithms in our framework, which include the popular DAPS [22] and DifPIR [23] algorithms.
+
+The use of a Gaussian mixture prior to test the performance of difusion-model-based posterior samplers has a number of advantages. First, in this setting the posterior density function is known, and in certain cases (e.g., linear-Gaussian likelihood function, where the posterior is also a Gaussian mixture) can be straightforwardly sampled from, enabling us to investigate errors in the global structure of the samples from these algorithms. Second, under this choice $\pi _ { t } ( \mathbf { m } ( t ) )$ is also a Gaussian mixture and the noisy prior score $\nabla _ { \mathbf { m } ( t ) } \log \pi _ { t } ( \mathbf { m } ( t ) )$ is known analytically. This enables the decoupling of error in the score modeling error from error inherent to the sampling algorithm under consideration in a principled manner. Third, Gaussian mixture distributions can be made arbitrarily complex through the choice of the number of modes and the covariances of each component Gaussian.
+
+Each of the studies conducted corresponds to a diferent choice of likelihood function for the Bayesian inverse problem. In the first and second studies, the likelihood function was inspired by image inpainting problems. We assumed a (linear) binary sampling mask as the forward model and additive Gaussian measurement noise. In the first study a low noise regime was considered, with the noise level set so that the posterior was unimodal up to numerical precision. In the second study, a high noise regime was considered where the posterior contained distinct modes. The third study considered a nonlin ear likelihood function with Poisson measurement noise inspired by problems in X-ray computed tomography (CT) [44]. Finally, the fourth study considered a problem with a nonlinear Gaussian phase retrieval forward model and Gaussian measurement noise. Phase retrieval is a dificult inverse problem often arising in optical imaging applications [45] and exhibits a complicated multi-modal posterior distribution.
+
+![](images/bf49b0cfb6af203fcaa9a6ccbf9b37a4d8349f98111bbbb5afe22785dc0f2c67.jpg)  
+FIGURE 1. Two components of samples from the ten-dimensional Gaussian mixture prior distribution used in all of the numerical studies. The distribution has three distinct modes and each mode has a diferent covariance matrix.
+
+In each study, we tested the performance of the nine algorithms within the BIPSDA framework summarized in Table 1. Additional details regarding the implementation of these algorithms, as well as the problem setting and metrics used to evaluate the performance of the algorithms, are provided in the following subsections.
+
+## A. PROBLEM SETTINGS
+
+As previously mentioned, all of the numerical studies described in this work consider inverse problems with inversion parameter m $\mathbf { \Lambda } \in \mathbb { R } ^ { 1 0 }$ and a Gaussian mixture prior, i.e.,
+
+$$
+\pi _ { \mathrm { p r } } ( \mathbf { m } ) = \sum _ { i = 1 } ^ { N _ { m } } w _ { i } \pi _ { \mathrm { p r } , i } ( \mathbf { m } ) ,
+$$
+
+where each $\pi _ { \mathrm { p r } , i }$ is a Gaussian, $w _ { i }$ is the weight of the ith component, and we set $N _ { m } = 3$ . Here $\pi _ { \mathrm { p r } , 1 }$ has mean $[ - 5 , \cdots , - 5 ] ^ { T }$ and identity covariance matrix, $\pi _ { \mathrm { p r } , 2 }$ has mean $[ 0 , \cdots , 0 ] ^ { T }$ and a diagonal covariance matrix with entries linearly spaced between 1 and $^ { 2 , }$ and $\pi _ { \mathrm { p r } , 3 }$ has mean $[ 5 , \cdots , 5 ] ^ { T }$ and a covariance matrix with the same eigenvalues as $\pi _ { \mathrm { p r } , 2 }$ but randomly chosen eigenvectors. The corresponding weights were set as $w _ { 1 } = 0 . 4 , w _ { 2 } =$ 0.3, and $w _ { 3 } = 0 . 3$ . A plot of two components of samples from this distribution is shown in Figure 1.
+
+Both the stylized inpainting and phase retrieval studies consider likelihood functions with additive Gaussian noise, as in (1), with white noise covariance $\pmb { \Sigma _ { \mathbf { z } } } = \tau ^ { 2 } \mathbf { I }$ In the stylized inpainting studies, the forward model was given as $f ( \mathbf { m } ) \mathbf { \alpha } = \mathbf { A } \mathbf { m }$ , where $\textbf { A } \in \ \mathbb { R } ^ { 8 \times 1 0 }$ is a binary subsampling operator. The noise standard deviation was set as $\tau = 0 . 1$ (low noise regime, SNR ≈ 30.4687 dB) or $\tau = 5$ (high noise regime, SNR ≈ −3.5107 dB). For the stylized phase retrieval problem, the forward model was given as $f ( { \bf m } ) = ( { \bf B } { \bf m } ) ^ { 2 }$ , where here the square operation is applied elementwise and $\mathbf { B } \in \mathbb { R } ^ { 5 \times 1 0 }$ is a matrix with i.i.d. standard Gaussian entries. The noise level for this problem was set as τ = 25 (SNR ≈ −0.8243 dB). Finally, the likelihood function of the stylized x-ray tomography has the form
+
+$$
+\pi _ { \mathrm { l i k e } } ( \mathbf { y } \mid \mathbf { m } ) = \mathrm { P o i } ( f ( \mathbf { m } ) ) , \quad f ( \mathbf { m } ) = I _ { 0 } \mathrm { ~ w i t h ~ } \exp \left( - \mathbf { C } \mathbf { m } \right) ,
+$$
+
+where Poi(·) is the Poisson distribution, the exponential operator is applied pointwise, and $\mathbf { C } \in \mathbb { R } ^ { 1 5 \times 1 0 }$ . We set $I _ { 0 } = 1 0 0 0$ and populated C with i.i.d. random entries from the uniform distribution over the interval [.01, .05] (SNR ≈ 23.1709 dB).
+
+## B. ALGORITHM IMPLEMENTATIONS
+
+Each of the BIPSDA algorithms variants summarized in Table 1 was implemented using $N _ { A } = 2 0 0$ timepoints in the noise annealing, with the $t _ { i }$ set by polynomial interpolation between T and 0. The ‘ODE’ and ‘TU’ variants for approximating the denoising distribution were implemented with $\beta ( t ) ~ = ~ \sigma ( t )$ in the covariance approximation $\mathbf { C } _ { \mathrm { a p r x } } = \beta ( t ) ^ { 2 } \mathbf { I }$ ; the ‘ODE’ method for approximating the denoising distribution was implemented by solving the probability flow ODE using the Euler discretization with five discretization time-steps. The above settings are the same as used by Zhang et al; see [22] for details.
+
+The implementation of the Langevin dynamics based sampler and the MAP solver used in the ‘MAP‘ and ‘RTO‘ variants was problem specific. The sampler for the stylized inpainting problem was implemented with step $\mathrm { s i z e } = 5 \times 1 0 ^ { - 5 }$ , 100 subiterations per algorithm iteration, and no Metropolis correction, as in [22]. The implementation was the same for the stylized x-ray tomography based problem, but with 1000 subiterations instead of 100. For the phase retrieval problem, we observed severe stability issues with unadjusted Langevin dynamics, and instead implemented Langevin dynamics with Metropolis adjustment and preconditioning [46]. Here 1000 subiterations were used with step size = .2, and at each iteration we fixed the preconditioning matrix as the average of a set of matrices, where each matrix in the set is the Gauss-Newton Hessian approximation [47] evaluated at diferent representative sample points. Regarding the MAP solver used in the ‘MAP‘ and ‘RTO‘ variants, for the stylized inpainting problem we exploited the fact that the MAP point has a closed form expression. For the stylized x-ray tomography and phase retrieval problems, we estimated the MAP point using the PyTorch implementation of the limitedmemory Broyden–Fletcher–Goldfarb–Shanno (L-BFGS) algorithm [47] (40 subiterations per algorithm iteration, strong Wolfe line search).
+
+Each of the algorithms described above was implemented using the same pretrained score model corresponding to a difusion model with $\sigma ( t ) ~ = ~ t$ and $T = 1 0$ . The score model was given as $s _ { \pmb \theta } ( \mathbf m ( t ) , t ) =$ $\nabla _ { \mathbf { m } ( t ) } g _ { \pmb { \theta } } ( \mathbf { m } ( t ) , t )$ where $g _ { \theta } ( \mathbf { m } ( t ) , t ) \ : \ \mathbb { R } ^ { 1 0 } \times \mathbb { R } _ { + } \  \ \mathbb { R }$ was a deep neural network. In particular, the network architecture had six total hidden layers $( \mathrm { w i d t h } = 5 1 2 )$ with the noise level $\sigma ( t )$ appended to the input $\mathbf { m } ( t )$ and to the network state after the 4th layer, width $= \ 5 1 2$ The network weights were trained to minimize the loss function in (6), with $N = 8 0 , 0 0 0$ total samples in the training set, $w ( t ) = \sigma ^ { 2 } ( t )$ , and $T _ { \mathrm { m i n } } = . 0 1$ . The Adam optimizer [48] was used with learning rate $1 0 ^ { - 5 }$ and a batch size of 8000 $\{ \mathbf { m } _ { i } , \mathbf { z } _ { i } , t _ { i } \}$ pairs (with the $\mathbf { z } _ { i }$ and $t _ { i }$ picked i.i.d. at each iteration). The network was trained for 50, 000 optimization iterations. Additionally, each algorithm was also tested with the exact ground truth score $\nabla _ { \mathbf { m } ( t ) } \log \pi _ { t } \mathbf { m } ( t )$ used instead of the score model to isolate the efect of the score modeling error from other sources of error in the algorithms’ performance.
+
+## C. EVALUATION METHODS
+
+We evaluated the performance of the BIPSDA algorithms by comparing the samples obtained by the algorithms with those produced by a reference method (exact sampling in the linear inverse problem case, MCMC for the non-linear inverse problems). In particular, in the stylized inpainting studies, we leveraged the fact that the ground truth posterior is a Gaussian mixture to obtain exact samples from the posterior as a reference. In the stylized x-ray tomography and phase retrieval studies, we used the $\mathrm { P y }$ Dream implementation [49] of the MT-DREAM (ZS) algorithm [50], a state-of-theart MCMC posterior sampling algorithm for Bayesian inverse problems where the prior density function is known analytically, to obtain approximate ground truth samples from the posterior. In the stylized x-ray tomography study, we implemented PyDream with 10 chains and 200, 000 iterations per chain, and obtained the final posterior samples by discarding the first half of each chain as burn-in and randomly sub-sampling the remaining samples. A similar procedure was followed in the stylized phase retrieval study, but with additional features incorporated to address the challenging nature of the problem. In particular, we took advantage of the fact that the posterior is a mixture distribution, i.e.,
+
+$$
+\begin{array} { r l } & { \pi _ { \mathrm { p o s t } } ( \mathbf { m } \mid \mathbf { y } ) \propto \pi _ { \mathrm { l i k e } } ( \mathbf { y } \mid \mathbf { m } ) \pi _ { \mathrm { p r } } ( \mathbf { m } ) } \\ & { \quad \quad \quad = \displaystyle \sum _ { i = 1 } ^ { N _ { m } } w _ { i } \pi _ { \mathrm { l i k e } } ( \mathbf { y } \mid \mathbf { m } ) \pi _ { \mathrm { p r } , i } ( \mathbf { m } ) , } \end{array}\tag{11}
+$$
+
+and sampled each of the $N _ { m }$ components separately. For each component, we implemented PyDream with 40 chains, 200, 000 iterations run per chain, and Latin hypercube sampling [51] to seed the sampling history. After discarding the first half of each chain as burn-in, the remaining samples were sub-sampled according to the weights of each of the $N _ { m }$ components.
+
+We assessed the convergence of the MCMC samples to the target distribution using well-established MCMC diagnostics, including the potential scale reduction factor (PSRF) [52] and efective sample size (ESS) [53] metrics. These metrics were computed for a randomly selected single posterior sampling trial. For the x-ray tomography problem, the maximum PSRF value over all parameter dimensions was 1.0006, with PSRF values less than 1.01 generally indicating that the parallel chains have stabilized, and samples are likely to have reached the target distribution [52]. The minimum ESS computed for each parameter independently was 47, 077.65, which is much larger than the number of posterior samples used in our evaluation metrics (10, 000). For the phase retrieval study, PSRF and ESS were computed separately for each PyDREAM run corresponding to each component of the posterior mixture in Eq. (11). The maximum PSRF value was 1.0004 and the minimum ESS was 49, 862.49, which again indicate that a suficient number of high-quality samples from the target distribution were generated.
+
+The reference samples were compared to the samples produced by the BIPSDA algorithms both qualitatively and quantitatively. In particular, in each study we compared the performance of the BIPSDA algorithms to the reference over 100 total trials, with each trial corresponding to sampling from the posterior distribution $\pi _ { \mathrm { p o s t } } ( \mathbf { m } \textrm { \textbf { | } } \mathbf { y } _ { i } )$ and $\mathbf { y } _ { i } ( i \ = \ 1 , \ldots , 1 0 0 )$ chosen i.i.d. from the measurement distribution. In each trial, 10, 000 posterior samples were obtained from both the reference and each of the proposed algorithms.
+
+For the quantitative tests, four diferent error metrics were used: the central moment discrepancy (CMD) metric [27], the maximum mean discrepancy (MMD) metric [28], and the two-norm error in both the predicted posterior mean and the predicted posterior pointwise variance. The CMD metric is the weighted sum of discrepancies between the central moments of the two distributions. In particular, for two distributions $\pi _ { 1 }$ and $\pi _ { 2 } .$ the CMD metric can be written as follows:
+
+$$
+\begin{array} { r l r } {  { \mathrm { C M D } ( \boldsymbol { \pi } _ { 1 } , \boldsymbol { \pi } _ { 2 } ) = \frac { 1 } { \alpha } \| \mathbb { E } _ { \boldsymbol { \pi } _ { 1 } } [ \mathbf { m } ] - \mathbb { E } _ { \boldsymbol { \pi } _ { 2 } } [ \mathbf { m } ] \| _ { 2 } } } \\ & { } & { + \sum _ { k = 2 } ^ { \infty } \frac { 1 } { \alpha ^ { k } } \| c _ { k } ( \boldsymbol { \pi } _ { 1 } ) - c _ { k } ( \boldsymbol { \pi } _ { 2 } ) \| _ { 2 } , } \end{array}\tag{12}
+$$
+
+where $c _ { k } ( \cdot )$ is the kth central moment of the given distribution and $\alpha > 0$ is a decay rate parameter. In practice, the infinite sum is truncated at some finite index K (we use $K = 5$ in this work) for computability, which is theoretically justified by the fact that the terms in the sum can be shown to converge to zero as $k  \infty$ for large enough $\alpha .$ The expectations and central moments are also replaced by empirical approximations. Finally, in this work we set the decay rate as $\alpha = 4 \hat { \eta } _ { \mathrm { m a x } }$ , where $\hat { \eta } _ { \mathrm { m a x } }$ is an empirical estimate of
+
+$$
+\eta _ { \mathrm { m a x } } = \mathbb { E } _ { \mathbf { y } } \left[ | | \pmb { \eta } ( \mathbf { y } ) | | _ { \infty } \right]
+$$
+
+and $\pmb { \eta } ( \mathbf { y } ) \in \mathbb { R } ^ { D }$ is the componentwise standard deviation of the posterior distribution $\pi _ { \mathrm { p o s t } } ( \mathbf { m } \mid \mathbf { y } )$
+
+The MMD metric is based on the diference between the two probability distributions in a reproducing kernel Hilbert space (RKHS) [28]. In particular, the MMD metric is an integral probability metric in the RKHS space and can be written as
+
+$$
+\mathrm { M M D } ( \pi _ { 1 } , \pi _ { 2 } ) = \operatorname* { s u p } _ { f \in { \mathcal F } } \left( \mathbb { E } _ { \pi _ { 1 } } [ f ( \mathbf { m } ) ] - \mathbb { E } _ { \pi _ { 2 } } [ f ( \mathbf { m } ) ] \right) ,\tag{13}
+$$
+
+where $\pi _ { 1 }$ and $\pi _ { 2 }$ are probability distributions and $\mathcal { F }$ is the set of functions lying on the unit ball in the RKHS. An RKHS space is characterized by the choice of kernel function $k ( \cdot , \cdot )$ , with $\{ k ( \cdot , \mathbf { m } ) \mid \mathbf { m } \in \mathbb { R } ^ { D } \}$ forming a set of basis functions for ${ \mathcal F } .$ . In this work, we set the kernel as the sum of Gaussian radial basis functions with diferent bandwidths, i.e.,
+
+$$
+k ( \mathbf { m } _ { 1 } , \mathbf { m } _ { 2 } ) = \sum _ { i = 1 } ^ { N _ { b } } \mathrm { e x p } \left( - \frac { | | \mathbf { m } _ { 1 } - \mathbf { m } _ { 2 } | | _ { 2 } ^ { 2 } } { \epsilon _ { i } } \right) ,
+$$
+
+with $N _ { b } = 5 , \epsilon _ { i } = \bar { \epsilon } 2 ^ { i - \lceil N _ { b } / 2 \rceil }$ , and ¯ϵ set as the average squared two-norm distance between samples from the reference distribution (as in [28]).
+
+## V. RESULTS
+
+In this section, representative results from the stylized inpainting, x-ray, and phase retrieval studies are shown to illustrate the performance of the proposed framework.
+
+## A. STYLIZED INPAINTING STUDIES
+
+We first examine the performance of the framework in the stylized inpainting studies. Table 2 shows the average error in the low noise regime with regards to the mean and pointwise variance of the posterior, as well as CMD and MMD metrics, for the nine BIPSDA algorithms tested. The corresponding results in the high noise regime are given in Table 3. Here we first note that when the analytic scores are used, the Tweedie Correlated (‘TC’) based approaches perform comparably with the Tweedie-Uncorrelated (‘TU’) based approaches. However, ‘TC’ variants were not implemented when using the learned scores, as the Jacobian of the learned score is not a reliable estimator of the denoising distribution covariance matrix. The performance of the ‘TC’ variants in the learned score regime was thus omitted from this and all subsequent studies.
+
+All of the methods that were tested perform fairly well in the low noise regime using the learned score, with the ‘RTO-TU’ approach providing particularly strong performance. In contrast, in the high noise regime, the Langevin dynamics-based approaches all perform significantly worse than the other approaches, while the ‘MAP’ variants perform well despite lacking the theoretical basis of the ‘Lang’ and ‘RTO’ variants. Further, this discrepancy is not due to score modeling error, as the ‘Lang’ variants perform poorly even when the analytic scores are used.
+
+Figure 2, which displays scatter plots of samples from three diferent BIPSDA methods in a representative high-noise trial, provides insight into the failure of the ‘Lang’ variants. In particular, it can be seen that the Langevin dynamics based approach produces samples in low-density regions with respect to the likelihood and therefore overestimates the variance of the posterior distribution. The ‘RTO’ variants, while still overestimating the posterior variance, are much more accurate. Finally, the ‘MAP’ variants, while underestimating the variance of each of the modes, provide the most accurate estimate of the weights of the modes of all the methods tested.
+
+## B. STYLIZED X-RAY TOMOGRAPHY STUDY
+
+We now analyze the results from the stylized x-ray tomography study. Table 4 reports the average mean, variance, CMD, and MMD errors for the diferent BIPSDA algorithms in this problem setting. As can be seen, in this problem setting all of the approaches we considered performed fairly well, despite the non-linearity of the forward model. The ‘RTO-TU’ approach provides particularly strong performance and is the top performing approach with respect to all metrics we considered in the learned score regime. This demonstrates the potential of the RTO-based approaches in the context of non-linear inverse problems.
+
+Figure 3 shows scatter plots of samples from the ground truth posterior and the ‘Lang-TU’, ‘MAP-TU’, and ‘RTO-TU’ algorithms for a representative trial. As can be seen, for this problem the posterior is approximately unimodal. Further, while all of the tested algorithms perform fairly well, the ‘MAP-TU’ approach underestimates the posterior variance, which is consistent with the results of the stylized inpainting study. The ‘RTO-TU’ approach is able to correct the variance underestimation of the ‘MAP-TU’ approach and performs similarly to the ‘Lang-TU’ method on this trial.
+
+## C. STYLIZED PHASE RETRIEVAL STUDY
+
+We now examine the performance of the algorithms in the stylized phase retrieval study. Figure 4 shows scatter plots of samples from the ground-truth posterior and the ‘Lang-TU’, ‘MAP-TU’, and ‘RTO-TU’ algorithms in a representative trial (with learned score). As can be seen, both the ‘Lang-TU’ and ‘RTO-TU’ algorithms produce samples that lie in a low-density region between the two posterior modes. The ‘MAP-TU’ approach avoids this issue, but sufers from significant underestimation of the variance of each of the modes.
+
+Table 5 shows the average errors in estimation of the mean and variance, as well as average CMD and MMD errors, for all nine BIPSDA methods tested. Here we first note that, when the score is known analytically, the ‘TC’ variants perform better than the ‘TU’ and ‘ODE’ variants, and on some trials produce strong performance, as evidenced by the provided interdecile ranges. This indicates that the ‘TC’ variants have some promise if a reliable approximation of the second-order score can be estimated using, e.g. the methods in [37]. However, there is wide variance in performance across the trials, and in general the ‘TC’ variants cannot fully overcome the issues observed with the ‘TU’ variants in Figure 2. All of the BIPSDA algorithms we tested thus face performance issues in this problem context.
+
+<table><tr><td rowspan="2"></td><td colspan="4">Analytic Score</td><td colspan="4">Learned Score</td></tr><tr><td>Mean Error</td><td>Variance Error</td><td>CMD</td><td>MMD</td><td>Mean Error</td><td>Variance Error</td><td>CMD</td><td>MMD</td></tr><tr><td>Lang-TU</td><td>0.029 (0.011, 0.055)</td><td>0.64 (0.44, 0.86)</td><td>0.04 (0.03, 0.06)</td><td>0.043 (0.033,0.054)</td><td>0.046 (0.013,0.092)</td><td>0.64 (0.43,0.87)</td><td>0.05 (0.03, 0.07)</td><td>0.043 (0.032, 0.055)</td></tr><tr><td>Lang-TC</td><td>0.024 (0.009, 0.048)</td><td>0.64 (0.43,0.87)</td><td>0.04 (0.03, 0.06)</td><td>0.043 (0.033,0.052)</td><td></td><td></td><td></td><td></td></tr><tr><td>Lang-ODE</td><td>0.032 (0.016, 0.060)</td><td>0.10 (0.02, 0.21)</td><td>0.01 (0.01, 0.02)</td><td>0.002 (0.001,0.003)</td><td>0.047 (0.016,0.090)</td><td>0.11 (0.02,0.25)</td><td>0.02 (0.01, 0.03)</td><td>0.002 (0.001, 0.005)</td></tr><tr><td>MAP-TU</td><td>0.018 (0.007, 0.031)</td><td>0.95 (0.71, 1.19)</td><td>0.06 (0.04, 0.08)</td><td>0.142 (0.135, 0.149)</td><td>0.046 (0.013,0.093)</td><td>0.95 (0.70,1.21)</td><td>0.07 (0.04, 0.09)</td><td>0.143 (0.133, 0.155)</td></tr><tr><td>MAP-TC</td><td>0.018 (0.007, 0.030)</td><td>0.96 (0.71, 1.20)</td><td>0.06 (0.04, 0.08)</td><td>0.143 (0.135,0.151)</td><td></td><td></td><td></td><td></td></tr><tr><td>MAP-ODE</td><td>0.023 (0.013, 0.037)</td><td>0.47 (0.34, 0.61)</td><td>0.03 (0.02, 0.04)</td><td>0.028 (0.025,0.032)</td><td>0.047 (0.016,0.090)</td><td>0.47 (0.33, 0.64)</td><td>0.04 (0.02, 0.06)</td><td>0.029 (0.025, 0.035)</td></tr><tr><td>RTO-TU</td><td>0.022 (0.008, 0.037)</td><td>0.05 (0.02, 0.07)</td><td>0.01 (0.01, 0.01)</td><td>0.001 (0.000, 0.001)</td><td>0.044 (0.011, 0.089)</td><td>0.06 (0.02, 0.09)</td><td>0.01 (0.01, 0.02)</td><td>0.001 (0.001, 0.003)</td></tr><tr><td>RTO-TC</td><td>0.020 (0.008, 0.031)</td><td>0.03 (0.01, 0.06)</td><td>0.01 (0.00, 0.01)</td><td>0.001 (0.000, 0.001)</td><td></td><td></td><td></td><td></td></tr><tr><td>RTO-ODE</td><td>0.027 (0.013, 0.044)</td><td>1.05 (0.79, 1.28)</td><td>0.08 (0.05,0.10)</td><td>0.051 (0.047,0.056)</td><td>0.046 (0.016,0.090)</td><td>1.01 (0.80,1.22)</td><td>0.08 (0.06, 0.10)</td><td>0.050 (0.043,0.057)</td></tr><tr><td>Reference</td><td>0.020 (0.009,0.034)</td><td>0.03 (0.01, 0.07)</td><td>0.01 (0.00, 0.01)</td><td>0.001 (0.000, 0.001)</td><td>0.020 (0.009,0.034)</td><td>0.03 (0.01,0.07)</td><td>0.01 (0.00, 0.01)</td><td>0.001 (0.000, 0.001)</td></tr></table>
+
+TABLE 2. Stylized inpainting study, low noise regime: Average errors in estimation of the mean and pointwise variance of the posterior distribution, and average central moment discrepancy (CMD) and maximum mean discrepancy (MMD) errors, for diferent BIPSDA methods (with both learned and analytic score). Interdecile ranges are also displayed in parentheses, and a reference that shows the average errors between two sets of i.i.d. samples from the ground truth posterior is included. The best-performing method with respect to each error measure is bolded. In the learned score case, with the exception of the Tweedie-Correlated (‘TC’) approaches that were not implemented, all approaches performed well, with the $\mathbf { \mu } \cdot \mathbf { \boldsymbol { M } } \mathbf { A } \mathbf { P } ^ { \prime }$ and $\mathbf { \nabla } ^ { \bullet } \mathbf { R } \mathbf { T } \mathbf { O } ^ { \bullet }$ variants providing particularly strong performance.
+
+![](images/0e3f8f5d0c880fae3957e4b7109e59b513ab5e8a4312ec53d1c46a575c182190.jpg)
+
+![](images/6ba571eecb02da5c5bfe64a7108ea9ade75c4d5c1ac67d60e75214e97593663b.jpg)
+
+![](images/d4c45b711537273118400370447da04df3bfd29f887abc262b0a560435cdd20a.jpg)
+
+![](images/1d70ef6f0aab11fa15539446f936466f4fe2eeffcc9798b15b3d6869fcea2059.jpg)  
+FIGURE 2. Stylized inpainting study, high noise regime: Scatter plots of samples from three diferent BIPSDA methods, as well as ground truth posterior samples, in a representative trial. Two components of the ten-dimensional samples are visualized, with one of the two components in the null space of the forward operator. The samples are overlaid over the posterior density. As can be seen, the $\mathbf { \nabla } ^ { \bullet } \mathbf { R } \mathbf { T } \mathbf { O } ^ { \bullet }$ and $\mathbf { \cdot } _ { \mathsf { M A P } } ,$ variants both provide competitive performance, whereas the ‘Lang’ variant significantly overestimates the posterior variance.
+
+<table><tr><td></td><td colspan="4">Analytic Score</td><td colspan="4">Learned Score</td></tr><tr><td></td><td>Mean Error</td><td>Variance Error</td><td>CMD</td><td>MMD</td><td>Mean Error</td><td>Variance Error</td><td>CMD</td><td>MMD</td></tr><tr><td>Lang-TU</td><td>10.594 (1.918,17.898)</td><td>44.17 (33.88, 50.87)</td><td>3.14 (1.93, 4.27)</td><td>0.389 (0.188,0.589)</td><td>10.076 (1.613,17.952)</td><td>43.99 (33.20, 51.19)</td><td>3.05 (1.93, 4.26)</td><td>0.380 (0.145,0.585)</td></tr><tr><td>Lang-TC</td><td>10.597 (2.358, 18.025)</td><td>44.84 (35.84, 51.02)</td><td>3.13 (2.06, 4.28)</td><td>0.399 (0.241,0.593)</td><td></td><td></td><td></td><td></td></tr><tr><td>Lang-ODE</td><td>10.622 (2.201,17.217)</td><td>46.76 (36.76,53.64)</td><td>3.19 (1.98, 4.24)</td><td>0.371 (0.188,0.506)</td><td>10.071 (1.465, 17.538)</td><td>45.76 (34.98, 53.04)</td><td>3.09 (1.98, 4.26)</td><td>0.362 (0.157,0.514)</td></tr><tr><td>MAP-TU</td><td>0.246 (0.059, 0.492)</td><td>1.29 (0.55, 2.05)</td><td>0.08 (0.04, 0.13)</td><td>0.130 (0.088,0.168)</td><td>0.262 (0.073, 0.569)</td><td>1.41 (0.61, 2.21)</td><td>0.08 (0.04, 0.13)</td><td>0.128 (0.085, 0.166)</td></tr><tr><td>MAP-TC</td><td>0.261 (0.054, 0.664)</td><td>1.51 (0.52, 2.61)</td><td>0.09 (0.04,0.17)</td><td>0.133 (0.091,0.164)</td><td></td><td></td><td></td><td></td></tr><tr><td>MAP-ODE</td><td>0.502 (0.307, 0.719)</td><td>0.80 (0.34, 1.38)</td><td>0.10 (0.06, 0.15)</td><td>0.035 (0.022, 0.047)</td><td>0.479 (0.324, 0.651)</td><td>0.99 (0.48, 1.93)</td><td>0.10 (0.06, 0.16)</td><td>0.035 (0.023,0.047)</td></tr><tr><td>RTO-TU</td><td>1.156 (0.270, 2.140)</td><td>5.04 (1.20,8.42)</td><td>0.34 (0.12,0.52)</td><td>0.016 (0.002, 0.032)</td><td>1.017 (0.198, 2.087)</td><td>4.05 (0.60, 7.28)</td><td>0.29 (0.09,0.46)</td><td>0.013 (0.002, 0.031)</td></tr><tr><td>RTO-TC</td><td>0.857 (0.222, 1.922)</td><td>4.72 (0.86, 12.46)</td><td>0.30 (0.09,0.56)</td><td>0.015 (0.001, 0.043)</td><td></td><td></td><td></td><td></td></tr><tr><td>RTO-ODE</td><td>1.200 (0.490, 2.060)</td><td>6.24 (2.57,9.53)</td><td>0.38 (0.19,0.56)</td><td>0.074 (0.046,0.107)</td><td>1.061 (0.355,2.230)</td><td>5.10 (1.91, 7.99)</td><td>0.32 (0.14,0.50)</td><td>0.067 (0.037,0.096)</td></tr><tr><td>Reference</td><td>0.068 (0.036, 0.114)</td><td>0.22 (0.07, 0.39)</td><td>0.02 (0.01, 0.03)</td><td>0.001 (0.001,0.001)</td><td>0.068 (0.036, 0.114)</td><td>0.22 (0.07,0.39)</td><td>0.02 (0.01,0.03)</td><td>0.001 (0.001, 0.001)</td></tr></table>
+
+TABLE 3. Stylized inpainting study, high noise regime: Average errors in estimation of the mean and pointwise variance of the posterior distribution, and average central moment discrepancy (CMD) and maximum mean discrepancy (MMD) errors, for diferent BIPSDA methods. Interdecile ranges are also displayed in parentheses. A reference that shows the average errors between two sets of i.i.d. samples from the ground truth posterior is also included. As can be seen, the ‘Lang’ variants lead to poor estimates of the mean and variance of the posterior, while the ‘MAP’ and ‘RTO’ variants provide relatively strong performance.
+
+![](images/f2287b3bac54ffaca4131be2ea6b2277f5726d35266afeab9c7dac963b8b6eba.jpg)
+
+![](images/ff278470d3061104538a5a7043b4cca47cc7c23ac1a8dd66cfafc5ee0d41c45f.jpg)
+
+![](images/680b13dae67d501f28b9d011ae1f19dab679d00b6f422d57ae0d8d6b855468c3.jpg)
+
+![](images/c32d7dff30337ff68d6cf4a0009ab9f7e6f129420eb51bf694c272e3e6e3feaa.jpg)  
+FIGURE 3. Stylized x-ray tomography study: Scatter plots of samples from three diferent BIPSDA methods, as well as ground truth posterior samples, in a representative trial. Here the samples have been projected onto the space spanned by the two right singular vectors corresponding to the largest and smallest singular values of the forward operator C. The samples are overlaid over a kernel density approximation of the pushforward of the posterior density under this projection. As can be seen, all three methods perform well in this setting, with the ‘Lang’ and ‘RTO’ variants providing particularly strong performance.
+
+<table><tr><td rowspan="2"></td><td colspan="4">Analytic Score</td><td colspan="4">Learned Score</td></tr><tr><td>Mean Error</td><td>Variance Error</td><td>CMD</td><td>MMD</td><td>Mean Error</td><td>Variance Error</td><td>CMD</td><td>MMD</td></tr><tr><td>Lang-TU</td><td>0.44 (0.27,0.64)</td><td>0.22 (0.04, 0.58)</td><td>0.12 (0.07,0.18)</td><td>0.016 (0.008,0.025)</td><td>0.44 (0.26, 0.68)</td><td>0.25 (0.05,0.61)</td><td>0.12 (0.07,0.19)</td><td>0.017 (0.009,0.026)</td></tr><tr><td>Lang-TC</td><td>0.45 (0.28,0.65)</td><td>0.23 (0.04, 0.60)</td><td>0.12 (0.08, 0.18)</td><td>0.017 (0.008, 0.028)</td><td></td><td></td><td></td><td></td></tr><tr><td>Lang-ODE</td><td>0.26 (0.10,0.48)</td><td>1.19 (0.82, 1.57)</td><td>0.15 (0.08,0.23)</td><td>0.031 (0.026, 0.036)</td><td>0.27 (0.10,0.51)</td><td>1.14 (0.82, 1.43)</td><td>0.15 (0.08,0.22)</td><td>0.031 (0.024, 0.037)</td></tr><tr><td>MAP-TU</td><td>0.12 (0.06,0.25)</td><td>1.66 (1.07, 2.20)</td><td>0.14 (0.08,0.21)</td><td>0.162 (0.151,0.174)</td><td>0.13 (0.06, 0.25)</td><td>1.67 (1.06,2.24)</td><td>0.14 (0.08,0.21)</td><td>0.163 (0.149,0.175)</td></tr><tr><td>MAP-TC</td><td>0.09 (0.03, 0.26)</td><td>1.65 (1.06, 2.20)</td><td>0.13 (0.07,0.22)</td><td>0.160 (0.149,0.171)</td><td></td><td></td><td></td><td></td></tr><tr><td>MAP-ODE</td><td>0.55 (0.35,0.75)</td><td>0.98 (0.67, 1.26)</td><td>0.19 (0.14,0.25)</td><td>0.075 (0.043,0.112)</td><td>0.54 (0.35, 0.70)</td><td>1.01 (0.67, 1.33)</td><td>0.19 (0.15,0.25)</td><td>0.076 (0.045, 0.113)</td></tr><tr><td>RTO-TU</td><td>0.12 (0.05,0.27)</td><td>0.19 (0.04, 0.58)</td><td>0.04 (0.02, 0.11)</td><td>0.003 (0.001, 0.007)</td><td>0.13 (0.05, 0.26)</td><td>0.19 (0.04, 0.55)</td><td>0.04 (0.02,0.10)</td><td>0.003 (0.001, 0.006)</td></tr><tr><td>RTO-TC</td><td>0.09 (0.03, 0.27)</td><td>0.18 (0.04, 0.58)</td><td>0.04 (0.01, 0.11)</td><td>0.002 (0.001, 0.007)</td><td></td><td></td><td></td><td></td></tr><tr><td>RTO-ODE</td><td>0.55 (0.36, 0.73)</td><td>1.51 (0.85, 2.25)</td><td>0.24 (0.16, 0.33)</td><td>0.054 (0.043, 0.068)</td><td>0.52 (0.34, 0.69)</td><td>1.41 (0.84, 2.00)</td><td>0.23 (0.16,0.30)</td><td>0.051 (0.038, 0.069)</td></tr><tr><td>Reference</td><td>0.05 (0.04, 0.07)</td><td>0.07 (0.04,0.11)</td><td>0.02 (0.01, 0.03)</td><td>0.001 (0.001, 0.001)</td><td>0.05 (0.04, 0.07)</td><td>0.07 (0.04,0.11)</td><td>0.02 (0.01, 0.03)</td><td>0.001 (0.001, 0.001)</td></tr></table>
+
+TABLE 4. Stylized x-ray tomography study: Average errors in estimation of the mean and pointwise variance of the posterior distribution, and average central moment discrepancy (CMD) and maximum mean discrepancy (MMD) errors, for diferent BIPSDA methods. Interdecile ranges are also displayed in parentheses. A reference that shows the average errors between two sets of i.i.d. samples from the ground truth posterior is also included. While all methods provide competitive performance, the ‘RTO-TU’ approach outperforms all other approaches in almost every metric.
+
+![](images/58fad60f3b6196371ed3b84e7a81e5144c8aacdba299a004d4aa4e88a64dd795.jpg)
+
+![](images/0a3862a820029f6a52c37431dedfc26c6881411677711fd9126c845393231989.jpg)
+
+![](images/ae7dbe7ce6c290b017354e1651e4adccffd39733046da08a704646fcd2d4da94.jpg)
+
+![](images/96a872e3faee038eeaf266be8c2c205b72eb9be62d6d5a2b62079b2e2a709e99.jpg)  
+FIGURE 4. Stylized phase retrieval study: Scatter plots of samples from three diferent BIPSDA methods, as well as ground truth posterior samples, in a representative trial. Here the samples have been projected onto onto the space spanned by the two right singular vectors corresponding to the largest and smallest singular values of the forward operator B. The samples are overlaid over a kernel density approximation of the pushforward of the posterior density under this projection. As can be seen, the ‘RTO’ and ‘Lang’ variants both abandon samples between the two distribution modes, while the ‘MAP’ variant underestimates the variance of the modes.
+
+<table><tr><td rowspan="2"></td><td colspan="4">Analytic Score</td><td colspan="4">Learned Score</td></tr><tr><td>Mean Error</td><td>Variance Error</td><td>CMD</td><td>MMD</td><td>Mean Error</td><td>Variance Error</td><td>CMD</td><td>MMD</td></tr><tr><td>Lang-TU</td><td>2.42 (0.08, 5.88)</td><td>6.26 (1.62, 14.25)</td><td>0.20 (0.01,0.46)</td><td>0.076 (0.002, 0.152)</td><td>2.45 (0.07, 5.93)</td><td>5.73 (0.67, 14.61)</td><td>0.20 (0.01, 0.46)</td><td>0.073 (0.001, 0.157)</td></tr><tr><td>Lang-TC</td><td>1.90 (0.05, 4.34)</td><td>4.01 (0.13, 9.69)</td><td>0.15 (0.00, 0.34)</td><td>0.048 (0.001, 0.064)</td><td></td><td></td><td></td><td></td></tr><tr><td>Lang-ODE</td><td>2.53 (0.11, 5.95)</td><td>8.33 (3.60, 15.93)</td><td>0.21 (0.02,0.47)</td><td>0.134 (0.049,0.230)</td><td>2.54 (0.08,5.92)</td><td>7.85 (2.47,16.20)</td><td>0.21 (0.01, 0.47)</td><td>0.128 (0.044, 0.217)</td></tr><tr><td>MAP-TU</td><td>1.97 (0.06, 4.37)</td><td>5.88 (1.41, 11.63)</td><td>0.16 (0.01,0.35)</td><td>0.129 (0.064, 0.177)</td><td>1.97 (0.08, 4.42)</td><td>5.63 (1.32, 11.46)</td><td>0.16 (0.01, 0.36)</td><td>0.127 (0.064, 0.169)</td></tr><tr><td>MAP-TC</td><td>1.99 (0.04, 4.74)</td><td>4.82 (1.41, 10.29)</td><td>0.16 (0.01,0.38)</td><td>0.129 (0.072,0.150)</td><td></td><td></td><td></td><td></td></tr><tr><td>MAP-ODE</td><td>2.05 (0.07, 4.72)</td><td>6.55 (2.09, 13.57)</td><td>0.17 (0.02,0.38)</td><td>0.069 (0.015,0.101)</td><td>2.06 (0.08, 4.75)</td><td>6.24 (1.54, 12.68)</td><td>0.17 (0.01, 0.38)</td><td>0.070 (0.015, 0.103)</td></tr><tr><td>RTO-TU</td><td>2.53 (0.11, 6.12)</td><td>6.83 (2.44, 13.11)</td><td>0.21 (0.02,0.47)</td><td>0.069 (0.006, 0.165)</td><td>2.53 (0.09, 6.11)</td><td>5.98 (1.59, 12.47)</td><td>0.20 (0.01, 0.47)</td><td>0.065 (0.003,0.156)</td></tr><tr><td>RTO-TC</td><td>2.04 (0.05, 4.85)</td><td>4.68 (0.20, 11.29)</td><td>0.16 (0.00, 0.37)</td><td>0.047 (0.001, 0.090)</td><td></td><td></td><td></td><td></td></tr><tr><td>RTO-ODE</td><td>2.57 (0.16, 5.94)</td><td>8.64 (4.03, 14.63)</td><td>0.22 (0.03,0.47)</td><td>0.124 (0.055, 0.210)</td><td>2.58 (0.12,5.99)</td><td>7.71 (3.15, 13.69)</td><td>0.21 (0.02,0.47)</td><td>0.117 (0.048, 0.207)</td></tr><tr><td>Reference</td><td>0.24 (0.05, 0.50)</td><td>0.79 (0.08,1.15)</td><td>0.02 (0.00, 0.04)</td><td>0.002 (0.001, 0.002)</td><td>0.24 (0.05,0.50)</td><td>0.79 (0.08, 1.15)</td><td>0.02 (0.00, 0.04)</td><td>0.002 (0.001, 0.002)</td></tr></table>
+
+TABLE 5. Stylized phase retrieval study: Average errors in estimation of the mean and pointwise variance of the posterior distribution, and average central moment discrepancy (CMD) and maximum mean discrepancy (MMD) errors, for diferent BIPSDA methods. Interdecile ranges are also displayed in parentheses, and a reference that shows the average errors between two sets of i.i.d. samples from the ground truth posterior is included. Note that for the ‘Lang-TU’ and ‘RTO-TU’ methods in the learned score regime, 29 and 185 samples, respectively, of the million total samples generated across the hundred trials numerically diverged and were discarded. As can be seen, all of the algorithms we analyzed produce significant errors in posterior sampling on this challenging problem.
+
+## D. COMPUTATIONAL CONSIDERATIONS
+
+Here we examine the computational cost associated with the diferent BIPSDA algorithms. Table 6 shows the runtimes associated with each tested BIPSDA algorithm across all four studies (learned score regime). For each test-case, we measured the runtime to generate 10,000 samples per trial. The reported runtimes are the average over 100 trials. As can be seen, ‘TU’ variants are consistently faster than their ‘ODE’ counterparts due to the reduced number of score evaluations associated with ‘TU’ variants. However, the dominant computational cost in our problem settings is sampling from the approximate prediction distribution, not approximating the denoising distribution. Here we find that the ‘MAP’ and ‘RTO variants are consistently faster than the ‘Lang’ variants. The diference in runtimes is particularly pronounced in the inpainting studies, where the MAP point can be computed eficiently in closed form. Note that the cost of the Langevin dynamics based approaches could be reduced by reducing the number of Langevin iterations, but this may hurt the quality of the generated samples. In general, the computational feasibility of BIPSDA algorithms in a given problem setting is dependent on finding eficient MAP solvers (for the ‘MAP’ and ‘RTO’ variants) or eficient MCMC algorithms (for the ‘Lang variants) for the given problem.
+
+## VI. DISCUSSION AND CONCLUSION
+
+Difusion annealing based inverse problem solvers are an emerging class of algorithms for solving Bayesian inverse problems using a difusion model trained on the prior distribution. In this work, we introduced a general framework, Bayesian Inverse Problem Solvers through Difusion Annealing (BIPSDA), that provides an unified formulation for this class of algorithms. This framework has two key design choices—the denoising distribution approximation and the sampler for the prediction distribution—that can be “mixed and matched” in a flexible manner. The large algorithmic design space of BIPSDA includes the previously introduced DAPS [22] and DifPIR [23] algorithms, which have both achieved state-of-the-art performance on diferent image reconstruction problems. Novel approaches can be unveiled through combinations of ideas from DAPS and DifPIR, as well as the novel techniques proposed here to approximate the denoising distribution and to sample from the prediction distribution. Specifically, the Tweedie Correlated (‘TC’) technique, previously introduced in the context of the hijacking class of difusion-based Bayesian inverse problem solvers [33], is a novel contribution in the difusion annealing context. This approach provides a theoretically-sound, hyperparameter free Gaussian approximation to the denoising distribution by leveraging the second moments of the data distribution and the generalized Tweedie formula [37]. The randomize-thenoptimize (‘RTO’) technique, which was originally developed as a proposal distribution for Markov chain Monte Carlo methods [24]–[26], is also introduced here for the first time to generate fast, approximate samples from the prediction distribution by use of an “of-the-shelf” numerical optimization method.
+
+<table><tr><td></td><td>Inpainting (Low Noise) Inpainting (High Noise)</td><td></td><td>X-ray Tomography</td><td>Phase Retrieval</td></tr><tr><td>Lang-TU</td><td>26.698 (0.879)</td><td>26.938 (1.105)</td><td>514.829 (11.383)</td><td>333.764 (20.521)</td></tr><tr><td>Lang-ODE</td><td>31.698 (0.457)</td><td>31.696 (0.259)</td><td>519.479 (10.768)</td><td>337.544 (19.719)</td></tr><tr><td>MAP-TU</td><td>1.217 (0.011)</td><td>1.213 (0.011)</td><td>161.152 (29.001)</td><td>201.837 (32.167)</td></tr><tr><td>MAP-ODE</td><td>5.590 (0.031)</td><td>5.569 (0.033)</td><td>174.486 (56.858)</td><td>210.563 (35.067)</td></tr><tr><td>RTO-TU</td><td>1.381 (0.002)</td><td>1.409 (0.008)</td><td>171.669 (23.894)</td><td>269.171 (26.925)</td></tr><tr><td>RTO-ODE</td><td>5.780 (0.008)</td><td>5.763 (0.027)</td><td>182.396 (58.243)</td><td>273.492 (24.678)</td></tr></table>
+
+TABLE 6. Computational time (in seconds) to generate 10, 000 posterior samples (averaged over 100 trials) with diferent BIPSDA methods across all four studies (learned score regime). The standard deviation of the runtime is also displayed in parenthesis. All experiments were run on a Nvidia A100 GPU with 80 GB of memory. As can be seen, while computational cost is highly dependent on the specific implementation of each algorithm, in general the ‘MAP’ and ‘RTO’ variants are faster than the ‘Lang’ variants. The speedup is particularly pronounced in the inpainting studies, where the MAP problem can be solved eficiently in closed form.
+
+We also proposed a suite of four benchmark prob lems (inspired by image inpainting, x-ray tomography, and phase retrieval) for the rigorous assessment of the proposed BIPSDA framework, as well as other difusionbased posterior samplers. A key feature of these benchmark problems is that they not only have an analyticallyknown posterior distribution, but also feature an analytical close-form expression for the noisy prior score. This enables analysis of the robustness of algorithms to errors in the score model by examining the idealized scenario of a known-exactly prior score.
+
+## A. RESULTS ANALYSIS
+
+The results provide insights into both the impact of specific design choices within our framework and the performance of difusion-model-based inverse problem solvers generally. Regarding the choice of the denoising distribution approximation, we note that approaches that use the ‘TC’ variant provide the best performance on the two non-linear inverse problems we tested when the prior score is assumed to be known analytically. However, in our implementation this technique is currently only applicable when the score is known exactly. The training of an auxiliary neural network model to approximate higher-order moments of the data distribution is required in the learned score setting [37]. It is also worth noting that in general, the ‘TU’ variant performs better than the ‘ODE’ variant.
+
+Regarding the sampler for the prediction distribution, the results demonstrate that the MAP estimation based approaches, despite lacking firm theoretical foundations, perform well in recovering the global structure of the posterior distribution. However, they systematically underestimate the variance of each of the posterior modes, which is unsurprising given that the ‘MAP’ variants do not actually sample from the prediction distribution. The ‘RTO’ technique, which is equivalent to exact sampling from the prediction distribution when the likelihood function is linear-Gaussian [43], partially resolves this issue and provides better performance than the ‘MAP’ variants on the stylized x-ray tomography problem and inpainting problems. Finally, the ‘Lang’ variants work well when the posterior is unimodal (low noise regime of the stylized inpainting problem and stylized x-ray tomography problem). However, in the case of multimodal posteriors (as in the high noise regime of the stylized inpainting problem), the ‘Lang’ variants struggle to properly incorporate the measurement information. Further, on the phase retrieval problem, Langevin dynamics without Metropolis correction completely fails, and the incorporation of a Metropolis adjustment and preconditioning was required to obtain competitive performance.
+
+Overall, the results demonstrate that the BIPSDA framework can provide strong performance on problems with unimodal posterior distributions. Strong performance is also attainable on problems that have multimodal posteriors and linear forward models, although in this setting the performance of the framework is sensitive to the algorithmic design choices made. On the stylized phase retrieval problem, however, all of the BIPSDA algorithms we tested produced inaccurate uncertainty estimates. This is reflective of the extremely challenging nature of the problem, for which even conventional MCMC algorithms that require knowledge of the posterior density struggle to perform well.
+
+## B. LIMITATIONS AND FUTURE DIRECTIONS
+
+The proposed benchmark problems provide useful insight on the ability of difusion annealing based inverse problem solvers to provide rigorous estimates of the uncertainty of the posterior distribution. While results are promising, there are a few limitations of the present work that require further investigation.
+
+First, the performance of BIPSDA algorithms, and difusion-annealing approaches in general, strongly depends on both the choice of algorithm-specific hyperparameters and the accuracy of the underlying pretrained difusion model. In our work, we carefully controlled for these efects by fixing some of the hyperparameters (e.g. the same sequence of annealing time steps $\left[ t _ { N _ { A } } , t _ { N _ { A } - 1 } , \cdot \cdot \cdot \ , t _ { 0 } \right]$ for the outer loop of Algorithm 1) and by comparing performances using both learned and analytic noisy prior scores. Furthermore, some of the novel algorithms that we propose within the BIPSDA framework achieve similar or superior performance to state-of-the-art methods, such as DAPS, while drastically reducing the number of hyperparameters that the user must provide. Specifically, the ‘TC’ variant, which our work is the first to explore in the contest of difusionannealing approaches, provides a hyperparameter-free approximation of the denoising distribution, while on the contrary the ‘ODE’ variant used by DAPS is highly sensitive to the choice of the discretization parameters of the probability flow ODE. Additionally, the ‘RTO’ variant that we proposed here for the first time computes approximate samples from the prediction distribution using “of-the-shelf” deterministic optimization algorithms. Conversely, the ‘Lang’ variant used by DAPS requires careful tuning of the time step size and number of time steps in the Langevin dynamics. Nevertheless, while in this work we followed recommendations in the literature when choosing hyperparameters [22], [54], more work is required to understand the full impact of user provided hyperparameter choices (such as the noise annealing schedule) and how to optimize the accuracycomputational cost trade-of.
+
+Second, the algorithms in our framework were systematically tested on stylized model problems that enable principled performance analysis but have low dimensionality. In the Supplementary Material we also apply algorithms from the BIPSDA family to imaging prob lems of practical relevance. Proof-of-principle numerical results related to image inpainting (c.f. Fig. S.5 and Table S.1 in the Supplementary Material) demonstrate the computational feasibility of applying algorithms from the BIPSDA family at scale and their ability to produce plausible, diverse samples. However, to systematically evaluate the performance BIPSDA framework in these high-dimensional settings, there remains the need for image reconstruction-relevant, large-scale benchmarks with well-characterized image priors.
+
+Third, it is also of interest to improve the performance of BIPSDA algorithms on challenging non-linear problems like phase retrieval. Here we first note that in this study there were cases where posterior samples numerically diverged due to large error in the learned score in low probability regions of the prior. This could potentially be addressed through the incorporation of second-order score model derivative information into the score training, which has been shown to improve model accuracy in low-density regions in other problem contexts [55]. Further, even with the score known analytically, the BIPSDA algorithms performed poorly on some of the trials, and additional algorithmic innovations are required to address this. In particular, it is of interest to explore modifications to the proposed ‘RTO’ technique, such as apodizing the noise perturbation in early BIPSDA iterations or metropolizing the RTO sampling, to improve performance on challenging problems like this one.
+
+Finally, while the focus of this work was to provide numerical insight on the ability of decoupled noise annealing type approaches to accurately sample from the posterior distribution, the three benchmark problems that we designed are expected to become a useful tool to the community to develop, refine, and rigorously assess existing and novel approaches (including difusiontype posterior samplers that lie outside of the BIPSDA framework), for solving Bayesian inverse problems with data-driven priors.
+
+## Appendix A
+
+## RELATIONSHIP BETWEEN TWEEDIE FORMULA AND THE PROBABILITY FLOW ODE
+
+In this appendix we analyze the relationship between the Tweedie’s formula and probability flow ODE based approaches for estimation the mean of the denoising distribution $\mathbb { E } _ { 0 \mid t } [ \mathbf { m } ( 0 ) \mid \mathbf { m } ( t ) ]$
+
+In the Tweedie’s formula based approach, the estimate of the predicted mean, denoted $\mathbf { m } _ { \mathrm { t w e e d i e } } .$ , is computed using the pretrained score model as
+
+$$
+\begin{array} { r } { \mathbf { m } _ { \mathrm { t w e e d i e } } = \mathbf { m } ( t ) + \sigma ^ { 2 } ( t ) s _ { \theta ^ { * } } ( \mathbf { m } ( t ) , t ) , } \end{array}\tag{14}
+$$
+
+where we have again assumed $\sigma ( 0 ) ~ = ~ 0$ . Since the conditional distribution of $\mathbf { m } ( t )$ given m(0) is Gaussian, Tweedie’s formula is exact and
+
+$$
+\begin{array} { r } { \mathbb { E } _ { 0 | t } [ \mathbf { m } ( 0 ) \mid \mathbf { m } ( t ) ] = \mathbf { m } ( t ) + \sigma ^ { 2 } ( t ) \nabla _ { \mathbf { m } ( t ) } \log \pi _ { t } ( \mathbf { m } ( t ) ) . } \end{array}
+$$
+
+The only source of error in (14) is therefore score modeling error.
+
+In the probability flow ODE based approach, the estimated mean is obtained by solving the probability flow ODE $\left( \mathrm { E q . \ ( 5 ) } \right)$ backwards in time. For concreteness, here we consider the performance of the approach when using the backward Euler method to solve the ODE, which is commonly used in the literature [15], [22], [56]. In particular, we first consider the case with only a single reverse Euler step. In this setting, the estimate of the predicted mean, denoted $\mathbf { m } _ { \mathrm { o d e } } .$ , is given by
+
+$$
+\mathbf { m } _ { \mathrm { o d e } } = \mathbf { m } ( t ) + t \sigma ( t ) { \dot { \sigma } } ( t ) s _ { \pmb { \theta } ^ { * } } ( \mathbf { m } ( t ) , t ) .\tag{15}
+$$
+
+As can be seen, the ODE and Tweedie’s formula based approaches both update m(t) in the direction of $s _ { \pmb { \theta } ^ { * } } ( \mathbf { m } ( t ) , t )$ . However, the magnitude of the update difers by a factor of $~ d ~ = ~ t \sigma ( t ) \dot { \sigma } ( t ) / \sigma ^ { 2 } ( t )$ , which in general will not be equal to one, and so therefore $\mathbf { m } _ { \mathrm { { o d e } } } \neq \mathbf { m } _ { \mathrm { { t w e e d i e } } }$ . However, under the particular choice of parameterization $\sigma ( t ) = t , d = 1$ and the updates coincide.
+
+The above analysis shows that the estimate of the mean of the denoising distribution given by the Tweedie’s formula based approach is exact up to error in the score model. Under a particular choice of parameterization and discretization, the probability flow ODE based approach can be made to coincide with the Tweedie’s formula based approach. However, in general the probability flow ODE based approach will introduce additional approximations in the mean estimate.
+
+## ACKNOWLEDGMENTS
+
+The authors would like to thank Drs. Sebastian Reich, Lars Ruthotto, and Nick Alger for inspiring discussions on difusion modeling and randomize-then-optimize algorithms.
+
+## REFERENCES
+
+[1] O. Ghattas and K. Willcox, “Learning physics-based models from data: perspectives from inverse problems and model reduction,” Acta Numerica, vol. 30, p. 445–554, 2021.
+
+[2] J. L. Mueller and S. Siltanen, Linear and nonlinear inverse problems with practical applications. SIAM, 2012.
+
+[3] H. W. Engl, M. Hanke, and A. Neubauer, Regularization of inverse problems, vol. 375. Springer Science & Business Media, 1996.
+
+[4] A. Tarantola, Inverse problem theory and methods for model parameter estimation. SIAM, 2005.
+
+[5] L. Tenorio, An introduction to data analysis and uncertainty quantification for inverse problems. SIAM, 2017.
+
+[6] J. Kaipio and E. Somersalo, Statistical and Computational Inverse Problems, vol. 160. Springer Science & Business Media, 2006.
+
+[7] A. M. Stuart, “Inverse problems: A Bayesian perspective,” Acta Numer., vol. 19, pp. 451–559, 2010.
+
+[8] J. L. Prince and J. M. Links, Medical Imaging Signals and Systems. Pearson Prentice Hall Upper Saddle River, 2 ed., 2015.
+
+[9] R. Slingerland and L. Kump, Mathematical modeling of Earth’s dynamical systems: A primer. Princeton University Press, 2011.
+
+[10] S. Chan et al., “Tutorial on difusion models for imaging and vision,” Foundations and Trends® in Computer Graphics and Vision, vol. 16, no. 4, pp. 322–471, 2024.
+
+[11] L. Ruthotto and E. Haber, “An introduction to deep generative modeling,” GAMM-Mitteilungen, vol. 44, no. 2, p. e202100008, 2021.
+
+[12] A. Bora, A. Jalal, E. Price, and A. G. Dimakis, “Compressed sensing using generative models,” in Proc. Int. Conf. Mach. Learn., pp. 537–546, PMLR, 2017.
+
+[13] Y. Song and S. Ermon, “Generative modeling by estimating gradients of the data distribution,” in Adv. Neural Inf. Process. Syst., vol. 32, 2019.
+
+[14] J. Ho, A. Jain, and P. Abbeel, “Denoising difusion probabilistic models,” in Adv. Neural Inf. Process. Syst., vol. 33, pp. 6840–6851, 2020.
+
+[15] Y. Song, J. Sohl-Dickstein, D. P. Kingma, A. Kumar, S. Ermon, and B. Poole, “Score-based generative modeling through stochastic diferential equations,” in Proc. Int. Conf. Learn. Represent., 2021.
+
+[16] A. Jalal, M. Arvinte, G. Daras, E. Price, A. G. Dimakis, and J. Tamir, “Robust compressed sensing MRI with deep generative priors,” in Adv. Neural Inf. Process. Syst., vol. 34, pp. 14938–14954, 2021.
+
+[17] Y. Song, L. Shen, L. Xing, and S. Ermon, “Solving inverse problems in medical imaging with score-based generative models,” in Proc. Int. Conf. Learn. Represent., 2022.
+
+[18] H. Chung, B. Sim, D. Ryu, and J. C. Ye, “Improving difusion models for inverse problems using manifold constraints,” in Adv. Neural Inf. Process. Syst., vol. 35, pp. 25683–25696, Curran Associates, Inc., 2022.
+
+[19] H. Chung, J. Kim, M. T. Mccann, M. L. Klasky, and J. C. Ye, “Difusion posterior sampling for general noisy inverse problems,” in Proc. Int. Conf. Learn. Represent., 2023.
+
+[20] Z. Wu, Y. Sun, Y. Chen, B. Zhang, Y. Yue, and K. L. Bouman, “Principled probabilistic imaging using difusion models as plug-and-play priors,” in Adv. Neural Inf. Process. Syst., 2024.
+
+[21] G. Daras, H. Chung, C.-H. Lai, Y. Mitsufuji, P. Milanfar, A. G. Dimakis, C. Ye, and M. Delbracio, “A survey on difusion models for inverse problems,” arXiv preprint arXiv:2410.00083, 2024.
+
+[22] B. Zhang, W. Chu, J. Berner, C. Meng, A. Anandkumar, and Y. Song, “Improving difusion inverse problem solving with decoupled noise annealing,” arXiv preprint arXiv:2407.01521, 2024.
+
+[23] Y. Zhu, K. Zhang, J. Liang, J. Cao, B. Wen, R. Timofte, and L. Van Gool, “Denoising difusion models for plug-andplay image restoration,” in Proc. Conf. Comput. Vis. Pattern Recognit., pp. 1219–1229, 2023.
+
+[24] J. M. Bardsley, A. Solonen, H. Haario, and M. Laine, “Randomize-then-optimize: A method for sampling from posterior distributions in nonlinear inverse problems,” SIAM J. Sci. Comput., vol. 36, no. 4, pp. A1895–A1910, 2014.
+
+[25] K. Wang, T. Bui-Thanh, and O. Ghattas, “A randomized maximum a posteriori method for posterior sampling of high dimensional nonlinear Bayesian inverse problems,” SIAM J. Sci. Comput., vol. 40, no. 1, pp. A142–A171, 2018.
+
+[26] Y. Ba, J. de Wiljes, D. S. Oliver, and S. Reich, “Randomized maximum likelihood based posterior sampling,” Comput. Geosci., vol. 26, no. 1, pp. 217–239, 2022.
+
+[27] W. Zellinger, T. Grubinger, E. Lughofer, T. Natschl¨ager, and S. Saminger-Platz, “Central moment discrepancy (CMD) for domain-invariant representation learning,” in Proc. Int. Conf. Learn. Represent., 2017.
+
+[28] A. Gretton, K. M. Borgwardt, M. J. Rasch, B. Sch¨olkopf, and A. Smola, “A kernel two-sample test,” J. Mach. Learn. Res., vol. 13, no. 1, pp. 723–773, 2012.
+
+[29] B. D. Anderson, “Reverse-time difusion equation models,” Stoch. Process. Their Appl., vol. 12, no. 3, pp. 313–326, 1982.
+
+[30] C. Lu, K. Zheng, F. Bao, J. Chen, C. Li, and J. Zhu, “Maximum likelihood training for score-based difusion ODEs by high order denoising score matching,” in Proc. Int. Conf. Mach. Learn., pp. 14429–14460, 2022.
+
+[31] Y. Song, C. Durkan, I. Murray, and S. Ermon, “Maximum likelihood training of score-based difusion models,” Adv. Neural Inf. Process. Syst., vol. 34, pp. 1415–1428, 2021.
+
+[32] P. Vincent, “A connection between score matching and denoising autoencoders,” Neural Comput., vol. 23, no. 7, pp. 1661– 1674, 2011.
+
+[33] B. Boys, M. Girolami, J. Pidstrigach, S. Reich, A. Mosca, and O. D. Akyildiz, “Tweedie moment projected difusions for inverse problems,” Trans. Mach. Learn. Res., 2024.
+
+[34] J. Song, A. Vahdat, M. Mardani, and J. Kautz, “Pseudoinverse-guided difusion models for inverse problems,” in Proc. Int. Conf. Learn. Represent., 2023.
+
+[35] J. Yu, Y. Wang, C. Zhao, B. Ghanem, and J. Zhang, “FreeDoM: Training-free energy-guided conditional difusion model,” in Proc. IEEE Int. Conf. Comput. Vis., pp. 23174– 23184, 2023.
+
+[36] B. Efron, “Tweedie’s formula and selection bias,” J. Am. Stat. Assoc., vol. 106, no. 496, pp. 1602–1614, 2011.
+
+[37] C. Meng, Y. Song, W. Li, and S. Ermon, “Estimating high order gradients of the data distribution by denoising,” in Adv. Neural Inf. Process. Syst., vol. 34, pp. 25359–25369, 2021.
+
+[38] R. M. Neal, “MCMC using Hamiltonian dynamics,” in Handbook of Markov Chain Monte Carlo (S. Brooks, A. Gelman, G. L. Jones, and X.-L. Meng, eds.), ch. 5, pp. 113–162, Chapman & Hall/CRC, 2011.
+
+[39] S. H. Chan, X. Wang, and O. A. Elgendy, “Plug-and-play ADMM for image restoration: Fixed-point convergence and applications,” IEEE Trans. Comput. Imaging, vol. 3, no. 1, pp. 84–98, 2016.
+
+[40] N. Parikh and S. Boyd, Proximal Algorithms, vol. 1 of Foundations and Trends® in Optimization. Now Publishers, Inc., 2013.
+
+[41] I. Alkhouri, S. Liang, C.-H. Huang, J. Dai, Q. Qu, S. Ravishankar, and R. Wang, “SITCOM: Step-wise triple-consistent difusion sampling for inverse problems,” arXiv preprint arXiv:2410.04479, 2024.
+
+[42] B. Song, S. M. Kwon, Z. Zhang, X. Hu, Q. Qu, and L. Shen, “Solving inverse problems with latent difusion models via hard data consistency,” arXiv preprint arXiv:2307.08123, 2023.
+
+[43] J. M. Bardsley, “MCMC-based image reconstruction with uncertainty quantification,” SIAM J. Sci. Comput., vol. 34, no. 3, pp. A1316–A1332, 2012.
+
+[44] T. Ge, U. Villa, U. S. Kamilov, and J. A. O’Sullivan, “Proximal Newton methods for X-Ray imaging with non-smooth regularization,” J. Electron. Imaging, vol. 32, no. 14, pp. 7–1–7–1, 2020.
+
+[45] Y. Shechtman, Y. C. Eldar, O. Cohen, H. N. Chapman, J. Miao, and M. Segev, “Phase retrieval with application
+
+to optical imaging: A contemporary overview,” IEEE Signal Process. Mag., vol. 32, no. 3, pp. 87–109, 2015.
+
+[46] M. Girolami and B. Calderhead, “Riemann manifold Langevin and Hamiltonian Monte Carlo methods,” J. R. Stat. Soc., vol. 73, no. 2, pp. 123–214, 2011.
+
+[47] J. Nocedal and S. J. Wright, Numerical optimization. Springer, 1999.
+
+[48] D. P. Kingma and J. Ba, “Adam: A method for stochastic optimization,” arXiv preprint arXiv:1412.6980, 2014.
+
+[49] E. M. Shockley, J. A. Vrugt, and C. F. Lopez, “PyDREAM: High-dimensional parameter inference for biological models in Python,” Bioinformatics, vol. 34, no. 4, pp. 695–697, 2018.
+
+[50] E. Laloy and J. A. Vrugt, “High-dimensional posterior exploration of hydrologic models using multiple-try DREAM (ZS) and high-performance computing,” Water Resour. Res., vol. 48, no. 1, 2012.
+
+[51] W.-L. Loh, “On Latin hypercube sampling,” Ann. Stat., vol. 24, no. 5, pp. 2058–2080, 1996.
+
+[52] D. Vats and C. Knudson, “Revisiting the Gelman–Rubin diagnostic,” Stat. Sci., vol. 36, no. 4, pp. 518–529, 2021.
+
+[53] A. Vehtari, A. Gelman, D. Simpson, B. Carpenter, and P.- C. B¨urkner, “Rank-normalization, folding, and localization: An improved R<sup>ˆ</sup> for assessing convergence of MCMC (with discussion),” Bayesian Anal., vol. 16, no. 2, pp. 667–718, 2021.
+
+[54] P. Dhariwal and A. Nichol, “Difusion models beat GANs on image synthesis,” in Adv. Neural Inf. Process. Syst., pp. 8780– 8794, 2021.
+
+[55] T. O’Leary-Roseberry, P. Chen, U. Villa, and O. Ghattas, “Derivative-informed neural operator: An eficient framework for high-dimensional parametric derivative learning,” J. Comput. Phys., vol. 496, p. 112555, 2024.
+
+[56] J. Song, C. Meng, and S. Ermon, “Denoising difusion implicit models,” in Proc. Int. Conf. Learn. Represent., 2021.
+
+Evan Scope Crafts graduated summa cum laude from Emory University in 2019 with a B.S. in Applied Mathematics and a B.A. in Computer Science. He was subsequently granted a masters in Computational Science, Engineering, and Mathematics from the University of Texas at Austin’s Oden Institute for Computational Engineering & Sciences in 2022, where he is currently a Ph.D. candidate. His research interests include computational imaging, inverse problems, medical imaging, statistical inference, machine learning, and optimization.
+
+Umberto Villa received the B.S. and M.S. degrees in Mathematical Engineering from the Politecnico di Milano, Milan, Italy, in 2005 and 2007, respectively, and the Ph.D. degree in Mathematics from Emory University, Atlanta, GA, USA, in 2012. He is an Assistant Professor of Biomedical Engineering and core faculty the Oden Institute for Computational Engineering and Science, The University of Texas at Austin, Austin, TX, USA. His research interests lie in the computational and mathematical aspects of large-scale inverse problems, imaging science, and uncertainty quantification.

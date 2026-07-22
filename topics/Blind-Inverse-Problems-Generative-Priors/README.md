@@ -10,7 +10,7 @@
 
 1. **建立全局地图** → `survey/` 两篇综述，把条件采样器家族、prior score 与 posterior score 的差距搞清楚。
 2. **对齐直接竞品** → `blind-joint-sampling/` 四篇盲联合方法，这是我们要复现和正面比较的基线。
-3. **进入后验正确性与校准** → `posterior-calibration/` 五篇，理解偏差从哪进入、如何构造参考后验、如何用 SBC/coverage/CRPS 检验校准。
+3. **进入后验正确性与校准** → `posterior-calibration/` 六篇，理解偏差从哪进入、如何构造参考后验、如何用 SBC/coverage/CRPS 检验校准。
 
 ---
 
@@ -39,6 +39,7 @@
 | [Feynman-Kac-Bias-Stability](./posterior-calibration/%5BArxiv%202026%5D%20Feynman-Kac-Bias-Stability/) | Arxiv 2026 | Delgadino 等：Feynman–Kac 表示证明**即便 prior score 精确，DPS 仍系统偏差**（丢掉 reaction 项 $c_{DPS}$），在"流形宽×reward 敏感"处放大 → 漏模态。理论依据："用扩散模型 ≠ 得到贝叶斯后验"。 |
 | [Principled-Posterior-Matching](./posterior-calibration/%5BArxiv%202026%5D%20Principled-Posterior-Matching/) | Arxiv 2026 | Bai 等：近似目标 → mode collapse / 不可靠 UQ；提出目标级无偏的 PPM。支撑"样本离散≠不确定性已校准"。 |
 | [Exact-Posterior-Score](./posterior-calibration/%5BArxiv%202026%5D%20Exact-Posterior-Score/) | Arxiv 2026 | Mammadov 等：低维+高斯/GP 可解析先验+已知线性算子下 $p(x_0\mid y)$ 是**解析高斯后验** → 可作 SBC/coverage/CRPS 的 **gold-standard 参考后验**；$p(A)\to p(A\mid\varphi)$ 时 pivot 需用当前 $\varphi$ 构造，是 gauge-aware 联合估计的必要性来源。 |
+| [Diffusion-Annealing-Benchmark](./posterior-calibration/%5BArxiv%202025%5D%20Diffusion-Annealing-Benchmark/) | Arxiv 2025 | Crafts & Villa：系统 benchmark 扩散退火式贝叶斯逆问题求解器能否给出严格 UQ；与本课题同问题域，确认"诊断+可迁移修复"是增量贡献。 |
 
 ---
 
