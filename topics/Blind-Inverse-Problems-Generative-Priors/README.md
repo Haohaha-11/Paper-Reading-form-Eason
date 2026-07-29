@@ -29,6 +29,7 @@
 | [GibbsDDRM](./blind-joint-sampling/%5BICML%202023%5D%20GibbsDDRM/) | ICML 2023 | 部分塌缩 Gibbs（PCGS）：图像块=DDRM 谱域，算子块=Langevin，Prop 3.1 保平稳分布。**与本课题联合核结构最接近**，必比基线。 |
 | [PRISM](./blind-joint-sampling/%5BArxiv%202025%5D%20PRISM/) | Arxiv 2025 | measurement-conditioned diffusion prior + split-Gibbs 后验采样；报告像素级 SD / NLL / 3-SD 覆盖。**不确定性最直接竞品**；已暴露弱点：低噪声过自信、缺 SBC/CRPS/reliability 曲线、$\sigma$ 当已知。 |
 | [Fast-Diffusion-EM](./blind-joint-sampling/%5BWACV%202024%5D%20Fast-Diffusion-EM/) | WACV 2024 | 扩散 E 步 + 快速 EM，核为 $\arg\max$ MAP 点估计、所有粒子共享单核。**"用了不确定性却只输出点估计"的对照锚点**。 |
+| [Instrument-Noise-Estimation](./blind-joint-sampling/%5BArxiv%202026%5D%20Instrument-Noise-Estimation/) | Arxiv 2026 | Giovannelli 的 **Hyper-G-DPS**：Gibbs 大循环联合估图像 + PSF 宽度 $\iota$ + 噪声偏置 $m_e$/方差 $v_e$，低维参数走共轭直采、图像块走 G-DPS（一次迭代一次网络）。**比 GibbsDDRM 多估噪声参数**、给 ±2 PSD 覆盖式 UQ；但收敛"保证"含 forward≈backward 近似（未量化）、校准仅到单场景个案覆盖，是本课题该用 SBC/参考后验去测的对象。 |
 
 ## 三、后验正确性 · 可辨识性 · 校准 · posterior-calibration
 
