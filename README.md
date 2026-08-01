@@ -236,6 +236,20 @@ GRPO (Group Relative Policy Optimization) 及其变体在 LLM/VLM 强化学习�
 
 ---
 
+### 🔬 CKMIL & Re-Attention MIL
+CKMIL（级联关键实例注意力 MIL）与重注意力（re-attention）机制研究线：审视 MIL 注意力权重的空间/语义有效性，比较端到端 vs 特征提取范式，并探索注意力结构的底层设计（Swin/Attention Residuals/多层融合）对 WSI 聚合的影响。
+
+| 子类别 | 论文数 | 代表论文 |
+|--------|--------|----------|
+| attention-foundations | 3 | Swin-Transformer, Attention-Residuals, Attentive-Multilayer-Fusion-ViT |
+| mil-effectiveness | 2 | Spatial-Blindness-WSI-MIL, SSL-Enhances-Instance-MIL |
+| end-to-end-wsi | 2 | Revisiting-E2E-Slide-Supervision, EXAONE-Path2-E2E |
+| pfm-adaptation | 3 | Simplify-Slide-Finetune-PFM, SingleGPU-TaskAdapt-PFM, GigaPath-Flash |
+
+📖 [CKMIL & Re-Attention MIL 详细总结](./topics/ckmil-re-attn-mil/README.md)
+
+---
+
 ## 论文文件夹结构
 
 ```text

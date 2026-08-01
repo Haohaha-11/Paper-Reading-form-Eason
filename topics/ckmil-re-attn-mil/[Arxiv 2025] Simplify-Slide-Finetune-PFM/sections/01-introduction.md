@@ -1,0 +1,21 @@
+[← 返回 README](../README.md)
+
+# 01 — Introduction
+
+> **原文**:
+
+With advancements in self-supervised learning and large-scale whole-slide digitization, foundation model-based pathology AI workflows are transforming computational pathology [23,37]. Self-distillation across millions of pathology images enhances region-of-interest representation [3,33,28], while contrastive learning with natural language descriptions enables multimodal pathology models to integrate semantic knowledge [18,31,7]. As foundation models evolve, their ability to generalize across clinical tasks is becoming a key driver of future pathology AI development.
+
+Representing and analyzing gigapixel-level WSIs remains a critical challenge. Traditional visual models pretrained on low-resolution natural images struggle as WSI encoders [11]. A common approach is to extract tissue-containing patches and aggregate their patch-level features for slide representation finetuning [23,19,14,35]. Given its alignment with clinical needs, weakly supervised methods, particularly multiple instance learning (MIL), have become a widely adopted fine-tuning strategy [12,21,32,17]. While pathology foundation models enable direct histopathology image encoding, their adaptation to WSIs still largely depends on MIL or its variants [3,33,28].
+
+Many MIL-based fine-tuning methods integrate complex feature transformations [2,39,4,21,13] or high-order aggregation strategies [38,36,24,35,17], yet their necessity in the foundation model era remains uncertain. In fact, the performance of MIL-based fine-tuning with foundation models is task-dependent [34,26]. For example, traditional MIL has outperformed more complex methods in metastasis detection [16] and breast morphological subtyping [9] but underperformed in lung cancer subtyping [17]; meanwhile, compared to unsupervised strategies [22], MIL-based fine-tuning have shown unstable generalization. Given the strong features extracted by pretrained models, the advantages of complex fine-tuning strategies may be limited. Thus, exploring simplified fine-tuning approaches could offer greater efficiency, deployment flexibility, and enhanced generalization in adapting foundation models to WSIs.
+
+In this work, we demonstrated the feasibility of simplifying slide-level fine-tuning for foundation models through extensive experiments. Using a simple combination of task-agnostic average pooling and a non-linear MLP, termed SiMLP, we seamlessly adapted foundation models to slide-level tasks. To comprehensively evaluate SiMLP, we fine-tuned three representative foundation models on six large-scale WSI classification tasks across TCGA, CPTAC, EBRAINS [20], and HEROHE [5] cohorts, achieving state-of-the-art performance. Few-shot experiments on pan-cancer tasks from TCGA and CPTAC further confirmed its superior feature representation capabilities over MIL-based methods. To assess competitiveness against pretrained slide-level foundation models, we tested it on two challenging tasks in the BRACS cohort [1], where it remained highly competitive despite other models being pretrained on tens of thousands of WSIs. Finally, transferability experiments on non-small cell lung cancer subtyping across three cohorts showed that SiMLP maintains stability with minimal standard deviation, making it well-suited for scaling to large external test cohorts.
+
+![Figure 1: Transition of slide-level adaptation](../images/802262e2b01d3e5f091a30d051c28ea43d21a1a7199806a96a7f744e816134b4.jpg)
+
+> 💡 **MIL 的"历史包袱"**: Hao 批注 — 引言的核心 narrative 很清晰：在 PFM 出现之前，用 ImageNet 预训练的视觉模型无法有效编码病理图像，所以必须依赖 MIL 的复杂特征变换和聚合来弥补 encoder 能力的不足。但 PFM 已经在数百万病理图像上预训练过——patch 级特征已经足够好。此时 MIL 的复杂设计可能从"必要的补偿"变成了"不必要的复杂度"，甚至引入过拟合和泛化不稳定性。
+
+> 💡 **MIL 的任务依赖性证据**: Hao 批注 — 这段关键引用了多项研究发现 MIL 在不同任务上表现不一致：转移检测和乳腺亚型上传统 MIL 更好，肺癌亚型上更复杂的方法更好；无监督方法有时比 MIL 微调更稳定。这些 evidence 共同指向"复杂 MIL 的必要性存疑"。但需要注意——作者引用的 [16] (Ling et al.) 和 [9] (Jaume et al.) 可能并非严格 controlled comparison（不同 paper 的实验设置不同），任务依赖性可能部分来自实验设置的差异而非方法本身。
+
+> 💡 **实验设计的全面性**: Hao 批注 — 五个实验维度：(1) 大规模多类分类 (TCGA/CPTAC 30/22/12 类)；(2) 脑肿瘤亚型和 IDH 预测 (EBRAINS)；(3) HER2 预测 (HEROHE)；(4) Few-shot 泛癌；(5) BRACS 上与 slide-level foundation model 对比；(6) NSCLC 跨队列迁移。这个覆盖度在 WSI fine-tuning 论文中相当全面，降低了"cherry-picking favorable tasks"的嫌疑。
