@@ -184,11 +184,20 @@ Test-Time Training / Test-Time Learning / long-context continual adaptation：�
 ---
 
 ### 🔬 Whole Slide Image Analysis
-全切片病理图像分析：让模型像病理学家一样在 gigapixel 组织图像中进行空间感知推理，从定位关键区域到构建诊断证据链。
+全切片病理图像分析：从"像病理学家一样在 gigapixel 图像中空间推理与诊断"，到 MIL 注意力机制、多模态生存预测、病理基础模型（PFM）的高效部署与公正评测。核心追问：弱监督+超高分辨率+大量冗余下，模型学到的是诊断信号还是 shortcut/冗余？
 
 | 论文 | 会议 | 方法特点 |
 |------|------|----------|
-| [TissueWSI](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202026%5D%20TissueWSI/) | Arxiv 2026 | Tissue-Aware WSI Reasoning 让模型像病理学家一样在组织空间上下文中推理，实现端到端的空间定位与诊断。 |
+| [TissueWSI](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202026%5D%20TissueWSI/) | Arxiv 2026 | Tissue-Aware WSI Reasoning，像病理学家一样在组织空间上下文中推理，端到端空间定位与诊断。 |
+| [ACMIL](./topics/Whole-Slide-Image-Analysis/%5BECCV%202024%5D%20ACMIL/) | ECCV 2024 | 把 WSI-MIL 过拟合归因到"注意力过度集中"，用 MBA + STKIM 分散注意力（Top-10 占 85% 注意力）。 |
+| [MHIM-MIL](./topics/Whole-Slide-Image-Analysis/%5BICCV%202023%5D%20MHIM-MIL/) | ICCV 2023 | 反直觉遮高注意力"易 instance"、逼学"难 instance"；动量 Teacher-Student + 一致性损失。 |
+| [ILRA-MIL](./topics/Whole-Slide-Image-Analysis/%5BICLR%202023%5D%20ILRA-MIL/) | ICLR 2023 | 低秩性质 MIL：LRC 对比预训练 + 迭代低秩注意力（GAB+NLP），避免 O(n²)（速览卡，待补 PDF）。 |
+| [MOTCat](./topics/Whole-Slide-Image-Analysis/%5BICCV%202023%5D%20MOTCat/) | ICCV 2023 | 最优传输 co-attention 融合病理+基因组，全局结构一致性选 patch；UMBOT 降复杂度。 |
+| [PIBD](./topics/Whole-Slide-Image-Analysis/%5BICLR%202024%5D%20PIBD/) | ICLR 2024 | 信息瓶颈治两冗余：PIB（原型筛 patch）+ PID（解耦保模态特有信息）。留 25-40% patch 即可。 |
+| [EAGLE](./topics/Whole-Slide-Image-Analysis/%5BNat%20Commun%202026%5D%20DL-Efficient-Pathology/) | Nat Commun 2026 | CHIEF 选 25 tile + Virchow2 精提，43 任务超 patch 聚合，2.27s/slide；top-5 tile 超全部 mean pooling。 |
+| [LitePath](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202026%5D%20Deployment-Friendly-CPath/) | Arxiv 2026 | LiteFM 蒸馏(22.5M) + APS 选 patch，403.5× FLOP 削减，跑 $249 Jetson；提出 D-Score。 |
+| [PathBench](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202025%5D%20PathBench/) | Arxiv 2025 | 首个防泄漏、全私有的 PFM 基准（19 PFM×64 任务×5 癌种）；Virchow2/H-Optimus-1 最优、无普适赢家。 |
+| [Confounders-Biomarker-Prediction](./topics/Whole-Slide-Image-Analysis/%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) | Nat Biomed Eng 2026 | 批判研究：H&E→biomarker 被 grade/TMB/共依赖 biomarker 混杂，分层后 AUROC 大跌；给去混杂协议。 |
 
 📖 [Whole Slide Image Analysis 详细总结](./topics/Whole-Slide-Image-Analysis/README.md)
 
