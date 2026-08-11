@@ -1,0 +1,221 @@
+# MambaMIL: Enhancing Long Sequence Modeling with Sequence Reordering in Computational Pathology
+
+Shu Yang<sup>†1</sup>, Yihui Wang<sup>†1</sup>, and Hao Chen<sup>∗1,2,3</sup>
+
+<sup>1</sup> Department of Computer Science and Engineering, The Hong Kong University of Science and Technology, Hong Kong, China
+
+<sup>2</sup> Department of Chemical and Biological Engineering, The Hong Kong University of Science and Technology, Hong Kong, China
+
+3 Division of Life Science, The Hong Kong University of Science and Technology, Hong Kong, China
+
+{syangcw,ywangrm,jhc}@cse.ust.hk
+
+Abstract. Multiple Instance Learning (MIL) has emerged as a dominant paradigm to extract discriminative feature representations within Whole Slide Images (WSIs) in computational pathology. Despite driving notable progress, existing MIL approaches sufer from limitations in facilitating comprehensive and eficient interactions among instances, as well as challenges related to time-consuming computations and overfitting. In this paper, we incorporate the Selective Scan Space State Sequential Model (Mamba) in Multiple Instance Learning (MIL) for long sequence modeling with linear complexity, termed as MambaMIL. By inheriting the capability of vanilla Mamba, MambaMIL demonstrates the ability to comprehensively understand and perceive long sequences of instances. Furthermore, we propose the Sequence Reordering Mamba (SR-Mamba) aware of the order and distribution of instances, which exploits the inherent valuable information embedded within the long sequences. With the SR-Mamba as the core component, MambaMIL can efectively capture more discriminative features and mitigate the challenges associated with overfitting and high computational overhead. Extensive experiments on two public challenging tasks across nine diverse datasets demonstrate that our proposed framework performs favorably against state-of-the-art MIL methods. The code is released at https://github.com/isyangshu/MambaMIL.
+
+Keywords: Mamba · Computational Pathology · Whole Slide Images · Multiple Instance Learning.
+
+## 1 Introduction
+
+The digitalization of pathological images into Whole Slide Images (WSIs) has paved the way for computer-aided analysis in computational pathology. However, employing deep learning methods for WSI analysis encounters unique challenges, primarily due to the high resolution of WSIs and the lack of pixel-level annotations. To address these issues, Multiple Instance Learning (MIL) [1, 2] has arisen as an ideal solution, where each WSI is represented as a “bag” and partitioned into a sequence of tissue patches termed “instances”. With at least one instance being positive, the bag is classified as positive, otherwise negative.
+
+The most widely used paradigm of MIL involves converting instances into low-dimensional features using pre-trained models [3–5], followed by aggregating these features into bag-level representations for subsequent analysis. Under this paradigm, MIL conceptualizes WSI analysis as a long sequence modeling problem, aiming to model the correlation between instances as well as overall contextual information within the entire bag to capture discriminative information. Despite the impressive performance, there remain several issues in existing MIL methods. Attention-based methods [6–9] primarily focus on instance-level information based on independent and identical distribution hypotheses. However, these methods neglect the contextual relationships among instances, resulting in inadequate representations of WSIs. Additionally, several methods [10–12] utilize Transformer [13] for its capability to explore mutual-correlations between instances and model long sequences. Nonetheless, they face significant performance bottlenecks due to extensive computations and overfitting. Overall, the existing methods have limitations in comprehensively mining the contextual information within long sequences, which hinders their performance.
+
+Recently, Structured State Space Sequence (S4) [14] has been introduced as an eficient and efective architecture to address the bottleneck concerning long sequence modeling. Furthermore, Selective Scan Space State Sequential Model [15], namely Mamba, advances S4 in discrete data modeling by employing an input-dependent selection mechanism and a hardware-aware algorithm, which enables Mamba to achieve linear complexity without sacrificing global receptive fields. However, for inherently non-sequential visual data, the direct application of Mamba to a patchified and flattened image would inevitably lead to a constraint in the receptive fields. This limitation stems from the fact that Mamba solely permits interactions between each patch and previously scanned positions, precluding the estimation of relationships with unscanned patches. Unlike typical visual modalities, WSIs contain scattered and scarce positive patches that exhibit weak spatial correlation, which makes them highly suitable for leveraging the robust sequential modeling capabilities of Mamba. Recently, S4MIL [16] introduces S4 model to WSI analysis as a multiple instance learner for instance sequences, which demonstrates the efectiveness of SSM in capturing long-range dependencies. Note that it directly adopts the S4 model without fully considering the unique characteristics of WSIs, resulting in sub-optimal results.
+
+Motivated by the above observations, we propose an eficient and efective benchmark MIL model (MambaMIL) with the following contributions: (1) We incorporate the Mamba framework in MIL to tackle the challenges associated with long sequence modeling and overfitting, marking the first application of Mamba in computational pathology. (2) We propose the Sequence Reordering
+
+Mamba (SR-Mamba) aware of the order and distribution of instances, which excels at capturing long-range dependencies among scattered positive instances. As the core component of MambaMIL, SR-Mamba is tailored to learn the correlations between instances in both sequential ordering and transpositional ordering, which significantly enhances the capability of the original Mamba to capture more discriminative features. (3) To investigate the efectiveness of MambaMIL, we conduct comprehensive experiments including overall comparison and ablation studies on two challenging tasks across nine datasets, which demonstrates that MambaMIL can achieve superior performance against the state-of-the-art.
+
+## 2 Method
+
+In this section, we start by presenting the preliminaries associated with State Space Models. Subsequently, we elaborate on the MambaMIL and its core component: Sequence Reordering Mamba (SR-Mamba).
+
+## 2.1 Preliminaries
+
+Inspired by State Space Models [17], structured state space sequence (S4) models have emerged as a promising architecture for efective long sequence modeling. S4 models are defined with four parameters $( \triangle , A , B , C )$ as linear time-invariant systems, which map stimulation $\boldsymbol { x } ( t ) \in \mathbb { R } ^ { L }$ to response $\boldsymbol { y } ( t ) \in \mathbb { R } ^ { L }$ though an implicit latent state $h ( t ) \in \mathbb { R } ^ { N }$ . The entire progress can be formulated as,
+
+$$
+h ^ { \prime } ( t ) = A h ( t ) + B x ( t ) , y ( t ) = C h ( t ) ,\tag{1}
+$$
+
+where $A \in \mathbb { R } ^ { N \times N }$ refers to evolution parameter. $B \in \mathbb { R } ^ { N \times 1 }$ and $C \in \mathbb { R } ^ { N \times 1 }$ present projection parameters. S4 models utilize a timescale parameter $\triangle$ to transform the continuous parameters A, B to the discrete parameters A<sup>¯</sup>, B<sup>¯</sup>,
+
+$$
+\bar { A } = \exp ( \triangle A ) , \bar { B } = ( \triangle A ) ^ { - 1 } ( \exp ( \triangle A ) - I ) \cdot \triangle B .\tag{2}
+$$
+
+After transforming the parameters, we can utilize the discrete parameters to re-frame the Eq. 1 in the recurrent mode for eficient autoregressive inference,
+
+$$
+h _ { t } = \bar { A } h _ { t - 1 } + \bar { B } x _ { t } , y _ { t } = C h _ { t } .\tag{3}
+$$
+
+Alternatively, the models can also compute output through convolutional mode for eficient parallelizable training,
+
+$$
+\bar { K } = ( C \bar { B } , C \bar { A } \bar { B } , . . . , C \bar { A } ^ { M - 1 } \bar { B } ) , y = x * \bar { K } .\tag{4}
+$$
+
+Mamba further integrates selection mechanisms into S4 models to make the parameters be functions of the input with the eficient hardware-aware parallel algorithm. Therefore, Mamba can conduct efective and eficient long sequence modeling by selectively propagating or forgetting information along the sequence based on the current token.
+
+![](images/8f4f1c73d7917e72357faa4ecd0a66522a461665ee6fa048a782ac54c814d32b.jpg)  
+Fig. 1: Overview of MambaMIL. Given a set of patches cropped from a slide, we sequentially utilize Feature Extractor, Linear Projection, stacked SR-Mamba modules and Aggregation for WSI analysis.
+
+## 2.2 Overview of MambaMIL
+
+To eficiently capture the comprehensive contextual information within long sequences of instances, we introduce a novel approach, MambaMIL, by integrating the Mamba framework into MIL, as illustrated in Fig. 1. By inheriting the attributes of Mamba, MambaMIL enables each instance to interact with any of the previously scanned instances through a compressed hidden state, which facilitates efective modeling of long sequences while concurrently mitigating computational complexity.
+
+Specifically, given a WSI, we partition the tissue regions into a sequence of L patches $\left\{ p _ { 1 } , p _ { 2 } , . . . , p _ { L } \right\}$ , followed by mapping all the patches into instance features $\boldsymbol { X } \in \mathbb { R } ^ { L \times D }$ by Feature Extractor, where D refers to the feature dimension. Subsequently, the input X is passed through Linear Projection to reduce the dimension. The output is then fed into a series of stacked SR-Mamba modules, which are responsible for modeling long sequences. Finally, we utilize the Aggregation module to obtain bag-level representations for downstream tasks.
+
+## 2.3 Sequence Reordering Mamba
+
+To tackle the restricted receptive fields, we devise the Sequence Reordering Mamba (SR-Mamba) aware of the order and distribution of instances, which exploits the inherent valuable information embedded within the instances. As illustrated in Fig. 1, considering the scattered and scarce positive patches, we establish parallel SSM-based branches upon vanilla Mamba to enhance long sequence modeling. SR-Mamba models two long sequences with distinct sequence orderings, each associated with a unique compressed hidden state, facilitating the learning of more discriminative features.
+
+![](images/8ab4cfaa6d6dc95367d8441873ed530be9f076f5026c432c7869533f26bfb705.jpg)  
+Fig. 2: Illustration of Sequence Reordering Operation.
+
+In detail, given instance features $\boldsymbol { X } \in \mathbb { R } ^ { L \times D }$ , we first partition the sequence of instances into non-overlapping segments of size R, and obtain $N = L / R$ segments from the entire sequence. For sequences whose lengths are not divisible by R, we pad them with zeros for subsequent reordering. Then the X is fed into two independent branches. For the first branch, we preserve the original ordering of $X$ , which is fed to the subsequent Casual Convolution Layer and State Space Model (SSM) for sequence modeling. The entire process can be formulated as:
+
+$$
+X ^ { \prime } = \operatorname { N o r m } ( X ) , \quad Y = \operatorname { S S M } ( \operatorname { S i L U } ( \operatorname { C o n v 1 D } ( \operatorname { L i n e a r } ( X ^ { \prime } ) ) ) .\tag{5}
+$$
+
+Then the X is also used to generate the gating value for Y obtained from SSM,
+
+$$
+Z = \mathrm { S i L U } ( \operatorname { L i n e a r } ( X ^ { \prime } ) ) , \quad X ^ { \prime \prime } = Z \odot Y .\tag{6}
+$$
+
+For the second branch, we propose a Sequence Reordering operation as the core component of SR-Mamba. Specifically, the input instance features are reshaped into a 2-D feature map, $\hat { X ^ { ' } } \in \mathbb { R } ^ { L \times \bar { D } } \to X _ { 2 d } \mathbf { \bar { \epsilon } } \mathbb { R } ^ { R \times N \times D }$ . We then sample instances from each non-overlapping segment successively along the second dimension of $X _ { 2 d }$ , which can be regarded as feature re-embedding. By performing this, we generate the instance features $X _ { r }$ with the new ordering, which can be utilized to embed more discriminative features by the inherent position-sensitive characteristic of Mamba. The entire Sequence Reordering operation is depicted in Fig. 2. Then we utilize the subsequent Casual Convolution Layer and State Space Model to model $X _ { r }$
+
+$$
+X _ { r } ^ { \prime } = \operatorname { N o r m } ( X _ { r } ^ { \prime } ) , \quad Y _ { r } = \operatorname { S S M } ( \operatorname { S i L U } ( \operatorname { C o n v 1 D } ( \operatorname { L i n e a r } ( X _ { r } ^ { \prime } ) ) ) .\tag{7}
+$$
+
+For the enhanced $X _ { r } ^ { \prime } ,$ we rearrange the sequence into original ordering through partitioning and permutation operations, and gate the instance features by Z:
+
+$$
+Y _ { r } ^ { \prime } = \psi ( Y _ { r } ) , \quad X _ { r } ^ { \prime \prime } = Z \odot Y _ { r } ^ { \prime } ,\tag{8}
+$$
+
+where $\psi$ denotes sequence restoration operation. After modeling the long sequences with distinct orderings, we can obtain two discriminative instance features $X ^ { \prime \prime }$ and $X _ { r } ^ { \prime \prime }$ , and aggregate them to obtain $X _ { o u t p u t }$ . We devise the aggregation operation as an element-wise addition of the two features,
+
+$$
+X _ { \mathrm { o u t p u t } } = \mathrm { L i n e a r } ( X ^ { \prime \prime } + X _ { r } ^ { \prime \prime } ) + X .\tag{9}
+$$
+
+Table 1: Survival Prediction results on seven main datasets.
+<table><tr><td> $\widehat { \mathbf { M e t h o d } } ^ { \mathbf { D a t a s e t } } $ </td><td rowspan="2">BLCA</td><td rowspan="2">BRCA</td><td>COADREAD</td><td>KIRC</td><td>KIRP</td><td>LUAD</td><td>STAD</td><td rowspan="2">MEAN</td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td colspan="8">ResNet-50</td><td></td></tr><tr><td>Max-Pooling</td><td>0.531±0.055</td><td>0.570±0.047</td><td>0.555±0.090</td><td>0.616±0.038</td><td>0.530±0.105</td><td>0.553±0.085</td><td>0.577±0.072</td><td>0.562</td></tr><tr><td>Mean-Pooling ABMIL [6]</td><td>0.595±0.067</td><td>0.602±0.057 0.612±0.059</td><td>0.592±0.109 0.624±0.046</td><td>0.660±0.039 0.677±0.057</td><td>0.691±0.073 0.707±0.099</td><td>0.602±0.045 0.626±0.054</td><td>0.595±0.059 0.629±0.061</td><td>0.620 0.635</td></tr><tr><td>CLAM-MB [7]</td><td>0.565±0.060</td><td></td><td></td><td>0.596±0.003</td><td>0.679±0.037</td><td></td><td>0.582±0.014</td><td>0.610</td></tr><tr><td>DSMIL [8]</td><td>0.571±0.009</td><td>0.633±0.035</td><td>0.601±0.023 0.628±0.059</td><td>0.682±0.042</td><td>0.722±0.085</td><td>0.608±0.018 0.624±0.057</td><td></td><td></td></tr><tr><td>DTFDMIL [9]</td><td>0.593±0.018 0.552±0.053</td><td>0.609±0.060 0.626±0.037</td><td>0.638±0.034</td><td>0.687±0.075</td><td>0.724±0.102</td><td>0.623±0.048</td><td>0.609±0.057 0.619±0.073</td><td>0.638 0.638</td></tr><tr><td>TransMIL [10]</td><td>0.623±0.037</td><td></td><td></td><td>0.684±0.052</td><td>0.747±0.082</td><td></td><td></td><td>0.654</td></tr><tr><td>S4MIL [16]</td><td>0.624±0.018</td><td>0.632±0.029 0.641±0.057</td><td>0.624±0.014 0.608±0.049</td><td>0.691±0.039</td><td>0.689±0.061</td><td>0.641±0.049</td><td>0.629±0.020 0.613±0.044</td><td>0.641</td></tr><tr><td>MambaMIL</td><td>0.652±0.028</td><td>0.675±0.065</td><td>0.671±0.066</td><td>0.721±0.045 0.748±0.094 0.653±0.059 0.639±0.076</td><td></td><td>0.622±0.026</td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td>PLIP</td><td></td><td></td><td></td><td>0.680</td></tr><tr><td colspan="9"></td></tr><tr><td>Max-Pooling</td><td>0.540±0.050</td><td>0.611±0.053</td><td>0.599±0.070</td><td>0.645±0.045</td><td>0.620±0.154</td><td>0.565±0.076</td><td>0.578±0.044</td><td>0.594</td></tr><tr><td>Mean-Pooling</td><td>0.599±0.039</td><td>0.603±0.060</td><td>0.674±0.064</td><td>0.669±0.065</td><td>0.766±0.063</td><td>0.617±0.048</td><td>0.603±0.052</td><td>0.647</td></tr><tr><td>ABMIL [6]</td><td>0.571±0.041</td><td>0.607±0.036</td><td>0.641±0.013</td><td>0.643±0.077</td><td>0.772±0.065</td><td>0.570±0.066</td><td>0.573±0.037</td><td>0.625</td></tr><tr><td>CLAM-MB [7]</td><td>0.600±0.029</td><td>0.619±0.025</td><td>0.628±0.031</td><td>0.597±0.022</td><td>0.722±0.063</td><td>0.603±0.026</td><td>0.593±0.020</td><td>0.623</td></tr><tr><td>DSMIL [8]</td><td>0.589±0.052</td><td>0.613±0.033</td><td>0.640±0.048</td><td>0.673±0.048</td><td>0.768±0.074</td><td>0.565±0.074</td><td>0.601±0.059</td><td>0.636</td></tr><tr><td>DTFDMIL [9]</td><td>0.568±0.040</td><td>0.616±0.020</td><td>0.625±0.061</td><td>0.702±0.034</td><td>0.772±0.096</td><td>0.624±0.032</td><td>0.624±0.032</td><td>0.647</td></tr><tr><td>TransMIL [10]</td><td>0.586±0.059</td><td>0.611±0.065</td><td>0.620±0.031</td><td>0.673±0.030</td><td>0.798±0.063</td><td>0.622±0.036</td><td>0.630±0.067</td><td>0.649</td></tr><tr><td>S4MIL [16]</td><td>0.625±0.023</td><td>0.614±0.051</td><td>0.657±0.065</td><td>0.695±0.026</td><td>0.799±0.055</td><td>0.635±0.056</td><td>0.637±0.063</td><td>0.666</td></tr><tr><td>MambaMIL</td><td>0.677±0.053 0.651±0.029</td><td></td><td>0.698±0.063</td><td>0.715±0.049 0.805±0.051 0.652±0.027 0.653±0.253</td><td></td><td></td><td></td><td>0.693</td></tr></table>
+
+Distinct from the original Mamba, we maintain the sequential ordering and distribution, while generating new ordering of the instances from a global perspective for feature re-embedding. Building upon the vanilla Mamba, SR-Mamba is tailored to robustly comprehend and perceive lengthy sequences of instances that are partitioned from WSIs. Built on stacked SR-Mamba modules, MambaMIL is capable of modeling long-range dependencies with linear complexity, resulting in efective model generalization.
+
+## 3 Experiments
+
+## 3.1 Datasets and Evaluation Metrics
+
+To verify the efectiveness of our proposed MambaMIL, we conduct extensive experiments on two representative downstream tasks across nine public challenging datasets. To investigate generalization and robustness, we utilize two distinct sets of features derived from ResNet-50 [3] pre-trained on the ImageNet [18] and PLIP [5] pre-trained on 200k pathology image-text pairs.
+
+Survival Prediction. We conduct comprehensive experiments on seven public challenging cancer datasets (BLCA, BRCA, COADREAD, KIRC, KIRP, LUAD, and STAD) from TCGA, containing WSIs annotated with survival outcomes. To reduce the impact of data split on model evaluation, we implement a 5-fold cross-validation approach, partitioning the data into training and validation subsets in a 4:1 ratio. We utilize the cross-validated Concordance Index (C-Index), along with its standard deviation (std), to assess the efectiveness of our proposed MambaMIL.
+
+Cancer Subtyping. We perform comparative experiments on two public challenging datasets: BRACS [19] and NSCLC. To ensure the robust evaluation of comparison experiments, we employ 10-fold Monte Carlo cross-validation, which partitions the data into training, validation, and testing sets with a ratio of 8:1:1. Additionally, for fair comparisons with existing methods, we also perform experiments on the oficial split of the BRACS dataset, marked as ⋆ in Table 2. Following the standard setting, we adopt the Area Under Curve (AUC) and Accuracy (ACC) metrics along with their standard deviation (std) for evaluation, which provides a reliable assessment less sensitive to class imbalance.
+
+Table 2: Cancer Subtyping results on two main datasets.
+<table><tr><td> $\overbrace { \mathbf { M e t h o d } } ^ { \mathbf { D a t a s e t } }$ </td><td colspan="2">BRACS-7*</td><td colspan="2">BRACS-7</td><td colspan="2">NSCLC-2</td><td colspan="2">MEAN</td></tr><tr><td></td><td>AUC</td><td>ACC</td><td>AUC</td><td>ACC</td><td>AUC</td><td>ACC</td><td>AUC</td><td>ACC</td></tr><tr><td colspan="9">ResNet-50</td></tr><tr><td>Max-Pooling</td><td>0.630</td><td>0.241</td><td>0.707±0.053</td><td>0.389±0.066</td><td>0.943±0.019</td><td>0.869±0.017</td><td>0.760</td><td>0.500</td></tr><tr><td>Mean-Pooling</td><td>0.658</td><td>0.299</td><td>0.729±0.039</td><td>0.396±0.060</td><td>0.913±0.041</td><td>0.837±0.037</td><td>0.767</td><td>0.511</td></tr><tr><td>ABMIL [6]</td><td>0.715</td><td>0.230</td><td>0.765±0.041</td><td>0.393±0.084</td><td>0.938±0.025</td><td>0.864±0.036</td><td>0.806</td><td>0.495</td></tr><tr><td>CLAM-MB [7]</td><td>0.729</td><td>0.379</td><td>0.780±0.043</td><td>0.457±0.073</td><td>0.933±0.027</td><td>0.851±0.022</td><td>0.814</td><td>0.563</td></tr><tr><td>DSMIL [8]</td><td>0.751</td><td>0.333</td><td>0.768±0.045</td><td>0.452±0.059</td><td>0.940±0.024</td><td>0.880±0.023</td><td>0.820</td><td>0.555</td></tr><tr><td>DTFDMIL [9]</td><td>0.753</td><td>0.390</td><td>0.758±0.057</td><td>0.448±0.049</td><td>0.928±0.055</td><td>0.835±0.031</td><td>0.813</td><td>0.558</td></tr><tr><td>TransMIL [10]</td><td>0.613</td><td>0.310</td><td>0.699±0.040</td><td>0.363±0.073</td><td>0.937±0.019</td><td>0.846±0.044</td><td>0.750</td><td>0.506</td></tr><tr><td>S4MIL</td><td>0.718</td><td>0.356</td><td>0.760±0.028</td><td>0.422±0.095</td><td>0.914±0.036</td><td>0.829±0.039</td><td>0.797</td><td>0.536</td></tr><tr><td>MambaMIL</td><td>0.773</td><td>0.460</td><td>0.804±0.028</td><td>0.506±0.050</td><td>0.959±0.027</td><td>0.891±0.044</td><td>0.845</td><td>0.619</td></tr><tr><td colspan="9">PLIP</td></tr><tr><td>Max-Pooling</td><td>0.652</td><td>0.230</td><td>0.720±0.035</td><td>0.365±0.072</td><td>0.941±0.020</td><td>0.869±0.025</td><td>0.771</td><td>0.488</td></tr><tr><td>Mean-Pooling</td><td>0.649</td><td>0.333</td><td>0.744±0.030</td><td>0.454±0.053</td><td>0.924±0.020</td><td>0.849±0.017</td><td>0.772</td><td>0.545</td></tr><tr><td>ABMIL [6]</td><td>0.699</td><td>0.333</td><td>0.797±0.038</td><td>0.487±0.074</td><td>0.944±0.015</td><td>0.867±0.034</td><td>0.813</td><td>0.562</td></tr><tr><td>CLAM-MB [7]</td><td>0.693</td><td>0.264</td><td>0.780±0.038</td><td>0.469±0.073</td><td>0.944±0.018</td><td>0.864±0.033</td><td>0.806</td><td>0.532</td></tr><tr><td>DSMIL [8]</td><td>0.667</td><td>0.333</td><td>0.771±0.037</td><td>0.478±0.079</td><td>0.933±0.020</td><td>0.860±0.022</td><td>0.790</td><td>0.557</td></tr><tr><td>DTFDMIL [9]</td><td>0.697</td><td>0.368</td><td>0.799±0.039</td><td>0.486±0.040</td><td>0.945±0.023</td><td>0.839±0.059</td><td>0.814</td><td>0.564</td></tr><tr><td>TransMIL [10]</td><td>0.688</td><td>0.345</td><td>0.705±0.028</td><td>0.328±0.070</td><td>0.928±0.021</td><td>0.848±0.035</td><td>0.774</td><td>0.506</td></tr><tr><td>S4MIL [16]</td><td>0.676</td><td>0.299</td><td>0.776±0.046</td><td>0.469±0.062</td><td>0.935±0.019</td><td>0.856±0.027</td><td>0.796</td><td>0.541</td></tr><tr><td>MambaMIL</td><td>0.718</td><td>0.379</td><td>0.803±0.040</td><td>0.498±0.073</td><td>0.947±0.020</td><td>0.870±0.037</td><td>0.822</td><td>0.582</td></tr></table>
+
+## 3.2 Implementation Details
+
+We present the experimental results of our MambaMIL on nine datasets, in comparison to the following methods: (1) conventional pooling methods, including Mean Pooling and Max Pooling; (2) ABMIL [6] and three distinct variants, including CLAM-MB [7], DSMIL [8] and DTFDMIL [9]; (3) the Transformer-based TransMIL [10]; (4) the SSM-based S4MIL [16]. Following common settings, we adopt the same data pre-processing as in the CLAM [7] and set a learning rate of $2 \times 1 0 ^ { - 4 }$ for these methods to ensure optimal results and enable fair comparisons. In contrast, to mitigate the randomness introduced by atomic operations in the SR-Mamba module during back-propagation, we implement distinct learning rates for training for diferent datasets. Detailed hyper-parameters can be found in the Appendix. The special adjustment aims to diminish the efect of gradient disparities on convergence, thereby ensuring stability and reproducibility.
+
+## 3.3 Comparison Results
+
+Survival Prediction. As presented in Table 1, we conduct comparison experiments with two distinct feature settings on seven TCGA cancer datasets. The results demonstrate that MambaMIL achieves the best performance on all benchmarks compared to the state-of-the-art methods. Under the two feature sets, MambaMIL outperforms the second-best performance method by 2.6% and 2.7% on mean performance across all seven datasets.
+
+Table 3: Performance comparisons with diferent variations of Mamba.
+<table><tr><td> $\widehat { \mathbf { M e t h o d } } ^ { \mathbf { D a t a s e t } } $ </td><td rowspan="2">BLCA</td><td rowspan="2">BRCA</td><td>COADREAD</td><td>KIRC</td><td>KIRP</td><td>LUAD</td><td>STAD</td><td rowspan="2">MEAN</td></tr><tr><td></td><td></td><td></td><td>ResNet-50</td><td></td><td></td></tr><tr><td colspan="8"></td></tr><tr><td>Mamba Bi-Mamba</td><td>0.622±0.053 0.647±0.024</td><td>0.664±0.034</td><td>0.650±0.066</td><td>0.700±0.058</td><td>0.734±0.062</td><td>0.643±0.027</td><td>0.621±0.056</td><td>0.662 0.665</td></tr><tr><td>SR-Mamba</td><td></td><td>0.675±0.065</td><td>0.662±0.058</td><td>0.690±0.048</td><td>0.737±0.052</td><td>0.628±0.059</td><td>0.622±0.068</td><td></td></tr><tr><td></td><td>0.652±0.028 0.673±0.063</td><td></td><td>0.671±0.066</td><td>0.721±0.0640.748±0.094 0.653±0.059 0.639±0.076</td><td></td><td></td><td></td><td>0.680</td></tr></table>
+
+![](images/944b5239a820585a6600f41a9762f00f406a71794cd40512815a96859396bbe9.jpg)
+
+![](images/62bbd713aabab0294b7a4a8a1f428140a3862bf56e18a04a63cf3b3a73c6273e.jpg)
+
+![](images/8c9bf8c0c1af3eba1fdb5e030842d5613f0b05de1e1e26cfa3cb675144351341.jpg)  
+Fig. 3: The performance comparison between TransMIL and our MambaMIL on the BRCAS validation set throughout the training process.
+
+Cancer Subtyping. Table 2 shows experimental results on two datasets, encompassing both binary and multiple classification tasks. Compared to the state-ofthe-art, our proposed MambaMIL demonstrates outstanding performance, attaining an AUC of 80.4% on the BRACS dataset and 95.9% on the NSCLC dataset. Notably, MambaMIL employs the same aggregation module as ABMIL but significantly outperforms it, with significant improvements of 3.9% and 2.1% in terms of AUC for BRACS and NSCLC datasets, respectively.
+
+## 3.4 Ablation Study
+
+To assess the efectiveness of SR-Mamba, we conduct extensive experiments to compare the performance of diferent variations of Mamba block: the vanilla Mamba [15], Bidirectional Mamba (Bi-Mamba) [20] and our proposed SR-Mamba, on survival prediction datasets. For a fair comparison of each specific dataset, we utilize the same setting to train these variants. As shown in Table 3, SR-Mamba surpasses the performance of Mamba and Bi-Mamba, which demonstrates the efectiveness of sequence reordering. Meanwhile, overfitting poses a substantial challenge in applying MIL methods for WSI analysis, especially for transformerbased methods like TransMIL. As illustrated in Fig. 3, during the training process, TransMIL displays clear signs of overfitting on the validation set, characterized by a significant increase in validation loss alongside decreases in both the ACC and the AUC metrics. In contrast, MambaMIL exhibits stable performance across the evaluation period, showcasing its strong ability to alleviate overfitting. This capability originates from the more discriminative representations extracted from various sequence orderings, akin to the efects of data augmentation, which significantly enhances the robustness of our proposed model.
+
+## 4 Conclusion
+
+In this paper, we introduce a novel Mamba-based MIL method, termed as MambaMIL, to tackle the challenges associated with long sequence modeling and overfitting, marking the first application of the Mamba framework in computational pathology. Our approach, based on the specially designed Sequence Reordering Mamba module (SR-Mamba), enables the efective leveraging of intrinsic global information contained within the long sequences of instances. The experimental results on nine benchmarks demonstrate that MambaMIL benefits from long sequence modeling and outperforms existing competitors under all metrics on all benchmarks. Given the excellent performance of MambaMIL, we anticipate its application can be extended to other modalities in computational pathology, including genomics, pathology reports, and clinical data. This expansion would enable the leveraging of multi-modal information for efective and accurate diagnosis, prognosis, and therapeutic-response prediction.
+
+## References
+
+1. Jaume Amores. Multiple instance classification: Review, taxonomy and comparative study. Artificial intelligence, 201:81–105, 2013.
+
+2. Zenghai Chen, Zheru Chi, Hong Fu, and Dagan Feng. Multi-instance multi-label image classification: A neural approach. Neurocomputing, 99:298–306, 2013.
+
+3. Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for image recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pages 770–778, 2016.
+
+4. Xiyue Wang, Sen Yang, Jun Zhang, Minghui Wang, Jing Zhang, Junzhou Huang, Wei Yang, and Xiao Han. Transpath: Transformer-based self-supervised learning for histopathological image classification. In International Conference on Medical Image Computing and Computer-Assisted Intervention, pages 186–195. Springer, 2021.
+
+5. Zhi Huang, Federico Bianchi, Mert Yuksekgonul, Thomas J Montine, and James Zou. A visual–language foundation model for pathology image analysis using medical twitter. Nature medicine, 29(9):2307–2316, 2023.
+
+6. Maximilian Ilse, Jakub Tomczak, and Max Welling. Attention-based deep multiple instance learning. In International Conference on Machine Learning, pages 2127– 2136. PMLR, 2018.
+
+7. Ming Y Lu, Drew FK Williamson, Tifany Y Chen, Richard J Chen, Matteo Barbieri, and Faisal Mahmood. Data-eficient and weakly supervised computational pathology on whole-slide images. Nature Biomedical Engineering, 5(6):555–570, 2021.
+
+8. Bin Li, Yin Li, and Kevin W Eliceiri. Dual-stream multiple instance learning network for whole slide image classification with self-supervised contrastive learning. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pages 14318–14328, 2021.
+
+9. Hongrun Zhang, Yanda Meng, Yitian Zhao, Yihong Qiao, Xiaoyun Yang, Sarah E Coupland, and Yalin Zheng. Dtfd-mil: Double-tier feature distillation multiple instance learning for histopathology whole slide image classification. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pages 18802–18812, 2022.
+
+10. Zhuchen Shao, Hao Bian, Yang Chen, Yifeng Wang, Jian Zhang, Xiangyang Ji, et al. Transmil: Transformer based correlated multiple instance learning for whole slide image classification. Advances in Neural Information Processing Systems, 34:2136–2147, 2021.
+
+11. Richard J Chen, Ming Y Lu, Wei-Hung Weng, Tifany Y Chen, Drew FK Williamson, Trevor Manz, Maha Shady, and Faisal Mahmood. Multimodal coattention transformer for survival prediction in gigapixel whole slide images. In Proceedings of the IEEE International Conference on Computer Vision, pages 4015–4025, 2021.
+
+12. Hang Li, Fan Yang, Yu Zhao, Xiaohan Xing, Jun Zhang, Mingxuan Gao, Junzhou Huang, Liansheng Wang, and Jianhua Yao. Dt-mil: deformable transformer for multi-instance learning on histopathological image. In International Conference on Medical Image Computing and Computer-Assisted Intervention, pages 206–216. Springer, 2021.
+
+13. Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. Attention is all you need. Advances in neural information processing systems, 30, 2017.
+
+14. Albert Gu, Karan Goel, and Christopher Ré. Eficiently modeling long sequences with structured state spaces. arXiv preprint arXiv:2111.00396, 2021.
+
+15. Albert Gu and Tri Dao. Mamba: Linear-time sequence modeling with selective state spaces. arXiv preprint arXiv:2312.00752, 2023.
+
+16. Leo Fillioux, Joseph Boyd, Maria Vakalopoulou, Paul-Henry Cournède, and Stergios Christodoulidis. Structured state space models for multiple instance learning in digital pathology. In International Conference on Medical Image Computing and Computer-Assisted Intervention, pages 594–604. Springer, 2023.
+
+17. Rudolph Emil Kalman. A new approach to linear filtering and prediction problems. 1960.
+
+18. Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li Fei-Fei. Imagenet: A large-scale hierarchical image database. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pages 248–255. Ieee, 2009.
+
+19. Nadia Brancati, Anna Maria Anniciello, Pushpak Pati, Daniel Riccio, Giosuè Scognamiglio, Guillaume Jaume, Giuseppe De Pietro, Maurizio Di Bonito, Antonio Foncubierta, Gerardo Botti, et al. Bracs: A dataset for breast carcinoma subtyping in h&e histology images. Database, 2022:baac093, 2022.
+
+20. Lianghui Zhu, Bencheng Liao, Qian Zhang, Xinlong Wang, Wenyu Liu, and Xinggang Wang. Vision mamba: Eficient visual representation learning with bidirectional state space model. arXiv preprint arXiv:2401.09417, 2024.
+
+## Appendix
+
+Algorithm 1 SR-Mamba Block Process   
+Input: instance sequence $X _ { l - 1 } : ( B , M , D )$   
+Output: instance sequence $X _ { l } : ( B , M , D )$   
+# B: batch size, M: instance number, D: dimension   
+$X _ { l - 1 } ^ { \prime } : ( B , M , D ) \gets \mathrm { L a y e r N o r m } ( X _ { l - 1 } )$   
+$z : ( B , M , E )  \mathrm { L i n e a r } ^ { z } ( X _ { l - 1 } ^ { \prime } )$   
+# Original Sequence: os   
+$x _ { \mathrm { o s } } : ( B , M , E )  \mathrm { L i n e a r } ^ { x 0 } ( X _ { l - 1 } ^ { \prime } )$   
+# Reordered Sequence: rs   
+$x _ { \mathrm { r s } } : ( B , M , E )$ ← Reordering(Linea $\mathrm { r } ^ { x 1 } ( X _ { l - 1 } ^ { \prime } ) )$   
+# process sequences with distinct orderings   
+for o in $\{ \cos , \mathrm { r s } \}$ do   
+$x _ { o } : ( B , M , E ) \gets \mathrm { S i L U } ( \mathrm { C o n v } 1 \mathrm { d } _ { o } ( x ) )$   
+$B _ { o } : ( B , M , N ) \xleftarrow { } \mathrm { L i n e a r } ^ { B } ( x _ { o } ) , \quad C _ { o } : ( B , M , N ) \xleftarrow \mathrm { L i n e a r } ^ { C } ( x _ { o } )$   
+$\begin{array} { r } { \Delta _ { o } : ( B , M , E )  \log ( 1 + \exp ( \mathrm { L i n e a r } ^ { A } ( x _ { o } ) + \mathrm { P a r a m e t e r } ^ { A } ) ) } \end{array}$   
+$A _ { o } : ( B , M , E , N ) \xleftarrow { } \varDelta _ { o } \otimes \mathrm { P a r a m e t e r } ^ { A } , \quad B _ { o } : ( B , M , E , N ) \xleftarrow { } \varDelta _ { o } \otimes B _ { o }$   
+$y _ { o } : ( B , M , E ) \gets \mathrm { S S M } ( A _ { o } , B _ { o } , C _ { o } ) ( x _ { o } )$   
+end for   
+y<sub>os</sub> : (B, M, E) ← y<sub>os</sub> ⊙ SiLU(z), y<sub>rs</sub> : (B, M, E) ← y<sub>rs</sub> ⊙ SiLU(z)   
+# residual connection   
+$X _ { l } : ( B , M , D ) $ ← Linear $( y _ { \mathrm { { o s } } } + y _ { \mathrm { { r s } } } ) + X _ { l - 1 }$   
+return X
+
+Table 4: Hyper-parameter configurations.
+<table><tr><td>Datasets</td><td colspan="8">BLCA BRCA COADREAD KIRC KIRP LUAD STAD BRACS NSCLC</td></tr><tr><td>Sample</td><td>437</td><td>1023</td><td>572</td><td>498</td><td>261</td><td>455</td><td>363</td><td>545</td><td>1053</td></tr><tr><td>Min Length</td><td>414</td><td>283</td><td>30</td><td>319</td><td>383</td><td>85</td><td>26</td><td>49</td><td>85</td></tr><tr><td>Max Length</td><td>34174</td><td>36618</td><td>27418</td><td>30679</td><td>62235</td><td>45785</td><td>26130</td><td>26600</td><td>45785</td></tr><tr><td>Average Length</td><td>14419</td><td>8893</td><td>6953</td><td>12121</td><td>12424</td><td>9897</td><td>9402</td><td>7812</td><td>10515</td></tr><tr><td>Learning Rate</td><td>2e-4</td><td>2e-5</td><td>2e-5</td><td>2e-4</td><td>2e-4</td><td>2e-4</td><td>2e-4</td><td>1e-5</td><td>2e-5</td></tr><tr><td>Segment Size R</td><td>5</td><td>5</td><td>10</td><td>10</td><td>10</td><td>5</td><td>5</td><td>10</td><td>5</td></tr></table>
