@@ -1,0 +1,1910 @@
+[
+    {
+        "type": "text",
+        "text": "TransMIL: Transformer based Correlated Multiple Instance Learning for Whole Slide Image Classification",
+        "text_level": 1,
+        "bbox": [
+            186,
+            121,
+            810,
+            198
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Zhuchen Shao<sup>∗,1</sup>, Hao Bian<sup>∗,1</sup>, Yang Chen<sup>∗,1</sup>, Yifeng Wang<sup>2</sup>, Jian Zhang<sup>3</sup>, Xiangyang Ji<sup>4</sup> Yongbing Zhang<sup>†,2</sup>",
+        "bbox": [
+            187,
+            247,
+            808,
+            279
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "<sup>1</sup>Tsinghua Shenzhen International Graduate School, Tsinghua University <sup>2</sup>Harbin Institute of Technology (Shenzhen) <sup>3</sup>School of Electronic and Computer Engineering, Peking University <sup>4</sup>Department of Automation, Tsinghua University",
+        "bbox": [
+            282,
+            287,
+            715,
+            342
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Abstract",
+        "text_level": 2,
+        "bbox": [
+            460,
+            381,
+            537,
+            397
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Multiple instance learning (MIL) is a powerful tool to solve the weakly supervised classification in whole slide image (WSI) based pathology diagnosis. However, the current MIL methods are usually based on independent and identical distribution hypothesis, thus neglect the correlation among different instances. To address this problem, we proposed a new framework, called correlated MIL, and provided a proof for convergence. Based on this framework, we devised a Transformer based MIL (TransMIL), which explored both morphological and spatial information. The proposed TransMIL can effectively deal with unbalanced/balanced and binary/multiple classification with great visualization and interpretability. We conducted various experiments for three different computational pathology problems and achieved better performance and faster convergence compared with state-of-the-art methods. The test AUC for the binary tumor classification can be up to 93.09% over CAMELYON16 dataset. And the AUC over the cancer subtypes classification can be up to 96.03% and 98.82% over TCGA-NSCLC dataset and TCGA-RCC dataset, respectively. Implementation is available at: https://github.com/szc19990412/TransMIL.",
+        "bbox": [
+            228,
+            412,
+            767,
+            636
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "1 Introduction",
+        "text_level": 2,
+        "bbox": [
+            173,
+            665,
+            312,
+            681
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "The advent of whole slide image (WSI) scanners, which convert the tissue on the biopsy slide into a gigapixel image fully preserving the original tissue structure [1], provides a good opportunity for the application of deep learning in the field of digital pathology [2, 3, 4]. However, the deep learning based biopsy diagnosis in WSI has to face a great challenges due to the huge size and the lack of pixel-level annotations[5]. To address this problem, multiple instance learning (MIL) is usually adopted to take diagnosis analysis as a weakly supervised learning problem.",
+        "bbox": [
+            169,
+            696,
+            826,
+            782
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "In deep learning based MIL, one straightforward idea is to perform pooling operation [6, 7] on instance feature embeddings extracted by CNN. Ilse et al. [8] proposed an attention based aggregation operator, giving each instance additional contribution information through trainable attention weights. In addition, Li et al. [9] introduced non-local attention into the MIL problem. By calculating the similarity between the highest-score instance and the others, each instance is given different attention weight and the interpretable attention map can be obtained accordingly. There were also other pioneering works [10, 11, 12, 13, 14] in weakly supervised WSI diagnosis.",
+        "bbox": [
+            169,
+            787,
+            826,
+            858
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "aside_text",
+        "text": "arXiv:2106.00908v2 [cs.CV] 31 Oct 2021",
+        "bbox": [
+            22,
+            265,
+            58,
+            705
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "page_footnote",
+        "text": "Contributed equally: {shaozc0412,h2495067728,sky374263410}@gmail.com.",
+        "bbox": [
+            191,
+            869,
+            694,
+            883
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "page_footnote",
+        "text": "<sup>†</sup>Corresponding author: ybzhang08@hit.edu.cn.",
+        "bbox": [
+            191,
+            883,
+            500,
+            898
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "footer",
+        "text": "35th Conference on Neural Information Processing Systems (NeurIPS 2021), Sydney, Australia.",
+        "bbox": [
+            171,
+            922,
+            740,
+            936
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "image",
+        "img_path": "images/4ecfbc3dd1291b4e47843492fb41cf8cbe3052b4b488ce051a8b082c02636c70.jpg",
+        "image_caption": [
+            "Figure 1: Decision-making process. MIL Attention Mechanism: follow the i.i.d. assumption. Self-attention Mechanism: under the correlated MIL framework."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            215,
+            87,
+            781,
+            258
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            342,
+            826,
+            371
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "However, all these methods are based on the assumption that all the instances in each bag are independent and identically distributed (i.i.d.). While achieving some improvements in many tasks, this i.i.d. assumption was not entirely valid [15] in many cases. Actually, pathologists often consider both the contextual information around a single area and the correlation information between different areas when making a diagnostic decision. Therefore, it would be much desirable to consider the correlation between different instances in MIL diagnosis.",
+        "bbox": [
+            169,
+            376,
+            826,
+            460
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "At present, Transformer is widely used in many vision tasks [16, 17, 18, 19, 20, 21] due to the strong ability of describing correlation between different segments in a sequence (tokens) as well as modelling long distance information. As shown in Figure 1, different from bypass attention network in the existing MIL, the Transformer adopts self-attention mechanism, which can pay attention to the pairwise correlation between each token within a sequence. However, traditional Transformer sequences are limited by their computational complexity and can only tackle shorter sequences (e.g., less than 1000) [22]. Therefore, it is not suitable for large size images such as WSIs.",
+        "bbox": [
+            169,
+            465,
+            826,
+            564
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "To address these challenges mentioned above, we proposed a correlated MIL framework, including the convergence proof and a generic three-step algorithm. In addition, a Transformer based MIL (TransMIL) was devised to explore both morphological and spatial information between different instances. Great performance over various datasets demonstrate the validity of the proposed method.",
+        "bbox": [
+            169,
+            568,
+            826,
+            626
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2 Related Work",
+        "text_level": 2,
+        "bbox": [
+            171,
+            666,
+            323,
+            683
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2.1 Application of MIL in WSI classification",
+        "text_level": 2,
+        "bbox": [
+            171,
+            710,
+            496,
+            727
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "The application of MIL in WSIs can be divided into two categories. The first one is instance-level algorithms [7, 23, 24, 25, 26], where a CNN is first trained by assigning each instance a pseudo-label based on the bag-level label, and then the top-k instances are selected for aggregation. However, this method requires a large number of WSIs, since only a small number of instances within each slide can actually participate in the training. The second category is embedding-level algorithms, where each patch in the entire slide is mapped to a fixed-length embedding, and then all feature embeddings are aggregated by an operator (e.g., max-pooling). To improve the performance, the MIL attention based method [8, 10, 11, 12, 13] assigns the contribution of each instance by introducing trainable parameters. In addition, the feature clustering methods [14, 27, 28] calculated the cluster centroids of all the feature embeddings and then the representative feature embeddings was employed to make the final prediction. Recently, non-local attention [9] was also adopted in MIL to pay more attention to the correlation between the highest-score instance and all the remaining instances.",
+        "bbox": [
+            169,
+            744,
+            826,
+            912
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "page_number",
+        "text": "2",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2.2 Attention and Self-attention in Deep Learning",
+        "text_level": 2,
+        "bbox": [
+            171,
+            92,
+            534,
+            106
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Attention was initially used to extract important information about sentences in machine translation [29]. Then the attention mechanism was gradually applied to computer vision tasks, including giving different weights to feature channels [30] or spatial distribution [31], or giving different weights to time series in video analysis [32]. Recently, attention was also applied in MIL analysis [10, 11, 12, 13]. However, all these methods did not consider the correlation between different instances.",
+        "bbox": [
+            169,
+            116,
+            826,
+            186
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "The most typical self-attention application was the Transformer based NLP framework proposed by Google [33]. Recently, Transformer was also applied in many computer vision tasks, including object detection [16, 17], segmentation [18, 19], image enhancement [20, 21] and video processing [34]. In this paper, for the first time, we proposed a Transformer based WSI classification, where the correlations among different instances within the same bag are comprehensively considered.",
+        "bbox": [
+            169,
+            193,
+            825,
+            263
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3 Method",
+        "text_level": 2,
+        "bbox": [
+            171,
+            280,
+            272,
+            296
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3.1 Correlated Multiple Instance Learning",
+        "text_level": 2,
+        "bbox": [
+            171,
+            310,
+            485,
+            327
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Problem formulation Take binary MIL classification as an example, we want to predict a target value $Y _ { i } \\in \\{ 0 , 1 \\}$ , given a bag of instances $\\{ \\pmb { x } _ { i , 1 } , \\pmb { x } _ { i , 2 } , \\ldots , \\pmb { x } _ { i , n } \\}$ with $\\mathbf { X } _ { i }$ , for $i = 1 , \\bar { \\ldots } , b ,$ , that exhibit both dependency and ordering among each other. The instance-level labels $\\{ y _ { i , 1 } , y _ { i , 2 } , . . . , y _ { i , n } \\}$ are unknown, and the bag-level label is $Y _ { i }$ , for $i = 1 , \\ldots , b .$ A binary MIL classification can be defined as:",
+        "bbox": [
+            169,
+            337,
+            825,
+            405
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/9d040bd4745a01e3f993ac89d177950396f5c276f4fcbb2c287d3f0b6057d4d0.jpg",
+        "text": "$$\nY _ { i } = \\left\\{ { 0 , \\mathrm { i f f } \\sum _ { } y _ { i , j } = 0 y _ { i , j } \\in \\{ 0 , 1 \\} , j = 1 \\dots n } _ { } \\right.\\tag{1}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            320,
+            402,
+            673,
+            443
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/111b4a993cbf6f1096a6c9a776ae1dd0027866c3d1c296f396ef871cd8ea8242.jpg",
+        "text": "$$\n\\hat { Y } _ { i } = { S } ( { \\bf X } _ { i } ) ,\\tag{2}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            452,
+            446,
+            540,
+            465
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "where $S$ is a scoring function, $\\hat { Y _ { i } }$ represents the prediction. b is the total number of bags, n is the number of instances in ith bag, and the number of n can vary for different bags.",
+        "bbox": [
+            169,
+            468,
+            825,
+            498
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Compared to the MIL framework proposed by Ilse et al. [8], we further introduce the correlation between different instances. Theorem 1 and Inference give an arbitrary approximation form of the scoring function $S ( \\mathbf { X } )$ , and Theorem 2 provides the advantage of correlated MIL.",
+        "bbox": [
+            169,
+            502,
+            825,
+            546
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Theorem 1. Suppose $S : \\mathcal { X }  \\mathbb { R }$ is a continuous set function w.r.t Hausdorff distance $d _ { H } ( \\cdot , \\cdot )$ $\\forall \\varepsilon > 0 .$ , for any invertible map $P : \\mathcal X \\to \\mathbb R ^ { n }$ , ∃function σ and $^ { g , }$ such thatfor any $\\mathbf { X } \\in { \\mathcal { X } }$",
+        "bbox": [
+            169,
+            559,
+            823,
+            588
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/a460f1999455e4e4cd7d4afe2032316a51cf3ca1dd1a734523f728a167a6ad56.jpg",
+        "text": "$$\n| S ( \\mathbf { X } ) - g ( \\underset { \\mathbf { X } \\in \\mathcal { X } } { P } \\{ \\sigma ( \\pmb { x } ) : \\pmb { x } \\in \\mathbf { X } \\} ) | < \\varepsilon .\\tag{3}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            366,
+            590,
+            630,
+            612
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "That is: a Hausdorffcontinuousfunction $S ( \\mathbf { X } )$ can be arbitrarily approximated by afunction in the form $g ( \\underset { \\mathbf { X } \\in \\mathcal { X } } { P } \\{ \\sigma ( \\pmb { x } ) : \\pmb { x } \\in \\mathbf { X } \\} )$ ).",
+        "bbox": [
+            169,
+            617,
+            823,
+            651
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Proof. By the continuity of S, we take $\\forall \\varepsilon > 0 , \\exists \\delta _ { \\varepsilon }$ , so that $| S ( \\mathbf { X } ) - S ( \\mathbf { X } ^ { \\prime } ) | < \\varepsilon$ for any X, $\\mathbf { X } ^ { \\prime } \\in { \\mathcal { X } }$ if $\\dot { d _ { H } } \\left( \\mathbf { X } , \\mathbf { X } ^ { \\prime } \\right) < \\delta _ { \\varepsilon }$ .",
+        "bbox": [
+            171,
+            666,
+            825,
+            696
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Define $\\begin{array} { r } { K = \\lceil \\frac { 1 } { \\delta _ { \\epsilon } } \\rceil } \\end{array}$ and define an auxiliary function: $\\begin{array} { r } { \\sigma ( { \\pmb x } ) = \\frac { \\lfloor K { \\pmb x } \\rfloor } { K } } \\end{array}$ . Let $\\tilde { \\mathbf { X } } = \\{ \\sigma ( \\pmb { x } ) : \\pmb { x } \\in \\mathbf { X } \\}$ , then:",
+        "bbox": [
+            171,
+            702,
+            820,
+            722
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/49eccd32c8cd025a4267d9680ac4321bd6d88de1e99bb2c3ce972b2bdc5ef40d.jpg",
+        "text": "$$\n| S ( \\mathbf { X } ) - S ( \\tilde { \\mathbf { X } } ) | < \\varepsilon ,\\tag{4}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            426,
+            727,
+            570,
+            744
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "because $\\begin{array} { r } { d _ { H } ( \\mathbf { X } , \\tilde { \\mathbf { X } } ) < \\frac { 1 } { K } \\le \\delta _ { \\varepsilon } } \\end{array}$",
+        "bbox": [
+            171,
+            747,
+            377,
+            765
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Let $P : \\mathcal X \\to \\mathbb R ^ { n }$ be any invertible map, its inverse mapping is expressed as $P ^ { - 1 } \\colon \\mathbb { R } ^ { n } \\to \\mathcal { X }$ . Let $g = S \\left( P ^ { - 1 } \\right)$ , then:",
+        "bbox": [
+            169,
+            772,
+            823,
+            803
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/db298811f0f4ccd478a4d22c3a9f072701941b5039df677b442c8848ef03279c.jpg",
+        "text": "$$\nS \\left( P ^ { - 1 } ( \\underset { \\mathbf { X } \\in \\mathcal { X } } { P } ( \\{ \\sigma ( \\mathbf { x } ) : \\mathbf { x } \\in \\mathbf { X } \\} ) ) \\right) = S \\left( P ^ { - 1 } ( \\underset { \\mathbf { \\tilde { X } } \\in \\mathcal { X } } { P } ( \\tilde { \\mathbf { X } } ) ) \\right) = S ( \\tilde { \\mathbf { X } } ) .\\tag{5}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            266,
+            806,
+            728,
+            838
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Because $| S ( \\mathbf { X } ) - S ( \\tilde { \\mathbf { X } } ) | < \\varepsilon \\mathrm { a n d } S ( \\tilde { \\mathbf { X } } ) = S \\left( P ^ { - 1 } ( P ( \\tilde { \\mathbf { X } } ) ) \\right) = g ( P ( \\tilde { \\mathbf { X } } ) )$ , we have:",
+        "bbox": [
+            174,
+            844,
+            728,
+            866
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/91050910b814fc3f85714719f73db9e9475ac6cb5b1fbd3fb5dd42d8b00fe523.jpg",
+        "text": "$$\n| S ( \\mathbf { X } ) - g ( \\underset { \\mathbf { X } \\in \\mathcal { X } } { P } \\{ \\sigma ( \\pmb { x } ) : \\pmb { x } \\in \\mathbf { X } \\} ) | < \\varepsilon .\\tag{6}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            364,
+            871,
+            630,
+            893
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "This completes the proof.",
+        "bbox": [
+            171,
+            897,
+            343,
+            911
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "□",
+        "bbox": [
+            807,
+            897,
+            823,
+            909
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "page_number",
+        "text": "3",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "image",
+        "img_path": "images/80103deced3c0ad518a06bc722e29ef494890b081d5b1dcbb6502c774400161d.jpg",
+        "image_caption": [
+            "(a) Whole slide image"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            179,
+            99,
+            307,
+            174
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "chart",
+        "img_path": "images/ddf1adef2e1122aa2e7f3d3c7e7b8e5d266518517646c7e7795ea063c3f2a28e.jpg",
+        "content": "",
+        "chart_caption": [
+            "(b) Max-pooling"
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            316,
+            94,
+            439,
+            176
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "chart",
+        "img_path": "images/d6476c9f13e8e99cbf53a436d06714b0ca668fa3463b37dc50a61dbcb7b6157b.jpg",
+        "content": "",
+        "chart_caption": [
+            "(c) Mean-pooling"
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            444,
+            94,
+            566,
+            176
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "chart",
+        "img_path": "images/0f13c7b2f8f1eed46c0dcc9146e8f134e4157c196c44dcecec4b3fc4f1c699d2.jpg",
+        "content": "",
+        "chart_caption": [
+            "(d) MIL Attention pooling"
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            573,
+            93,
+            696,
+            175
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "chart",
+        "img_path": "images/25fae2ae6cc34b1bb8aff1f08bdd2e8a7d2dcfdac9d03bf1f3bcc8472b948099.jpg",
+        "content": "",
+        "chart_caption": [
+            "(e) Self-attention pooling",
+            "Figure 2: The difference between different Pooling Matrix P. Suppose there are 5 instances sampled from WSI in (a), $\\mathbf { P } \\in \\mathbb { R } ^ { 5 \\times 5 }$ is the corresponding Pooling Matrix, where the values in the diagonal line indicate the attention weight for itself and the rest indicate correlation between different instances. $^ { ( \\mathrm { b } , \\mathrm { c } , \\mathrm { d } ) }$ all neglect the correlation information, hence the P is diagonal matrix. In (b), the first instance was chosen by Max-pooling operator, so there is only one non-zero value in the first diagonal position. In (c), all the values within diagonal line are the same due to the Mean-pooling operator. In (d), the values within diagonal line can be varied due to the introduction of bypass attention. (e) obeys the correlation assumption, so there are non-zero values in off-diagonal position indicating correlation between different instances."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            700,
+            94,
+            825,
+            174
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Inference Suppose $S : \\mathcal { X }  \\mathbb { R }$ is a continuous set function w.r.t Hausdorff distance $d _ { H } ( \\cdot , \\cdot )$ $\\forall \\varepsilon > 0 , f o r$ any function f and any invertible map $P : { \\dot { \\mathcal { X } } }  \\mathbb { R } ^ { n }$ , ∃ function h and g, such that for any $\\mathbf { X } \\in { \\mathcal { X } } \\colon$",
+        "bbox": [
+            169,
+            352,
+            826,
+            395
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/210de663af28d373ab4b3a6cba9b993f99d924113135f889343499cd279c0256.jpg",
+        "text": "$$\n| S ( \\mathbf { X } ) - g ( \\underset { \\mathbf { X } \\in \\mathcal { X } } { P } \\{ f ( \\pmb { x } ) + h ( \\pmb { x } ) : \\pmb { x } \\in \\mathbf { X } \\} ) | < \\varepsilon .\\tag{7}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            338,
+            393,
+            656,
+            416
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "That is: a Hausdorffcontinuousfunction $S ( \\mathbf { X } )$ can be arbitrarily approximated by afunction in the form $g { \\big ( } { \\underset { \\mathbf { X } \\in { \\mathcal { X } } } { P } } { \\big \\{ } f ( { \\pmb { x } } ) { \\big \\} } + h ( { \\pmb { x } } ) : { \\pmb { x } } \\in \\mathbf { X }  \\} { \\big ) }$ ).",
+        "bbox": [
+            168,
+            421,
+            825,
+            457
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Proof. The proof is in the Appendix A.",
+        "bbox": [
+            171,
+            472,
+            434,
+            488
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Theorem 2. The Instances in the bag are represented by random variables $\\Theta _ { 1 } , \\Theta _ { 2 } , \\ldots , \\Theta _ { n } .$ the information entropy of the bag under the correlation assumption can be expressed as H $( \\Theta _ { 1 } , \\Theta _ { 2 } , \\dots , \\Theta _ { n } )$ , and the information entropy of the bag under the i.i.d. (independent and identical distribution) assumption can be expressed as $\\textstyle \\sum _ { t = 1 } ^ { n } { \\dot { H } } \\left( \\Theta _ { t } \\right)$ , then we have:",
+        "bbox": [
+            169,
+            512,
+            826,
+            570
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/3d39b8f4b16f88a0d4d123a627f0ff625e81caac1dbb13df319a024c80a63155.jpg",
+        "text": "$$\nH \\left( \\Theta _ { 1 } , \\Theta _ { 2 } , \\ldots , \\Theta _ { n } \\right) = \\sum _ { t = 2 } ^ { n } H \\left( \\Theta _ { t } \\mid \\Theta _ { 1 } , \\ldots , \\Theta _ { t - 1 } \\right) + H \\left( \\Theta _ { 1 } \\right) \\leq \\sum _ { t = 1 } ^ { n } H \\left( \\Theta _ { t } \\right) .\\tag{8}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            240,
+            578,
+            754,
+            617
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Proof. The proof is in the Appendix A.",
+        "bbox": [
+            171,
+            632,
+            434,
+            648
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Theorem 2 proved the correlation assumption has smaller information entropy, which may reduce the uncertainty and bring more useful information for the MIL problem. Motivated by the Inference and Theorem 2, a generic three-step method like Algorithm1 was developed. The main difference between the proposed algorithm and existing methods is shown in Figure 2.",
+        "bbox": [
+            169,
+            662,
+            825,
+            720
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "code",
+        "sub_type": "algorithm",
+        "code_caption": [],
+        "code_footnote": [],
+        "code_body": "Algorithm 1: A generic three-step approach under the correlated MIL   \nInput: The bag of instances $\\mathbf { X } _ { i } = \\{ \\pmb { x } _ { i , 1 } , \\pmb { x } _ { i , 2 } \\ldots , \\pmb { x } _ { i , n } \\}$   \nOutput: Bag-level predicted label ${ \\hat { Y } } _ { i }$   \n1) Extracting morphological and spatial information of all the instances by f and $h ,$   \nrespectively;   \n$\\mathbf { X } _ { f } \\gets f ( \\mathbf { X } _ { i } ) , \\mathbf { X } _ { h } \\gets h ( \\mathbf { X } _ { i } ) , \\mathbf { X } _ { f h } \\gets \\mathbf { X } _ { f } + \\mathbf { X } _ { h }$ , where $\\mathbf { X } _ { f } , \\mathbf { X } _ { h } , \\mathbf { X } _ { f h } \\in \\mathbb { R } ^ { n \\times d } ;$   \n2) Aggregating the extracted information for all instances by Pooling Matrix $\\mathbf { P } ;$   \n$\\mathbf { X } _ { P } \\gets \\mathbf { P } \\mathbf { X } _ { f h }$ , where $\\mathbf { P } \\in \\mathbb { R } ^ { n \\times n } ;$   \n3) Transforming $\\mathbf { X } _ { P }$ to obtain the predicted bag-level label by $^ { g ; }$   \n$\\hat { Y } _ { i } \\gets g ( { \\bf X } _ { P } )$",
+        "bbox": [
+            171,
+            737,
+            823,
+            896
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "page_number",
+        "text": "4",
+        "bbox": [
+            493,
+            935,
+            504,
+            946
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "image",
+        "img_path": "images/3271d89adacf298002c2d73f241fb45420ccc2e55a2e27087d2617ba22b3c940.jpg",
+        "image_caption": [
+            "Figure 3: Overview of our TransMIL. Each WSI is cropped into patches (background is discarded), and embedded in feature vectors by ResNet50. Then the sequence is processed with the TPT module: 1) Squaring of sequence; 2) Correlation modelling of the sequence; 3) Conditional position encoding and local information fusion; 4) Deep feature aggregation; 5) Mapping of $\\mathbb { T }  \\mathcal { V }$"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            176,
+            87,
+            821,
+            219
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "3.2 How to apply Transformer to correlated MIL",
+        "text_level": 2,
+        "bbox": [
+            171,
+            313,
+            529,
+            328
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The Transformer uses a self-attention mechanism to model the interactions between all tokens in a sequence, and the adding of positional information further increases the use of sequential order information. Therefore it’s a good idea to introduce the Transformer into the correlated MIL problem where the function h encodes the spatial information among instances, and the Pooling Matrix P uses self-attention for information aggregation. To make this clear, we further give a formal definition.",
+        "bbox": [
+            169,
+            338,
+            826,
+            410
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Transformer based MIL. Given a set of bags $\\{ \\mathbf { X } _ { 1 } , \\mathbf { X } _ { 2 } , \\ldots , \\mathbf { X } _ { b } \\}$ , and each bag $\\mathbf { X } _ { i }$ contains multiple instances $\\{ \\pmb { x } _ { i , 1 } , \\pmb { x } _ { i , 2 } , \\ldots , \\pmb { x } _ { i , n } \\}$ and a corresponding label $Y _ { i } .$ . The goal is to learn the mappings: $\\mathbb { X } \\to \\mathbb { T } \\overset { \\cdot } { \\to } \\mathcal { Y } .$ , where X is the bag space, T is the Transformer space and Y is the label space. The specific mapping form of $\\mathbb { X } \\to \\mathbb { T }$ and $\\mathbb { T } \\to \\mathbb { Y }$ are available in the Appendix B.",
+        "bbox": [
+            169,
+            422,
+            826,
+            481
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "3.3 TransMIL for Weakly Supervised WSI Classification",
+        "text_level": 2,
+        "bbox": [
+            171,
+            496,
+            583,
+            512
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "To better describe the mapping of $\\mathbb { X } \\to \\mathbb { T } .$ , we design a TPT module with two Transformer layers and a position encoding layer, where Transformer layers are designed for aggregating morphological information and Pyramid Position Encoding Generator (PPEG) is designed for encoding spatial information. The overview of proposed Transformer based MIL (TransMIL) is shown in Figure 3.",
+        "bbox": [
+            169,
+            521,
+            825,
+            580
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Long Instances Sequence Modelling with TPT. The sequences are from the feature embeddings in each WSI. The processing steps of the TPT module are shown in Algorithm 2, where MSA denotes Multi-head Self-attention, MLP denotes Multilayer Perceptron, and LN denotes Layer Norm.",
+        "bbox": [
+            169,
+            593,
+            825,
+            637
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "code",
+        "sub_type": "code",
+        "code_caption": [],
+        "code_footnote": [],
+        "code_body": "```latex\nAlgorithm 2: TPT module processing flow\nInput: A bag of feature embeddings $\\mathbf { H } _ { i } = \\{ h _ { i , 1 } , \\dots , h _ { i , n } \\}$ , where $h _ { i , j } \\in \\mathbb { R } ^ { 1 \\times d }$ is the\nembedding of the jth instance, $\\mathbf { H } _ { i } \\in \\mathbb { R } ^ { n \\times d }$\nOutput: Bag-level predicted label $\\hat { Y _ { i } }$\n1) Squaring of sequence;\n$\\sqrt { N } \\gets \\lceil \\sqrt { n } \\rceil , M \\gets N - n , \\mathbf { H } _ { S } \\gets \\operatorname { C o n c a t } \\left( \\boldsymbol { h } _ { i , c l a s s } , \\mathbf { H } _ { i } , ( \\boldsymbol { h } _ { i , 1 } , \\dots , \\boldsymbol { h } _ { i , M } ) \\right)$ , where\n$h _ { i , c l a s s } \\in \\mathbb { R } ^ { 1 \\times d }$ represents class token, $\\mathbf { H } _ { S } \\in \\mathbb { R } ^ { ( \\dot { N } + 1 ) \\times d } ;$\n2) Correlation modelling of the sequence;\nH $\\tilde { \\mathbf { \\Gamma } } _ { S } ^ { \\ell } \\gets \\mathrm { M S A } ( \\mathbf { H } _ { S } ) ,$ where ` denotes the layer index of the Transformer, $\\mathbf { H } _ { S } ^ { \\ell } \\in \\mathbb { R } ^ { ( N + 1 ) \\times d } ;$\n3) Conditional position encoding and local information fusion;\nH $\\boldsymbol { \\mathrm { \\mathrm { I } } } _ { S } ^ { P } \\gets \\mathrm { P P E G } \\left( \\mathbf { H } _ { S } ^ { \\ell } \\right)$ , where H $\\mathsf { I } _ { S } ^ { \\bar { P } } \\in \\mathbb { R } ^ { ( N + 1 ) \\times d } ;$\n4) Deep feature aggregation;\nH $[ \\mathbf { \\Lambda } _ { S } ^ { \\ell + 1 }  \\mathrm { M S A } ( \\mathbf { H } _ { S } ^ { P } )$ , where $\\mathbf { H } _ { S } ^ { \\ell + 1 } \\in \\mathbb { R } ^ { ( N + 1 ) \\times d } ;$\n5) Mapping of T → Y;\n$\\hat { Y } _ { i } \\gets \\mathrm { M L P } \\left( \\mathrm { L N } \\left( \\left( \\mathbf { H } _ { S } ^ { \\ell + 1 } \\right) ^ { ( 0 ) } \\right) \\right)$ , where $\\big ( \\mathbf { H } _ { S } ^ { \\ell + 1 } \\big ) ^ { ( 0 ) } \\in \\mathbb { R } ^ { 1 \\times d }$ represents class token.\n```",
+        "bbox": [
+            171,
+            654,
+            823,
+            904
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "page_number",
+        "text": "5",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "For most cases, the softmax used in Transformer for vision tasks such as [17, 18, 35] is a row-by-row softmax normalization function. The standard self-attention mechanism requires the calculation of similarity scores between each pair of tokens, resulting in both memory and time complexity of $O ( n ^ { 2 } )$ . To deal with the long instances sequence problem in WSIs, the softmax in TPT adopts the Nystrom Method proposed in [22]. The approximated self-attention form $\\hat { \\bf S }$ can be defined as:",
+        "bbox": [
+            169,
+            92,
+            826,
+            165
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/cfd588a9cbeae70d05dafde45a219f4bccf6d13bd55397cf9df8b170d9258075.jpg",
+        "text": "$$\n\\hat { \\bf S } = \\mathrm { s o f t m a x } \\left( \\frac { { \\bf Q } \\tilde { \\bf K } ^ { T } } { \\sqrt { d _ { q } } } \\right) \\left( \\mathrm { s o f t m a x } \\left( \\frac { \\tilde { \\bf Q } \\tilde { \\bf K } ^ { T } } { \\sqrt { d _ { q } } } \\right) \\right) ^ { + } \\mathrm { s o f t m a x } \\left( \\frac { \\tilde { \\bf Q } { \\bf K } ^ { T } } { \\sqrt { d _ { q } } } \\right) ,\\tag{9}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            261,
+            171,
+            733,
+            214
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "where $\\tilde { \\mathbf { Q } }$ and $\\tilde { \\bf K }$ are the m selected landmarks from the original n dimensional sequence of $\\mathbf { Q }$ and $\\mathbf { K }$ , and ${ \\bf A } ^ { + }$ is a Moore-Penrose pseudoinverse of A. The final computational complexity is reduced from $O ( n ^ { 2 } )$ to $O ( n )$ . By doing this, the TPT module with approximation processing can satisfy the case where a bag contains thousands of tokens as input.",
+        "bbox": [
+            169,
+            222,
+            825,
+            281
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Position encoding with PPEG. In WSIs, the number of tokens in the corresponding sequence often varies due to the inherently variable size of the slide and tissue area. In [36] it is shown that the adding of zero padding can provide an absolute position information to convolution. Inspired by this, we designed the PPEG module accordingly. The overview is shown in Figure 4, and the pseudo-code for the processing is shown in Algorithm 3.",
+        "bbox": [
+            169,
+            295,
+            826,
+            366
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/87336ee73a83973c4a6f83798ee712c6a32a0f37d5def89f08665b4d0fc31e2f.jpg",
+        "image_caption": [
+            "Figure 4: Pyramid Position Encoding Generator. 1) The sequence is divided into patch tokens and class token; 2) Patch tokens are reshaped into 2-D image space; 3) Different sized convolution kernels are used to encode spatial information; 4) Different spatial information are fused together; 5) Patch tokens are flattened into sequence; 6) Connect class token and patch tokens."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            173,
+            377,
+            821,
+            575
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Our PPEG module has more advantages over the method proposed in [37]: (1) PPEG module uses different sized convolution kernels in the same layer, which can encode the positional information with different granularity, enabling high adaptability of PPEG. (2) Taking advantage of CNN’s ability to aggregate context information, the tokens in the sequence is able to obtain both global information and context information, which enriches the features carried by each token.",
+        "bbox": [
+            169,
+            657,
+            826,
+            729
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "4 Experiments and Results",
+        "text_level": 2,
+        "bbox": [
+            171,
+            747,
+            416,
+            763
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "To demonstrate the superior performance of the proposed TransMIL, various experiments were conducted over three public datasets: CAMELYON16, The Caner Genome Atlas (TCGA) non-small cell lung cancer (NSCLC), as well as the TCGA renal cell carcinoma (RCC).",
+        "bbox": [
+            169,
+            777,
+            825,
+            821
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Dataset. CAMELYON16 is a public dataset for metastasis detection in breast cancer, including 270 training sets and 130 test sets. After pre-processing, a total of about 3.5 million patches at ×20 magnification, in average about 8,800 patches per bag were obtained.",
+        "bbox": [
+            169,
+            835,
+            825,
+            878
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "TCGA-NSCLC includes two subtype projects, i.e., Lung Squamous Cell Carcinoma (TGCA-LUSC) and Lung Adenocarcinoma (TCGA-LUAD), for a total of 993 diagnostic WSIs, including 507 LUAD slides from 444 cases and 486 LUSC slides from 452 cases. After pre-processing, the mean number of patches extracted per slide at ×20 magnification is 15371.",
+        "bbox": [
+            169,
+            882,
+            826,
+            912
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "page_number",
+        "text": "6",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "code",
+        "sub_type": "algorithm",
+        "code_caption": [],
+        "code_footnote": [],
+        "code_body": "Algorithm 3: PPEG processing flow   \nInput: A bag of feature embeddings $\\mathbf { H } _ { S } ^ { \\ell }$ after correlation modelling, where $\\mathbf { H } _ { S } ^ { \\ell } \\in \\mathbb { R } ^ { ( N + 1 ) \\times d } .$   \nOutput: The feature embeddings $\\bar { \\mathbf { H } } _ { S } ^ { P }$ after conditional position encoding and local information   \nfusion, where $\\mathbf { H } _ { S } ^ { P } \\in \\breve { \\mathbb { R } } ^ { ( N + \\breve { 1 } ) \\times d } ,$   \n1) Split: $\\mathbf { H } _ { S } ^ { \\ell }$ is divided into patch tokens $\\mathbf { H } _ { f }$ and class token $\\mathbf { H } _ { c } ;$   \nH ${ \\boldsymbol { f } } , \\mathbf { H } _ { c } \\gets$ Split $\\left( \\mathbf { H } _ { S } ^ { \\ell } \\right)$ , where $\\mathbf { H } _ { f } \\in \\mathbb { R } ^ { N \\times \\bar { d } } , \\mathbf { H } _ { c } \\in \\mathbb { R } ^ { 1 \\times d } ;$   \n2) Spatial Restore: patch tokens $\\mathbf { H } _ { f }$ are reshaped to $\\mathbf { H } _ { S } ^ { f }$ in the 2-D image space;   \nH $[ \\boldsymbol { \\mathbf { \\mathit { \\Pi } } } _ { S } ^ { f } \\gets$ Restore $\\left( \\mathbf { H } _ { f } \\right)$ , where $\\mathbf { H } _ { S } ^ { f } \\in \\mathbb { R } ^ { \\sqrt { N } \\times \\sqrt { N } \\times d } ;$   \n3) Group Convolution: using a set of group convolutions with kernel k and $\\frac { k - 1 } { 2 }$ zero   \npaddings $( k = 3 , 5 , 7 )$ to obtain $\\mathbf { H } _ { t } ^ { f } , t = 1 , 2 , 3 ;$   \nH<sup>f</sup> ← Conv $\\left( \\mathbf { H } _ { S } ^ { f } \\right)$ , where $\\mathbf { H } _ { t } ^ { f } \\in \\mathbb { R } ^ { \\sqrt { N } \\times \\sqrt { N } \\times d } , t = 1 , 2 , 3 ;$   \n4) Fusion: $\\mathbf { H } _ { S } ^ { f }$ and the $\\mathbf { H } _ { t } ^ { f } , t = 1 , 2 , 3$ obtained from the convolution block processing are   \nadded together to obtain $\\mathbf { H } _ { S } ^ { F } \\mathrm { : }$   \nH $[ \\mathbf { \\boldsymbol { \\mathsf { F } } } _ { S } \\gets \\mathbf { \\boldsymbol { \\mathsf { H } } } _ { S } ^ { f } + \\mathbf { \\boldsymbol { \\mathsf { H } } } _ { 1 } ^ { f } + \\mathbf { \\boldsymbol { \\mathsf { H } } } _ { 2 } ^ { \\tilde { f } } + \\mathbf { \\boldsymbol { \\mathsf { H } } } _ { 3 } ^ { f } .$ where $\\mathbf { H } _ { S } ^ { F } \\in \\mathbb { R } ^ { \\sqrt { N } \\times \\sqrt { N } \\times d } ;$   \n5) Flatten: $\\mathbf { \\widetilde { H } } _ { S } ^ { F }$ are flattened into sequence $\\mathbf { H } _ { s e } ;$   \n$\\mathbf { H } _ { s e } \\gets \\mathrm { F l a t t e n }$ $\\left( \\mathbf { H } _ { S } ^ { F } \\right)$ , where $\\mathbf { H } _ { s e } \\in \\mathbb { R } ^ { N \\times d } ;$   \n6) Concat: connect $\\mathbf { H } _ { s e }$ and class token $\\mathbf { H } _ { c }$ to obtain $\\mathbf { H } _ { S } ^ { P } ;$   \n$\\mathbf { H } _ { S } ^ { P }  \\mathrm { C o n c a t } ( \\mathbf { H } _ { s e } , \\mathbf { H } _ { c } )$ , where $\\mathbf { H } _ { S } ^ { P } \\in \\mathbb { R } ^ { ( N + 1 ) \\times d } .$",
+        "bbox": [
+            169,
+            92,
+            823,
+            409
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            438,
+            825,
+            468
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "TCGA-RCC includes three subtype projects, i.e., Kidney Chromophobe Renal Cell Carcinoma (TGCA-KICH), Kidney Renal Clear Cell Carcinoma (TCGA-KIRC) and Kidney Renal Papillary Cell Carcinoma (TCGA-KIRP), for a total of 884 diagnostic WSIs, including 111 KICH slides from 99 cases, 489 KIRC slides from 483 cases, and 284 KIRP slides from 264 cases. After pre-processing, the mean number of patches extracted per slide at $\\times 2 0$ magnification is 14627.",
+        "bbox": [
+            169,
+            472,
+            826,
+            545
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Experiment Setup and Evaluation Metrics. Each WSI is cropped into a series of $2 5 6 \\times 2 5 6$ nonoverlapping patches, where the background region (saturation<15) is discarded. In CAMELYON16 we trained on the official training set after splitting the 270 WSIs into approximately 90% training and 10% validation, and tested on the official test set. For TCGA datasets, we first ensured that different slides from one patient do not exist in both the training and test sets, and then randomly split the data in the ratio of training:validation:test = 60:15:25. For the evaluation metrics, we used accuracy and area under the curve (AUC) scores to evaluate the classification performance, where the accuracy was calculated with a threshold of 0.5 in all experiments. For the AUC, the official test set AUC was used on the CAMELYON16 dataset, the average AUC was used on the TCGA-NSCLC dataset, and the average one-versus-rest AUC (macro-averaged) was used on the TCGA-RCC dataset. All the results over TCGA datasets are obtained by 4-fold cross-validation.",
+        "bbox": [
+            169,
+            558,
+            826,
+            713
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Implementation Details. In the training step, cross-entropy loss was adopted, and the Lookahead optimizer [38] was employed with a learning rate of 2e-4 and weight decay of 1e-5. The size of mini-batch B is 1. As in [13], the feature of each patch is embedded in a 1024-dimensional vector by a ResNet50 [39] model pre-trained on ImageNet. During training, the dimension of each feature embedding is reduced from 1024 to 512 by a fully connected layer. Finally, the feature embedding of each bag can be represented as $\\mathbf { H } _ { i } \\in \\mathbb { R } ^ { n \\times 5 1 2 }$ . In the inference step, the softmax is used to normalize the predicted scores for each class. All experiments are done with a RTX 3090.",
+        "bbox": [
+            169,
+            727,
+            826,
+            828
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Baseline. The baselines we chose include deep models with traditional pooling operators such as mean-pooling, max-pooling and the current state-of-the-art deep MIL models [8, 9, 13, 23, 40], the attention based pooling operator ABMIL [8] and PT-MTA [40], non-local attention based pooling operator DSMIL [9], single-attention-branch CLAM-SB[13], multi-attention-branch CLAM-MB[13], and recurrent neural network(RNN) based aggregation MIL-RNN [23].",
+        "bbox": [
+            169,
+            840,
+            826,
+            914
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "page_number",
+        "text": "7",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "table",
+        "img_path": "images/8863572848b7df99d12fe5b579132e77551427b23bd9e97516b8e6031d2b1948.jpg",
+        "table_caption": [
+            "Table 1: Results on CAMELYON16, TCGA-NSCLC and TCGA-RCC."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"2\"></td><td colspan=\"2\">CAMELYON16</td><td colspan=\"2\">TCGA-NSCLC</td><td colspan=\"2\">TCGA-RCC</td></tr><tr><td>Accuracy</td><td>AUC</td><td>Accuracy</td><td>AUC</td><td>Accuracy</td><td>AUC</td></tr><tr><td>Mean-pooling</td><td>0.6389</td><td>0.4647</td><td>0.7282</td><td>0.8401</td><td>0.9054</td><td>0.9786</td></tr><tr><td>Max-pooling</td><td>0.8062</td><td>0.8569</td><td>0.8593</td><td>0.9463</td><td>0.9378</td><td>0.9879</td></tr><tr><td>ABMIL [8]</td><td>0.8682</td><td>0.8760</td><td>0.7719</td><td>0.8656</td><td>0.8934</td><td>0.9702</td></tr><tr><td>PT-MTA [40]</td><td>0.8217</td><td>0.8454</td><td>0.7379</td><td>0.8299</td><td>0.9059</td><td>0.9700</td></tr><tr><td>MIL-RNN [23]</td><td>0.8450</td><td>0.8880</td><td>0.8619</td><td>0.9107</td><td></td><td></td></tr><tr><td>DSMIL [9]</td><td>0.7985</td><td>0.8179</td><td>0.8058</td><td>0.8925</td><td>0.9294</td><td>0.9841</td></tr><tr><td>CLAM-SB [13]</td><td>0.8760</td><td>0.8809</td><td>0.8180</td><td>0.8818</td><td>0.8816</td><td>0.9723</td></tr><tr><td>CLAM-MB [13]</td><td>0.8372</td><td>0.8679</td><td>0.8422</td><td>0.9377</td><td>0.8966</td><td>0.9799</td></tr><tr><td>TransMIL</td><td>0.8837</td><td>0.9309</td><td>0.8835</td><td>0.9603</td><td>0.9466</td><td>0.9882</td></tr></table>",
+        "bbox": [
+            222,
+            108,
+            774,
+            281
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "4.1 Results on WSI classification",
+        "text_level": 2,
+        "bbox": [
+            171,
+            314,
+            415,
+            329
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "We will present the results of both binary and multiple classification. The binary classification tasks contain positive/negative classification over CAMELYON16 and LUSC/LUAD subtypes classification over TCGA-NSCLC. The multiple classification refers to TGCA-KICH/TCGA-KIRC/TCGA-KIRP subtypes classification over TCGA-RCC. All the results are provided in Table 1.",
+        "bbox": [
+            169,
+            340,
+            826,
+            398
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "In CAMELYON16, only a small portion of each positive slide contains tumours (averagely total cancer area per slide <10%), resulting in the presence of a large number of negative regions disturbing the prediction of positive slide. The bypass attention-based methods and proposed TransMIL all outperform the traditional pooling operators. However in AUC score, TransMIL was at least 5% higher than ABMIL, PT-MTA and CLAM which neglect the correlation between instances, and do not consider the spatial information between patches. DSMIL only considers the relationship between the highest scoring instance and others, leading to limited performance.",
+        "bbox": [
+            169,
+            402,
+            826,
+            501
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "In TCGA-NSCLC, positive slides contain relatively large areas of tumour region (averagely total cancer area per slide >80%), consequently the pooling operator can achieve better performance than in CAMELYON16. Again, TransMIL performed better than all the other competing methods, achieving 1.40% higher in AUC and 2.16% in accuracy, compared with the second best method.",
+        "bbox": [
+            169,
+            506,
+            826,
+            564
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "In TCGA-RCC, as MIL-RNN did not consider the multi-classification problem, it was not included in this comparison result. The TCGA-RCC is unbalanced distributed in cancer subtypes and has large areas of tumour region in the positive slides (averagely total cancer area per slide >80%). However, TransMIL is equally applicable to multi-class problems with unbalanced data. It can be observed that TransMIL achieves best results in both accuracy and AUC score.",
+        "bbox": [
+            169,
+            568,
+            826,
+            638
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "4.2 Ablation Study",
+        "text_level": 2,
+        "bbox": [
+            171,
+            659,
+            320,
+            674
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "To further determine the contribution of the PPEG module and the conditional position encoding for the performance, we have conducted a series of ablation studies. Since the high classification accuracy of most methods over TCGA-RCC is not obvious, all ablation study experiments are based on the CAMELYON16 and the TCGA-NSCLC dataset. All experiments were evaluated by AUC.",
+        "bbox": [
+            169,
+            685,
+            825,
+            743
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "4.2.1 Effects of PPEG",
+        "text_level": 2,
+        "bbox": [
+            171,
+            761,
+            339,
+            776
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "The position encoding of the Transformer typically explores absolute position encoding (e.g., sinusoidal encoding, learnable absolute encoding) as well as conditional position encoding. However, learnable absolute encoding is commonly used in problems with fixed length sequences, and does not meet the requirement for variable length of input sequences in WSI analysis, so it is not taken into account in this paper. Here, we compared the effect of sinusoidal encoding and PPEG module which represents multi-level conditional position encoding. The same experiments are performed over CAMELYON16 and TCGA-NSCLC dataset, and the results are shown in Table 2. It should be noted that sinusoidal encoding is added to the original sequence with a multiplication of 0.001 as described in [33].",
+        "bbox": [
+            169,
+            786,
+            828,
+            912
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "page_number",
+        "text": "8",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/4584af58dadb852f10a261b98fe65745e760f35a3a5c102540816f5332e1368e.jpg",
+        "table_caption": [
+            "Table 2: Effects of PPEG."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Model</td><td>Params</td><td>Camelyon16</td><td>NSCLC</td></tr><tr><td>w/o</td><td>2.625M</td><td>0.8416</td><td>0.9287</td></tr><tr><td>sin-cos</td><td>2.625M</td><td>0.8941</td><td>0.9374</td></tr><tr><td>3×3</td><td>2.630M</td><td>0.8913</td><td>0.9355</td></tr><tr><td>7×7</td><td>2.651M</td><td>0.9015</td><td>0.9336</td></tr><tr><td>both</td><td>2.669M</td><td>0.9059</td><td>0.9402</td></tr><tr><td>PPEG</td><td>2.669M</td><td>0.9309</td><td>0.9603</td></tr></table>",
+        "bbox": [
+            187,
+            131,
+            485,
+            242
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "chart",
+        "img_path": "images/d9059679a5ec35c5d9aa248f3a7d340042c796b02872fd738b1e34482b440333.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 5: Effects of Positional Encoding."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            496,
+            87,
+            816,
+            234
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Compared with the model without position encoding, it can be seen that both sinusoidal encoding and conditional position encoding can improve the classification performance, and conditional position information encoded by PPEG can be more effective in diagnosis analysis. In contrast to the 3 × 3 and 7 × 7 convolutional block, adding different sized convolution kernels in the same layer allows for multi-level positional encoding and adds more context information to each token.",
+        "bbox": [
+            169,
+            262,
+            826,
+            334
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "4.2.2 Effects of Conditional Position Encoding",
+        "text_level": 2,
+        "bbox": [
+            171,
+            354,
+            509,
+            371
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Here, by disrupting the order of the input sequences, we explore actual improvements for conditional position encoding. The performance of the model under different configurations is shown in Figure 5, where order represents sequential data input and w/o represents random and disordered data input. It can be seen that conditional position information did enhance the model performance, e.g., the improvement can be up to 0.9% over CAMELYON16 and 0.61% over TCGA-NSCLC in AUC.",
+        "bbox": [
+            169,
+            382,
+            826,
+            453
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Compared with the model without position encoding or with sinusoidal encoding, conditional position information encoded by PPEG can be more effective in diagnosis analysis. Compared with the results trained over the sequential and disordered training sets, conditional position information did enhance the model performance, e.g., the improvement can be up to 0.9% over CAMELYON16 and 0.61% over TCGA-NSCLC in AUC.",
+        "bbox": [
+            169,
+            457,
+            826,
+            529
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "4.3 Interpretability and Attention Visualization",
+        "text_level": 2,
+        "bbox": [
+            171,
+            553,
+            517,
+            568
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Here, we will further show the interpretability of TransMIL. As shown in Figure 6(a), the area within the blue curve annotation is the cancer region, which was provided by Gao et al. [41] over the TCGA-RCC dataset. In Figure 6(b), attention scores from TransMIL were visualised as a heatmap to determine the ROI and interpret the important morphology used for diagnosis, and Figure 6(c) is a zoomed-in view of the black square in Figure 6(b). Obviously, there is a high consistency between fine annotation area and heatmap, illustrating great interpretability and attention visualization of the proposed TransMIL.",
+        "bbox": [
+            169,
+            582,
+            826,
+            680
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/14dea02ce3b40246e0df5b9c3026c19e11fc9caabc65d5f354d42e8161037fe2.jpg",
+        "image_caption": [
+            "(a) Annotated slide"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            176,
+            700,
+            372,
+            838
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/ee1e0c107f510884dd469ec01e2e227dee9109aee935084a7f8ca6b79938dbb8.jpg",
+        "image_caption": [
+            "(b) Attention heatmap"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            377,
+            702,
+            573,
+            838
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/4c340ab2c5c0cfd99436c31c041b1e10ead783c3c59f297dc6c3f61556065f0a.jpg",
+        "image_caption": [
+            "(c) Zoomed-in view of black square",
+            "Figure 6: Interpretability and visualization."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            576,
+            700,
+            820,
+            839
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "page_number",
+        "text": "9",
+        "bbox": [
+            493,
+            935,
+            504,
+            946
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "chart",
+        "img_path": "images/802f46238dc07088b688b76ae04f9c4b21ce215feedceb347b6a30d14ffdb4b7.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 7: The convergence comparison of TransMIL and the competing methods."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            205,
+            85,
+            790,
+            222
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "4.4 Fast Convergence",
+        "text_level": 2,
+        "bbox": [
+            171,
+            279,
+            338,
+            292
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Traditional MIL methods as well as the latest MIL methods such as ABMIL, DSMIL and CLAM usually require a large number of epochs to converge. Different from these methods, TransMIL makes use of the morphological and spatial information among instances, leading to approximately two to three times fewer training epochs. As shown in Figure 7, TransMIL has better performance in terms of convergence and validation AUC than other MIL methods.",
+        "bbox": [
+            169,
+            304,
+            826,
+            376
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "5 Conclusion",
+        "text_level": 2,
+        "bbox": [
+            171,
+            396,
+            300,
+            411
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "In this paper, we have developed a novel correlated MIL framework that is consistent with the behavior of pathologists considering both the contextual information around a single area and the correlation between different areas when making a diagnostic decision. Based on this framework, a Transformer based MIL (TransMIL) was devised to explore both morphological and spatial information in weakly supervised WSI classification. We also design a PPEG for position encoding as well as a TPT module with two Transformer layers and a position encoding layer. The TransMIL network is easy to train, and can be applied to unbalanced/balanced and binary/multiple classification with great visualization and interpretability. Most importantly, TransMIL outperforms the state-of-the-art MIL algorithms in terms of both AUC and accuracy over three public datasets. Currently, all the experiments were conducted over the dataset with × 20 magnification, however the WSIs with higher magnification will result in longer sequence and inevitably pose great challenges in terms of both computational and memory requirements, and we will explore this issue in the follow-up work.",
+        "bbox": [
+            169,
+            428,
+            826,
+            597
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Broader Impact Our proposed approach shows greater potential for MIL application to real-world diagnosis analysis, particularly in problems that require more correlated information such as survival analysis and cancer cell spread detection. In the short term, the benefit of this work is to provide a model with better performance, faster convergence and clinical interpretability. In the long term, the proposed TransMIL network is more applicable to real situations, and it is hoped that it will provide more novel and effective ideas about further applications of deep MIL to diagnosis analysis.",
+        "bbox": [
+            169,
+            611,
+            826,
+            696
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Acknowledgment This work was supported in part by the National Natural Science Foundation of China (61922048&62031023), in part by the Shenzhen Science and Technology Project (JCYJ20200109142808034), and in part by Guangdong Special Support (2019TX05X187).",
+        "bbox": [
+            169,
+            710,
+            826,
+            755
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "References",
+        "text_level": 2,
+        "bbox": [
+            173,
+            775,
+            269,
+            791
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[1] Lei He, L Rodney Long, Sameer Antani, and George R Thoma. Histology image analysis for carcinoma detection and grading. Computer methods and programs in biomedicine, pages 538–556, 2012.",
+            "[2] Anant Madabhushi. Digital pathology image analysis: opportunities and challenges. Imaging in medicine, pages 7–10, 2009.",
+            "[3] Chen Li, Xintong Li, Md Rahaman, Xiaoyan Li, Hongzan Sun, Hong Zhang, Yong Zhang, Xiaoqi Li, Jian Wu, Yudong Yao, et al. A comprehensive review of computer-aided whole-slide"
+        ],
+        "bbox": [
+            181,
+            800,
+            823,
+            842
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "page_number",
+        "text": "10",
+        "bbox": [
+            490,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "image analysis: from datasets to feature extraction, segmentation, classification, and detection approaches. arXiv preprint arXiv:2102.10553, 2021.",
+            "[4] Xiaomin Zhou, Chen Li, Md Mamunur Rahaman, Yudong Yao, Shiliang Ai, Changhao Sun, Qian Wang, Yong Zhang, Mo Li, Xiaoyan Li, et al. A comprehensive review for breast histopathology image analysis using classical and deep neural networks. IEEE Access, pages 90931–90956, 2020.",
+            "[5] Chetan L Srinidhi, Ozan Ciga, and Anne L Martel. Deep neural network models for computational histopathology: A survey. Medical Image Analysis, 2020.",
+            "[6] Xinggang Wang, Yongluan Yan, Peng Tang, Xiang Bai, and Wenyu Liu. Revisiting multiple instance neural networks. Pattern Recognition, pages 15–24, 2018.",
+            "[7] Fahdi Kanavati, Gouji Toyokawa, Seiya Momosaki, Michael Rambeau, Yuka Kozuma, Fumihiro Shoji, Koji Yamazaki, Sadanori Takeo, Osamu Iizuka, and Masayuki Tsuneki. Weaklysupervised learning for lung carcinoma classification using deep learning. Scientific reports, pages 1–11, 2020.",
+            "[8] Maximilian Ilse, Jakub M. Tomczak, and M. Welling. Attention-based deep multiple instance learning. In International Conference on Machine Learning, pages 2127–2136, 2018.",
+            "[9] Bin Li, Yin Li, and Kevin W Eliceiri. Dual-stream multiple instance learning network for whole slide image classification with self-supervised contrastive learning. In Proceedings ofthe IEEE Conference on Computer Vision and Pattern Recognition, 2021.",
+            "[10] Naofumi Tomita, Behnaz Abdollahi, Jason Wei, Bing Ren, A. Suriawinata, and S. Hassanpour. Attention-based deep neural networks for detection of cancerous and precancerous esophagus tissue on histopathological slides. JAMA Network Open, 2019.",
+            "[11] Noriaki Hashimoto, Daisuke Fukushima, Ryoichi Koga, Yusuke Takagi, Kaho Ko, Kei Kohno, Masato Nakaguro, Shigeo Nakamura, Hidekata Hontani, and Ichiro Takeuchi. Multi-scale domain-adversarial multiple-instance cnn for cancer subtype classification with unannotated histopathological images. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pages 3852–3861, 2020.",
+            "[12] Nikhil Naik, Ali Madani, Andre Esteva, Nitish Shirish Keskar, Michael F Press, Daniel Ruderman, David B Agus, and Richard Socher. Deep learning-enabled breast cancer hormonal receptor status determination from base-level h&e stains. Nature communications, pages 1–8, 2020.",
+            "[13] Ming Y Lu, Drew FK Williamson, Tiffany Y Chen, Richard J Chen, Matteo Barbieri, and Faisal Mahmood. Data-efficient and weakly supervised computational pathology on whole-slide images. Nature Biomedical Engineering, pages 1–16, 2021.",
+            "[14] Yash Sharma, Aman Shrivastava, Lubaina Ehsan, Christopher A. Moskaluk, Sana Syed, and Donald E. Brown. Cluster-to-conquer: A framework for end-to-end multi-instance learning for whole slide image classification. arXiv preprint arXiv:2103.10626, 2021.",
+            "[15] Ming Tu, Jing Huang, Xiaodong He, and Bowen Zhou. Multiple instance learning with graph neural networks. In International Conference on Machine Learning, 2019.",
+            "[16] Nicolas Carion, Francisco Massa, Gabriel Synnaeve, Nicolas Usunier, Alexander Kirillov, and Sergey Zagoruyko. End-to-end object detection with transformers. In Proceedings of the European Conference on Computer Vision, pages 213–229, 2020.",
+            "[17] Xizhou Zhu, Weijie Su, Lewei Lu, Bin Li, Xiaogang Wang, and Jifeng Dai. Deformable detr: Deformable transformers for end-to-end object detection. In International Conference on Learning Representations, 2021.",
+            "[18] Jieneng Chen, Yongyi Lu, Qihang Yu, Xiangde Luo, Ehsan Adeli, Yan Wang, Le Lu, Alan L Yuille, and Yuyin Zhou. Transunet: Transformers make strong encoders for medical image segmentation. arXiv preprint arXiv:2102.04306, 2021.",
+            "[19] Yundong Zhang, Huiye Liu, and Qiang Hu. Transfuse: Fusing transformers and cnns for medical image segmentation. arXiv preprint arXiv:2102.08005, 2021.",
+            "[20] Hanting Chen, Yunhe Wang, Tianyu Guo, Chang Xu, Yiping Deng, Zhenhua Liu, Siwei Ma, Chunjing Xu, Chao Xu, and Wen Gao. Pre-trained image processing transformer. arXiv preprint arXiv:2012.00364, 2020."
+        ],
+        "bbox": [
+            205,
+            92,
+            825,
+            121
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "page_number",
+        "text": "11",
+        "bbox": [
+            488,
+            935,
+            508,
+            948
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[21] Fuzhi Yang, Huan Yang, J. Fu, Hongtao Lu, and B. Guo. Learning texture transformer network for image super-resolution. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pages 5790–5799, 2020.",
+            "[22] Yunyang Xiong, Zhanpeng Zeng, Rudrasis Chakraborty, Mingxing Tan, Glenn Fung, Yin Li, and Vikas Singh. Nyströmformer: A nyström-based algorithm for approximating self-attention. In Proceedings of the AAAI Conference on Artificial Intelligence, 2021.",
+            "[23] Gabriele Campanella, Matthew G Hanna, Luke Geneslaw, Allen Miraflor, Vitor Werneck Krauss Silva, Klaus J Busam, Edi Brogi, Victor E Reuter, David S Klimstra, and Thomas J Fuchs. Clinical-grade computational pathology using weakly supervised deep learning on whole slide images. Nature medicine, pages 1301–1309, 2019.",
+            "[24] G. Xu, Zhigang Song, Zhuo Sun, Calvin Ku, Z. Yang, C. Liu, S. Wang, Jianpeng Ma, and W. Xu. Camel: A weakly supervised learning framework for histopathology image segmentation. In Proceedings ofthe IEEE Conference on Computer Vision and Pattern Recognition, pages 10681–10690, 2019.",
+            "[25] Marvin Lerousseau, Maria Vakalopoulou, Marion Classe, Julien Adam, Enzo Battistella, Alexan dre Carré, Théo Estienne, Théophraste Henry, Eric Deutsch, and Nikos Paragios. Weakly supervised multiple instance learning histopathological tumor segmentation. In International Conference on Medical Image Computing and Computer-Assisted Intervention, pages 470–479, 2020.",
+            "[26] P. Chikontwe, Meejeong Kim, S. Nam, H. Go, and S. Park. Multiple instance learning with center embeddings for histopathology classification. In International Conference on Medical Image Computing and Computer-Assisted Intervention, pages 519–528, 2020.",
+            "[27] Xi Wang, Hao Chen, Caixia Gan, Huangjing Lin, Qi Dou, Efstratios Tsougenis, Qitao Huang, Muyan Cai, and Pheng-Ann Heng. Weakly supervised deep learning for whole slide lung cancer image analysis. IEEE Transactions on cybernetics, pages 3950–3962, 2019.",
+            "[28] Chensu Xie, Hassan Muhammad, Chad M Vanderbilt, Raul Caso, Dig Vijay Kumar Yarlagadda, Gabriele Campanella, and Thomas J Fuchs. Beyond classification: Whole slide tissue histopathology analysis by end-to-end part learning. In Medical Imaging with Deep Learning, pages 843–856, 2020.",
+            "[29] Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. Neural machine translation by jointly learning to align and translate. In International Conference on Learning Representations, 2015.",
+            "[30] Jie Hu, L. Shen, and G. Sun. Squeeze-and-excitation networks. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pages 7132–7141, 2018.",
+            "[31] S. Woo, Jongchan Park, Joon-Young Lee, and In-So Kweon. Cbam: Convolutional block attention module. In Proceedings ofthe European Conference on Computer Vision, pages 3–19, 2018.",
+            "[32] Yongming Rao, Jiwen Lu, and J. Zhou. Attention-aware deep reinforcement learning for video face recognition. In IEEE International Conference on Computer Vision, pages 3931–3940, 2017.",
+            "[33] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, undefinedukasz Kaiser, and Illia Polosukhin. Attention is all you need. In Advances in Neural Information Processing Systems, pages 5998–6008, 2017.",
+            "[34] Yanhong Zeng, Jianlong Fu, and Hongyang Chao. Learning joint spatial-temporal transformations for video inpainting. In Proceedings ofthe European Conference on Computer Vision, pages 528–543, 2020.",
+            "[35] A. Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, M. Dehghani, Matthias Minderer, G. Heigold, S. Gelly, Jakob Uszkoreit, and N. Houlsby. An image is worth 16x16 words: Transformers for image recognition at scale. In International Conference on Learning Representations, 2021.",
+            "[36] Md Amirul Islam, Sen Jia, and Neil D. B. Bruce. How much position information do convolutional neural networks encode? In International Conference on Learning Representations, 2020."
+        ],
+        "bbox": [
+            173,
+            92,
+            826,
+            133
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "page_number",
+        "text": "12",
+        "bbox": [
+            490,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[37] Xiangxiang Chu, Zhi Tian, Bo Zhang, Xinlong Wang, Xiaolin Wei, Huaxia Xia, and Chunhua Shen. Conditional positional encodings for vision transformers. arXiv preprint arXiv:2102.10882, 2021.",
+            "[38] Michael Ruogu Zhang, James Lucas, Geoffrey E. Hinton, and Jimmy Ba. Lookahead optimizer: k steps forward, 1 step back. In Advances in Neural Information Processing Systems, pages 9597–9608, 2019.",
+            "[39] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for image recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pages 770–778, 2016.",
+            "[40] Weijian Li, Viet-Duy Nguyen, Haofu Liao, Matt Wilder, Ke Cheng, and Jiebo Luo. Patch transformer for multi-tagging whole slide histopathology images. In International Conference on Medical Image Computing and Computer-Assisted Intervention, pages 532–540, 2019.",
+            "[41] Zeyu Gao, Pargorn Puttapirat, Jiangbo Shi, and Chen Li. Renal cell carcinoma detection and subtyping with minimal point-based annotation in whole-slide images. In International Conference on Medical Image Computing and Computer-Assisted Intervention, pages 439–448, 2020."
+        ],
+        "bbox": [
+            173,
+            92,
+            825,
+            132
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "page_number",
+        "text": "13",
+        "bbox": [
+            488,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "A Appendix A",
+        "text_level": 2,
+        "bbox": [
+            171,
+            89,
+            312,
+            107
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Inference Suppose $S : \\mathcal { X }  \\mathbb { R }$ is a continuous set function w.r.t Hausdorff distance $d _ { H } ( \\cdot , \\cdot )$ $\\forall \\varepsilon > 0 , f o r$ any function f and any invertible map $P : { \\dot { \\mathcal { X } } }  \\mathbb { R } ^ { n }$ , ∃ function h and g, such that for any $\\mathbf { X } \\in { \\mathcal { X } } \\colon$",
+        "bbox": [
+            169,
+            121,
+            826,
+            162
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "equation",
+        "img_path": "images/bd24ce01c79beec16d0e5aa9e45a4fdf604c489e19380440ad4dd0d5e0e3cc84.jpg",
+        "text": "$$\n| S ( \\mathbf { X } ) - g ( \\underset { \\mathbf { X } \\in \\mathcal { X } } { P } \\{ f ( \\pmb { x } ) + h ( \\pmb { x } ) : \\pmb { x } \\in \\mathbf { X } \\} ) | < \\varepsilon .\\tag{10}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            338,
+            162,
+            656,
+            185
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "That is: a Hausdorffcontinuousfunction $S ( \\mathbf { X } )$ can be arbitrarily approximated by afunction in the form $g { \\big ( } { \\underset { \\mathbf { X } \\in { \\mathcal { X } } } { P } } { \\big \\{ } f ( { \\pmb { x } } ) { \\big \\} } + h ( { \\pmb { x } } ) : { \\pmb { x } } \\in \\mathbf { X }  \\} { \\big ) }$ ).",
+        "bbox": [
+            168,
+            190,
+            825,
+            227
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Proof. As shown in Theorem $1 , \\forall \\varepsilon > 0$ , for any invertible map $P : \\mathcal X \\to \\mathbb R ^ { n } , \\exists$ function $\\sigma , g ,$ such that for any $\\mathbf x \\in \\mathcal X$",
+        "bbox": [
+            169,
+            244,
+            825,
+            272
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "equation",
+        "img_path": "images/eba8fd5f9488d21e151f89bfac69735c4187b6e1bc71abd2ed16840c07641362.jpg",
+        "text": "$$\n| S ( \\mathbf { X } ) - g ( \\underset { \\mathbf { X } \\in \\mathcal { X } } { P } \\{ \\sigma ( \\pmb { x } ) : \\pmb { x } \\in \\mathbf { X } \\} ) | < \\varepsilon .\\tag{11}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            364,
+            272,
+            632,
+            295
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "For any function $f ( { \\pmb x } )$ , take $h ( { \\pmb x } ) = \\sigma ( { \\pmb x } ) - f ( { \\pmb x } )$ , one can derive that:",
+        "bbox": [
+            169,
+            300,
+            638,
+            316
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "equation",
+        "img_path": "images/ddb0033defbbd1273347cf5b52de468aa4f64270a8ae74ef7d0600530297a4cc.jpg",
+        "text": "$$\n| S ( \\mathbf { X } ) - g ( \\underset { \\mathbf { X } \\in \\mathcal { X } } { P } \\{ f ( \\pmb { x } ) + h ( \\pmb { x } ) : \\pmb { x } \\in \\mathbf { X } \\} ) | < \\varepsilon .\\tag{12}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            338,
+            323,
+            656,
+            347
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "This means $S ( \\mathbf { X } )$ can be arbitrarily approximated by a function in the form $g ( \\underset { \\mathbf { X } \\in \\mathcal { X } } { P } \\{ f ( \\pmb { x } ) + h ( \\pmb { x } )$ $\\pmb { x } \\in \\mathbf { X } \\} )$",
+        "bbox": [
+            169,
+            354,
+            825,
+            391
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "This completes the proof.",
+        "bbox": [
+            171,
+            397,
+            343,
+            412
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Theorem 2. The Instances in the bag are represented by random variables $\\Theta _ { 1 } , \\Theta _ { 2 } , \\ldots , \\Theta _ { n } ,$ the information entropy of the bag under the correlation assumption can be expressed as $H \\left( \\Theta _ { 1 } , \\Theta _ { 2 } , \\ldots , \\Theta _ { n } \\right)$ , and the information entropy of the bag under the i.i.d. (independent and identical distribution) assumption can be expressed as $\\textstyle \\sum _ { t = 1 } ^ { n } { \\dot { H } } \\left( \\Theta _ { t } \\right)$ , then we have:",
+        "bbox": [
+            169,
+            429,
+            826,
+            487
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "equation",
+        "img_path": "images/5c14d618cc860281822ac240879c1a7ed338405085229ca0a4813aa7c982b4cf.jpg",
+        "text": "$$\nH \\left( \\Theta _ { 1 } , \\Theta _ { 2 } , \\ldots , \\Theta _ { n } \\right) = \\sum _ { t = 2 } ^ { n } H \\left( \\Theta _ { t } \\mid \\Theta _ { 1 } , \\ldots , \\Theta _ { t - 1 } \\right) + H \\left( \\Theta _ { 1 } \\right) \\leq \\sum _ { t = 1 } ^ { n } H \\left( \\Theta _ { t } \\right) .\\tag{13}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            240,
+            494,
+            754,
+            534
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Proof. The Instance in the data source is represented by random variables $\\Theta _ { 1 } , \\ldots , \\Theta _ { n }$ and the joint distribution function is $p \\left( \\theta _ { 1 } , \\ldots , \\theta _ { n } \\right)$ . The information entropy of data source under correlation assumption can be expressed as $H \\left( \\Theta _ { 1 } , \\ldots , \\Theta _ { n } \\right)$ , then we have:",
+        "bbox": [
+            171,
+            551,
+            825,
+            594
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "equation",
+        "img_path": "images/46789a53e2871f001d657203ee6faa8152fa1bef029fd2a8101e419b07c56a91.jpg",
+        "text": "$$\n\\begin{array} { l } { { \\displaystyle H \\left( \\Theta _ { 1 } , \\dots , \\Theta _ { n } \\right) = - \\sum _ { \\theta _ { 1 } , \\dots , \\theta _ { n } \\in \\theta ^ { n } \\setminus \\theta } p \\left( \\theta _ { 1 } , \\dots , \\theta _ { n } \\right) \\log p \\left( \\theta _ { 1 } , \\dots , \\theta _ { n } \\right) } } \\\\ { { \\displaystyle = - \\sum _ { \\theta _ { 1 } , \\dots , \\theta _ { n } \\in \\theta ^ { n } \\setminus \\theta ^ { n } \\cap \\theta \\cap \\theta \\cap \\theta \\left[ p \\left( \\theta _ { 1 } , \\dots , \\theta _ { n - 1 } \\right) p \\left( \\theta _ { n } \\right) , \\dots , \\theta _ { n - 1 } \\right] } } } \\\\ { { \\displaystyle = - \\sum _ { \\theta _ { 1 } , \\dots , \\theta _ { n } \\in \\theta ^ { n } \\setminus \\theta ^ { n } \\setminus \\theta \\cap \\theta \\cap \\theta } \\left\\{ \\left[ \\prod _ { t = 2 } ^ { n } p \\left( \\theta _ { t } \\ | \\ \\theta _ { 1 } , \\dots , \\theta _ { t - 1 } \\right) \\right] p \\left( \\theta _ { 1 } \\right) \\right\\} } } \\\\ { { \\displaystyle = - \\sum _ { t = 2 } ^ { n } \\left[ e _ { t _ { 1 } , \\dots , \\theta _ { n } \\in \\theta ^ { n } \\setminus \\theta } p \\left( \\theta _ { 1 } , \\dots , \\theta _ { t } \\right) \\log p \\left( \\theta _ { t } \\ | \\theta _ { 1 } , \\dots , \\theta _ { t - 1 } \\right) \\right] - \\sum _ { \\theta _ { 1 } \\in \\theta } p \\left( \\theta _ { 1 } \\right) \\log p \\left( \\theta _ { 1 } \\right) } } \\\\ { { \\displaystyle = \\sum _ { t = 2 } ^ { n } { H \\left( \\Theta _ { t } \\ | \\ \\Theta _ { 1 } , \\dots , \\Theta _ { t - 1 } \\right) } + H \\left( \\Theta _ { 1 } \\right) \\le \\sum _ { t = 1 } ^ { n } { H \\left( \\Theta _ { t } \\right) } } } \\end{array}\\tag{14}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            202,
+            604,
+            764,
+            811
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Here $\\sum _ { t = 1 } ^ { n } H \\left( \\Theta _ { t } \\right)$ is the information entropy of the data source under the i.i.d. assumption. Therefore, it is proved that the information source under the correlation assumption has smaller information entropy. In other words, correlation assumption reduces the uncertainty and brings more useful information.",
+        "bbox": [
+            169,
+            821,
+            826,
+            891
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "This completes the proof.",
+        "bbox": [
+            171,
+            897,
+            343,
+            912
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "page_number",
+        "text": "14",
+        "bbox": [
+            490,
+            935,
+            509,
+            946
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "B Appendix B",
+        "text_level": 2,
+        "bbox": [
+            171,
+            89,
+            310,
+            107
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Transformer based MIL. Given a set of bags $\\{ \\mathbf { X } _ { 1 } , \\mathbf { X } _ { 2 } , \\ldots , \\mathbf { X } _ { b } \\}$ , and each bag $\\mathbf { X } _ { i }$ contains multiple instances $\\{ \\pmb { x } _ { i , 1 } , \\pmb { x } _ { i , 2 } , \\ldots , \\pmb { x } _ { i , n } \\}$ and a corresponding label $Y _ { i }$ . The goal is to learn the mappings: $\\mathbb { X } \\to \\mathbb { T } \\overset { \\cdot } { \\to } \\mathcal { Y } .$ where X is the bag space, T is the Transformer space and $\\mathcal { V }$ is the label space. The mapping of $\\mathbb { X } \\to \\mathbb { T }$ can be defined as:",
+        "bbox": [
+            169,
+            119,
+            825,
+            178
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "equation",
+        "img_path": "images/4fc266ec2cbb6852edc6fd5eefc81e82b6a674b973cc611d0faecf3ce7f39411.jpg",
+        "text": "$$\n\\mathbf { X } _ { i } ^ { 0 } = [ \\pmb { x } _ { i , c l a s s } ; f ( \\pmb { x } _ { i , 1 } ) ; f ( \\pmb { x } _ { i , 2 } ) ; . . . ; f ( \\pmb { x } _ { i , n } ) ] + \\mathbf { E } _ { p o s } , \\qquad \\mathbf { X } _ { i } ^ { 0 } , ~ \\mathbf { E } _ { p o s } \\in \\mathbb { R } ^ { ( n + 1 ) \\times d }\\tag{15}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            192,
+            184,
+            776,
+            203
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "equation",
+        "img_path": "images/b500db1b1a951bf49cf8478cb524ed3714b7e83d5da5fa1365e50d4846ba705d.jpg",
+        "text": "$$\n\\begin{array} { r } { { \\bf Q } ^ { \\ell } = { \\bf X } _ { i } ^ { \\ell - 1 } { \\bf W } _ { Q } , \\quad { \\bf K } ^ { \\ell } = { \\bf X } _ { i } ^ { \\ell - 1 } { \\bf W } _ { K } , \\quad { \\bf V } ^ { \\ell } = { \\bf X } _ { i } ^ { \\ell - 1 } { \\bf W } _ { V } , \\quad \\qquad \\ell = 1 \\ldots L } \\end{array}\\tag{16}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            207,
+            219,
+            763,
+            239
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "equation",
+        "img_path": "images/1fd0d44b88581a3aa98e92d886fe24b32ac4a8fb6c78ba035355863dcfdf0330.jpg",
+        "text": "$$\n\\mathbf { h e a d } = \\mathrm { S A } ( \\mathbf { Q } ^ { \\ell } , \\mathbf { K } ^ { \\ell } , \\mathbf { V } ^ { \\ell } ) = \\mathrm { s o f t m a x } \\left( \\frac { \\mathbf { Q } ^ { \\ell } \\left( \\mathbf { K } ^ { \\ell } \\right) ^ { T } } { \\sqrt { d _ { q } } } \\right) \\mathbf { V } ^ { \\ell } ,\\tag{17}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            233,
+            252,
+            614,
+            294
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "equation",
+        "img_path": "images/183add0095357e8978fdf50a17b374d37870b76888aa785a97326ed6a616e78e.jpg",
+        "text": "$$\n\\mathrm { M S A } ( \\mathbf { Q } ^ { \\ell } , \\mathbf { K } ^ { \\ell } , \\mathbf { V } ^ { \\ell } ) = \\mathrm { C o n c a t } ( \\mathbf { h e a d } _ { 1 } , \\mathbf { h e a d } _ { 2 } , \\dots , \\mathbf { h e a d } _ { h } ) \\mathbf { W } ^ { \\mathcal { O } } , \\qquad \\ell = 1 \\dots L\\tag{18}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            204,
+            299,
+            764,
+            318
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "equation",
+        "img_path": "images/0a7cbfe0c82964251cf669a12144ef7aca25888e51b6e25ec3a539e1fc94ee0e.jpg",
+        "text": "$$\n\\mathbf { X } _ { i } ^ { \\ell } = \\mathrm { M S A } ( \\mathrm { L N } ( \\mathbf { X } _ { i } ^ { \\ell - 1 } ) ) + \\mathbf { X } _ { i } ^ { \\ell - 1 } ,\n$$",
+        "text_format": "latex",
+        "bbox": [
+            207,
+            332,
+            437,
+            349
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "equation",
+        "img_path": "images/344233ff553cdd6799e1315d9844d07ca62f6b1eccf7ffbbe3333e0bef26f8b5.jpg",
+        "text": "$$\n\\ell = 1 \\ldots L\\tag{19}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            683,
+            334,
+            761,
+            348
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "where $\\mathbf { W } _ { Q } \\in \\mathbb { R } ^ { d \\times d _ { q } }$ $\\mathbf { W } _ { K } \\in \\mathbb { R } ^ { d \\times d _ { k } }$ $\\mathbf { W } _ { V } \\in \\mathbb { R } ^ { d \\times d _ { v } } , \\mathbf { W } _ { O } \\in \\mathbb { R } ^ { h d _ { v } \\times d }$ , head $\\epsilon \\mathbb { R } ^ { ( n + 1 ) \\times d _ { v } }$ , SA denotes Self-attention layer, L is the number of MSA block[35], h is the number of head in each MSA block and Layer Normalization (LN) is applied before every MSA block.",
+        "bbox": [
+            169,
+            353,
+            825,
+            398
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "The mapping of $\\mathbb { T } \\to \\mathcal { y }$ can be defined as:",
+        "bbox": [
+            169,
+            404,
+            455,
+            417
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "equation",
+        "img_path": "images/d5c2b89473233e4e62de2e14d07c9870345faadee89de455436f29462a4ab7d8.jpg",
+        "text": "$$\nY _ { i } = \\mathrm { M L P } ( \\mathrm { L N } ( { ( \\mathbf { X } _ { i } ^ { L } ) } ^ { ( 0 ) } ) ) ,\\tag{20}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            405,
+            426,
+            591,
+            446
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "where $\\left( \\mathbf { X } _ { i } ^ { L } \\right) ^ { ( 0 ) }$ represents class token. The mapping of $\\mathbb { T } \\to \\mathcal { y }$ can be finished by using class token or global averaging pooling. Obviously, the key to Transformer based MIL is how to design the mapping of $\\mathbb { X } \\to \\mathbb { T }$ . However, there are many difficulties to directly apply Transformer in WSI classification, including the large number of instances in each bag and the large variation in the number of instances in different bags (e.g., ranging from hundreds to thousands). In this paper we focus on how to devise an efficient Transformer to better model the instance sequence.",
+        "bbox": [
+            169,
+            457,
+            826,
+            542
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "page_number",
+        "text": "15",
+        "bbox": [
+            488,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 14
+    }
+]
