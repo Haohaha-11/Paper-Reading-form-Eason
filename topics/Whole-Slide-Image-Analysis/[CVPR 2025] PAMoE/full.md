@@ -1,0 +1,331 @@
+# Learning Heterogeneous Tissues with Mixture of Experts for Gigapixel Whole Slide Images
+
+Junxian Wu<sup>1</sup>, Minheng Chen<sup>1</sup>, Xinyi Ke<sup>2</sup>, Tianwang Xun<sup>3</sup>, Xiaoming Jiang<sup>4\*</sup>, Hongyu Zhou<sup>5</sup>, Lizhi Shao<sup>6\*</sup>, Youyong Kong<sup>1\*</sup>
+
+<sup>1</sup>Southeast University <sup>2</sup>Peking Union Medical College Hospital <sup>3</sup>Institute of Automation, Chinese Academy of Sciences <sup>4</sup>Chongqing University of Post and Telecommunications <sup>5</sup>Tsinghua University <sup>6</sup>Anhui University {junxianwu, mh chen, kongyouyong}@seu.edu.cn,
+
+xinyike0321@student.pumc.edu.cn, xuntianwang2022@ia.ac.cn, jiangxm@cqupt.edu.cn, nourzhou@mail.tsinghua.edu.cn, 24115@ahu.edu.cn
+
+## Abstract
+
+Analyzing gigapixel Whole Slide Images (WSIs) is challenging due to the complex pathological tissue environment and the absence of target-driven domain knowledge. Previous methods incorporated pathological priors to mitigate this issue but relied on additional inference steps and specialized workflows, restricting scalability and the model’s capacity to identify novel outcome-related factors. To address these challenges, we propose a plug-and-play Pathology-Aware Mixture-of-Experts (PAMoE) module, which based on mixture of experts to learn pathology-related knowledge and extract useful information. We train the experts to become ‘specialists’ in specific intratumoral tissues by learning to route each tissue to its mapped expert. In addition, to reduce the impact of irrelevant content on the model, we introduce a new routing rule that discards patches in which none of the experts express interest, which helps the model better capture the relationships between relevant patches. Through a comprehensive evaluation of PAMoE on survival task, we demonstrate that 1) Our module enhances the performance of baseline models in most cases, and 2) The sparse expert processing across different tissues enhances the learning ofpatch representations by addressing tissue heterogeneity. Source code is available at https://github.com/wjx-error/PAMoE.
+
+## 1. Introduction
+
+Pathological images are regarded as the gold standard for cancer diagnosis. The advancement of whole-slide imaging enables the entire slide to be digitized at high resolution, enabling the standardized and automated analysis of Whole
+
+![](images/e0070c4a77b67d9d3751b867d7cf1a3ebc1bd0a885ce70ab83d4edf67deaf557.jpg)  
+Figure 1. Typical kinds of methods for exploiting tissue heterogeneity. (a) PANTHER [38] utilizes cluster centers derived global clustering as prototypes to guide the aggregation of patches. (b) HEAT [3] adopts a pre-trained classifier to introduce priors of pathological tissue categories for each patch, and builds a heterogeneous graph to explore the interactions among them. (c) Our proposed PAMoE learns to recognize and process patches through a trainable gating mechanism in an end-to-end manner.
+
+Slide Images (WSIs) with deep learning methods. The standard approach for analyzing WSIs is weakly supervised learning based on Multiple Instance Learning (MIL). This process divides the gigapixel WSI into a substantial number of patches $( N > 1 0 , 0 0 0 )$ and employs a pre-trained encoder to obtain embeddings for each patch as instances, followed by aggregation of the patches to obtain slide-level embeddings.
+
+The most commonly used aggregation methods are attention-based methods [5, 28, 29], which selectively focus on localizing specific patches for WSI representation and decision-making, which prefers the ”needle-in-a-haystack” tasks (e.g., micro-metastasis detection). However, for “panoramic” tasks such as prognosis prediction, staging, and subtype classification, the model needs to integrate intratumoral heterogeneity, (i.e., the diversity within different tumor populations), and interactions between different tissues, (i.e., immune infiltration near invasive tumor margins). This necessitates the model to identify and process patches from various intratumoral tissues. Therefore, many works seek to exploit prior knowledge of pathology tissues, guiding models to identify pathology tissues and inter-tissue interactions that are highly relevant to specific task, including prototype-based approaches [38] and heterogeneous graphbased methods [3, 16], both of which have demonstrated significant improvements. However, these methods rely on specific priors such as clustering or classification results, to pre-classify patches, which increases the overall complexity of the framework. Moreover, the model’s focus may be limited by fixed priors, potentially hindering its ability to capture the full variability and intricacy of the features. Therefore, designing a method that enables the recognition and utilization of tissue heterogeneity without relying on additional priors is valuable for uncovering more diverse relationships between pathological tissues.
+
+Based on these insights, and inspired by recent advancements in Mixture-of-Experts (MoE) [20, 37] optimization [7, 44] and applications [21, 31], we propose a MoE based module that can recognize and process patches from heterogeneous pathological tissues without additional priors during inference. Furthermore, building on the expert choice routing improvement of MoE [44], we introduce the Pathology-Aware Mixture-of-Experts (PAMoE) module, which achieves the filtering of task-irrelevant patches by allowing experts to select patches of interest, rather than assigning an expert to each patch. In addition, we train each expert to become an ‘expert’ of a certain intratumoral tissue by learning each expert’s routing preference aligns with its mapped tissue. The PAMoE module is a plug-and-play component that can be seamlessly integrated with most classical methods for WSI analysis, enabling prior-awareness without the need for specialized model workflow design. We validate the results of integrating PAMoE with several classical WSI methods on survival prediction task. Experimental results on the task across diverse cancer types indicate that incorporating the PAMoE module enhances model performance in the majority of cases. The main contributions can be summarized as follows:
+
+1. We introduce a plug-and-play Pathology-aware Mixtureof-Experts module, PAMoE, which identifies and processes tissue-specific features in the MoE layer, effectively tackling heterogeneous pathology tissues. PAMoE does not require specialized model workflow design and additional priors during inference, as it learns to route appropriate patches to its corresponding expert during training and discard patches that are irrelevant to the task.
+
+2. We integrated PAMoE into various established WSI analysis methods and conducted experiments on the survival prediction task. The experimental results show that most transformer-based methods incorporated with PAMoE demonstrated performance improvements.
+
+## 2. Related Work
+
+## 2.1. Multiple Instance Learning in WSIs
+
+Due to the extremely high resolution of WSI, it is not feasible to input the entire WSI into a neural network for analysis. While initial studies on WSI analysis often relied on pathologist-annotated regions of interest [14], current efforts focus on weakly supervised frameworks based on Multiple Instance Learning. Works based on the MIL framework concentrate on developing new patch aggregation methods to learn more representative and task-specific WSI embeddings, which could further improve the prediction accuracy and interpretability of the model [5, 11, 22, 27, 43]. Recent work has focused on incorporating pathological tissue priors into the model [3, 16, 38]. By leveraging domain knowledge related to pathological tissues, these approaches guide the MIL aggregation process, helping the model discover interactions between different tissue types [2, 18]. Chan et al. [3] utilized a pre-trained classifier to endow pathological tissue categories to each patch and employed a heterogeneous graph to discover the interactions among different pathological tissues. Song et al. [38] used prototypes from pre-extracted cluster centers to aggregate global patches in an unsupervised manner. The interpretability experiments demonstrated that each prototype represented a specific pathological tissue type. The difference between PAMoE and these methods lies in PAMoE aim to guide the model to discover heterogeneity among pathology tissues without additional workflow designs. Through the targeted design of the MoE module, PAMoE enables an end-to-end, tissue-pathology-aware network.
+
+## 2.2. Mixture of Experts
+
+Modern Mixture-of-Experts methods are mainly based on the work of Shazeer et al. [37], which introduced a sparsely gated mixture of expert layers to replace the feedforward network in large language models. Currently, MoE has been widely applied in natural language processing [8, 25], and computer vision [35]. Although MoEs are traditionally used as scaling tools in large language models [17, 35, 37], many studies have demonstrated that MoE possesses powerful capabilities for handling heterogeneous inputs [4, 21, 26, 31, 42]. Jain et al. [21] used MoE to address problems associated with mixing multiple datasets, effectively tackling the challenges of combined heterogeneous datasets. Mi and Xu [31] employed MoE to address the challenge of heterogeneous scene decomposition within Neural Radiance Fields (NeRF). These applications all demonstrate the powerful capabilities of MoE in perceiving and processing heterogeneous inputs effectively.
+
+## 3. Preliminaries
+
+## 3.1. Multiple Instance Learning Formulation
+
+In multiple instance learning of WSIs, each WSI is treated as a bag composed of multiple instances (patches) $B =$ $\{ p _ { 1 } , p _ { 2 } , \cdots , p _ { n } \}$ , the instances are non-overlapping patches segmented from the WSI. Only bag-level labels are available, whereas patch-level labels remain unknown. The objective is to learn a model that can predict the label of the bag (WSI) based on instances (patches). Conventional MIL mainly consists of three steps: 1) patches embedding by a pre-trained encoder, 2) aggregation to get bag-level representations, and 3)downstream task prediction. A pre-trained patch-level feature extractor $f ( \cdot )$ is used to map the patches into the lowdimensional feature representations. Then, an aggregation $A ( \cdot )$ is applied to aggregate these patches to the bag-level feature. Finally, a prediction head $D ( \cdot )$ predicts the bag label Y<sup>ˆ</sup> for downstream tasks based on the bag-level feature. The entire MIL process can be formulated as:
+
+$$
+\hat { Y } = D \left( A ( h _ { 1 } , h _ { 2 } , \ldots , h _ { k } , \ldots , h _ { n } ) \right) , \quad h _ { k } = f ( p _ { k } ) ,\tag{1}
+$$
+
+## 3.2. Mixture of Experts
+
+A vanilla MoE layer consists of two parts: 1) a set of experts, and 2) a gating function (router). The router determines the destination expert of each input token, and dispatch the tokens to their target experts, which is called “routing”.
+
+Let the inputs be denoted as $x \in \mathbb { R } ^ { d }$ , the set E of experts as $\{ e _ { i } \} _ { i = 1 } ^ { m }$ , and the router variable as $W _ { \mathbf { r } } \in \mathbb { R } ^ { m \times d }$ . The probability $p _ { i }$ of a token for each expert will then become:
+
+$$
+\begin{array} { c } { g _ { x } = \mathrm { W } _ { \mathbf { r } } \cdot \mathbf { x } , } \\ { p _ { i } ( x ) = \displaystyle \frac { \exp { ( g _ { x _ { i } } ) } } { \sum _ { j = 1 } ^ { m } \exp { \left( g _ { x _ { j } } \right) } } , } \end{array}\tag{2}
+$$
+
+After obtaining the probability of each expert $p _ { i } ( x )$ for all inputs, Shazeer et al. [37] use top-k experts to route the inputs. The output y of the MoE layer is calculated by taking a weighted combination of the processed inputs with the probability as:
+
+$$
+y = \sum _ { i | p _ { i } ( x ) \in t o p _ { k } ( p ( x ) ) } p _ { i } ( x ) e _ { i } ( x ) ,\tag{3}
+$$
+
+![](images/fdbbdd02fc6d0290b7a3f0f492f00ac8708180f6e4e777f9c3c27b0ac240906e.jpg)  
+Figure 2. Mixture-of-Experts via Expert Choice Routing. Each patch is processed by a gating network that scores it for each expert. Experts then select a fixed number of top<sub>k</sub> patches based on these scores. A patch may be chosen by multiple experts or none. Selected patches are weighted summed by gating scores, while unselected ones are discarded. This expert choice routing enables PAMoE to filter out noisy patches in multi-instance learning and improve expert load balancing in MoEs.
+
+## 4. Method
+
+In this section, we first introduce PAMoE and outline its distinctions from vanilla MoEs. Then we describe the procedure for integrating PAMoE with various established WSI analysis methods.
+
+## 4.1. Mixture-of-Experts via Expert Choice Routing
+
+Vanilla MoE routing assigns expert networks to each input, which can lead to issues such as expert load imbalance. Additionally, the set of patches in a WSI contains a large amount of noise, non-pathological tissue background, and other tissue patches that are irrelevant to the downstream task. These irrelevant patches introduce perturbation, which may affect the model’s judgment. To handle these irrelevant patches, we introduce the Heterogeneous MoE via Expert Choice Routing module [7, 44]. Unlike vanilla MoE, the module does not assign an expert to each patch. Instead, each expert selects the patches they are interested in, and patches not selected by any expert are discarded. This approach not only addresses the issue of load balancing among different experts but also naturally filters out irrelevant patches within the multiple instance learning workflow.
+
+In MoE via expert choice module, an expert choice method independently selects $t o p _ { k }$ tokens for each expert.
+
+![](images/0f619b2efdeff5b997d9e91fd5dd9f51356af8529576e728713d83b655e7ec3e.jpg)  
+Figure 3. Overview of PAMoE. PAMoE is a plug-and-play module based on Mixture-of-Experts via Expert Choice Routing. During training, we supervise the experts’ preference for instance selection based on pathological priors, whereas during inference, the process is end-to-end without the need for additional priors. a) The process of extracting prior-based prototypes from a set of WSIs of a specific cancer dataset; b) The workflow of PAMoE. We divide the experts into Prior Supervised Experts and Free Experts, and supervise the selection preferences of the Prior Supervised Experts based on the pre-extracted prior-based prototypes.
+
+We set k according to the total number of patches per bag:
+
+$$
+k = { \frac { n \times c } { m } } ,\tag{4}
+$$
+
+where n is the total number of patches in the input bag, c is the pre-set capacity factor, and m is the number of experts. The capacity factor c determines how many patches each expert can choose.
+
+Let $\boldsymbol { X } \in \mathbb { R } ^ { n \times d }$ be the input patches, where n is the number of patches in the current bag and d is the hidden dimension. A multilayer perceptron (MLP) layer, g (·), is employed as the router to determine the assignment probability S for each patch across the set $\{ e _ { i } x \} _ { i = 1 } ^ { m }$ of m experts.
+
+$$
+\boldsymbol { \overline { { S } } } = \boldsymbol { g } ( \boldsymbol { X } ) \in \mathbb { R } ^ { m \times n } ,\tag{5}
+$$
+
+Each expert selects the top<sub>k</sub> patches along the patch dimension (row) based on the assignment probability S. In this setup, each patch may be selected multiple times by different experts or may not be selected by any expert at all. Let T be the set of selected top-k indices along the patch dimension based on the assignment probability S.
+
+$$
+\mathcal { T } = \{ i | \overline { { S } } _ { i } \in t o p _ { k } ( \overline { { S } } ) \} ,\tag{6}
+$$
+
+The softmax function is then applied along the expert dimension to compute the normalized assignment probability S for each patch.
+
+$$
+S = \mathrm { S o f t m a x } ( \overline { { S } } ) \in \mathbb { R } ^ { m \times n } ,\tag{7}
+$$
+
+The output of the PAMoE layer is the linearly weighted addition of each expert’s output on the patches by the normalized assignment probability S.
+
+$$
+y = \sum _ { i \in \mathcal { T } } S _ { i } ^ { \mathsf { T } } e _ { i } ( x ) \in \mathbb { R } ^ { n \times d } ,\tag{8}
+$$
+
+The sum of probabilities S of discarded patches is 0, causing all-zero features. We remove these all-zero features through post-processing, in some cases, retaining them is also an option.
+
+## 4.2. PAMoE: Pathology-Aware Mixture-of-Experts
+
+Although the Mixture-of-Experts via Expert Choice Routing addresses the load balancing issue and filters out useless instances in MIL pipeline, it introduces other problems, such as the similar preferences of experts and the potential for valuable instances to be discarded due to the difficulty in fitting the router. On the other hand, domain priors regarding intratumoral tissues that may affect prognosis are abundantly available. Leveraging these priors to guide the model’s learning can enhance the model’s interpretability and help direct the model to learn truly meaningful information. Therefore, we introduce prior supervision for the router of PAMoE, guiding the selection preferences of experts based on pathological priors.
+
+Prototype Pre-Extraction. As shown in Fig. 3a, to introduce priors for expert learning, we use a pre-trained foundation model, CONCH [30], as the classifier to determine each patch’s category. We focus on intratumoral tissue categories that are recognized by the current consensus as highly relevant to cancer prognosis: tumor [32], stroma [1], immune infiltration [10], and necrosis [34]. Therefore, we use CONCH [30] to determine each patch’s category, and then select the focused intratumoral tissue categories (tumor, stroma, immune infiltration, necrosis, others) to get prior-based prototypes.
+
+Specifically, for a cancer dataset, we regard all WSIs (bags in MIL) as a set W. First, within the MIL pipeline, we divide all WSI into a set of patches $\{ p _ { 1 } , p _ { 2 } , \cdots , p _ { N } \}$ which has N patches. Then, we use a pre-trained encoder to encode the patches into the instance feature set with dimension of $d .$
+
+$$
+H = \{ h _ { 1 } , h _ { 2 } , \cdot \cdot \cdot , h _ { N } \} \in \mathbb { R } ^ { N \times d } ,\tag{9}
+$$
+
+To reduce computational load, we randomly sample a portion of instances (10% of all instances), with the number of instances denoted as $\widetilde N$ , for subsequent steps. Let the randomly selected instances be represented as the set $\overline { H }$
+
+$$
+\overline { { H } } = \{ h _ { 1 } , h _ { 2 } , \cdot \cdot \cdot , h _ { p } \} \in \mathbb { R } ^ { \widetilde { N } \times d } ,\tag{10}
+$$
+
+We then use CONCH [30] as the classifier to determine the intratumoral tissue category for each instance. The details of the CONCH classifier’s usage are provided in supplementary material Sec. 9. Leveraging pathological priors, we select instances from the categories of tumor [32], stroma [1], immune infiltration [10], and necrosis [34] to derive the prior-based prototypes. Thus, the resulting set of selected categories Ω is represented as:
+
+$$
+\Omega = \{ t u m o r , s t r o m a , n e c r o s i s , i n f i l t r a t i o n \} ,\tag{11}
+$$
+
+We then compute the average of the instances from each intratumoral tissue set to obtain the final tissue prior-based prototypes P.
+
+$$
+\mathcal { P } = \{ p _ { \omega } = m e a n ( \overline { { H } } _ { \omega } ) | \overline { { H } } _ { \omega } \in \overline { { H } } , \omega \in \Omega , p _ { \omega } \in \mathbb { R } ^ { 1 \times d } \} ,\tag{12}
+$$
+
+These prior-based prototypes are used to supervise the experts’ preference.
+
+Expert Choice Supervision by Prototypes. Fig. 3b illustrates the workflow of supervision of experts’ choice preferences. We divide the experts within PAMoE layer into Prior Supervised Experts and Free Experts. We supervise the choice preferences of Prior Supervised Experts using prior-based prototypes. At the same time, to preserve the model’s ability to discover unknown factors, we retain Free Experts which adaptively learns preferences without additional supervision.
+
+For instance input $\hat { H } = \{ h _ { 1 } , h _ { 2 } , \cdot \cdot \cdot , h _ { n } \} \in \mathbb { R } ^ { n \times d }$ from a WSI bag, we first calculate the cosine similarity between each instance and the prototypes and then apply softmax to obtain the selection probability $p r o b _ { \omega }$ of each tissue prior by the prior prototype $p _ { \omega } \in \mathcal { P }$
+
+$$
+p r o b _ { \omega } = \mathrm { S o f t m a x } \left( \frac { \boldsymbol { \hat { H } } \cdot \boldsymbol { p _ { \omega } } } { | | \boldsymbol { \hat { H } } | | \times | | \boldsymbol { p _ { \omega } } | | } \right) \in \mathbb { R } ^ { 1 \times n } ,\tag{13}
+$$
+
+Eq. (13) denotes the probability that the n input patch feature instances are selected by the prototype corresponding to category ω.
+
+Let the number of Prior Supervised Experts in the PAMoE layer be $m _ { p } ,$ and the number of Free Experts be $m _ { f } ,$ where $m _ { p } + m _ { f } = m$ (m is the total number of experts in the PAMoE layer). We ensure that $m _ { p }$ does not exceed the number of prototypes. If the number of experts is fewer than the prototypes, we can choose a subset of prior tissue categories for supervision. In the Mixture-of-Experts via Expert Choice Routing pipeline, we obtain the normalized assignment probability S for each expert from Eq. (7). We assign a corresponding preference to each expert by distributing certain prototypes to it and supervising their assignment probability.
+
+Denote the set of assignment probabilities for the Supervised Experts as $S _ { e } \subseteq S$ , containing the $m _ { p }$ experts’ probabilities.
+
+$$
+S _ { e } = \{ s _ { \omega } \mid s _ { \omega } \in S , \omega \in \Omega , s _ { \omega } \in \mathbb { R } ^ { 1 \times n } \} ,\tag{14}
+$$
+
+Finally, we compute the cross-entropy loss between the expert’s assignment probability $s _ { \omega }$ and its corresponding probability $p r o b _ { \omega }$ to supervise the choice preference of each expert.
+
+$$
+\mathcal { L } _ { \mathrm { P A M o E } } = - \sum _ { \omega \in \Omega } \sum _ { i = 1 } ^ { n } p r o b _ { \omega _ { i } } \log s _ { \omega { i } } ,\tag{15}
+$$
+
+We combine $\mathcal { L } _ { \mathrm { P A M o E } }$ with the task specific loss $\mathcal { L } _ { t a s k }$ in a weighted sum as the final loss ${ \mathcal { L } } ,$ with α as the tuning hyperparameter.
+
+$$
+\mathcal { L } = \mathcal { L } _ { t a s k } + \alpha \mathcal { L } _ { \mathrm { P A M o E } } .\tag{16}
+$$
+
+Additional Discussion. Although calculating prototypes based on classification results can provide supervision for expert preferences based on pathological priors, using a extra classifier introduces additional computational overhead. Therefore, we discuss an alternative approach that directly computes prior-based prototypes by using cluster centers as supervisory targets in supplementary material Sec. 11.3.
+
+## 4.3. Integrating PAMoE with Classical Methods
+
+To validate the effectiveness of the PAMoE module, we integrated PAMoE with several classical models by replacing the fully connected layers with the PAMoE layer. We selected TransMIL [36], LongVit [39], and PatchGCN [5] for a in-depth exploration. Although MoEs are typically used in transformer-based models, we additionally select PatchGCN to test the performance impact of PAMoE when applied to non-transformer-based classical models. We provide details on integrating PAMoE with these methods in supplementary material Sec. 8. For transformer-based models, we discuss in detail the impact on the performance of handling the class token and residual connections when applying Mixture-of-Experts via Expert Choice Routing in supplementary material Sec. 11.2.
+
+Table 1. Survival prediction results over five cancer datasets based on C-index (mean ± std). The optimal results for different variants of the model are highlighted in bold, the best results over all models are highlighted in underline,
+<table><tr><td></td><td>COAD</td><td>LGG</td><td>LUAD</td><td>PAAD</td><td>BRCA</td></tr><tr><td>ABMIL</td><td> $0 . 6 7 9 \pm 0 . 0 2 0$ </td><td> $0 . 7 8 6 \pm 0 . 0 6 2$ </td><td> $0 . 6 4 1 \pm 0 . 0 4 1$ </td><td> $0 . 6 4 0 \pm 0 . 0 7 5$ </td><td> $0 . 6 9 0 \pm 0 . 0 4 2$ </td></tr><tr><td>AttnMISL</td><td> $0 . 6 0 9 \pm 0 . 0 5 2$ </td><td> $0 . 7 2 6 \pm 0 . 0 6 5$ </td><td> $0 . 6 5 6 \pm 0 . 0 6 8$ </td><td> $0 . 6 3 2 \pm 0 . 0 5 2$ </td><td> $0 . 6 6 8 \pm 0 . 0 5 1$ </td></tr><tr><td>CaMIL</td><td> $0 . 6 9 5 \pm 0 . 0 4 2$ </td><td> $0 . 7 1 8 \pm 0 . 0 5 4$ </td><td> $0 . 6 1 7 \pm 0 . 0 5 9$ </td><td> $0 . 6 2 1 \pm 0 . 0 6 1$ </td><td> $0 . 6 5 2 \pm 0 . 0 4 7$ </td></tr><tr><td>PANTHER</td><td> $0 . 6 8 9 \pm 0 . 0 4 7$ </td><td> $0 . 7 6 3 \pm 0 . 0 5 8$ </td><td> $0 . 6 5 6 \pm 0 . 0 5 2$ </td><td> $\underline { { 0 . 6 6 6 \pm 0 . 0 5 8 } }$ </td><td> $0 . 6 9 1 \pm 0 . 0 5 9$ </td></tr><tr><td>HEAT</td><td> $0 . 6 9 2 \pm 0 . 0 6 3$ </td><td> $0 . 7 4 3 \pm 0 . 0 6 8$ </td><td> $0 . 6 4 6 \pm 0 . 0 4 8$ </td><td> $0 . 6 6 4 \pm 0 . 0 5 4$ </td><td> $0 . 6 8 6 \pm 0 . 0 6 3$ </td></tr><tr><td>PatchGCN</td><td> $0 . 7 1 2 \pm 0 . 0 3 3$ </td><td> $0 . 7 8 6 \pm 0 . 0 6 2$ </td><td> $\mathbf { 0 . 6 5 7 \pm 0 . 0 1 6 }$ </td><td> $\mathbf { 0 . 6 1 6 \pm 0 . 0 6 5 }$ </td><td> $\mathbf { 0 . 6 9 2 \pm 0 . 0 6 5 }$ </td></tr><tr><td>PatchGCN+PAMoE</td><td> $\mathbf { 0 . 7 1 5 \pm 0 . 0 3 6 }$ </td><td> $\mathbf { 0 . 7 9 3 \pm 0 . 0 5 5 }$ </td><td> $0 . 6 5 1 \pm 0 . 0 4 7$ </td><td> $0 . 6 1 2 \pm 0 . 0 6 8$ </td><td> $0 . 6 7 9 \pm 0 . 0 7 1$ </td></tr><tr><td>TransMIL</td><td> $0 . 6 7 6 \pm 0 . 0 2 8$ </td><td> $0 . 7 7 0 \pm 0 . 0 6 2$ </td><td> $0 . 6 4 4 \pm 0 . 0 2 6$ </td><td> $0 . 6 4 6 \pm 0 . 0 2 6$ </td><td> $0 . 6 9 2 \pm 0 . 0 4 9$ </td></tr><tr><td>TransMIL+PAMoE</td><td> $\mathbf { 0 . 6 8 8 \pm 0 . 0 3 6 }$ </td><td> $\mathbf { 0 . 7 7 9 \pm 0 . 0 7 2 }$ </td><td> $\mathbf { 0 . 6 6 8 \pm 0 . 0 1 6 }$ </td><td> $\mathbf { 0 . 6 5 5 \pm 0 . 0 7 4 }$ </td><td> $\underline { { \mathbf { 0 . 6 9 4 } \pm \mathbf { 0 . 0 5 4 } } }$ </td></tr><tr><td>LongViT</td><td> $0 . 6 5 5 \pm 0 . 0 4 3$ </td><td> $0 . 7 7 6 \pm 0 . 0 7 1$ </td><td> $0 . 6 1 5 \pm 0 . 0 5 3$ </td><td> $0 . 6 1 2 \pm 0 . 0 7 9$ </td><td> $0 . 6 6 2 \pm 0 . 0 4 3$ </td></tr><tr><td> $\mathrm { L o n g V i T + P A M o E }$ </td><td> $\mathbf { 0 . 6 8 9 \pm 0 . 0 3 4 }$ </td><td> $\mathbf { 0 . 7 8 0 \pm 0 . 0 6 0 }$ </td><td> $\mathbf { 0 . 6 4 4 \pm 0 . 0 4 8 }$ </td><td> $\mathbf { 0 . 6 3 9 \pm 0 . 0 6 0 }$ </td><td> $\mathbf { 0 . 6 7 3 \pm 0 . 0 4 7 }$ </td></tr></table>
+
+## 5. Experiments
+
+## 5.1. Datasets and Implementation
+
+Unless otherwise specified, for all PAMoE layers, we set the number of Prior Supervised Experts to 4, Free Experts to 2, the capacity factor $c = 2 . 0 \AA$ , and the tuning hyperparameter α of $\mathcal { L } _ { \mathrm { P A M o E } }$ is 0.1. We conduct experiments based on survival prediction tasks, setting $\mathcal { L } _ { t a s k }$ as the Cox regression loss [24], which is commonly used for survival prediction. Detailed information on datasets and other implementations is provided in supplementary material Sec. 10.
+
+## 5.2. Comparison with State-Of-The-Art Methods
+
+We validate our proposed PAMoE module on the aforementioned datasets on survival prediction task. In addition to the models integrated with PAMoE introduced earlier, we also select several state-of-the-art methods for comparison. The comparison methods include: (1) ABMIL [19], (2) AttnMISL [41], (3) CaMIL [9], (4) PANTHER [38], (5) HEAT [3]. Among these methods, ABMIL and AttnMISL are classic MIL methods; CaMIL is based on transformer and incorporates an adjacency matrix in the attention computation, providing the model with enhanced spatial awareness. PAN-
+
+THER is a prototype-based unsupervised framework that guides block aggregation by using prototype priors derived from global cluster centers. Its interpretability experiments show that each prototype generally corresponds to a different type of pathological tissue, thus enhancing the model’s ability to capture meaningful tissue representations. HEAT uses Hover-net [12] as the classifier to introduce pathological tissue category priors for each patch, and constructs a heterogeneous graph to explore the interactions between patches of different tissue types. To ensure a fair comparison, Attn-MISL and PANTHER are configured with 16 prototypes, and UNI [6] is employed as the instance feature encoder across all methods. Each method is evaluated using the identical 5-fold cross-validation split.
+
+## 5.3. Results
+
+Survival prediction results are shown in Tab. 1. In the survival prediction task, models that incorporate priors tend to perform better than the other models. Furthermore, we observe that models integrated with PAMoE consistently outperform or are on par with transformer-based baselines. This indicates that the PAMoE module can enhance transformerbased models’ ability to learn pathology-related interactions. However, for PatchGCN, we find that the addition of PAMoE provides limited and inconsistent improvements, indicating that PAMoE’s enhancement is constrained when instance interactions are limited to a small range. Based on this, we propose a hypothesis regarding the mechanisms of MoEs in MIL-based WSI analysis pipeline.
+
+Hypothesis. Based on the results from different methods, we hypothesize that the performance improvement of PAMoE is mainly due to different experts mapping patches in unique ways, which expands the latent space and enables the model to capture more diverse global interactions. These interactions are effectively supported by the global self-attention mechanism in transformer-based models. Therefore, incorporating PAMoE into the ensemble of transformer-based models consistently improves the performance of all tasks. In contrast, PatchGCN is designed mainly for context patch interactions and only models the relationships between neighboring patches through a graph neural network, which limits the potential performance improvement of the PAMoE module on PatchGCN.
+
+![](images/a1c33b25ee0cd412afbb026babcf2f67c3a4486af776bab2351838af2b6c1d39.jpg)  
+Figure 4. Expert heatmap interpretation. (a) Examples of WSIs and expert assignment maps of TCGA-RB-AA9M-01Z-00-DX1. (b) Visualization of expert-preferred patches, where a higher position on the y-axis indicates a higher preference score of the expert.
+
+## 5.4. Interpretability
+
+To analyze the preferences of the experts, we visualize their patch selection preferences in Fig. 4. The results demonstrate that PAMoE is a simple yet effective module for ranking and selecting patches based on their tissue types and importance. Notably, the Supervised Experts exhibit more consistent preferences that align closely with the supervised prior objectives, whereas the Free Experts display more dispersed preferences, indicating a tendency to explore novel patterns.
+
+Specifically, in our implementation, we guide the Prior Supervised Experts to focus on the categories of tumor, necrosis, stroma, and infiltration tissues respectively. We observed that tumor and activated stroma [13] tissues received higher scores from Expert 1; necrosis and inactivated stroma from Expert 2; general stroma tissues from Expert 3; and infiltration and lymph nodes from Expert 4. This appearance aligns with our expectations, validating the effectiveness of the pathology-aware routing.
+
+## 5.5. Ablation Studies
+
+Number of Experts. We categorize experts into Prior Supervised Experts and Free Experts in the PAMoE module to introduce prior-guided supervision. In this ablation study, we vary the ratio of these experts to validate: 1) the necessity of Prior Supervised Experts, and 2) the impact of the total number of experts on model performance. We conduct experiments based on the TransMIL model. Tab. 2 presents the results of the ablation experiment. Overall, models equipped with Prior Supervised Experts consistently outperform models with the same total number of experts but without prior supervision. Additionally, when the number of Free Experts is set to zero, the performance improvement of PAMoE becomes unstable.
+
+Necessity of the MoE Architecture. To verify the necessity of the MoE architecture (the router), we additionally design another plug-and-play layer. It directly assigns each patch to dedicated MLPs through the cosine similarity between the patch and prototypes, which is similar to clustering-based methods. This setting restricts flexibility, yet results in a precise prior assignment. We term it Cosine Similarity Assignment (CSA) layer and use it to replace PAMoE. Tab. 3 shows the results. We observe that, compared with plain TransMIL, adding CSA improves performance on most datasets, indicating the effectiveness of priors. However, the performance of CSA is lower than that of PAMoE on most datasets. Thus, we believe that the flexible assignment performed by a router trained with both task-driven and the loose prior constraints $( \mathcal { L } _ { \mathrm { P A M o E } } )$ is a better choice. Effect of $\mathcal { L } _ { \mathrm { P A M o E } } .$ . To incorporate priors into the supervision of the expert routing process, we introduce a prior loss, as shown in Eq. (15), which is combined with the task loss in a weighted sum controlled by the tuning hyperparameter α. In this study, we evaluate the impact of this combined loss on model performance. Fig. 5 shows the ablation results for varying values ofα. Compared to using task loss alone, most non-zero values of α yield performance improvements across all datasets, providing substantial evidence for the effectiveness of the additional loss functions.
+
+Table 2. Ablation study of Number of Experts based on TransMIL. The ”total $( m ) ^ { \dag }$ column represents the total number of experts, the ”prior $( m _ { p } ) ^ { \dag }$ column represents the number of Prior Supervised Experts, and the ”free $( m _ { f } ) ^ { \dag }$ column represents the number of Free Experts, where $m _ { p } + m _ { f } = m$ . The optimal results in same m are highlighted in bold, the best results are highlighted in underline.
+<table><tr><td>total (m)</td><td> $\mathrm { p r i o r } ( m _ { p } )$ </td><td>free  $( m _ { f } )$  一</td><td>COAD</td><td>LGG</td><td>LUAD</td><td>PAAD</td><td>BRCA</td></tr><tr><td>4</td><td>0</td><td>4</td><td> $0 . 6 6 9 \pm 0 . 0 4 3$ </td><td> $\mathbf { 0 . 7 8 2 \pm 0 . 0 6 0 }$ </td><td> $0 . 6 5 8 \pm 0 . 0 2 3$ </td><td> $\mathbf { 0 . 6 5 2 \pm 0 . 0 8 1 }$ </td><td> $0 . 6 8 1 \pm 0 . 0 5 8$ </td></tr><tr><td>4</td><td>4</td><td>0</td><td> $\mathbf { 0 . 6 8 9 \pm 0 . 0 4 5 }$ </td><td> $0 . 7 7 5 \pm 0 . 0 5 1$ </td><td> $\mathbf { 0 . 6 6 6 \pm 0 . 0 3 3 }$ </td><td> $0 . 6 4 8 \pm 0 . 0 7 5$ </td><td> $\mathbf { 0 . 6 9 6 \pm 0 . 0 5 1 }$ </td></tr><tr><td>6</td><td>0</td><td>6</td><td> $0 . 6 8 5 \pm 0 . 0 1 5$ </td><td> $0 . 7 7 5 \pm 0 . 0 6 8$ </td><td> $0 . 6 6 4 \pm 0 . 0 2 0$ </td><td> $0 . 6 4 7 \pm 0 . 0 7 5$ </td><td> $0 . 6 9 0 \pm 0 . 0 3 1$ </td></tr><tr><td>6</td><td>4</td><td>2</td><td> $\mathbf { 0 . 6 8 8 \pm 0 . 0 3 6 }$ </td><td> $\mathbf { 0 . 7 7 9 \pm 0 . 0 7 2 }$ </td><td> $\mathbf { 0 . 6 6 8 \pm 0 . 0 1 6 }$ </td><td> $\mathbf { 0 . 6 5 5 \pm 0 . 0 7 4 }$ </td><td> $\mathbf { 0 . 6 9 4 \pm 0 . 0 5 4 }$ </td></tr><tr><td>8</td><td>0</td><td>8</td><td> $0 . 6 8 1 \pm 0 . 0 3 5$ </td><td> $0 . 7 8 8 \pm 0 . 0 5 3$ </td><td> $\mathbf { 0 . 6 5 8 \pm 0 . 0 2 6 }$ </td><td> $0 . 6 4 5 \pm 0 . 0 8 1$ </td><td> $\mathbf { 0 . 6 8 2 \pm 0 . 0 4 6 }$ </td></tr><tr><td>8</td><td>4</td><td>4</td><td> $\mathbf { 0 . 6 8 2 \pm 0 . 0 4 1 }$ </td><td> $\mathbf { 0 . 7 9 9 \pm 0 . 0 5 5 }$ </td><td> $\mathbf { 0 . 6 5 8 \pm 0 . 0 2 2 }$ </td><td> $\mathbf { 0 . 6 5 6 \pm 0 . 0 7 7 }$ </td><td> $0 . 6 7 2 \pm 0 . 0 4 4$ </td></tr></table>
+
+Table 3. Ablation study of the MoE architecture. The best results are highlighted in bold.
+<table><tr><td></td><td>COAD</td><td>LGG</td><td>LUAD</td><td>PAAD</td><td>BRCA</td></tr><tr><td>TransMIL</td><td> $0 . 6 7 6 \pm 0 . 0 2 8$ </td><td> $0 . 7 7 0 \pm 0 . 0 6 2$ </td><td> $0 . 6 4 4 \pm 0 . 0 2 6$ </td><td> $0 . 6 4 6 \pm 0 . 0 2 6$ </td><td> $0 . 6 9 2 \pm 0 . 0 4 9$ </td></tr><tr><td>TransMIL+PAMoE</td><td> $0 . 6 8 8 \pm 0 . 0 3 6$ </td><td> $\mathbf { 0 . 7 7 9 \pm 0 . 0 7 2 }$ </td><td> $\mathbf { 0 . 6 6 8 \pm 0 . 0 1 6 }$ </td><td> $\mathbf { 0 . 6 5 5 \pm 0 . 0 7 4 }$ </td><td> $\mathbf { 0 . 6 9 4 \pm 0 . 0 5 4 }$ </td></tr><tr><td>TransMIL+CSA</td><td> $\mathbf { 0 . 6 9 2 \pm 0 . 0 3 9 }$ </td><td> $0 . 7 6 9 \pm 0 . 0 6 3$ </td><td> $0 . 6 6 5 \pm 0 . 0 1 8$ </td><td> $0 . 6 4 7 \pm 0 . 0 7 8$ </td><td> $0 . 6 8 2 \pm 0 . 0 5 2$ </td></tr></table>
+
+![](images/1a33b05b07be29f9b1ae371122ae47bcc51cd0aa0844be2df89db30889170d62.jpg)  
+Figure 5. The impact of the hyperparameter α of the prior loss $\mathcal { L } _ { \mathrm { P A M o E } }$ on model performance based on TransMIL.
+
+Further Ablation. We conduct further ablation studies and present additional insights in supplementary material Sec. 11. In this section, we perform the following experiments: 1) Ablation study on expert choice routing. 2) Discussions about skip connections and class tokens when integrating PAMoE into transformer-based models; 3) Exploration of alternative approaches for obtaining prototypes for expert routing supervision; 4) Discussion about Using CONCH as encoder; 5) Ablation Study on capacity factor; 6) Quantitative analysis of patch dropping proportion and more discussion about capacity factor setting to patch dropping; 7) Further Discussion about free experts.
+
+## 6. Discussions
+
+Conclusion. In this paper, we introduce PAMoE, a plug-andplay MoE-based module for WSI analysis. The module enables end-to-end systematic learning of tissue heterogeneity and improves the performance of transformer-based models. Limitations and Future Work. Due to hardware constraints, we did not explore PAMoE on larger scale models, which would require different parameter settings. Moreover, while PAMoE improves transformer-based models, its impact on other architectures remains unclear. Future work will focus on scaling experiments, and further explore the potential of MoE in computational pathology.
+
+## Acknowledgements
+
+This work is supported by National Natural Science Foundation of China (Grant No. 82302316 and 62471133). This work is also supported by the Big Data Computing Center of Southeast University.
+
+## References
+
+[1] Roy M Bremnes, Tom Dønnem, Samer Al-Saad, Khalid Al-Shibli, Sigve Andersen, Rafael Sirera, Carlos Camps, Inigo Marinez, and Lill-Tove Busund. The role of tumor stroma in cancer progression and prognosis: emphasis on carcinomaassociated fibroblasts and non-small cell lung cancer. Journal ofthoracic oncology, 6(1):209–217, 2011. 5
+
+[2] Gabriele Campanella, Matthew G Hanna, Luke Geneslaw, Allen Miraflor, Vitor Werneck Krauss Silva, Klaus J Busam, Edi Brogi, Victor E Reuter, David S Klimstra, and Thomas J Fuchs. Clinical-grade computational pathology using weakly supervised deep learning on whole slide images. Nature medicine, 25(8):1301–1309, 2019. 2
+
+[3] Tsai Hor Chan, Fernando Julio Cendra, Lan Ma, Guosheng Yin, and Lequan Yu. Histopathology whole slide image analysis with heterogeneous graph representation learning. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 15661–15670, 2023. 1, 2, 6
+
+[4] Mingheng Chen, Xiaowei Yu, Jing Zhang, Tong Chen, Chao Cao, Yan Zhuang, Yanjun Lyu, Lu Zhang, Tianming Liu, and Dajiang Zhu. Core-periphery principle guided state space model for functional connectome classification. arXiv preprint arXiv:2503.14655, 2025. 3
+
+[5] Richard J Chen, Ming Y Lu, Muhammad Shaban, Chengkuan Chen, Tiffany Y Chen, Drew FK Williamson, and Faisal Mahmood. Whole slide images are 2d point clouds: Context-aware survival prediction using patch-based graph convolutional networks. In Medical Image Computing and Computer Assisted Intervention–MICCAI 2021: 24th International Conference, Strasbourg, France, September 27–October 1, 2021, Proceedings, Part VIII 24, pages 339–349. Springer, 2021. 2, 5, 1
+
+[6] Richard J Chen, Tong Ding, Ming Y Lu, Drew FK Williamson, Guillaume Jaume, Andrew H Song, Bowen Chen, Andrew Zhang, Daniel Shao, Muhammad Shaban, et al. Towards a general-purpose foundation model for computational pathology. Nature Medicine, 30(3):850–862, 2024. 6, 2
+
+[7] Mohammed Nowaz Rabbani Chowdhury, Shuai Zhang, Meng Wang, Sijia Liu, and Pin-Yu Chen. Patch-level routing in mixture-of-experts is provably sample-efficient for convolutional neural networks. In International Conference on Machine Learning, pages 6074–6114. PMLR, 2023. 2, 3
+
+[8] William Fedus, Barret Zoph, and Noam Shazeer. Switch transformers: Scaling to trillion parameter models with simple and efficient sparsity. Journal ofMachine Learning Research, 23(120):1–39, 2022. 2, 1
+
+[9] Olga Fourkioti, Matt De Vries, and Chris Bakal. Camil: Context-aware multiple instance learning for cancer detection and subtyping in whole slide images. arXiv preprint arXiv:2305.05314, 2023. 6
+
+[10] J Galon, MC Dieu-Nosjean, E Tartour, C Sautes-Fridman, WH Fridman, et al. Immune infiltration in human tumors: a prognostic factor that should not be ignored. Oncogene, 29 (8):1093–1102, 2010. 5
+
+[11] Gan Gao, Andrew H. Song, Fiona Wang, David Brenes, Rui Wang, Sarah S.L. Chow, Kevin W. Bishop, Lawrence D. True,
+
+Faisal Mahmood, and Jonathan T.C. Liu. Triage of 3d pathology data via 2.5d multiple-instance learning to guide pathologist assessments. In Proceedings ofthe IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops, pages 6955–6965, 2024. 2
+
+[12] Simon Graham, Quoc Dang Vu, Shan E Ahmed Raza, Ayesha Azam, Yee Wah Tsang, Jin Tae Kwak, and Nasir Rajpoot. Hover-net: Simultaneous segmentation and classification of nuclei in multi-tissue histology images. Medical image analysis, 58:101563, 2019. 6
+
+[13] Barbara T Grunwald, Antoine Devisme, Geoffroy Andrieux,¨ Foram Vyas, Kazeera Aliar, Curtis W McCloskey, Andrew Macklin, Gun Ho Jang, Robert Denroche, Joan Miguel Romero, et al. Spatially confined sub-tumor microenvironments in pancreatic cancer. Cell, 184(22):5577–5592, 2021. 7
+
+[14] Metin N Gurcan, Laura E Boucheron, Ali Can, Anant Madabhushi, Nasir M Rajpoot, and Bulent Yener. Histopathological image analysis: A review. IEEE reviews in biomedical engineering, 2:147–171, 2009. 2
+
+[15] Frank E Harrell Jr, Kerry L Lee, and Daniel B Mark. Multivariable prognostic models: issues in developing models, evaluating assumptions and adequacy, and measuring and reducing errors. Statistics in medicine, 15(4):361–387, 1996. 2
+
+[16] Wentai Hou, Yan He, Bingjian Yao, Lequan Yu, Rongshan Yu, Feng Gao, and Liansheng Wang. Multi-scope analysis driven hierarchical graph transformer for whole slide image based cancer survival prediction. In International Conference on Medical Image Computing and Computer-Assisted Intervention, pages 745–754. Springer, 2023. 2
+
+[17] Changho Hwang, Wei Cui, Yifan Xiong, Ziyue Yang, Ze Liu, Han Hu, Zilong Wang, Rafael Salas, Jithin Jose, Prabhat Ram, et al. Tutel: Adaptive mixture-of-experts at scale. Proceedings ofMachine Learning and Systems, 5:269–287, 2023. 2
+
+[18] Julianna D Ianni, Rajath E Soans, Sivaramakrishnan Sankarapandian, Ramachandra Vikas Chamarthi, Devi Ayyagari, Thomas G Olsen, Michael J Bonham, Coleman C Stavish, Kiran Motaparthi, Clay J Cockerell, et al. Tailored for realworld: a whole slide image classification system validated on uncurated multi-site data emulating the prospective pathology workload. Scientific reports, 10(1):3217, 2020. 2
+
+[19] Maximilian Ilse, Jakub Tomczak, and Max Welling. Attentionbased deep multiple instance learning. In International conference on machine learning, pages 2127–2136. PMLR, 2018. 6
+
+[20] Robert A Jacobs, Michael I Jordan, Steven J Nowlan, and Geoffrey E Hinton. Adaptive mixtures of local experts. Neural computation, 3(1):79–87, 1991. 2
+
+[21] Yash Jain, Harkirat Behl, Zsolt Kira, and Vibhav Vineet. Damex: Dataset-aware mixture-of-experts for visual understanding of mixture-of-datasets. Advances in Neural Information Processing Systems, 36, 2024. 2, 3
+
+[22] Saarthak Kapse, Pushpak Pati, Srijan Das, Jingwei Zhang, Chao Chen, Maria Vakalopoulou, Joel Saltz, Dimitris Samaras, Rajarsi R Gupta, and Prateek Prasanna. Si-mil: Taming deep mil for self-interpretability in gigapixel histopathology.
+
+In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 11226–11237, 2024. 2
+
+[23] Diederik P Kingma and Jimmy Ba. Adam: A method for stochastic optimization. arXiv preprint arXiv:1412.6980, 2014. 2
+
+[24] Havard Kvamme, Ørnulf Borgan, and Ida Scheel. Time-to-˚ event prediction with neural networks and cox regression. arXiv preprint arXiv:1907.00825, 2019. 6
+
+[25] Dmitry Lepikhin, HyoukJoong Lee, Yuanzhong Xu, Dehao Chen, Orhan Firat, Yanping Huang, Maxim Krikun, Noam Shazeer, and Zhifeng Chen. {GS}hard: Scaling giant models with conditional computation and automatic sharding. In International Conference on Learning Representations, 2021. 2, 1
+
+[26] Bo Li, Yifei Shen, Jingkang Yang, Yezhen Wang, Jiawei Ren, Tong Che, Jun Zhang, and Ziwei Liu. Sparse mixture-ofexperts are domain generalizable learners. In The Eleventh International Conference on Learning Representations, 2023. 3
+
+[27] Geert Litjens, Clara I Sanchez, Nadya Timofeeva,´ Meyke Hermsen, Iris Nagtegaal, Iringo Kovacs, Christina Hulsbergen-Van De Kaa, Peter Bult, Bram Van Ginneken, and Jeroen Van Der Laak. Deep learning as a tool for increased accuracy and efficiency of histopathological diagnosis. Scientific reports, 6(1):26286, 2016. 2
+
+[28] Ming Y Lu, Tiffany Y Chen, Drew FK Williamson, Melissa Zhao, Maha Shady, Jana Lipkova, and Faisal Mahmood. Aibased pathology predicts origins for cancers of unknown primary. Nature, 594(7861):106–110, 2021. 2
+
+[29] Ming Y Lu, Drew FK Williamson, Tiffany Y Chen, Richard J Chen, Matteo Barbieri, and Faisal Mahmood. Data-efficient and weakly supervised computational pathology on wholeslide images. Nature biomedical engineering, 5(6):555–570, 2021. 2
+
+[30] Ming Y Lu, Bowen Chen, Drew FK Williamson, Richard J Chen, Ivy Liang, Tong Ding, Guillaume Jaume, Igor Odintsov, Long Phi Le, Georg Gerber, et al. A visual-language foundation model for computational pathology. Nature Medicine, 30 (3):863–874, 2024. 4, 5, 1
+
+[31] Zhenxing Mi and Dan Xu. Switch-nerf: Learning scene decomposition with mixture of experts for large-scale neural radiance fields. In International Conference on Learning Representations (ICLR), 2023. 2, 3
+
+[32] Clifton F Mountain. New prognostic factors in lung cancer: biologic prophets of cancer cell aggression. Chest, 108(1): 246–254, 1995. 5
+
+[33] Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, et al. Pytorch: An imperative style, high-performance deep learning library. Advances in neural information processing systems, 32, 2019. 2
+
+[34] Colin H Richards, Zahra Mohammed, Tahir Qayyum, Paul G Horgan, and Donald C McMillan. The prognostic value of histological tumor necrosis in solid organ malignant disease: a systematic review. Future oncology, 7(10):1223–1235, 2011. 5
+
+[35] Carlos Riquelme, Joan Puigcerver, Basil Mustafa, Maxim Neumann, Rodolphe Jenatton, Andre Susano Pinto, Daniel´ Keysers, and Neil Houlsby. Scaling vision with sparse mixture of experts. Advances in Neural Information Processing Systems, 34:8583–8595, 2021. 2
+
+[36] Zhuchen Shao, Hao Bian, Yang Chen, Yifeng Wang, Jian Zhang, Xiangyang Ji, et al. Transmil: Transformer based correlated multiple instance learning for whole slide image classification. Advances in neural information processing systems, 34:2136–2147, 2021. 5, 1, 2
+
+[37] Noam Shazeer, \*Azalia Mirhoseini, \*Krzysztof Maziarz, Andy Davis, Quoc Le, Geoffrey Hinton, and Jeff Dean. Outrageously large neural networks: The sparsely-gated mixtureof-experts layer. In International Conference on Learning Representations, 2017. 2, 3
+
+[38] Andrew H Song, Richard J Chen, Tong Ding, Drew FK Williamson, Guillaume Jaume, and Faisal Mahmood. Morphological prototyping for unsupervised slide representation learning in computational pathology. In Proceedings ofthe IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 11566–11578, 2024. 1, 2, 6
+
+[39] Wenhui Wang, Shuming Ma, Hanwen Xu, Naoto Usuyama, Jiayu Ding, Hoifung Poon, and Furu Wei. When an image is worth 1,024 x 1,024 words: A case study in computational pathology. arXiv preprint arXiv:2312.03558, 2023. 5, 1, 2
+
+[40] Yunyang Xiong, Zhanpeng Zeng, Rudrasis Chakraborty, Mingxing Tan, Glenn Fung, Yin Li, and Vikas Singh. Nystromformer: A nystr ¨ om-based algorithm for approximat- ¨ ing self-attention. In Proceedings ofthe AAAI Conference on Artificial Intelligence, number 16, pages 14138–14148, 2021. 1
+
+[41] Jiawen Yao, Xinliang Zhu, Jitendra Jonnagaddala, Nicholas Hawkins, and Junzhou Huang. Whole slide images based cancer survival prediction using attention guided deep multiple instance learning networks. Medical Image Analysis, 65: 101789, 2020. 6
+
+[42] Jing Zhang, Xiaowei Yu, Tong Chen, Chao Cao, Mingheng Chen, Yan Zhuang, Yanjun Lyu, Lu Zhang, Li Su, Tianming Liu, et al. Brainnet-moe: Brain-inspired mixture-of-experts learning for neurological disease identification. arXiv preprint arXiv:2503.07640, 2025. 3
+
+[43] Yi Zheng, Rushin H Gindra, Emily J Green, Eric J Burks, Margrit Betke, Jennifer E Beane, and Vijaya B Kolachalama. A graph-transformer for whole slide image classification. IEEE transactions on medical imaging, 41(11):3003–3015, 2022. 2
+
+[44] Yanqi Zhou, Tao Lei, Hanxiao Liu, Nan Du, Yanping Huang, Vincent Zhao, Andrew M Dai, Quoc V Le, James Laudon, et al. Mixture-of-experts with expert choice routing. Advances in Neural Information Processing Systems, 35:7103–7114, 2022. 2, 3
