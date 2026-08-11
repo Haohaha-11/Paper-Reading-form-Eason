@@ -34,7 +34,27 @@
 | [PathBench](./%5BArxiv%202025%5D%20PathBench/) | Arxiv 2025 | 首个防泄漏、全私有、全临床谱系的 PFM 基准（19 PFM × 64 任务 × 5 癌种）。Virchow2/H-Optimus-1 综合最优、视觉 FM>视觉-语言 FM、无普适赢家。 |
 | [Confounders-Biomarker-Prediction](./%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) | Nat Biomed Eng 2026 | 批判性研究：H&E→分子 biomarker 预测被 grade/TMB/共依赖 biomarker 混杂，分层后 AUROC 大跌（ER 0.89→0.57）。提供分层+permutation 去混杂检验协议。 |
 
-> 📌 **相关交叉引用**：[Revisiting-E2E-Slide-Supervision](../ckmil-re-attn-mil/%5BArxiv%202025%5D%20Revisiting-E2E-Slide-Supervision/)（Arxiv 2025，MRIS 稀疏梯度端到端 WSI MIL）由 `ckmil-re-attn-mil` topic 收录批读，与本 topic 的端到端/效率线密切相关。
+### 六、WSI MIL Baseline Set · FM-era 主对比方法集
+> 为 foundation-model-era WSI MIL 实验确定的一组规模适中、覆盖面完整的主对比方法——每个 baseline 对应一种不同的**竞争解释**。完整设计文档见 CKMIL 写作仓 `related-work/wsi-mil-baseline-set.md`。
+
+| 论文 | 会议 | 竞争解释 / 方法特点 |
+|------|------|----------|
+| [DeepSets](./%5BNeurIPS%202017%5D%20DeepSets/) | NeurIPS 2017 | **MeanPool 的理论根据**：排列不变集合函数 = $\rho(\sum\phi)$。"强 FM + 均值池化就够了"的 sanity control 理论出处。 |
+| [TransMIL](./%5BNeurIPS%202021%5D%20TransMIL/) | NeurIPS 2021 | **contextual aggregation**：correlated MIL + self-attention 建 instance 相关（Nyström 近似 + PPEG）。"关键只是 instance 上下文交互"。 |
+| [MambaMIL](./%5BMICCAI%202024%5D%20MambaMIL/) | MICCAI 2024 | **SSM 长序列**：Mamba 线性复杂度 + Sequence Reordering。"关键只是高效长序列建模"；GMMamba 的 base control。 |
+| [RetMIL](./%5BMICCAI%202024%5D%20RetMIL/) | MICCAI 2024 | **retention 长上下文**：层次 retention（局部并行+全局串行），内存近常数。"更合适的 retention 聚合就够"。 |
+| [PAMoE](./%5BCVPR%202025%5D%20PAMoE/) | CVPR 2025 | **pathology-aware MoE routing**：expert-choice 路由 + 组织原型监督，丢无关 patch。"关键只是组织异质性 + MoE 路由"。 |
+| [GMMamba](./%5BICCV%202025%5D%20GMMamba/) | ICCV 2025 | **evidence selection + Mamba**：组内掩码 Mamba（IMM）+ 跨组超特征采样（CSS）。"关键只是去冗余/证据选择"。 |
+| [MAMMOTH](./%5BICLR%202026%5D%20MAMMOTH/) | ICLR 2026 | **⭐ task-specific feature transformation**：多头 soft MoE 替换被忽略的线性层。装上后 mean/max pooling 超复杂 MIL——"真正瓶颈是特征变换而非聚合器"。CKMIL 最强竞争解释。 |
+| [Shazam](./%5BArxiv%202025%5D%20Shazam/) | Arxiv 2025 | **⭐ 多层/多 FM 表示融合**：在线融合 5 FM × 3 层 + MoE 加权 + 在线蒸馏。**CKMIL "多层 FM 表示" 主线的最近竞争工作**（已占据"多层互补"novelty）。 |
+
+**baseline set 合读洞察**（对 CKMIL/ReadySlide）：
+- **MeanPool 是有理论根据的 sanity control**（DeepSets）——新方法超不过 FM+MeanPool 则增益来自特征而非聚合。
+- **MAMMOTH 是最强竞争解释**：任务特定特征变换 > 聚合器选择，装上后 mean pooling 超复杂 MIL。CKMIL 若动特征变换必须正面对比。
+- **Shazam 已占据"多层病理表示互补"novelty**：CKMIL 需把差异化落在"单 FM + 条件式 depth SELECTION"（选层 vs 全融），而非"多层有用"本身。
+- **去冗余/证据选择反复出现**（PAMoE expert-choice / GMMamba IMM masking / PIBD Irr / EAGLE 25-tile），且多呈"适度保留"倒 U 形——retention 是贯穿主线的杠杆。
+
+> 📌 **相关交叉引用**：[Revisiting-E2E-Slide-Supervision](../ckmil-re-attn-mil/%5BArxiv%202025%5D%20Revisiting-E2E-Slide-Supervision/)（Arxiv 2025，MRIS 稀疏梯度端到端 WSI MIL）由 `ckmil-re-attn-mil` topic 收录批读，与本 topic 的端到端/效率线密切相关。ABMIL（baseline set 的注意力经典基线）也在 `ckmil-re-attn-mil` 有交叉。
 
 ## 推荐阅读顺序
 

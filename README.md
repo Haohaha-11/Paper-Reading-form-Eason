@@ -198,6 +198,15 @@ Test-Time Training / Test-Time Learning / long-context continual adaptation：�
 | [LitePath](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202026%5D%20Deployment-Friendly-CPath/) | Arxiv 2026 | LiteFM 蒸馏(22.5M) + APS 选 patch，403.5× FLOP 削减，跑 $249 Jetson；提出 D-Score。 |
 | [PathBench](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202025%5D%20PathBench/) | Arxiv 2025 | 首个防泄漏、全私有的 PFM 基准（19 PFM×64 任务×5 癌种）；Virchow2/H-Optimus-1 最优、无普适赢家。 |
 | [Confounders-Biomarker-Prediction](./topics/Whole-Slide-Image-Analysis/%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) | Nat Biomed Eng 2026 | 批判研究：H&E→biomarker 被 grade/TMB/共依赖 biomarker 混杂，分层后 AUROC 大跌；给去混杂协议。 |
+| [DeepSets](./topics/Whole-Slide-Image-Analysis/%5BNeurIPS%202017%5D%20DeepSets/) | NeurIPS 2017 | MeanPool 理论根据：排列不变集合函数 = ρ(Σφ)。MIL baseline set 的 sanity control。 |
+| [TransMIL](./topics/Whole-Slide-Image-Analysis/%5BNeurIPS%202021%5D%20TransMIL/) | NeurIPS 2021 | correlated MIL + self-attention（Nyström + PPEG）；contextual aggregation baseline。 |
+| [MambaMIL](./topics/Whole-Slide-Image-Analysis/%5BMICCAI%202024%5D%20MambaMIL/) | MICCAI 2024 | Mamba SSM 线性长序列 + Sequence Reordering；高效长序列 baseline。 |
+| [RetMIL](./topics/Whole-Slide-Image-Analysis/%5BMICCAI%202024%5D%20RetMIL/) | MICCAI 2024 | 层次 retention（局部并行+全局串行），内存近常数；retention 长上下文 baseline。 |
+| [PAMoE](./topics/Whole-Slide-Image-Analysis/%5BCVPR%202025%5D%20PAMoE/) | CVPR 2025 | pathology-aware MoE：expert-choice 路由 + 组织原型监督，丢无关 patch。 |
+| [GMMamba](./topics/Whole-Slide-Image-Analysis/%5BICCV%202025%5D%20GMMamba/) | ICCV 2025 | 组内掩码 Mamba（IMM）+ 跨组超特征采样（CSS）；evidence selection + Mamba。 |
+| [MAMMOTH](./topics/Whole-Slide-Image-Analysis/%5BICLR%202026%5D%20MAMMOTH/) | ICLR 2026 | 多头 soft MoE 替换被忽略的线性层；task-specific 特征变换 > 聚合器（mean pooling 超复杂 MIL）。 |
+| [Shazam](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202025%5D%20Shazam/) | Arxiv 2025 | 在线融合多 FM × 多层特征 + MoE 加权 + 在线蒸馏；多层 FM 表示融合。 |
+| [ILRA-MIL](./topics/Whole-Slide-Image-Analysis/%5BICLR%202023%5D%20ILRA-MIL/) | ICLR 2023 | 低秩 MIL：LRC 对比预训练 + 迭代低秩注意力（速览卡，待补 PDF）。 |
 
 📖 [Whole Slide Image Analysis 详细总结](./topics/Whole-Slide-Image-Analysis/README.md)
 
