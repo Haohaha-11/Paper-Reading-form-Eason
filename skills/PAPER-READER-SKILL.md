@@ -389,9 +389,9 @@ sections/
 
 ---
 
-### 规则 8：批注质量必须达到 Hao 风格
+### 规则 8：批注质量必须达到 claude 风格
 
-批注不是占位解释，必须围绕论文自身机制做具体拆解。批注作者标记为 `Hao 批注`。
+批注不是占位解释，必须围绕论文自身机制做具体拆解。批注作者标记为 `claude 批注`。
 
 必须做到：
 1. **批注标题具体**：使用 `问题动机`、`机制拆解`、`公式批读`、`Figure 2 批读`、`消融解读`、`Q&A 批注记录` 等有信息量的标题；不要大量使用只有 `批注` 的泛标题。
@@ -580,7 +580,7 @@ Step 3: Agent 补充详细解释，更新到对应 section 文件
 
 - README section 标题必须使用中文：`## 一句话总结`、`## 核心贡献`、`## 📖 批读导航`、`## 关键数字`、`## 数据流：输入 → 中间表示 → 输出`、`## 优缺点与还能做什么`、`## 阅读 Q&A 记录`、`## 📊 Citation Landscape`
 - 批注标题使用中文：`问题动机`、`机制拆解`、`公式批读`、`Figure X 批读`、`消融解读`、`Q&A 批注记录`
-- 批注作者名使用 `Hao 批注` 而非 `Eason 批注`
+- 批注作者名使用 `claude 批注`
 - 原文（英文论文内容）保持原样不动
 
 ---
@@ -701,7 +701,7 @@ flowchart TD
 - [ ] 连续子图是否转换为 HTML table 左右并列
 - [ ] Data flow 是否使用 Mermaid（而非 ASCII 框图）
 - [ ] README section 标题是否为中文
-- [ ] 批注中是否残留 "Eason"（应为 "Hao"）
+- [ ] 批注作者是否统一为 `claude 批注`
 - [ ] 是否有其他论文目录被意外修改
 - [ ] `git add -A` 整个论文目录（含 images/、full.md、PDF 等）
 
@@ -715,7 +715,7 @@ flowchart TD
 | 目录命名 | `[会议 年份] 论文名` |
 | Section 文件命名 | 按论文大分节：`00-abstract.md`、`01-introduction.md`、`02-related-work.md`、`03-methodology.md`、... |
 | 批注标记 | `> 💡 **标题**: 内容` |
-| 批注作者 | `Hao 批注` |
+| 批注作者 | `claude 批注` |
 | GitHub 仓库 | `Haohaha-11/Paper-Reading-form-Eason` |
 | 默认分支 | `main` |
 | MinerU Token | 存储于 `secrets/mineru.env` |
