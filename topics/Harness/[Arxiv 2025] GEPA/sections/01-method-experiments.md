@@ -54,10 +54,10 @@ GEPA 三原则：**genetic prompt evolution**（候选池 + 谱系树，reflecti
 | **GEPA Pareto-based** | GEPA | **+12.44%** |
 
 > 💡 **§3.1 + Table 3 = 用户改进 Self-Harness 的核心武器（务必内化）**（Hao 批注）：这是全篇对用户最重要的部分——**Pareto illumination 把增益从 greedy 的 +6% 提到 +12.44%（翻倍）**，且在**相同预算**下。直接对应用户的判断"Self-Harness 现在比较 greedy"：
-> - **[Self-Harness](../%5BArxiv%202026%5D%20Self-Harness/) 现状**：单一 harness 谱系 $h_0→h_1→...$，每轮 K 提案挑通过的 merge，本质是"总从当前最佳 harness 出发"——正是 GEPA 说的会陷局部最优的 greedy。
+> - **[Self-Harness](../../%5BArxiv%202026%5D%20Self-Harness/) 现状**：单一 harness 谱系 $h_0→h_1→...$，每轮 K 提案挑通过的 merge，本质是"总从当前最佳 harness 出发"——正是 GEPA 说的会陷局部最优的 greedy。
 > - **GEPA 的处方**：维护候选**池**（不是单一谱系）+ 实例级 Pareto 前沿 + 频率加权随机采样。关键洞察：**一个在"整体"上不是最佳、但在"某些任务"上最佳的 harness，值得保留和探索**——因为它可能承载被全局最佳掩盖的 winning 策略。
 > - **对用户的直接改造**：把 Self-Harness 的"当前 harness $h_t$"换成"harness 候选池 + 实例级（per-task）Pareto 前沿"；每轮不从"最佳 harness"而从"Pareto 前沿按领先任务数加权采样"的 harness 出发提案。这就把 Self-Harness 从 greedy 单谱系变成 GEPA 式 population 搜索。
-> - **⚠️ 开放问题（弱自 proposer）**：Self-Harness 用**弱的 target 自己**当 proposer（而 GEPA 用独立 reflection LM）。Pareto illumination 在弱自 proposer 下是否还有效、是否会因自评估噪声（[AHE](../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) regression blindness / [Phantom-Guardrails](../%5BArxiv%202026%5D%20Phantom-Guardrails/) 幻觉）而失效——这是用户可做的实验贡献。[Meta-Harness](../%5BArxiv%202026%5D%20Meta-Harness/) 已证明强外部 proposer + Pareto 有效，Self-Harness 退成 greedy，弱自 proposer + Pareto 是中间的未知地带。
+> - **⚠️ 开放问题（弱自 proposer）**：Self-Harness 用**弱的 target 自己**当 proposer（而 GEPA 用独立 reflection LM）。Pareto illumination 在弱自 proposer 下是否还有效、是否会因自评估噪声（[AHE](../../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) regression blindness / [Phantom-Guardrails](../../%5BArxiv%202026%5D%20Phantom-Guardrails/) 幻觉）而失效——这是用户可做的实验贡献。[Meta-Harness](../../%5BArxiv%202026%5D%20Meta-Harness/) 已证明强外部 proposer + Pareto 有效，Self-Harness 退成 greedy，弱自 proposer + Pareto 是中间的未知地带。
 
 ## System Aware Merge（crossover）
 
@@ -67,7 +67,7 @@ GEPA+Merge 可超 GEPA 5%（聚合 +2%）。但**最优 mutation/crossover 预�
 
 > 💡 **Merge/crossover 批读（对用户的第二个武器）**（Hao 批注）：这是用户提到的"crossover / merge complementary improvements"的具体实现。关键设计对用户改 Self-Harness 的 **MergeAccepted** 极有参考：
 > - Self-Harness 现在的 MergeAccepted 是"把同轮通过的多个编辑合并"——但没有 GEPA 这种**跨谱系、互补性判据**（共享祖先 + 不相交 prompt 集 + 都 Pareto-optimal + 都超祖先）。
-> - GEPA 的严格合并条件正好回应 [AHE](../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的"组件非加性交互"警告——只合并**优化了不相交组件**的候选（互补而非冲突），降低非加性交互导致的增益 cap。
+> - GEPA 的严格合并条件正好回应 [AHE](../../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的"组件非加性交互"警告——只合并**优化了不相交组件**的候选（互补而非冲突），降低非加性交互导致的增益 cap。
 > - **对用户**：若给 Self-Harness 加多 lineage（Pareto），就需要 GEPA 式的 merge 判据来安全合并互补 harness——共享祖先 + 编辑不同组件（tool vs middleware vs memory）+ 都 Pareto-optimal。这与 AHE 的组件观测（7 类组件即文件）天然契合：不同 lineage 编辑不同组件文件，merge 时挑各组件最佳版本。
 
 ## 4-5. 主要结果
@@ -81,7 +81,7 @@ GEPA+Merge 可超 GEPA 5%（聚合 +2%）。但**最优 mutation/crossover 预�
 > 1. **Pareto-based candidate selection（核心）**：用实例级 Pareto 前沿 + 频率加权采样替代 Self-Harness 的 greedy 单谱系，Table 3 证明翻倍增益。
 > 2. **genetic tree + population/archive**：维护候选池和谱系，沿树累积经验，而非单一 $h_t$。
 > 3. **System Aware Merge（crossover）**：严格判据（共享祖先 + 不相交组件 + 都 Pareto-optimal）安全合并互补 lineage，回应 AHE 的非加性交互警告。
-> **但用户要甄别**：GEPA 是 prompt-only + 需标签的；要把它的**搜索结构**（不是范围/标签依赖）移植到 Self-Harness，并验证在**弱自 proposer** 下是否成立（GEPA/Meta-Harness 都用强/独立 proposer）。**理想合成**：Self-Harness 的自改进内化 + GEPA 的 Pareto 搜索 + [RHO](../%5BArxiv%202026%5D%20RHO-Self-Preference/) 的无标签 self-preference + [Phantom-Guardrails](../%5BArxiv%202026%5D%20Phantom-Guardrails/) 的反事实去幻觉 + [AHE](../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的 regression 预测/evidence ledger。
+> **但用户要甄别**：GEPA 是 prompt-only + 需标签的；要把它的**搜索结构**（不是范围/标签依赖）移植到 Self-Harness，并验证在**弱自 proposer** 下是否成立（GEPA/Meta-Harness 都用强/独立 proposer）。**理想合成**：Self-Harness 的自改进内化 + GEPA 的 Pareto 搜索 + [RHO](../../%5BArxiv%202026%5D%20RHO-Self-Preference/) 的无标签 self-preference + [Phantom-Guardrails](../../%5BArxiv%202026%5D%20Phantom-Guardrails/) 的反事实去幻觉 + [AHE](../../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的 regression 预测/evidence ledger。
 
 > 💡 **Q&A 批注记录**（Hao 批注）：
 > - **Q：GEPA 对用户最有用的一点？**

@@ -26,7 +26,7 @@
 
 > 💡 **Table 1/2/3 批读（决定性发现）**（Hao 批注）：这组结果对 CKMIL 主线是**决定性的**：
 > - **最关键的一句**：装 MAMMOTH 的 **mean pooling 超过 ABMIL baseline +2.0%、max pooling +0.3%**——即"最笨的聚合器 + 好的特征变换" > "最强聚合器 + 标准线性层"。**这直接证明：线性层（特征变换）是比聚合器更大的瓶颈**。
-> - **任务分层**：形态学任务提升最大（+7.36%，H&E 形态直接相关）；分子 biomarker 提升较小（+2.1%，且低基线 biomarker 如 PIK3CA/KRAS 变化大——因为这些从形态学本就难预测，[Confounders](../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 也指出过）；生存 +2.78。
+> - **任务分层**：形态学任务提升最大（+7.36%，H&E 形态直接相关）；分子 biomarker 提升较小（+2.1%，且低基线 biomarker 如 PIK3CA/KRAS 变化大——因为这些从形态学本就难预测，[Confounders](../../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 也指出过）；生存 +2.78。
 > - **对 ReadySlide/CKMIL 的冲击**：如果新方法的增益来自"更好的聚合"，MAMMOTH 说明这可能是次要的——**真正的杠杆在聚合前的 task-specific 特征变换**。任何 CKMIL 新方法都应：(1) 报告 +MAMMOTH 的组合结果；(2) 论证自己的增益是否独立于 MAMMOTH 式的特征变换。
 
 ![Table 3](../images/2ae9835808feafb9a7f06fc5bfd21306ab409faf607b0a19d700c85c1b71d79c.jpg)
@@ -37,7 +37,7 @@
 
 Interpretability confirms MAMMOTH experts learn to specialize in distinct morphological concepts (Fig.3, A3-A7 — each slot summarizes a distinct histomorphological feature). Extensive ablations reveal MAMMOTH surpasses other MoE adaptations in CPath (Soft MoE, sparse MoE, multihead variants).
 
-> 💡 **可解释性 + 消融解读**（Hao 批注）：可解释性证明 MAMMOTH 的 experts/slots **真的学到了不同形态概念**（不是黑盒）——每个 slot 是一种组织形态的 WSI 级摘要。这与 [PAMoE](../%5BCVPR%202025%5D%20PAMoE/) 的 expert 专精组织类型呼应，但 MAMMOTH 的 slot 原型是**可学习的**（无需 CONCH 监督），更自动。消融显示 MAMMOTH 优于其他 MoE 变体（Soft/sparse/multihead）——说明其"多头 + slot-pooling + 低秩"的组合是为 CPath 特调的。
+> 💡 **可解释性 + 消融解读**（Hao 批注）：可解释性证明 MAMMOTH 的 experts/slots **真的学到了不同形态概念**（不是黑盒）——每个 slot 是一种组织形态的 WSI 级摘要。这与 [PAMoE](../../%5BCVPR%202025%5D%20PAMoE/) 的 expert 专精组织类型呼应，但 MAMMOTH 的 slot 原型是**可学习的**（无需 CONCH 监督），更自动。消融显示 MAMMOTH 优于其他 MoE 变体（Soft/sparse/multihead）——说明其"多头 + slot-pooling + 低秩"的组合是为 CPath 特调的。
 
 ## 关键洞察总结
 

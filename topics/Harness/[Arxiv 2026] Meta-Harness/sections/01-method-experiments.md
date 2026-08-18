@@ -35,7 +35,7 @@ Algorithm 1 Meta-Harness outer loop
 
 **实现**：每个 harness 是单文件 Python 程序。proposer P = Claude Code + Opus-4.6，由一个最小 domain-specific skill 引导。base model M 随域变化、始终冻结。典型 run 20 轮评估约 60 个 harness。
 
-> 💡 **方法批读（与 Self-Harness 的核心对比表 — 务必内化）**（Hao 批注）：这是本 topic 最重要的对比。Meta-Harness 和 [Self-Harness](../%5BArxiv%202026%5D%20Self-Harness/) 是"外部优化器"vs"自改进"的两极：
+> 💡 **方法批读（与 Self-Harness 的核心对比表 — 务必内化）**（Hao 批注）：这是本 topic 最重要的对比。Meta-Harness 和 [Self-Harness](../../%5BArxiv%202026%5D%20Self-Harness/) 是"外部优化器"vs"自改进"的两极：
 >
 > | 维度 | Meta-Harness | Self-Harness |
 > |------|-------------|--------------|
@@ -47,8 +47,8 @@ Algorithm 1 Meta-Harness outer loop
 > | **novelty 轴** | 丰富诊断访问（trace > summary） | 内化（自改进，无外部强 agent） |
 >
 > **关键推论**：
-> 1. **Meta-Harness 已经有 population + Pareto**——用户想给 Self-Harness 加的 [GEPA](../%5BArxiv%202025%5D%20GEPA/) 式 population/Pareto，Meta-Harness 已验证"在外部强 proposer 下有效"。但 Self-Harness **刻意退化成单一谱系 greedy**——因为它用较弱的 target 自己当 proposer。**开放问题**：弱 proposer + population/Pareto 还成立吗？这正是用户可做的贡献点。
-> 2. **反馈压缩的张力**：Meta-Harness 力证"压缩反馈丢诊断信号"，Self-Harness 却压缩成 evidence bundle。这使 Self-Harness 理论上**更易受幻觉失败影响**——它看的是聚类后的失败签名，不是原始 trace，无法像 Meta-Harness 那样"读原始 trace 去证伪假设"。[Phantom-Guardrails](../%5BArxiv%202026%5D%20Phantom-Guardrails/) 的反事实验证正好补这个洞。
+> 1. **Meta-Harness 已经有 population + Pareto**——用户想给 Self-Harness 加的 [GEPA](../../%5BArxiv%202025%5D%20GEPA/) 式 population/Pareto，Meta-Harness 已验证"在外部强 proposer 下有效"。但 Self-Harness **刻意退化成单一谱系 greedy**——因为它用较弱的 target 自己当 proposer。**开放问题**：弱 proposer + population/Pareto 还成立吗？这正是用户可做的贡献点。
+> 2. **反馈压缩的张力**：Meta-Harness 力证"压缩反馈丢诊断信号"，Self-Harness 却压缩成 evidence bundle。这使 Self-Harness 理论上**更易受幻觉失败影响**——它看的是聚类后的失败签名，不是原始 trace，无法像 Meta-Harness 那样"读原始 trace 去证伪假设"。[Phantom-Guardrails](../../%5BArxiv%202026%5D%20Phantom-Guardrails/) 的反事实验证正好补这个洞。
 > 3. **一个融合方向**：把 Meta-Harness 的 rich-trace 访问 + Self-Harness 的自改进内化 + GEPA 的 population 结合——自己当 proposer，但保留原始 trace 访问（不压缩）、维护多 lineage、加反事实验证。可能就是"明显更强的一篇"。
 
 ## 4. Experiments
@@ -84,7 +84,7 @@ Algorithm 1 Meta-Harness outer loop
 > - **第 7 轮转向纯 additive 修改**（env bootstrap），并**论证为什么更安全**（不碰脆弱的 completion 机制，只加对难任务有用的信息）→ 成为最佳候选。
 > - proposer 每轮读 median 82 个文件、引用 20+ 历史候选。
 >
-> **⚠️ 这正是 [Phantom-Guardrails](../%5BArxiv%202026%5D%20Phantom-Guardrails/) 关心的反面**：Meta-Harness 的 proposer 因为**能读原始 trace**，能做"识别 confound → 隔离因果变量 → 反事实测试"的因果推理，从而**避免给虚构失败加 guardrail**。Self-Harness 把失败压成 evidence bundle 后，proposer 更难做这种原始 trace 上的因果验证——这从机制上解释了为什么 Self-Harness 更需要显式的反事实验证步骤。这个 A.2 案例应该作为"如何做 grounded 失败诊断"的正面模板，指导用户改进 Weakness Mining。
+> **⚠️ 这正是 [Phantom-Guardrails](../../%5BArxiv%202026%5D%20Phantom-Guardrails/) 关心的反面**：Meta-Harness 的 proposer 因为**能读原始 trace**，能做"识别 confound → 隔离因果变量 → 反事实测试"的因果推理，从而**避免给虚构失败加 guardrail**。Self-Harness 把失败压成 evidence bundle 后，proposer 更难做这种原始 trace 上的因果验证——这从机制上解释了为什么 Self-Harness 更需要显式的反事实验证步骤。这个 A.2 案例应该作为"如何做 grounded 失败诊断"的正面模板，指导用户改进 Weakness Mining。
 
 ## 5. Discussion & 局限
 
@@ -93,7 +93,7 @@ Algorithm 1 Meta-Harness outer loop
 > 💡 **总结 + 对用户研究的定位**（Hao 批注）：Meta-Harness 是 Self-Harness 的直接前作和最重要对照。用户理解 Self-Harness novelty 的坐标：
 > - **Self-Harness 的 novelty = 内化**（去掉 Meta-Harness 的外部强 proposer，让 target 自己改自己）。这是"往前推一步"的正确概括。
 > - **但 Self-Harness 为内化付出的代价**：(1) proposer 变弱（target 自己）；(2) 反馈被迫压缩（evidence bundle 而非全 trace）；(3) 搜索退化（单谱系 greedy 而非 population/Pareto）。
-> - **用户的机会 = 在保持"内化"的前提下，把 Meta-Harness 证明有效的东西补回来**：rich-trace 访问（Table 3 证明关键）、population/Pareto（Meta-Harness 已用）、因果验证（A.2 展示的 confound 识别）——同时加 [Phantom-Guardrails](../%5BArxiv%202026%5D%20Phantom-Guardrails/) 的反事实去幻觉。
+> - **用户的机会 = 在保持"内化"的前提下，把 Meta-Harness 证明有效的东西补回来**：rich-trace 访问（Table 3 证明关键）、population/Pareto（Meta-Harness 已用）、因果验证（A.2 展示的 confound 识别）——同时加 [Phantom-Guardrails](../../%5BArxiv%202026%5D%20Phantom-Guardrails/) 的反事实去幻觉。
 > - **一个尖锐的研究问题**：Meta-Harness 用强 proposer + 全 trace + Pareto 拿到大增益；Self-Harness 用弱自 proposer + 压缩反馈 + greedy 也拿到 +132%。**这两个增益来源可分离吗？** 弱自 proposer 到底损失了多少、能否用更好的搜索/验证补回来——这是"明显更强的 Self-Harness"要回答的核心。
 
 > 💡 **Q&A 批注记录**（Hao 批注）：

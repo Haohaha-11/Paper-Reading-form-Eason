@@ -24,7 +24,7 @@ In other words, the key is to add up all representations and then apply nonlinea
 > 💡 **公式批读（sum vs mean vs max 的取舍）**（Hao 批注）：Theorem 2 用 **sum**，但实践中 mean（归一化 sum）和 max 都常用：
 > - **sum**：严格符合定理，但对集合大小 $N$ 敏感（WSI patch 数差异大 → sum 量级漂移）。
 > - **mean**：sum 归一化，对 $N$ 鲁棒 → **WSI MIL 的 MeanPool 用这个**，适合 patch 数变化大的场景。
-> - **max**：Eq.4 变体，作者说某些应用更好（max-normalized 输入）→ 对应 MaxPool，适合"少数关键 instance 决定 bag"的稀疏信号（但 [ACMIL](../%5BECCV%202024%5D%20ACMIL/) 显示 max 在 SSL 特征上有时反优于 mean，取决于信号稀疏度）。
+> - **max**：Eq.4 变体，作者说某些应用更好（max-normalized 输入）→ 对应 MaxPool，适合"少数关键 instance 决定 bag"的稀疏信号（但 [ACMIL](../../%5BECCV%202024%5D%20ACMIL/) 显示 max 在 SSL 特征上有时反优于 mean，取决于信号稀疏度）。
 > 三者都在 Theorem 2 的函数族内，选择取决于信号的稀疏性与 $N$ 的分布。
 
 ## 4. Applications (选摘)
@@ -44,7 +44,7 @@ DeepSets is applied to: population statistic estimation (entropy/MI of Gaussians
 DeepSets provides: (i) a universality result (Theorem 2) characterizing all permutation-invariant set functions as $\rho(\sum\phi)$, relating DeepSets to de Finetti / kernel / spectral methods; (ii) the permutation-equivariant layer (Lemma 3) identifying necessary & sufficient parameter-sharing; (iii) diverse applications.
 
 > 💡 **总结 + 对 WSI MIL baseline set 的定位**（Hao 批注）：DeepSets 在这个 baseline set 里的角色是**MeanPool 的理论身份证**。它告诉我们：
-> - **MeanPool 不是"没方法的弱基线"**，而是集合函数族里最简的合法实例——所以它在强 FM 特征下能打（[SiMLP](../../ckmil-re-attn-mil/)、[EAGLE](../%5BNat%20Commun%202026%5D%20DL-Efficient-Pathology/) 都验证了简单聚合的强度）。
+> - **MeanPool 不是"没方法的弱基线"**，而是集合函数族里最简的合法实例——所以它在强 FM 特征下能打（[SiMLP](../../../ckmil-re-attn-mil/)、[EAGLE](../../%5BNat%20Commun%202026%5D%20DL-Efficient-Pathology/) 都验证了简单聚合的强度）。
 > - **所有 MIL 聚合器（ABMIL/TransMIL/Mamba/RetMIL）都是 Theorem 2 的更复杂参数化**——它们的增益必须解释为"比 $\rho(\sum\phi)$ 的最简形式多学到什么"（如 ABMIL 的自适应权重、TransMIL 的实例相关性）。
 > - **对 ReadySlide/CKMIL 的论证价值**：把 MeanPool 作为 sanity control 有坚实理论依据——**如果新方法超不过 FM+MeanPool，说明增益来自 FM 特征而非聚合设计**。这正是 baseline set 文档里 MeanPool "必须保留"的深层原因。
 

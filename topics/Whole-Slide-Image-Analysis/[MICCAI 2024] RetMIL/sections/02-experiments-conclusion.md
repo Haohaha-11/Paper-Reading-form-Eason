@@ -51,6 +51,6 @@ RetMIL uses linear retention mechanisms to reduce computational overhead while m
 > - Q：retention 和 self-attention / Mamba 的本质区别？
 > - A：self-attention 有 softmax（$O(n^2)$、不可递归）；retention 用逐元素距离衰减矩阵 $D=\gamma^{n-m}$ 替代 softmax（线性、并行+递归双形式）；Mamba 用选择性状态空间（输入依赖的 A/B/C）。三者都线性化，retention 的特点是显式因果距离衰减。
 > - Q：因果距离衰减对无序 WSI patch 合理吗？
-> - A：有张力（WSI patch 无内在顺序/距离）。RetMIL 靠层次结构（子序列内/间衰减）+ 注意力池化缓和，但严格说仍引入了顺序假设——与 [MambaMIL](../%5BMICCAI%202024%5D%20MambaMIL/) 的顺序依赖、[DeepSets](../%5BNeurIPS%202017%5D%20DeepSets/) 的可交换性是同一类取舍。
+> - A：有张力（WSI patch 无内在顺序/距离）。RetMIL 靠层次结构（子序列内/间衰减）+ 注意力池化缓和，但严格说仍引入了顺序假设——与 [MambaMIL](../../%5BMICCAI%202024%5D%20MambaMIL/) 的顺序依赖、[DeepSets](../../%5BNeurIPS%202017%5D%20DeepSets/) 的可交换性是同一类取舍。
 > - Q：能在冻结 FM 特征上跑吗？
 > - A：能。输入 patch 特征序列，原文用 ViT-S/16 DINO 特征，换 UNI2/Virchow2 只改维度。

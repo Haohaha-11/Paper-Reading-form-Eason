@@ -13,7 +13,7 @@ Shazam 是**多个病理基础模型的在线自适应融合模型**：不做离
 Foundation models have substantially advanced computational pathology, yet their performance varies widely across tasks due to differences in training data composition and reliance on proprietary datasets that cannot be cumulatively expanded. Existing efforts to combine foundation models through offline distillation partially mitigate this but require dedicated distillation data and repeated retraining to integrate new models. Here we present Shazam, an online integration model that adaptively combines multiple pretrained pathology foundation models within a unified and scalable representation learning paradigm. Fusing **multi-level features through adaptive expert weighting and online distillation** enables efficient consolidation of complementary model strengths without additional pretraining. Across spatial transcriptomics prediction, survival prognosis, tile-level classification, and visual question answering, Shazam consistently outperforms strong individual models.
 
 > 💡 **问题动机 + 对 CKMIL 的关键定位**（Hao 批注）：**这是 baseline set 文档里标注"最高优先级（新颖性对照）"的论文**——因为它与 CKMIL/ReadySlide 的"多层 FM 表示"主线最接近。核心逻辑链：
-> 1. **单 FM 不够**：benchmark（如 [PathBench](../%5BArxiv%202025%5D%20PathBench/)）显示无普适赢家，不同 FM 各有专长。
+> 1. **单 FM 不够**：benchmark（如 [PathBench](../../%5BArxiv%202025%5D%20PathBench/)）显示无普适赢家，不同 FM 各有专长。
 > 2. **离线蒸馏（GPFM）的局限**：需专用蒸馏数据、加新 FM 要重训、任务无关（不能针对下游任务选知识）。
 > 3. **Shazam 的解法**：**在线、任务特定**地融合多个冻结 FM 的**多层特征**（low/mid/high）+ MoE 自适应加权 + 在线蒸馏。加新 FM 无需重训。
 >

@@ -22,7 +22,7 @@
 
 > 💡 **RQ1-2 批读（弃权 vs 发明的对比是全文根基）**（Hao 批注）：这个对比对用户改 Weakness Mining 极关键：
 > - **好消息（RQ1）**：面对真正无特征的证据，proposer 会弃权——即"do nothing"是可达的正确行为。这意味着 **Self-Harness 加"Do Nothing"候选是可行的**，模型有能力在无信号时选它。
-> - **坏消息（RQ2）**：一旦有一个**看起来像规则**的良性模式，proposer 就读过可见 legality、凭 prior 发明规则。**这正是 [Self-Harness](../%5BArxiv%202026%5D%20Self-Harness/) Weakness Mining 的风险**：它聚类失败 trace 找"失败机制"，若某类合法但有规律的行为被 proposer 误读为失败机制（$\phi=(c,q,m)$ 里的 $m$ 是"abstract agent mechanism"，恰恰是模型推断的），就会造 phantom guardrail。
+> - **坏消息（RQ2）**：一旦有一个**看起来像规则**的良性模式，proposer 就读过可见 legality、凭 prior 发明规则。**这正是 [Self-Harness](../../%5BArxiv%202026%5D%20Self-Harness/) Weakness Mining 的风险**：它聚类失败 trace 找"失败机制"，若某类合法但有规律的行为被 proposer 误读为失败机制（$\phi=(c,q,m)$ 里的 $m$ 是"abstract agent mechanism"，恰恰是模型推断的），就会造 phantom guardrail。
 > - **hook 特异性的启示**：伪造集中在"像规则的 hook"上——说明 phantom 不是随机的，而是**沿着模型 prior 认得的模式**发生。Self-Harness 的可编辑面若包含"像常见 agent 失败模式"的 hook（retry / timeout / verification），最容易被 phantom 填充。
 
 ## 4.3 RQ3: 发明的规则从哪来，什么关掉它
@@ -63,13 +63,13 @@
 
 **RQ5（接受循环怎么处理 fabricated guard？）→ suppression-only 接纳且永不移除；warrant-aware 排除**：
 - **accept-if-not-worse**（接纳中性编辑）：fabricated no-op **第一轮就被接纳**（升不了但也降不了已满足的 proxy），单调棘轮 1→8→10→11。
-- **strict-improvement**（只接纳升 suppression 的）：孤立 phantom 在全合法上被拒，但**batch 到有真失败的 pool 上的真 fix 里 → batch 改进、phantom 搭便车进入**（2/60，永久）。这是 [RHO](../%5BArxiv%202026%5D%20RHO-Self-Preference/) accept-only-improving 的 suppression 类比。
+- **strict-improvement**（只接纳升 suppression 的）：孤立 phantom 在全合法上被拒，但**batch 到有真失败的 pool 上的真 fix 里 → batch 改进、phantom 搭便车进入**（2/60，永久）。这是 [RHO](../../%5BArxiv%202026%5D%20RHO-Self-Preference/) accept-only-improving 的 suppression 类比。
 - **移除永远不发生**：移除 no-op 使 proxy 变化恰为 0 → suppression 信号从不 demerit 它。
 - **loop 里 add-only 角色自己供给需求**：即使中性 charter，per-round 进入率 q=0.050。三条件在单发是必要的，但 loop 是第二 regime（角色供给需求）。
 - **warrant-aware 接受**（只在 proposer 引用 oracle 确认失败的 episode 时才 credit guard）→ **phantom 0/60，真 fixer 60/60**。
 
 > 💡 **RQ5 + 三个 lever = 对用户 Validation 阶段的完整处方（Hao 批注）**：这是对用户改 Self-Harness/RHO **Validation 阶段**最直接的处方：
-> - **suppression-only / self-preference-only 接受是根本漏洞**：no-op phantom 在这些规则下永远不被 demerit（[Self-Harness](../%5BArxiv%202026%5D%20Self-Harness/) 的非退化接受规则、[RHO](../%5BArxiv%202026%5D%20RHO-Self-Preference/) 的 self-preference 都是 suppression-only 类）。Self-Harness 的 "Δ_ho≥0" 门对 no-op phantom 无效——因为 no-op 不降 held-out，正好通过！
+> - **suppression-only / self-preference-only 接受是根本漏洞**：no-op phantom 在这些规则下永远不被 demerit（[Self-Harness](../../%5BArxiv%202026%5D%20Self-Harness/) 的非退化接受规则、[RHO](../../%5BArxiv%202026%5D%20RHO-Self-Preference/) 的 self-preference 都是 suppression-only 类）。Self-Harness 的 "Δ_ho≥0" 门对 no-op phantom 无效——因为 no-op 不降 held-out，正好通过！
 > - **⚠️ 这直接命中 Self-Harness 的验证漏洞**：Self-Harness 接受规则 $\Delta_{in}\geq0 \wedge \Delta_{ho}\geq0 \wedge \max>0$——一个 no-op phantom guard $\Delta_{in}=\Delta_{ho}=0$，被 max>0 拒绝**（好消息，单个 no-op 会被拒）**。但若 phantom **batch 到真 fix 里**（Self-Harness 的 MergeAccepted 合并同轮通过的编辑），phantom 就搭便车进入——**和本文 strict-improvement 的 batch 漏洞完全一样**。
 > - **唯一解 = warrant-aware acceptance**：只在被修的失败被独立验证（oracle-confirmed 或反事实验证）时才接受编辑。这正是用户提的 **Counterfactual Verification → Validated Mechanism**。
 > - **三个 lever 总结**（用户可直接落地）：(1) 指令卫生（中性 charter，去失败预设）；(2) 规格（认证失败 taxonomy 完整）；(3) warrant-aware crediting（引用可验证失败才接受）。前两个 prompt 侧、几乎零成本；第三个是 Validation 侧的结构改造。
@@ -85,8 +85,8 @@
 > 💡 **总结 + 对用户"明显更强的 Self-Harness"的最终定位（Hao 批注）**：Phantom Guardrails 是用户改进 Self-Harness **Weakness Mining + Validation 两阶段**的理论基石和处方来源：
 > - **诊断了 Weakness Mining 的隐藏假设**："LLM diagnosis is factually grounded" 在三条件下系统失效。
 > - **给了 Validation 的唯一解**：warrant-aware acceptance（引用可验证失败才接受）——suppression-only/self-preference-only 对 no-op phantom 全盲。
-> - **与 [AHE](../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 互补夹击**：AHE 说 self-attribution 对 **regression 盲**（假阴性）；Phantom 说对 **fabricated failure 假阳性**。合起来：self-assessment 双向不可信 → 必须外部验证。
-> - **与 [RHO](../%5BArxiv%202026%5D%20RHO-Self-Preference/) 的张力**：RHO 去标签用 self-preference（好），但 self-preference 无法证伪 phantom（本文点名 RHO）→ **去标签必须配 warrant-aware 验证**。
+> - **与 [AHE](../../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 互补夹击**：AHE 说 self-attribution 对 **regression 盲**（假阴性）；Phantom 说对 **fabricated failure 假阳性**。合起来：self-assessment 双向不可信 → 必须外部验证。
+> - **与 [RHO](../../%5BArxiv%202026%5D%20RHO-Self-Preference/) 的张力**：RHO 去标签用 self-preference（好），但 self-preference 无法证伪 phantom（本文点名 RHO）→ **去标签必须配 warrant-aware 验证**。
 > - **用户的完整升级蓝图**（综合 6 篇）：
 >   1. **Weakness Mining**：Failure Hypothesis → **Counterfactual Verification**（Phantom）→ Validated Mechanism；加 self-consistency 信号（RHO）；加 "Do Nothing" 候选（Phantom RQ1）。
 >   2. **Proposal Search**：population/archive + Pareto illumination + merge（GEPA），考虑组件非加性交互（AHE）。

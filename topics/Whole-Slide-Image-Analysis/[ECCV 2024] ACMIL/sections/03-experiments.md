@@ -20,7 +20,7 @@ Table 1: The performance of diferent MIL approaches across three datasets, two p
 
 > 💡 **Table 1 批读**（主结果 = 证据链核心）（Hao 批注）：
 > - **总战绩**：ACMIL 在 12 项里 10 项最优、2 项次优。ResNet18 特征下 CAMELYON16 F1/AUC 分别超次优 +2.1/+2.6pp；BRACS（SSL 特征）超次优 +4.2/+1.7pp；LBC 全面领先。
-> - **一个关键观察（对压缩研究极重要）**：**Mean-pooling 在 SSL 特征下崩得很惨**（CAMELYON16 AUC 仅 0.569），而 Max-pooling 反而不错（0.956）——这与 [SiMLP](../../ckmil-re-attn-mil/) 里"mean>>max"的结论相反。差异根源是特征分布：SSL 特征下阳性信号稀疏且强，mean 会被大量阴性 patch 稀释。**说明"用什么聚合"高度依赖特征来源**，没有普适赢家。
+> - **一个关键观察（对压缩研究极重要）**：**Mean-pooling 在 SSL 特征下崩得很惨**（CAMELYON16 AUC 仅 0.569），而 Max-pooling 反而不错（0.956）——这与 [SiMLP](../../../ckmil-re-attn-mil/) 里"mean>>max"的结论相反。差异根源是特征分布：SSL 特征下阳性信号稀疏且强，mean 会被大量阴性 patch 稀释。**说明"用什么聚合"高度依赖特征来源**，没有普适赢家。
 > - **SSL 特征下差距收窄**：ViT-S/16 SSL 特征让所有注意力法 AUC 都 >0.9，ACMIL 与 DTFD-MIL 接近 → 好特征本身就压制了过拟合，ACMIL 的增量在弱特征（ResNet18）下更明显。
 
 Baselines. We systematically assess the eficacy of our ACMIL approach by benchmarking it against conventional MIL pooling strategies, Max-pooling and Mean-pooling, as well as contemporary attention-based techniques such as AB-MIL [27], DSMIL [30], TransMIL [45], CLAM-SB [36], DTFD-MIL [59], MHIM-MIL [47], and IBMIL [34]. In pursuit of a comprehensive comparison across diverse aggregation operators, we utilize two distinct sets of features derived from ResNet-18 pre-trained on the ImageNet dataset [22] and ViT-S/16 pretrained using DINO [8] on a substantial collection of 36,666 WSIs [28]. The results of all other methods are reproduced using the oficial code they provide under the same settings.

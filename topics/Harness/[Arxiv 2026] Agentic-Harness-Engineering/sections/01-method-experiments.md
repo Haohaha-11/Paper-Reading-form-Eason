@@ -28,7 +28,7 @@ harness $H$ 实例化在 NexAU 框架上，暴露 **7 类正交组件**为固定
 
 每个任务用 harness $H$ 生成 $k$ 条 trace（含可操作的错误，但散布在百万 token 原始消息里）。用 **Agent Debugger** 把 trajectory 框成**可导航的文件式环境**（每条消息一个文件，用通用 shell/脚本工具访问）。同 query 的 trace 放一个环境，debugger 分析失败 root cause 或成功模式，存成 **per-task 分析报告**（含 pass/fail 状态 ground 住 Evolve Agent）。最后聚合成 **benchmark 级总览**作每轮入口。**额外提供原始 trace**（raw + 轻处理两种形式）供 agent 验证报告中的 claim——progressive disclosure 省 token 又利于决策。
 
-> 💡 **分层证据 + 保留原始 trace = 折中方案（对用户改 Weakness Mining 的关键参考）**（Hao 批注）：AHE 的 experience observability 是 [Meta-Harness](../%5BArxiv%202026%5D%20Meta-Harness/)（全 trace）和 [Self-Harness](../%5BArxiv%202026%5D%20Self-Harness/)（压缩 evidence bundle）之间的**折中**，也可能是最优点：
+> 💡 **分层证据 + 保留原始 trace = 折中方案（对用户改 Weakness Mining 的关键参考）**（Hao 批注）：AHE 的 experience observability 是 [Meta-Harness](../../%5BArxiv%202026%5D%20Meta-Harness/)（全 trace）和 [Self-Harness](../../%5BArxiv%202026%5D%20Self-Harness/)（压缩 evidence bundle）之间的**折中**，也可能是最优点：
 > - **既蒸馏**（per-task 报告 + 总览，让 evolver 消费结构化 root cause，省 token）；
 > - **又保留原始 trace 可下钻**（agent 需要验证报告中的 claim 时能读原始 trace）。
 >
@@ -89,7 +89,7 @@ AHE 超所有基线（Hard 层略逊 Codex，归因于长 horizon 上组件间�
 **RQ3a 组件消融（Table 3）**：单组件换入种子——memory-only 75.3%、tool-only 73.0%、middleware-only 71.9% 都超种子，**system-prompt-only 67.4% 唯一 regress（−2.3pp）**。**组件非加性交互**：三个正的单组件增益求和 +11.1pp > 完整 AHE +7.3pp——memory/middleware/prompt 都推向同种 closure 式验证，叠加浪费回合在冗余复检。
 
 > 💡 **组件消融批读（增益在结构不在散文 + 非加性）**（Hao 批注）：两个关键结论对用户和 Self-Harness 都重要：
-> - **增益在"事实性 harness 结构"（tools/middleware/memory），不在"散文级策略"（system prompt）**：system prompt 单独换入反而 −2.3pp。这印证 [Self-Harness](../%5BArxiv%202026%5D%20Self-Harness/) 的定性发现（不是把 prompt 变长），并更进一步——**prose-level 策略不跨任务/模型迁移，结构性组件才迁移**。对用户：改进 Self-Harness 时应重视 tool/middleware/memory 类结构编辑，而非纠结 prompt 措辞。
+> - **增益在"事实性 harness 结构"（tools/middleware/memory），不在"散文级策略"（system prompt）**：system prompt 单独换入反而 −2.3pp。这印证 [Self-Harness](../../%5BArxiv%202026%5D%20Self-Harness/) 的定性发现（不是把 prompt 变长），并更进一步——**prose-level 策略不跨任务/模型迁移，结构性组件才迁移**。对用户：改进 Self-Harness 时应重视 tool/middleware/memory 类结构编辑，而非纠结 prompt 措辞。
 > - **组件非加性交互 → 叠加 cap 增益**：这是 Self-Harness 的 MergeAccepted（合并多个通过的编辑）会遇到的**同一陷阱**——多个各自有效的编辑合并后可能因交互而不是简单相加。AHE 明确指出"interaction-aware evolution"是 future work。用户改进 Proposal Search 时（尤其是 GEPA 式 merge/crossover 多 lineage），必须考虑组件交互，否则叠加的增益会被 cap。
 
 **RQ3b self-attribution 可靠性（Figure 4，最关键发现）**：
@@ -103,7 +103,7 @@ AHE 超所有基线（Hard 层略逊 Codex，归因于长 horizon 上组件间�
 
 > 💡 **RQ3b = 本 topic 最重要的实证发现（务必内化）**（Hao 批注）：这是整个 Harness topic 里对"self-improving harness 可靠性"最硬的实证，直接支撑用户的研究方向：
 > - **不对称的自评估可靠性**：LLM 对"我修好了什么"预测尚可（5× random），对"我弄坏了什么"预测几乎失灵（2× random）。
-> - **与 [Phantom-Guardrails](../%5BArxiv%202026%5D%20Phantom-Guardrails/) 合起来夹击**：Phantom 说 fix 侧也有假阳性（诊断出不存在的失败）；AHE 说 regression 侧有严重假阴性（预测不到破坏）。**两篇合起来 = self-improving harness 的 self-assessment 在 fix 和 regression 两个方向都不可信。**
+> - **与 [Phantom-Guardrails](../../%5BArxiv%202026%5D%20Phantom-Guardrails/) 合起来夹击**：Phantom 说 fix 侧也有假阳性（诊断出不存在的失败）；AHE 说 regression 侧有严重假阴性（预测不到破坏）。**两篇合起来 = self-improving harness 的 self-assessment 在 fix 和 regression 两个方向都不可信。**
 > - **对"明显更强的 Self-Harness"的直接指令**：Validation 阶段必须做**双向 falsification**——(1) 对提出的 fix 做反事实验证（Phantom：这个失败真存在吗？）；(2) 对 regression 做主动预测+验证（AHE：这个编辑会破坏什么？现在预测不准，需要专门机制）。Self-Harness 现在的 held-out 回归门是**被动**发现 regression（评估后才知道），AHE 指出**主动预测** regression 是开放问题——用户若能让 proposer 主动、可靠地预测 regression，就是一个明确的贡献点。
 
 ## 5. Conclusion & Limitations

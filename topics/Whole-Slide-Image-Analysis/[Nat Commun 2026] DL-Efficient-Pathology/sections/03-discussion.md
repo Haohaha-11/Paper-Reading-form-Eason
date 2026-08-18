@@ -21,7 +21,7 @@ Our benchmarking shows that combining CHIEF and Virchow2 in EAGLE outperforms bo
 
 Importantly, performance gains cannot be attributed to arbitrary subsampling: saliency-guided selection consistently outperformed repeated uniform random selection under identical splits. Extensive hyperparameter tuning provided only negligible benefit on external cohorts, suggesting performance is primarily determined by representation quality rather than classifier optimization. EAGLE provides explicit spatial localization: the exact regions used for each prediction can be enumerated, reproduced, and rapidly reviewed. While EAGLE achieved AUROCs >0.900 for some tasks, the average AUROC of 0.742 indicates that EAGLE's performance might not yet be adequate to replace standard clinical procedures.
 
-> 💡 **局限与定位解读**（Hao 批注）：作者难得诚实——**平均 AUROC 0.742 还不足以替代临床流程**，定位为辅助/分诊。且明确"本研究优先 benchmark 预测性能而非混杂分析"，未做 [Confounders](../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 式的分层去混杂——**这是 EAGLE 的一个 open question：它选的 25 个"信息 tile"是承载因果诊断信号，还是承载 grade/染色 shortcut？** 结合本目录 Confounders 的方法论，这是评估 EAGLE（及任何 retention 方法）该补的一步。CHIEF 偏癌症 slide 预训练 → 非癌任务上选择可能失效，也是边界。
+> 💡 **局限与定位解读**（Hao 批注）：作者难得诚实——**平均 AUROC 0.742 还不足以替代临床流程**，定位为辅助/分诊。且明确"本研究优先 benchmark 预测性能而非混杂分析"，未做 [Confounders](../../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 式的分层去混杂——**这是 EAGLE 的一个 open question：它选的 25 个"信息 tile"是承载因果诊断信号，还是承载 grade/染色 shortcut？** 结合本目录 Confounders 的方法论，这是评估 EAGLE（及任何 retention 方法）该补的一步。CHIEF 偏癌症 slide 预训练 → 非癌任务上选择可能失效，也是边界。
 
 ## Methods（核心）
 
@@ -35,7 +35,7 @@ Importantly, performance gains cannot be attributed to arbitrary subsampling: sa
 
 > 💡 **方法论批读**（EAGLE 可复用的三个方法要素）（Hao 批注）：
 > 1. **"repurpose CHIEF 的注意力向量选 tile"**：CHIEF 的注意力本是为聚合成 slide embedding 设计的，EAGLE 拿它当**tile 选择器**。任何提供 tile 级相关性分数的 slide encoder 都可替换 CHIEF——这是一个通用的"用预训练 FM 做保留"的接口。
-> 2. **等权平均而非注意力加权**：作者选 25 tile 等权平均（不用 CHIEF 注意力加权），因为二者在 25 tile 时表现相近，等权更透明可审计。对 ReadySlide：保留后**简单平均可能就够**（呼应 [SiMLP](../../ckmil-re-attn-mil/) 的 mean pooling），不必再上复杂聚合器。
+> 2. **等权平均而非注意力加权**：作者选 25 tile 等权平均（不用 CHIEF 注意力加权），因为二者在 25 tile 时表现相近，等权更透明可审计。对 ReadySlide：保留后**简单平均可能就够**（呼应 [SiMLP](../../../ckmil-re-attn-mil/) 的 mean pooling），不必再上复杂聚合器。
 > 3. **负对照 + 注意力集中度量**：这两套协议是验证"选择器是否真有效"的黄金标准——负对照证明超随机、Lorenz/Gini 量化集中度。**ReadySlide 的 allocator 评估应标配这两项**：(a) 显著超随机保留；(b) 报保留分布的集中度。
 
 ## Conclusion

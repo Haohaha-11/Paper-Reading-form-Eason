@@ -266,6 +266,21 @@ CKMIL（级联关键实例注意力 MIL）与重注意力（re-attention）机�
 
 📖 [CKMIL & Re-Attention MIL 详细总结](./topics/ckmil-re-attn-mil/README.md)
 
+### 🔧 Harness（Agent 自改进 harness）
+
+> 围绕锚论文 **Self-Harness** 组织：前 3 篇理解 novelty（前置/竞争工作），后 2 篇改进方法（Weakness Mining / Proposal Search / Validation 三阶段升级）。贯穿主线：self-assessment 双向不可信 → 需外部/反事实验证。
+
+| 论文 | 会议 | 方法特点 |
+|------|------|----------|
+| [Self-Harness](./topics/Harness/%5BArxiv%202026%5D%20Self-Harness/) | Arxiv 2026 | ⭐锚论文。agent 改进自己运行的 harness；三阶段 Weakness Mining→Proposal→Validation，9/9 组合双升最高 +132%。 |
+| [Meta-Harness](./topics/Harness/%5BArxiv%202026%5D%20Meta-Harness/) | Arxiv 2026 | 最直接前作。外部强编码 agent + 文件系统全 trace 访问 + population/Pareto 搜索 harness；raw trace 是命门。 |
+| [Agentic Harness Engineering](./topics/Harness/%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) | Arxiv 2026 | 并行相似工作。三 observability 支柱 + evidence ledger；self-attribution 对 fix 可靠对 regression 盲。 |
+| [RHO](./topics/Harness/%5BArxiv%202026%5D%20RHO-Self-Preference/) | Arxiv 2026 | 无标签自偏好（self-validation + self-consistency + pairwise preference）；SWE-Bench Pro 59→78 无外部打分。 |
+| [GEPA](./topics/Harness/%5BArxiv%202025%5D%20GEPA/) | ICLR 2026 | 反射式 prompt 进化 + Pareto illumination 候选选择（+12.44% vs greedy）；治 Self-Harness 的 greedy 单谱系。 |
+| [Phantom Guardrails](./topics/Harness/%5BArxiv%202026%5D%20Phantom-Guardrails/) | Arxiv 2026 | 精准反问题：自改进 harness 会幻觉不存在的失败并加 guardrail；解法 = warrant-aware acceptance。 |
+
+📖 [Harness 详细总结](./topics/Harness/README.md)
+
 ---
 
 ## 论文文件夹结构

@@ -33,15 +33,15 @@ $\theta=0.7$ 平衡难度（$\theta=1$ 纯难度）和多样性（$\theta=0$ 纯
 
 两者并集形成任务改进指令 $I_t = \text{rank}_{val} \cup \text{rank}_{con}$，跨 coreset 合并成最终 harness 改进指令。
 
-> 💡 **两个诊断信号 = Self-Harness 没有的新武器（Hao 批注）**：这是 RHO 相对 [Self-Harness](../%5BArxiv%202026%5D%20Self-Harness/) Weakness Mining 的**关键新增**：
+> 💡 **两个诊断信号 = Self-Harness 没有的新武器（Hao 批注）**：这是 RHO 相对 [Self-Harness](../../%5BArxiv%202026%5D%20Self-Harness/) Weakness Mining 的**关键新增**：
 > - **Self-validation** ≈ Self-Harness 的失败诊断（标记错误工具调用/假设/过早停止），但 RHO 在**多次重解**上做，不只看历史失败。
 > - **Self-consistency（全新）**：Self-Harness **完全没有**这个信号。RHO 用**跨并行 trajectory 的分歧**作不确定性代理——同一任务重解多次，若计划/工具序列/答案分歧大，说明 harness 在该任务上不稳定/不确定。这是一个**无标签的、比"失败/成功"更细的信号**：即使任务表面通过，高分歧也暴露 harness 弱点。
 > - **诊断消融（Table 4）**：去掉 self-consistency（SWE 0.78→0.56，暴跌）或 self-validation（0.78→0.70）都降；full > raw-trajectory baseline（0.60）——**两个信号都 essential，且显式诊断 > 直接给原始 trajectory**。
-> - **对用户的直接价值**：给 Self-Harness 的 Weakness Mining **加 self-consistency 信号**（重解多次看分歧），可在无标签下发现 held-out verifier 发现不了的"不稳定"弱点。这与 [AHE](../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的 $k\geq2$ rollout（每任务带 pass-rate 信号）异曲同工，但 RHO 用的是分歧而非 pass-rate。
+> - **对用户的直接价值**：给 Self-Harness 的 Weakness Mining **加 self-consistency 信号**（重解多次看分歧），可在无标签下发现 held-out verifier 发现不了的"不稳定"弱点。这与 [AHE](../../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的 $k\geq2$ rollout（每任务带 pass-rate 信号）异曲同工，但 RHO 用的是分歧而非 pass-rate。
 
 ### 4.3 Best-of-N Harness Proposal（self-preference 选择）
 
-harness 优化本质随机、即使有效输入信号也未必可靠改进（[Meta-Harness](../%5BArxiv%202026%5D%20Meta-Harness/)/ADAS/GEPA 都观察到）。RHO 并行采样 $N$ 个候选 harness $h_1,\ldots,h_N$，用 self-preference 过滤。对每个候选在 $k$ 个 coreset 任务上重解，把新 trajectory 与原 harness 旧 trajectory 做 **pairwise self-preference 排序**，聚合成相对优势分：
+harness 优化本质随机、即使有效输入信号也未必可靠改进（[Meta-Harness](../../%5BArxiv%202026%5D%20Meta-Harness/)/ADAS/GEPA 都观察到）。RHO 并行采样 $N$ 个候选 harness $h_1,\ldots,h_N$，用 self-preference 过滤。对每个候选在 $k$ 个 coreset 任务上重解，把新 trajectory 与原 harness 旧 trajectory 做 **pairwise self-preference 排序**，聚合成相对优势分：
 
 $$S_j = \frac{1}{|\mathcal{D}_{core}|} \sum_{t \in \mathcal{D}_{core}} \text{rank}(t, \tau_t^{(j)}, \tau_t^{(0)})$$
 
@@ -55,11 +55,11 @@ STAGE 3 Best-of-N: 并行 optimize N 次得 h_j; 重解算 S_j (self-preference 
         j* ← argmax S_j; return h_{j*} if S_{j*}>0 else h_0
 ```
 
-> 💡 **best-of-N + self-preference = 无标签的 Proposal Validation（Hao 批注）**：这是 RHO 对 [Self-Harness](../%5BArxiv%202026%5D%20Self-Harness/) **Proposal Validation 的直接替代**：
+> 💡 **best-of-N + self-preference = 无标签的 Proposal Validation（Hao 批注）**：这是 RHO 对 [Self-Harness](../../%5BArxiv%202026%5D%20Self-Harness/) **Proposal Validation 的直接替代**：
 > - **Self-Harness**：候选在 labeled held-out 上评估，非退化接受规则（Δ_in≥0 ∧ Δ_ho≥0）。**需标签**。
 > - **RHO**：候选重解 coreset，pairwise self-preference 排序 vs baseline，$S_j>0$ 接受。**无标签**。
 > - **可靠性（Table 3）**：N=3 候选方差中等，**最低分候选也超 baseline**，选择"避开最差但不总选最优"。即 self-preference 是"安全但非最优"的选择器。
-> - **对用户**：把 Self-Harness 的 held-out 回归门换成/补充 RHO 的 self-preference，就能在无干净 verifier 时也工作。但要注意 self-preference 的"非最优"局限——理想是**self-preference 初筛 + 少量标签精验**的混合，或叠加 [AHE](../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的 regression 预测。
+> - **对用户**：把 Self-Harness 的 held-out 回归门换成/补充 RHO 的 self-preference，就能在无干净 verifier 时也工作。但要注意 self-preference 的"非最优"局限——理想是**self-preference 初筛 + 少量标签精验**的混合，或叠加 [AHE](../../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的 regression 预测。
 
 ## 5-6. Experiments & Analysis
 
@@ -99,7 +99,7 @@ RHO 一致超所有 feedback-free 基线。**+19pp on SWE-Bench Pro 无任何 va
 > - **Validation 去标签**：self-preference（best-of-N，$S_j>0$）替代 held-out verifier 回归门 → Self-Harness 变 label-free（满足 RHO 三轴）。
 > - **Weakness Mining 加信号**：self-consistency（跨重解分歧=不确定性）是 Self-Harness 没有的无标签信号，能发现"表面通过但不稳定"的弱点。
 > - **coreset 选择**：DPP 难度×多样性平衡，避免 proposer 过拟合某类失败。
-> - **但 RHO 自身的软肋 = self-preference 不可靠**（Table 3 只避最差不选最优；[AHE](../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/)/[Phantom-Guardrails](../%5BArxiv%202026%5D%20Phantom-Guardrails/) 证明 self-judgment 不可信）。**所以最强方案 = RHO 无标签信号 + Phantom 反事实去幻觉 + AHE regression 预测 + GEPA population 搜索**——四者叠加，既去标签依赖、又保可靠性、又广探索。这就是"明显更强的一篇"的骨架。
+> - **但 RHO 自身的软肋 = self-preference 不可靠**（Table 3 只避最差不选最优；[AHE](../../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/)/[Phantom-Guardrails](../../%5BArxiv%202026%5D%20Phantom-Guardrails/) 证明 self-judgment 不可信）。**所以最强方案 = RHO 无标签信号 + Phantom 反事实去幻觉 + AHE regression 预测 + GEPA population 搜索**——四者叠加，既去标签依赖、又保可靠性、又广探索。这就是"明显更强的一篇"的骨架。
 
 > 💡 **Q&A 批注记录**（Hao 批注）：
 > - **Q：RHO 和 Self-Harness 核心区别？**

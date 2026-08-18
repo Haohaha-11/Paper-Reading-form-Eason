@@ -76,17 +76,17 @@
 2. **接受的编辑可能仍反映 benchmark-specific 失败模式**（泛化性存疑）。
 3. **协议依赖 verifier 结果和 trace 记录的质量**——脏 verifier / 噪声 trace 会误导。
 4. **higher-stakes harness 改变需要比 pass-rate non-regression 更强的接受门**。
-5. **更广的核心要求**：self-improvement 应 grounded in 行为证据，而非只在 proposer 对某个 plausible 编辑的 rationale 里——**这一句直接埋下 [Phantom-Guardrails](../%5BArxiv%202026%5D%20Phantom-Guardrails/) 的问题**：如果 proposer 的 rationale 本身基于幻觉失败呢？
+5. **更广的核心要求**：self-improvement 应 grounded in 行为证据，而非只在 proposer 对某个 plausible 编辑的 rationale 里——**这一句直接埋下 [Phantom-Guardrails](../../%5BArxiv%202026%5D%20Phantom-Guardrails/) 的问题**：如果 proposer 的 rationale 本身基于幻觉失败呢？
 
 > 💡 **总结 + 三条改进主线（用户下一步的核心）**（Hao 批注）：Self-Harness 立住了"agent 改自己 harness"的范式，但它的三个阶段各有明确的改进空间，正好对应用户筛的 5 篇：
 >
 > | Self-Harness 阶段 | 当前做法 | 弱点 | 改进来源 |
 > |---|---|---|---|
-> | **Weakness Mining** | LLM 诊断失败→失败机制（假设诊断 grounded） | 可能诊断出**幻觉失败** | [Phantom-Guardrails](../%5BArxiv%202026%5D%20Phantom-Guardrails/)：Failure Hypothesis→Counterfactual Verification→Validated Mechanism；加 "Do Nothing" 候选 |
-> | **Harness Proposal** | K 提案→挑通过→merge（greedy 单谱系） | 探索窄、无 lineage 多样性 | [GEPA](../%5BArxiv%202025%5D%20GEPA/)：reflection+semantic mutation+population/archive+Pareto selection；多 harness lineage + crossover |
-> | **Proposal Validation** | held-out 回归门（需 labeled verifier） | 依赖干净标签、门槛弱（仅 pass-rate） | [RHO](../%5BArxiv%202026%5D%20RHO-Self-Preference/)：无标签自偏好（self-validation+cross-trajectory consistency+pairwise preference）；[AHE](../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的结构化 evidence ledger |
+> | **Weakness Mining** | LLM 诊断失败→失败机制（假设诊断 grounded） | 可能诊断出**幻觉失败** | [Phantom-Guardrails](../../%5BArxiv%202026%5D%20Phantom-Guardrails/)：Failure Hypothesis→Counterfactual Verification→Validated Mechanism；加 "Do Nothing" 候选 |
+> | **Harness Proposal** | K 提案→挑通过→merge（greedy 单谱系） | 探索窄、无 lineage 多样性 | [GEPA](../../%5BArxiv%202025%5D%20GEPA/)：reflection+semantic mutation+population/archive+Pareto selection；多 harness lineage + crossover |
+> | **Proposal Validation** | held-out 回归门（需 labeled verifier） | 依赖干净标签、门槛弱（仅 pass-rate） | [RHO](../../%5BArxiv%202026%5D%20RHO-Self-Preference/)：无标签自偏好（self-validation+cross-trajectory consistency+pairwise preference）；[AHE](../../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的结构化 evidence ledger |
 >
-> **前置理解**：Self-Harness 的 novelty 相对 [Meta-Harness](../%5BArxiv%202026%5D%20Meta-Harness/)（外部 meta-agent→自己）和 [AHE](../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/)（并行的 observability-driven evolution）到底在哪，必须读透这两篇才能定位。
+> **前置理解**：Self-Harness 的 novelty 相对 [Meta-Harness](../../%5BArxiv%202026%5D%20Meta-Harness/)（外部 meta-agent→自己）和 [AHE](../../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/)（并行的 observability-driven evolution）到底在哪，必须读透这两篇才能定位。
 >
 > **一个可能的"明显更强的方法"雏形**（综合 5 篇）：Weakness Mining 加反事实验证（去幻觉失败）→ Proposal 用 population/Pareto 维护多 lineage → Validation 用自偏好+ledger 在无干净 verifier 时也能选——三处同时升级，可能就是用户要的"下一篇明显更强的 Self-Harness"。
 

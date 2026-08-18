@@ -32,7 +32,7 @@ Here, $a_n = \sigma(h_n)$ represents the attention values for n-th instance, $h_
 
 where V, $V_2 \in \mathbb{R}^{L \times M}$ $w \in \mathbb{R}^{L \times 1}$ are parameters, ⊙ is an element-wise multiplication and sigm(·) is the sigmoid non-linearity. iii) The bag prediction is generated based on the aggregated bag embedding: $\hat{Y} = g(z)$
 
-> 💡 **公式批读**（Eq. 1–3：ABMIL 三步骨架）（Hao 批注）：这是全领域最基础的 MIL 范式，务必吃透——ACMIL、[MHIM](../%5BICCV%202023%5D%20MHIM-MIL/) 全建在它上面。
+> 💡 **公式批读**（Eq. 1–3：ABMIL 三步骨架）（Hao 批注）：这是全领域最基础的 MIL 范式，务必吃透——ACMIL、[MHIM](../../%5BICCV%202023%5D%20MHIM-MIL/) 全建在它上面。
 > - **Eq. 1**：MIL 的标签假设——只要一个阳性 instance，整袋阳性。这解释了为何注意力会"偷懒"集中：训练目标不要求覆盖所有阳性 instance，抓一个最好认的就够降 loss。
 > - **Eq. 2**：聚合 = **注意力加权求和** $z=\sum a_n h_n$。$a_n$ 就是 patch 的"重要性权重"——这正是压缩/保留研究常拿来当 patch importance 的量。
 > - **Eq. 3**：门控注意力，$\tanh(V_1 h)\odot\text{sigm}(V_2 h)$ 双支再经 softmax。sigmoid 门控让模型能抑制某些维度。**ACMIL 的所有改动都作用在 $a_n$ 的生成/使用上**，不改 $f$（冻结的 backbone）。

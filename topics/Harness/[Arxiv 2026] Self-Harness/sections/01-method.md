@@ -12,7 +12,7 @@ Self-Harness 形式化：固定模型 $M$、固定评估器 $\mathcal{E}$，只�
 
 固定语言模型 $M$、agent harness $h$。给定任务实例 $x$，在 harness $h$ 下运行 $M$ 产生执行 trace $\tau$ 和输出 $y$。评估器 $\mathcal{E}$ 把 (任务, trace, 输出) 映射到行为结果（如 pass/fail）。**$M$ 和 $\mathcal{E}$ 固定，harness 是被改进的对象**。Self-Harness 因此在一条 harness 谱系 $h_0, h_1, \ldots$ 上操作，每次转移对应对执行协议的 bounded 编辑，而非对模型权重的更新。
 
-> 💡 **形式化的关键设计（为什么这样设定）**（Hao 批注）：把 $M$ 和 $\mathcal{E}$ 都固定、只改 $h$，是一个刻意的**因果隔离**设计——这样所有性能变化都能归因到 harness 改变，而非模型能力或评估协议的变化。这是全文实验干净的根基（所有对比都是 within-model 对比）。**对用户改进 Self-Harness 的启示**：这个"harness 谱系 + bounded edit"的抽象很干净，但它也是 greedy 的（单一谱系，见 3.3 批注）——[GEPA](../%5BArxiv%202025%5D%20GEPA/) 的 population/archive 正是针对这个单一谱系的升级方向。
+> 💡 **形式化的关键设计（为什么这样设定）**（Hao 批注）：把 $M$ 和 $\mathcal{E}$ 都固定、只改 $h$，是一个刻意的**因果隔离**设计——这样所有性能变化都能归因到 harness 改变，而非模型能力或评估协议的变化。这是全文实验干净的根基（所有对比都是 within-model 对比）。**对用户改进 Self-Harness 的启示**：这个"harness 谱系 + bounded edit"的抽象很干净，但它也是 greedy 的（单一谱系，见 3.3 批注）——[GEPA](../../%5BArxiv%202025%5D%20GEPA/) 的 population/archive 正是针对这个单一谱系的升级方向。
 
 ## 3.2 Weakness Mining — 从聚类执行 trace 识别失败模式
 
@@ -28,7 +28,7 @@ $$\phi(r_i) = (c_i, q_i, m_i)$$
 
 > 💡 **机制拆解（失败签名的三元组 = Weakness Mining 的核心）**（Hao 批注）：这个 $\phi=(c,q,m)$ 三元组是 Weakness Mining 的精髓，也是用户后续要改进的关键靶点。它刻意**把"表面症状"与"可复用失败机制"分开**：两个 run 可能有相同 verifier 结果（都 timeout / 都缺产物），但底层 agent 行为不同、需要不同 harness 改变。所以聚类不是找 trace 的语义相似度，而是**聚合"plausibly 需要同一个 harness 级干预"的失败**。
 > - **evidence bundle $B_t$** 只总结失败模式、**不规定 harness 编辑**——它把 verifier-level 失败与 agent-level 机制分离，让 proposer 去针对可复用弱点，而非打补丁式修 coarse 结果（timeout / assertion fail / missing output）。这保持了"评估器"与"优化器"的分离。
-> - **⚠️ 这里正是 [Phantom-Guardrails](../%5BArxiv%202026%5D%20Phantom-Guardrails/) 攻击的隐藏假设**：整个 Weakness Mining 隐含"LLM 对失败的诊断是 factually grounded 的"。但 Phantom-Guardrails 发现 proposer 可能"诊断"出一个**根本不存在的 failure**，然后给这个虚构失败加 guardrail。用户的改进方向正是把 `Failure Mining` 升级成 `Failure Hypothesis → Counterfactual Verification → Validated Mechanism → Harness Proposal`。
+> - **⚠️ 这里正是 [Phantom-Guardrails](../../%5BArxiv%202026%5D%20Phantom-Guardrails/) 攻击的隐藏假设**：整个 Weakness Mining 隐含"LLM 对失败的诊断是 factually grounded 的"。但 Phantom-Guardrails 发现 proposer 可能"诊断"出一个**根本不存在的 failure**，然后给这个虚构失败加 guardrail。用户的改进方向正是把 `Failure Mining` 升级成 `Failure Hypothesis → Counterfactual Verification → Validated Mechanism → Harness Proposal`。
 
 **Algorithm 1（Self-Harness 主循环）**：
 
@@ -66,8 +66,8 @@ Require: 固定模型 M, 初始 harness h_0, held-in split D_in, held-out split 
 > 💡 **机制拆解 + 用户改进靶点（Proposal 当前是 greedy 的）**（Hao 批注）：这是用户明确指出要升级的一环。当前 Self-Harness 的 proposal 结构本质是：
 > $$h_t \xrightarrow{\text{生成 } K \text{ 提案}} \text{挑通过接受的编辑} \xrightarrow{\text{merge}} h_{t+1}$$
 > 这比较 **greedy**：单一 harness 谱系、每轮 K 个提案里挑通过的合并。
-> - **[GEPA](../%5BArxiv%202025%5D%20GEPA/) 的升级方向**：reflection + semantic mutation + **population/archive** + **Pareto selection**。启示：harness evolution 不该只有单一路径，可以维护**多个各有优势的 harness lineage**，再 crossover / merge 互补改进。
-> - **可寻址性判据 vs "Do Nothing"**：Self-Harness 已有"排除不可寻址模式"的机制，但 [Phantom-Guardrails](../%5BArxiv%202026%5D%20Phantom-Guardrails/) 建议更进一步——显式加入一个 **"Do Nothing"** 候选，因为有些"失败"根本不存在、最优编辑就是不编辑。
+> - **[GEPA](../../%5BArxiv%202025%5D%20GEPA/) 的升级方向**：reflection + semantic mutation + **population/archive** + **Pareto selection**。启示：harness evolution 不该只有单一路径，可以维护**多个各有优势的 harness lineage**，再 crossover / merge 互补改进。
+> - **可寻址性判据 vs "Do Nothing"**：Self-Harness 已有"排除不可寻址模式"的机制，但 [Phantom-Guardrails](../../%5BArxiv%202026%5D%20Phantom-Guardrails/) 建议更进一步——显式加入一个 **"Do Nothing"** 候选，因为有些"失败"根本不存在、最优编辑就是不编辑。
 > - **proposer = 同一固定模型**：这是 Self-Harness 区别于 Meta-Harness 的命门——proposer 不是更强外部 agent，就是 target 模型自己。好处是不依赖外部；风险是"自己诊断自己"可能有系统性盲区（自己看不到自己的失败机制），这也放大了 Phantom-Guardrails 的隐患。
 
 ## 3.4 Proposal Validation — 用回归测试确保稳健改进
@@ -81,6 +81,6 @@ $$\Delta_{in}^{(j)} \geq 0, \quad \Delta_{ho}^{(j)} \geq 0, \quad \max(\Delta_{i
 即**至少改进一个 split、且不退化另一个**才接受。只在一个 split 上以牺牲另一个为代价提升总数的提案被拒绝，即使总 pass 数增加。评估随机时重复评估、对聚合 pass 数应用同一规则（降低单次幸运 run 导致提升的概率）。额外地，验证还拒绝：不修改任何可编辑面的提案、在获得有效评估结果前就执行失败的提案。每个候选记录改变的面、split-wise 结果、评估重复、提案摘要、accept/reject 决定——使 harness 谱系的每次转移**可审计**。
 
 > 💡 **机制拆解（保守接受规则 = 稳健性来源）**（Hao 批注）：这个"held-out 回归门"是 Self-Harness 稳健性的核心，也是它区别于纯 self-improvement（易过拟合到 held-in）的关键。三条不等式确保：(1) 不能拿 held-out 退化换 held-in 提升（防过拟合失败证据）；(2) 至少一个 split 严格提升（防无效编辑）。
-> - **与用户改进方向的关系**：Proposal Validation 目前依赖 **labeled held-out**（有 verifier 打分）。[RHO](../%5BArxiv%202026%5D%20RHO-Self-Preference/) 提出**不依赖 labeled validation feedback**——用 self-validation + cross-trajectory consistency + pairwise self-preference 产生优化信号。这对"没有干净 verifier / held-out 昂贵"的场景是直接补充。
-> - **与 [Agentic-Harness-Engineering](../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的 evidence ledger 对照**：AHE 要求每个修改绑定 failure evidence + root cause + expected fix + regression risk（change manifest）——这和 Self-Harness 的 audit 记录 $a_j$ + 可审计谱系高度重合。两者是"observability-driven harness evolution"的并行独立工作，可互相印证/借鉴（AHE 的 ledger 更结构化）。
+> - **与用户改进方向的关系**：Proposal Validation 目前依赖 **labeled held-out**（有 verifier 打分）。[RHO](../../%5BArxiv%202026%5D%20RHO-Self-Preference/) 提出**不依赖 labeled validation feedback**——用 self-validation + cross-trajectory consistency + pairwise self-preference 产生优化信号。这对"没有干净 verifier / held-out 昂贵"的场景是直接补充。
+> - **与 [Agentic-Harness-Engineering](../../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的 evidence ledger 对照**：AHE 要求每个修改绑定 failure evidence + root cause + expected fix + regression risk（change manifest）——这和 Self-Harness 的 audit 记录 $a_j$ + 可审计谱系高度重合。两者是"observability-driven harness evolution"的并行独立工作，可互相印证/借鉴（AHE 的 ledger 更结构化）。
 > - **⚠️ 天花板**：作者自己承认，接受门只是 **pass-rate non-regression**——higher-stakes 的 harness 改变需要比这更强的接受门。这是一个明确的改进空间。

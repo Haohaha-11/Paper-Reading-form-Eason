@@ -17,7 +17,7 @@ However, these technological advances impose significant practical constraints. 
 To this end, we identified two principal inefficiencies in current PFMs: (1) model overparameterization and (2) patch-level redundancy. The results in PathBench reveal that several billion-parameter models (e.g., H-Optimus-0 and Prov-GigaPath) fail to outperform more compact architectures like Virchow2, indicating that smaller models can be effective. Moreover, both clinical workflows and attention mechanisms in MIL demonstrate that diagnostic decisions typically depend on limited regions of interest, yet current methods process all WSI patches indiscriminately.
 
 > 💡 **机制拆解**（两个低效 = 两个可压缩维度）（Hao 批注）：作者把 PFM 的浪费拆成两个正交维度，各有实证依据：
-> - **模型维度过参数化**：证据来自 [PathBench](../%5BArxiv%202025%5D%20PathBench/)——十亿参数模型未必赢紧凑模型。所以蒸馏一个小 FM 不牺牲精度是可行的。
+> - **模型维度过参数化**：证据来自 [PathBench](../../%5BArxiv%202025%5D%20PathBench/)——十亿参数模型未必赢紧凑模型。所以蒸馏一个小 FM 不牺牲精度是可行的。
 > - **数据维度 patch 冗余**：证据来自临床工作流 + MIL 注意力——诊断只依赖少数 ROI。所以选 patch 不牺牲精度是可行的。
 > **两个维度独立可压 → 相乘得两个数量级削减**。这个"横向压模型 + 纵向压数据"的双轴分解，是 LitePath 相对只压一个维度的方法（如 EAGLE 只压 patch）的框架优势。
 

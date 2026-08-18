@@ -18,7 +18,7 @@ We study the problem of designing models for machine learning tasks defined on s
 > - **$\sum$（或 mean）** = 排列不变的聚合；
 > - **$\rho$** = slide-level 分类头。
 >
-> 所以 **`Frozen FM [N,D] → MeanPool → Linear` 不是随手拍脑袋的弱基线，而是"排列不变集合函数的通用形式"的最简实例**。这解释了为什么 MeanPool 在强 FM 特征下往往出奇地强（见 [SiMLP](../../ckmil-re-attn-mil/) 的 mean>>max 观察）——它落在了集合函数的正确函数族里。
+> 所以 **`Frozen FM [N,D] → MeanPool → Linear` 不是随手拍脑袋的弱基线，而是"排列不变集合函数的通用形式"的最简实例**。这解释了为什么 MeanPool 在强 FM 特征下往往出奇地强（见 [SiMLP](../../../ckmil-re-attn-mil/) 的 mean>>max 观察）——它落在了集合函数的正确函数族里。
 
 > 💡 **机制拆解（invariance vs equivariance）**（Hao 批注）：DeepSets 给两类结构：
 > - **排列不变（invariant）**：输出不随元素顺序变 → 对应 **bag-level 分类**（WSI → 一个 label）。ABMIL/MeanPool 都属此类。

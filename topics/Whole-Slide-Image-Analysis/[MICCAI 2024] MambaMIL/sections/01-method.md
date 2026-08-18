@@ -69,4 +69,4 @@ Partition sequence into non-overlapping segments of size R, obtain $N=L/R$ segme
 > - **解法**：把序列分成 $N=L/R$ 段、reshape 成 $R\times N$、**按第二维采样**——原来相隔 $N$ 的 patch 现在变成相邻。等于换一个"跨步扫描"视角，让原序里远的 patch 在新序里近。
 > - **两分支互补**：分支1（原序）+ 分支2（重排序）各有一个独立隐状态，捕获两种"扫描邻接关系"，相加融合（Eq.9）+ 残差。
 > - **对比 Bi-Mamba**：双向 Mamba 是"正扫+反扫"，SR-Mamba 是"原序+跨步重排序"——消融（Tab.3）显示 SR-Mamba (0.680) > Bi-Mamba (0.665) > vanilla Mamba (0.662)。**重排序比单纯双向更能利用 WSI 的散布结构**。
-> - **对 CKMIL/ReadySlide**：SR-Mamba 揭示"patch 排序影响 SSM 建模"——若用 Mamba 类方法，排序策略是可设计的杠杆（这也是 [GMMamba](../%5BICCV%202025%5D%20GMMamba/) 进一步用 grouping + masking 做文章的起点）。
+> - **对 CKMIL/ReadySlide**：SR-Mamba 揭示"patch 排序影响 SSM 建模"——若用 Mamba 类方法，排序策略是可设计的杠杆（这也是 [GMMamba](../../%5BICCV%202025%5D%20GMMamba/) 进一步用 grouping + masking 做文章的起点）。

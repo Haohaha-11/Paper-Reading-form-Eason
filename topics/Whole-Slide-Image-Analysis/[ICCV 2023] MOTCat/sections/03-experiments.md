@@ -62,6 +62,6 @@ MOTCat separates low/high risk patients more clearly on all datasets. In Logrank
 
 We present MOTCat with global structure consistency to tackle two issues in multimodal survival prediction: (1) OT-based Co-Attention matches instances to select TME-related informative instances (effective gigapixel WSI representation); (2) OT offers global awareness for modeling intra-modal structure (pathological interactions, genomic co-expression). The Micro-Batch implementation makes OT practicable, and might provide a solution to update patch extractor end-to-end instead of offline feature extraction (future work).
 
-> 💡 **结论 + 展望解读**（Hao 批注）：作者展望里埋了一个重要点——**micro-batch 近似让"端到端更新 patch 提取器"成为可能**（不必离线冻结提特征）。这与本主题里 [Revisiting-E2E](../../ckmil-re-attn-mil/) / EXAONE-Path2 的端到端 WSI 训练是同一诉求。
+> 💡 **结论 + 展望解读**（Hao 批注）：作者展望里埋了一个重要点——**micro-batch 近似让"端到端更新 patch 提取器"成为可能**（不必离线冻结提特征）。这与本主题里 [Revisiting-E2E](../../../ckmil-re-attn-mil/) / EXAONE-Path2 的端到端 WSI 训练是同一诉求。
 > - **对 ReadySlide/压缩研究的启示**：(1) OT 匹配流是"跨模态引导的全局 patch 重要性"，比单模态注意力更鲁棒、更抗 shortcut——可作为 retention 信号的候选；(2) "micro-batch 近似全局最优分配"的思路可迁移到"预算内全局 patch 选择"；(3) 但主表显示**融合有数据依赖**（UCEC 上多模态不如单基因组），提醒任何"加信息就更好"的假设都需按数据集验证。
 > - **可追问点**：OT 的代价矩阵用 L2 距离，是否最优？基因 bag 只有 6 类是否太粗？UCEC 上 OT 不涨的根因（是融合本身难，还是 OT 先验不适配该癌种）？

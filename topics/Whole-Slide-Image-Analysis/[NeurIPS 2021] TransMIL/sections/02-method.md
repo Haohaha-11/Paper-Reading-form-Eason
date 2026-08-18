@@ -20,7 +20,7 @@ Binary MIL: predict $Y_i \in \{0,1\}$ given a bag $\mathbf{X}_i = \{x_{i,1},\ldo
 
 *Theorem 2: 相关性假设下的信息熵 $H(\Theta_1,\ldots,\Theta_n)=\sum_{t=2}^n H(\Theta_t|\Theta_1,\ldots,\Theta_{t-1})+H(\Theta_1) \le \sum_{t=1}^n H(\Theta_t)$（i.i.d. 假设）。*
 
-> 💡 **公式批读（Theorem 2 = correlated MIL 的理论卖点）**（Hao 批注）：这是 TransMIL 论证"为何要建模相关性"的核心。信息论不等式：**相关性假设下的联合熵 ≤ i.i.d. 假设下的熵之和**（因为条件熵 $H(\Theta_t|\Theta_{<t}) \le H(\Theta_t)$——知道其他 instance 会减少当前 instance 的不确定性）。含义：**建模 instance 相关性 = 降低 bag 的不确定性 = 带来更多有用信息**。这给 self-attention 的引入提供了信息论依据，而非纯经验。对比 [DeepSets](../%5BNeurIPS%202017%5D%20DeepSets/)：DeepSets 证明 $\rho(\sum\phi)$ 是充要（i.i.d. 求和），TransMIL 则论证放松 i.i.d. 到 correlated 有信息增益——两者在集合函数框架内递进。
+> 💡 **公式批读（Theorem 2 = correlated MIL 的理论卖点）**（Hao 批注）：这是 TransMIL 论证"为何要建模相关性"的核心。信息论不等式：**相关性假设下的联合熵 ≤ i.i.d. 假设下的熵之和**（因为条件熵 $H(\Theta_t|\Theta_{<t}) \le H(\Theta_t)$——知道其他 instance 会减少当前 instance 的不确定性）。含义：**建模 instance 相关性 = 降低 bag 的不确定性 = 带来更多有用信息**。这给 self-attention 的引入提供了信息论依据，而非纯经验。对比 [DeepSets](../../%5BNeurIPS%202017%5D%20DeepSets/)：DeepSets 证明 $\rho(\sum\phi)$ 是充要（i.i.d. 求和），TransMIL 则论证放松 i.i.d. 到 correlated 有信息增益——两者在集合函数框架内递进。
 
 ![Fig 2](../images/80103deced3c0ad518a06bc722e29ef494890b081d5b1dcbb6502c774400161d.jpg)
 
@@ -28,7 +28,7 @@ Binary MIL: predict $Y_i \in \{0,1\}$ given a bag $\mathbf{X}_i = \{x_{i,1},\ldo
 
 > 💡 **Figure 2 批读（Pooling Matrix 统一视角）**（Hao 批注）：这张图是理解整个 MIL 聚合器谱系的最佳工具——**所有聚合都可写成一个 Pooling Matrix P 作用在 instance 上**：
 > - **Max-pool**：P 对角只一个 1（选最高分 instance）；
-> - **Mean-pool**：P 对角全 $1/n$（[DeepSets](../%5BNeurIPS%202017%5D%20DeepSets/) 的求和）；
+> - **Mean-pool**：P 对角全 $1/n$（[DeepSets](../../%5BNeurIPS%202017%5D%20DeepSets/) 的求和）；
 > - **ABMIL**：P 对角可变（自适应权重）但**仍是对角阵**（无 instance 交互，i.i.d.）；
 > - **Self-attention (TransMIL)**：P **有非对角元素**（instance 两两相关）。
 >

@@ -20,4 +20,4 @@ Abstract. In the application of Multiple Instance Learning (MIL) methods for Who
 
 Keywords: Computational pathology · Whole slide image · Multiple instance learning · Overfitting
 
-> 💡 **定位**（Hao 批注）：关键词把 "Overfitting" 单列——这是全文的靶心。ACMIL 与 [MHIM-MIL](../%5BICCV%202023%5D%20MHIM-MIL/)（同目录）是"表亲"：都遮蔽显著 instance 来逼模型看更多证据。但 STKIM 只遮 K=10 个、无需 teacher-student、推理时移除；MHIM 需动量 teacher 预训练 + 遮 1% instance。二者的对比是本主题"如何正确利用/挑战注意力"这条线的核心。
+> 💡 **定位**（Hao 批注）：关键词把 "Overfitting" 单列——这是全文的靶心。ACMIL 与 [MHIM-MIL](../../%5BICCV%202023%5D%20MHIM-MIL/)（同目录）是"表亲"：都遮蔽显著 instance 来逼模型看更多证据。但 STKIM 只遮 K=10 个、无需 teacher-student、推理时移除；MHIM 需动量 teacher 预训练 + 遮 1% instance。二者的对比是本主题"如何正确利用/挑战注意力"这条线的核心。

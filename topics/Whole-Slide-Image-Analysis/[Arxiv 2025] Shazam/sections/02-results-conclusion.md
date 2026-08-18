@@ -16,7 +16,7 @@ Shazam built on 5 FMs (UNI2, Virchow2, H-optimus-1, Prov-GigaPath, Phikon-v2). 3
 
 **Survival**: pan-cancer 10 TCGA cohorts, KM analysis significant separation in 9/10 (except CESC).
 
-> 💡 **结果批读（无普适赢家 → 融合的价值）**（Hao 批注）：Shazam 的核心论证是"**不同 FM 有器官/任务依赖的专长**（Virchow2 脑/皮肤、H-optimus-1 前列腺/膀胱、UNI2 肠/肾），融合它们能全面最优"。空间转录组上 +0.08-0.17 PCC、30 任务平均排名 1.17——融合确实一致超过任何单 FM。这印证了 [PathBench](../%5BArxiv%202025%5D%20PathBench/) 的"无普适赢家"，并给出解法（融合）。**但注意**：Shazam 用了 **5 个 FM**——增益部分来自"多 FM 集成"这个天然优势（更多参数/更多预训练知识），不完全是"多层"的功劳。消融（下）显示多层 vs MoE 的相对贡献。
+> 💡 **结果批读（无普适赢家 → 融合的价值）**（Hao 批注）：Shazam 的核心论证是"**不同 FM 有器官/任务依赖的专长**（Virchow2 脑/皮肤、H-optimus-1 前列腺/膀胱、UNI2 肠/肾），融合它们能全面最优"。空间转录组上 +0.08-0.17 PCC、30 任务平均排名 1.17——融合确实一致超过任何单 FM。这印证了 [PathBench](../../%5BArxiv%202025%5D%20PathBench/) 的"无普适赢家"，并给出解法（融合）。**但注意**：Shazam 用了 **5 个 FM**——增益部分来自"多 FM 集成"这个天然优势（更多参数/更多预训练知识），不完全是"多层"的功劳。消融（下）显示多层 vs MoE 的相对贡献。
 
 ## Ablation Study
 
@@ -51,7 +51,7 @@ Shazam consolidates multiple pretrained expert models without accessing their tr
 > | 决策 | MoE 加权所有 | slide/task 条件**选**层 |
 > | 增益来源 | 多 FM + 多层 | 单 FM 内的深度选择 |
 >
-> **可追问点**：(1) Shazam 的多层增益（+0.030）里，多少来自"多 FM"、多少来自"多层"？（消融未完全拆开）——CKMIL 单 FM 多层能否复现类似增益？(2) 固定三层（0.33/0.66/1.0）是否最优？CKMIL 的自适应选层能否更好？(3) Shazam 未做 [Confounders](../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 式去混杂——多层/多 FM 融合是否放大 shortcut？
+> **可追问点**：(1) Shazam 的多层增益（+0.030）里，多少来自"多 FM"、多少来自"多层"？（消融未完全拆开）——CKMIL 单 FM 多层能否复现类似增益？(2) 固定三层（0.33/0.66/1.0）是否最优？CKMIL 的自适应选层能否更好？(3) Shazam 未做 [Confounders](../../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 式去混杂——多层/多 FM 融合是否放大 shortcut？
 
 > 💡 **Q&A 批注记录**（Hao 批注）：
 > - Q：Shazam 和 CKMIL 目标方向的本质区别？

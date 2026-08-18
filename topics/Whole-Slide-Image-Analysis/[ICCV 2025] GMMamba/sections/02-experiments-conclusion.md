@@ -49,10 +49,10 @@ Component ablation: **LG** (location-based grouping) over w BMP baseline: +5.2% 
 **Grouping strategies (Table 6)**: location-based > feature-based clustering > random (+5.1%/+3.8% accuracy). Feature-based ignores spatial structure. **Grouping number G (Table 7)**: G=10 optimal. **Mask ratio $M_r$ (Table 8)**: masking greatly boosts accuracy — $M_r$=0→10-20% gives +9.4% (ESCA) / +3.8% (Lung) accuracy.
 
 > 💡 **Table 4/6/8 消融解读（拆清各组件增益）**（Hao 批注）：这组消融很扎实，拆清了 GMMamba 的增益来源：
-> 1. **location-based grouping 是最大功臣之一**（+5.2%）：按空间坐标分组 > 特征聚类 > 随机。原因——空间相邻的 instance 组织同质性高，便于 BiMamba 建模、也便于去冗余。**这是对 [Spatial-Blindness](../../ckmil-re-attn-mil/) 的一个正面回应——空间信息（坐标分组）确实有用**。
+> 1. **location-based grouping 是最大功臣之一**（+5.2%）：按空间坐标分组 > 特征聚类 > 随机。原因——空间相邻的 instance 组织同质性高，便于 BiMamba 建模、也便于去冗余。**这是对 [Spatial-Blindness](../../../ckmil-re-attn-mil/) 的一个正面回应——空间信息（坐标分组）确实有用**。
 > 2. **IMM masking 有效**（+2.6%，$M_r$=0→20% 达 +9.4%）：去冗余确实提升，且 mask 比例 10-20% 最优（太高丢关键信息）。
 > 3. **CSS 有效**（+2.5%）：组间散布肿瘤聚合。
-> - **对 baseline set/CKMIL**：GMMamba 作为 MambaMIL 的进阶，其 clean ablation 证明"evidence selection（masking）+ 空间分组 + 组间聚合"各有贡献。新方法若声称去冗余，需与 GMMamba 比。**mask 比例的倒 U 形**（10-20% 最优、太高变差）再次印证"适度保留"原则（呼应 [PIBD](../%5BICLR%202024%5D%20PIBD/) 的 Irr、[EAGLE](../%5BNat%20Commun%202026%5D%20DL-Efficient-Pathology/) 的 25 tile）。
+> - **对 baseline set/CKMIL**：GMMamba 作为 MambaMIL 的进阶，其 clean ablation 证明"evidence selection（masking）+ 空间分组 + 组间聚合"各有贡献。新方法若声称去冗余，需与 GMMamba 比。**mask 比例的倒 U 形**（10-20% 最优、太高变差）再次印证"适度保留"原则（呼应 [PIBD](../../%5BICLR%202024%5D%20PIBD/) 的 Irr、[EAGLE](../../%5BNat%20Commun%202026%5D%20DL-Efficient-Pathology/) 的 25 tile）。
 
 ## 5. Conclusion
 
@@ -62,7 +62,7 @@ GMMamba facilitates global modeling and reduces redundancy via IMM (intra-group 
 > - **排除的竞争解释**："关键只是 evidence selection / redundancy removal"——但 GMMamba 实为 MambaMIL + IMM(masking) + CSS(cross-group) 的组合，增益是多组件叠加。
 > - **是 MambaMIL 的进阶配对**：GMMamba vs MambaMIL 的 +7.15% 展示了"在 SSM 上加去冗余+组间建模"的价值。
 > - **CSS 可移植**（Table 3 插各种 MIL 都涨）——可作通用组间聚合插件。
-> - **对 CKMIL/ReadySlide**：(1) location-based grouping 证明空间坐标分组有用；(2) IMM masking 的倒 U 形（10-20% 最优）印证适度保留；(3) CSS 是可复用的散布特征聚合；(4) 与 [PAMoE](../%5BCVPR%202025%5D%20PAMoE/) 都做"聚合器内 evidence selection"但机制不同（mask vs expert-choice）。
+> - **对 CKMIL/ReadySlide**：(1) location-based grouping 证明空间坐标分组有用；(2) IMM masking 的倒 U 形（10-20% 最优）印证适度保留；(3) CSS 是可复用的散布特征聚合；(4) 与 [PAMoE](../../%5BCVPR%202025%5D%20PAMoE/) 都做"聚合器内 evidence selection"但机制不同（mask vs expert-choice）。
 
 > 💡 **Q&A 批注记录**（Hao 批注）：
 > - Q：GMMamba 相对 MambaMIL 的净增益来自哪？

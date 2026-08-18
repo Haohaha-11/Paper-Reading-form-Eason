@@ -42,7 +42,7 @@ CHIEF induced a stable non-uniform saliency ordering: median fraction of tiles t
 *Fig. 4: 注意力集中分析。Lorenz 曲线（累积注意力质量 vs 按注意力排序的 tile 比例）、Gini 系数热图、累积 50%/80% 质量所需 tile 比例、top-k 质量分布等。*
 
 > 💡 **Figure 4 批读**（一个反直觉但深刻的发现）（Hao 批注）：这节回答"为什么要用 task-agnostic 的 CHIEF 选 tile，而不是端到端学注意力"。**发现：端到端弱监督训练的 ABMIL 注意力趋向近均匀聚合**（Gini 仅 0.087，需 44% tile 才累积 50% 注意力）——尤其在细微的生物标志物任务上，ABMIL 注意力退化成≈mean pooling！而 CHIEF 的预训练显著性先验高度集中（Gini 0.702，8.4% tile 就占 50%）。
-> - **深刻含义**：这与本主题 [Spatial-Blindness](../../ckmil-re-attn-mil/)、[ACMIL](../%5BECCV%202024%5D%20ACMIL/) 呼应——**端到端学的注意力在弱监督+小样本下不可靠**（要么过度集中过拟合，要么退化成均匀）。EAGLE 的对策是**用大规模预训练的 task-agnostic 显著性先验替代逐任务学的注意力**。对 ReadySlide：这支持"用预训练 FM 的显著性（如 CHIEF/importance_chief）做保留，而非依赖下游任务学的注意力"的路线。
+> - **深刻含义**：这与本主题 [Spatial-Blindness](../../../ckmil-re-attn-mil/)、[ACMIL](../../%5BECCV%202024%5D%20ACMIL/) 呼应——**端到端学的注意力在弱监督+小样本下不可靠**（要么过度集中过拟合，要么退化成均匀）。EAGLE 的对策是**用大规模预训练的 task-agnostic 显著性先验替代逐任务学的注意力**。对 ReadySlide：这支持"用预训练 FM 的显著性（如 CHIEF/importance_chief）做保留，而非依赖下游任务学的注意力"的路线。
 
 ## Generalization (PathoBench) & Efficiency
 

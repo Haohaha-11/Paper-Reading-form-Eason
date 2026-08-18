@@ -6,7 +6,7 @@
 
 AHE = **observability 驱动的闭环 harness 演化**。核心：三个匹配的 observability 支柱把每个 harness 编辑变成**可证伪的契约**——❶ **component observability**（NexAU 把 7 类可编辑组件暴露为文件，动作空间显式可回滚）；❷ **experience observability**（Agent Debugger 把百万级原始 trajectory token 蒸馏成分层可下钻的证据语料）；❸ **decision observability**（change manifest 给每个编辑配一个自声明预测，下一轮用 task 级结果验证）。10 轮迭代把 Terminal-Bench 2 pass@1 从 69.7% 提到 77.0%，超人工 Codex（71.9%）和自演化基线 ACE/TF-GRPO；冻结 harness 跨基准/跨模型族迁移（+5.1~+10.1pp）。
 
-> 📌 **与 [Self-Harness](../%5BArxiv%202026%5D%20Self-Harness/) 高度相似的并行独立工作**（同为 2026）。用户指出：两者都是 `trajectory → failure diagnosis → harness edit → evaluation → rollback/retain`，且 AHE 的 **evidence ledger / change manifest**（每个修改绑定 failure evidence + root cause + expected fix + regression risk）与 Self-Harness 的 **Weakness Mining + Proposal Validation 非常接近**。
+> 📌 **与 [Self-Harness](../../%5BArxiv%202026%5D%20Self-Harness/) 高度相似的并行独立工作**（同为 2026）。用户指出：两者都是 `trajectory → failure diagnosis → harness edit → evaluation → rollback/retain`，且 AHE 的 **evidence ledger / change manifest**（每个修改绑定 failure evidence + root cause + expected fix + regression risk）与 Self-Harness 的 **Weakness Mining + Proposal Validation 非常接近**。
 
 ---
 
@@ -16,7 +16,7 @@ Harnesses are now central to agent performance, mediating how models interact wi
 
 > 💡 **三个 observability 支柱 = 对自动 harness 演化的系统性拆解**（Hao 批注）：AHE 把"如何自动演化 harness"归结为**三个 observability 问题**，这个拆解比 Self-Harness 更工程化、更彻底，对用户改进 Self-Harness 极有参考价值：
 > 1. **component observability（动作空间可观测）**：7 类正交组件（system prompt / tool description / tool implementation / middleware / skill / sub-agent config / long-term memory）各是一个文件，每个失败模式干净映射到一个组件类，每次编辑一个 git commit（文件级 diff + 回滚粒度免费）。→ 对比 Self-Harness：Self-Harness 只编辑 DeepAgent harness 文件里声明的配置点，动作空间更窄；AHE 的 7 类组件是更完整的动作空间。
-> 2. **experience observability（经验可观测）**：Agent Debugger 把原始 trajectory 蒸馏成**分层可下钻**的证据语料（per-task 分析报告 + benchmark 级总览），evolver 消费结构化 root cause 而非原始 log——**但也保留原始 trace 供验证**（progressive disclosure）。→ 这是 [Meta-Harness](../%5BArxiv%202026%5D%20Meta-Harness/)（全 trace）和 Self-Harness（压缩 bundle）之间的**中间地带**：既蒸馏又保留原始 trace 可下钻。
+> 2. **experience observability（经验可观测）**：Agent Debugger 把原始 trajectory 蒸馏成**分层可下钻**的证据语料（per-task 分析报告 + benchmark 级总览），evolver 消费结构化 root cause 而非原始 log——**但也保留原始 trace 供验证**（progressive disclosure）。→ 这是 [Meta-Harness](../../%5BArxiv%202026%5D%20Meta-Harness/)（全 trace）和 Self-Harness（压缩 bundle）之间的**中间地带**：既蒸馏又保留原始 trace 可下钻。
 > 3. **decision observability（决策可观测）**：change manifest 给每个编辑配自声明预测，下一轮验证 → **可证伪契约**。→ 这正是 Self-Harness 的 audit 记录 $a_j$ 的强化版。
 
 ## 1. Introduction — 核心洞察：瓶颈在 observability 不在 agent 能力
@@ -30,7 +30,7 @@ Harnesses are now central to agent performance, mediating how models interact wi
 2. 实证：Terminal-Bench 2 69.7%→77.0%，超人工和自动基线，冻结 harness 跨基准/跨模型族迁移。
 3. **揭示 agent 驱动演化的两个极限**：harness 组件**非加性交互**（叠加有效编辑会 cap 总增益）；循环的 self-attribution **对 fix 可靠、但对 regression 盲**（regression foresight 是未来最清晰的方向）。
 
-> 💡 **第三个贡献 = 对用户最关键的经验发现（regression blindness）**（Hao 批注）：AHE 的第三个贡献直接连到 [Phantom-Guardrails](../%5BArxiv%202026%5D%20Phantom-Guardrails/) 和用户改进 Self-Harness 的核心——**LLM 对自己 harness 编辑效果的自评估是不对称地不可靠的**：
+> 💡 **第三个贡献 = 对用户最关键的经验发现（regression blindness）**（Hao 批注）：AHE 的第三个贡献直接连到 [Phantom-Guardrails](../../%5BArxiv%202026%5D%20Phantom-Guardrails/) 和用户改进 Self-Harness 的核心——**LLM 对自己 harness 编辑效果的自评估是不对称地不可靠的**：
 > - **对 fix 的预测可靠**（evidence-driven，见 §4.4.2：precision 33.7% / recall 51.4%，~5× random）。
 > - **对 regression 的预测几乎失灵**（precision 11.8% / recall 11.1%，仅 ~2× random）——"agent 能论证为什么某编辑该 help，却无法可靠说出同一编辑将破坏哪些 task"。
 >
@@ -42,4 +42,4 @@ Harnesses are now central to agent performance, mediating how models interact wi
 
 **Automated optimization of LLM agents**：按"优化器观察什么证据、能编辑什么"分类——修改 agent 输出（reflection/critique）、优化 prompt/instruction（playbook、semantic-advantage prior、DSPy、GEPA 的 Pareto-frontier trace 反射更新）、编辑程序结构（skill 库、scored program/agent archive、workflow graph）。
 
-> 💡 **相关工作批读（AHE 的定位 = full harness as combinatorial whole）**（Hao 批注）：AHE 明确把自己与两条线区分：(1) 只优化单一 surface（prompt/skill/playbook）的方法——AHE 联合演化 **7 类组件作为组合整体**，让跨组件权衡对优化器可见；(2) [Meta-Harness](../%5BArxiv%202026%5D%20Meta-Harness/)（引用 [16]）——AHE 与 Meta-Harness 都是"演化全 harness"，但 AHE 强调**保持人类先验最小**（方法论让优化器从 rollout 发现，而非手工固定）。对用户：AHE 和 Self-Harness、Meta-Harness 构成 2026 年"自动 harness 演化"的三足——Meta-Harness（外部强 proposer + 全 trace）、Self-Harness（自 proposer + 压缩 bundle）、AHE（多角色同基座 + 分层证据 + 结构化 manifest）。三者的组件粒度、证据形式、验证机制各不同，是用户设计新方法的三个参照点。
+> 💡 **相关工作批读（AHE 的定位 = full harness as combinatorial whole）**（Hao 批注）：AHE 明确把自己与两条线区分：(1) 只优化单一 surface（prompt/skill/playbook）的方法——AHE 联合演化 **7 类组件作为组合整体**，让跨组件权衡对优化器可见；(2) [Meta-Harness](../../%5BArxiv%202026%5D%20Meta-Harness/)（引用 [16]）——AHE 与 Meta-Harness 都是"演化全 harness"，但 AHE 强调**保持人类先验最小**（方法论让优化器从 rollout 发现，而非手工固定）。对用户：AHE 和 Self-Harness、Meta-Harness 构成 2026 年"自动 harness 演化"的三足——Meta-Harness（外部强 proposer + 全 trace）、Self-Harness（自 proposer + 压缩 bundle）、AHE（多角色同基座 + 分层证据 + 结构化 manifest）。三者的组件粒度、证据形式、验证机制各不同，是用户设计新方法的三个参照点。

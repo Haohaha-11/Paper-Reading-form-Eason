@@ -21,7 +21,7 @@ We evaluated 19 PFMs (vision-only, vision-language, multimodal-enhanced) on 64 t
 > - **分子分型**：H-Optimus 系；
 > - **生存预后**：UNI2 / CONCH1.5。
 >
-> 这解释了为什么 [LitePath](../%5BArxiv%202026%5D%20Deployment-Friendly-CPath/) 选 Virchow2 + H-Optimus-1 + UNI2 三个作蒸馏 teacher——**它们专长互补**（组织学/分子/预后）。对 ReadySlide cross-FM transfer：这张图告诉你"该在哪些 FM 之间验证迁移"（Virchow2 强 substrate、UNI2 预后强），且"任务类型决定最优 FM"——压缩方法的 FM-agnostic 声明需跨这些不同专长的 FM 验证。
+> 这解释了为什么 [LitePath](../../%5BArxiv%202026%5D%20Deployment-Friendly-CPath/) 选 Virchow2 + H-Optimus-1 + UNI2 三个作蒸馏 teacher——**它们专长互补**（组织学/分子/预后）。对 ReadySlide cross-FM transfer：这张图告诉你"该在哪些 FM 之间验证迁移"（Virchow2 强 substrate、UNI2 预后强），且"任务类型决定最优 FM"——压缩方法的 FM-agnostic 声明需跨这些不同专长的 FM 验证。
 
 ## Lung Cancer
 
@@ -45,7 +45,7 @@ On 10 lung tasks (primary vs metastatic, primary site, molecular subtyping), H-o
 PathBench provides the first comprehensive, leakage-free benchmark for PFMs, evaluating 19 models on 64 tasks across 5 cancer types with fully private multi-center data. Key findings: Virchow2 and H-Optimus-1 are most effective overall; vision FMs outperform vision-language FMs on clinical tasks; no single model dominates all tasks/organs. The live leaderboard supports continuous community contribution via automated evaluation.
 
 > 💡 **元结论 + 局限 + 对本主题的价值**（Hao 批注）：
-> - **三个可复用元结论**：(1) **Virchow2/H-Optimus-1 是当前最强通用 substrate**（ReadySlide 该对标）；(2) **视觉 FM > 视觉-语言 FM**（临床任务上语言对齐没帮上忙，甚至拖累——与 [EAGLE](../%5BNat%20Commun%202026%5D%20DL-Efficient-Pathology/) 里 GPT-4o 惨败呼应）；(3) **无普适赢家**（选 FM 看任务）。
-> - **防泄漏方法论**是核心贡献——全私有数据、排除预训练重叠。这是评估任何 WSI 模型（含压缩方法）的黄金标准，与 [Confounders](../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 互补（一个防泄漏、一个防混杂）。
-> - **局限**：benchmark 本身不提供方法创新，是"裁判"而非"选手"；私有数据不公开（可复现性靠 leaderboard 提交而非开放数据）；主要是分类/生存任务，未覆盖 [Confounders](../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 式的分层去混杂评估。
+> - **三个可复用元结论**：(1) **Virchow2/H-Optimus-1 是当前最强通用 substrate**（ReadySlide 该对标）；(2) **视觉 FM > 视觉-语言 FM**（临床任务上语言对齐没帮上忙，甚至拖累——与 [EAGLE](../../%5BNat%20Commun%202026%5D%20DL-Efficient-Pathology/) 里 GPT-4o 惨败呼应）；(3) **无普适赢家**（选 FM 看任务）。
+> - **防泄漏方法论**是核心贡献——全私有数据、排除预训练重叠。这是评估任何 WSI 模型（含压缩方法）的黄金标准，与 [Confounders](../../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 互补（一个防泄漏、一个防混杂）。
+> - **局限**：benchmark 本身不提供方法创新，是"裁判"而非"选手"；私有数据不公开（可复现性靠 leaderboard 提交而非开放数据）；主要是分类/生存任务，未覆盖 [Confounders](../../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 式的分层去混杂评估。
 > - **对 ReadySlide 的直接用途**：(1) 选强 substrate（Virchow2/H-Optimus-1）与互补 FM（UNI2 预后）；(2) 借鉴防泄漏协议做 cross-FM transfer 验证；(3) 用 64 任务的多样性 + 任务难度分层来设计压缩的多任务评估。

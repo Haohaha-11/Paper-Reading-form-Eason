@@ -6,7 +6,7 @@
 
 **自改进 agent 会"幻觉"出根本没发生的失败，然后给这个虚构失败加 guardrail。** 本文在自动 harness 优化中研究这个失败模式：LLM proposer 编辑 agent 周围的 scaffold（prompt/parser/filter/validator/guardrail）让观测到的失败消失，但很少问一个前置问题——**真的有失败要修吗？** 作者造了 **Counterfactual Fabrication Lab**（反事实伪造实验室）：一个确定性 micro-lab，正确动作事先已知是"do nothing"，植入一个针对**可证明永不发生**的失败类的候选 guardrail，只展示合法 episode，用 byte-exact oracle 检查每个被引用的违规。结果：proposer 在真违规时正确、在无特征合法输入上弃权，但当合法输入含一个**像熟悉游戏规则的良性模式**时会**发明失败**——15/60 次启用不存在规则的 guardrail 并引用 oracle 反驳的违规。
 
-> 📌 **对 [Self-Harness](../%5BArxiv%202026%5D%20Self-Harness/) 的精准反问题**（用户特别推荐）。用户指出：Self-Harness 的 `failed traces → LLM diagnosis → failure mechanism` 隐含假设"**LLM diagnosis is factually grounded**"，但未必成立。本文直接启发把 **Failure Mining** 升级成 **Failure Hypothesis → Counterfactual Verification → Validated Mechanism → Harness Proposal**，甚至加一个 **"Do Nothing"** 候选。
+> 📌 **对 [Self-Harness](../../%5BArxiv%202026%5D%20Self-Harness/) 的精准反问题**（用户特别推荐）。用户指出：Self-Harness 的 `failed traces → LLM diagnosis → failure mechanism` 隐含假设"**LLM diagnosis is factually grounded**"，但未必成立。本文直接启发把 **Failure Mining** 升级成 **Failure Hypothesis → Counterfactual Verification → Validated Mechanism → Harness Proposal**，甚至加一个 **"Do Nothing"** 候选。
 
 ---
 
@@ -15,7 +15,7 @@
 Self-improving AI agents are designed to learn from their mistakes. **We show that they can also hallucinate mistakes that never happened.** We study this failure mode in automated harness optimization, where an LLM-based proposer edits the scaffold around an agent (prompts, parsers, filters, validators, guardrails) to make observed failures disappear. But this process rarely asks a prior question: **was there a real failure to fix?** We introduce the **Counterfactual Fabrication Lab**, a deterministic micro-lab where the correct action is known in advance to be "do nothing." The lab plants a candidate guardrail for a failure class that provably never occurs, presents only legal episodes, and uses a byte-exact oracle to check every cited violation. The proposer behaves as expected when the violation is real and abstains on featureless legal input. Yet when the legal input contains a **harmless pattern that resembles a familiar game rule**, it invents a failure: in **15/60 runs, versus 0/60 on featureless input**, it enables the nonexistent-rule guardrail and cites a violation the oracle refutes. The effect is structured: in single-shot proposals it appears only when three conditions coincide — a **rule-shaped pattern, an open-ended rule set, and an instruction that presupposes failures**. Removing any one eliminates the fabrication. Because the invented guardrail changes no true outcome and cannot improve an already-perfect suppression score, the phenomenon is **neither reward hacking nor over-refusal**. It is a **phantom guardrail**: a fix for a failure that never happened, invisible to suppression-only acceptance.
 
 > 💡 **核心贡献 = 命名并测量一个新失败模式（务必内化）**（Hao 批注）：这篇的价值不在数字（0.25、单个 proposer 主导），而在**首次干净地隔离并证明"幻觉失败"这个失败模式存在**，且给出可测量的工具。对整个 Harness topic 的意义：
-> - 所有自改进 harness（[Self-Harness](../%5BArxiv%202026%5D%20Self-Harness/) 的 Weakness Mining、[RHO](../%5BArxiv%202026%5D%20RHO-Self-Preference/) 的 self-preference、[AHE](../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的 evolve）都建立在"proposer 的失败诊断是可信的"这个隐含假设上。
+> - 所有自改进 harness（[Self-Harness](../../%5BArxiv%202026%5D%20Self-Harness/) 的 Weakness Mining、[RHO](../../%5BArxiv%202026%5D%20RHO-Self-Preference/) 的 self-preference、[AHE](../../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的 evolve）都建立在"proposer 的失败诊断是可信的"这个隐含假设上。
 > - 本文证明**这个假设在特定（且常见）条件下系统性失效**：proposer 会读过可见的 legality（每个 move 标 legal），凭 genre prior 发明一个规则，然后 harden against it。
 > - **关键定性**：这**不是** reward hacking（无 proxy 增益换 true-return 损失）、**不是** over-refusal（无 helpfulness 损失）、**不是** 无差别过度建造（无特征输入上弃权）。它是"在已满足、不可 hack 的 proxy 下的多余动作"——一个只有 warrant-aware 验证才能抓的盲区。
 
@@ -30,7 +30,7 @@ Self-improving AI agents are designed to learn from their mistakes. **We show th
 - **vs Reward hacking**：reward hacking 是用 proxy 增益换 true-return 损失。**本文的 guard 在全合法 pool 上是 no-op，既不能升已满足的 proxy、也不降 true return**——在满足、不可 hack 的 proxy 下的多余动作。
 - **vs Over-editing/over-action**：程序修复加"defect 不需要的 guard"、agent 过度调工具。**本文更尖锐**——一个 oracle 认证零支持的失败类的 guard，且证明弃权在同设定下可达。
 
-> 💡 **明确点名 RHO 为脆弱对象（关键关联）**（Hao 批注）：本文在 Related Work 直接把 [RHO](../%5BArxiv%202026%5D%20RHO-Self-Preference/) [15] 列为"最接近的系统"——"a recent optimizer makes the asymmetry concrete: it accepts a proposed edit only when a **self-preference score improves, with no separate test of whether the edit was warranted** [15]"。含义极其重要：
+> 💡 **明确点名 RHO 为脆弱对象（关键关联）**（Hao 批注）：本文在 Related Work 直接把 [RHO](../../%5BArxiv%202026%5D%20RHO-Self-Preference/) [15] 列为"最接近的系统"——"a recent optimizer makes the asymmetry concrete: it accepts a proposed edit only when a **self-preference score improves, with no separate test of whether the edit was warranted** [15]"。含义极其重要：
 > - **RHO 的无标签 self-preference 验证正是本文攻击的靶子**——它只测"候选是否被偏好/抑制失败"，不测"被修的失败是否真存在"。
 > - 这形成了本 topic 的一个**闭环张力**：RHO 用 self-preference 去标签（好），但 self-preference 无法证伪幻觉失败（本文证明的坏）。
 > - **对用户的启示**：把 Self-Harness 改 label-free（借 RHO）时，**必须同时加 warrant-aware 验证**（本文的解法），否则去了标签就直接掉进 phantom guardrail 陷阱。二者是配套的。

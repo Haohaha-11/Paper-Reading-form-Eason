@@ -27,8 +27,8 @@ Due to the intrinsic properties of WSI, MIL methods have often led to overfittin
 Although ACMIL enhances the generalization ability and interpretability of MIL methods in WSI analysis, certain limitations necessitate further exploration. Firstly, the selection of hyperparameters M and K significantly impacts performance, and the optimal choice depends on the dataset, requiring practitioners to determine the best value through trial and error. In the future, how to simplify the framework should be considered. Secondly, our paper does not account for the correlation between instances, which is crucial for understanding the complex tumor structure. This aspect will be a focus of future investigations. Thirdly, ACMIL significantly reduces the need for instance annotations compared to instance-supervised approaches and achieves comparable WSI classification performance (AUC: ACMIL 0.974 vs. Full supervised 0.992), but it performs poorly in tumor localization tasks. Tab. 2 shows ACMIL achieves an FROC score of 0.4322 on the Camelyon16 tumor localization task, lower than the top-performing supervised approach with a score of 0.8074.
 
 > 💡 **局限解读 + 对本主题的启示**（Hao 批注）：作者难得地诚实，列了三条硬伤：
-> 1. **超参敏感**（M、K 需按数据集试错）——与 [SiMLP](../../ckmil-re-attn-mil/)"简单方法更稳"的批评呼应。
-> 2. **未建 instance 相关性**——MBA/STKIM 都是"独立处理 instance"，没用空间/结构关系，这正是 [Spatial-Blindness](../../ckmil-re-attn-mil/) 那条线关心的。
+> 1. **超参敏感**（M、K 需按数据集试错）——与 [SiMLP](../../../ckmil-re-attn-mil/)"简单方法更稳"的批评呼应。
+> 2. **未建 instance 相关性**——MBA/STKIM 都是"独立处理 instance"，没用空间/结构关系，这正是 [Spatial-Blindness](../../../ckmil-re-attn-mil/) 那条线关心的。
 > 3. **定位仍差**（FROC 0.43 vs 全监督 0.81）——分类友好 ≠ 定位友好。
 >
 > **对压缩/保留研究**：ACMIL 的核心贡献（Top-10 占 85% 注意力、真实阳性 instance 有上千个）是一个强证据——**基于单一注意力的 patch importance 会系统性漏掉大量判别 patch**。若做内容自适应保留，应当用 MBA 式的多视角重要性、或 STKIM 式的"别只信 Top-K"，否则压缩会把判别信息一起丢掉。这与 ReadySlide 项目"retention 是杠杆、per-patch importance 不可尽信"的主结论一致。

@@ -12,7 +12,7 @@
 
 Preprocess: OTSU foreground segmentation → sliding window crop patches → ViT-S/16 (DINO-pretrained on large WSIs) encodes each patch to $x_i\in\mathbb{R}^{d\times1}$ → sequence $X=\{x_1,\ldots,x_N\}$ → split into subsequences $\{S_1,\ldots,S_q,R\}$ where $N=ql+r$, each $S_j$ has length $l$. Extend remainder $R$ to $S_{q+1}$ (length $l$) so all subsequences equal length for parallel computation, ensuring each $x_i$ exists in only one subsequence.
 
-> 💡 **机制拆解（子序列切分为何重要）**（Hao 批注）：把长度 $N$（上万）的序列切成 $q+1$ 个长度 $l=512$ 的子序列是 RetMIL 层次结构的基础。关键设计：**每个 patch 只属于一个子序列**（不重叠），且余数 $R$ 按规则 pad 到等长（$r=0$/小余数重复/大余数直接补）——这保证了并行计算的规整性。这与 [MambaMIL](../%5BMICCAI%202024%5D%20MambaMIL/) 的 segment 切分思路类似，都是"化超长为多个可并行短序列"。
+> 💡 **机制拆解（子序列切分为何重要）**（Hao 批注）：把长度 $N$（上万）的序列切成 $q+1$ 个长度 $l=512$ 的子序列是 RetMIL 层次结构的基础。关键设计：**每个 patch 只属于一个子序列**（不重叠），且余数 $R$ 按规则 pad 到等长（$r=0$/小余数重复/大余数直接补）——这保证了并行计算的规整性。这与 [MambaMIL](../../%5BMICCAI%202024%5D%20MambaMIL/) 的 segment 切分思路类似，都是"化超长为多个可并行短序列"。
 
 ## 2.2 Retention Mechanism
 

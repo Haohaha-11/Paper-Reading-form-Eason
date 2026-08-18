@@ -45,11 +45,11 @@ Across all cohorts, LitePath ranks second (5.6) behind Virchow2 (5.3), outperfor
 > 💡 **机制拆解 + 局限**（Hao 批注）：
 > - **APS 的两段式采样**是对 EAGLE 纯注意力选择的改进——**加均匀采样保覆盖**，防止漏掉分散的信号（EAGLE Discussion 承认稀疏采样有漏罕见/分散线索的风险，APS 用均匀分量部分缓解）。对 ReadySlide：**retention 应含"覆盖保底 + 重要性加权"两分量**，纯 importance 有覆盖盲区。
 > - **浅层预测深层注意力**：APS 打分网络用 block-1 特征逼近最终 ABMIL 注意力——一种"廉价代理昂贵信号"的蒸馏，值得借鉴到 allocator（用便宜特征预测昂贵的 patch 价值）。
-> - **局限**：(1) 肺癌等任务精度有天花板（蒸馏小模型的固有代价）；(2) 排名仍略输最强大模型（5.6 vs 5.3），定位是"几乎不掉精度换 400× 效率"，非 SOTA 精度；(3) 与 [Confounders](../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 一样，未见分层去混杂——APS 选的 patch 是否 shortcut？未验。
+> - **局限**：(1) 肺癌等任务精度有天花板（蒸馏小模型的固有代价）；(2) 排名仍略输最强大模型（5.6 vs 5.3），定位是"几乎不掉精度换 400× 效率"，非 SOTA 精度；(3) 与 [Confounders](../../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 一样，未见分层去混杂——APS 选的 patch 是否 shortcut？未验。
 
 ## 与本主题 / ReadySlide 的关系
 
-- **与 [EAGLE](../%5BNat%20Commun%202026%5D%20DL-Efficient-Pathology/) 是"效率 CPath"的一对**：EAGLE 只压 patch（选 25 tile + 现成 FM），LitePath 双轴压（蒸馏小 FM + APS 选 patch）。合读：**patch retention 是两者共同的核心杠杆**，且都验证"少 patch 不掉精度"。
+- **与 [EAGLE](../../%5BNat%20Commun%202026%5D%20DL-Efficient-Pathology/) 是"效率 CPath"的一对**：EAGLE 只压 patch（选 25 tile + 现成 FM），LitePath 双轴压（蒸馏小 FM + APS 选 patch）。合读：**patch retention 是两者共同的核心杠杆**，且都验证"少 patch 不掉精度"。
 - **D-Score 是 ReadySlide 该采用的评估范式**：CR/FLOPs 与 AUC 的复合 Pareto 标量，避免单指标偏置。
 - **APS 的"覆盖 + 重要性"双采样**修正了纯 importance 保留的覆盖盲区——对 ReadySlide allocator 有直接借鉴。
 - **LiteFM 多 teacher 蒸馏**是"FM-agnostic substrate"的一种实现（把多 FM 知识压进一个小 substrate）。

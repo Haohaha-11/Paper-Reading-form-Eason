@@ -26,14 +26,14 @@ Survival: MambaMIL best on all benchmarks, outperforming 2nd-best by **2.6% (Res
 
 > 💡 **Table 1/2 批读（一个对 baseline set 极重要的观察）**（Hao 批注）：
 > - **MambaMIL 全面最优**，但幅度温和（2.6-2.7% C-Index）。关键对比对象是 **TransMIL 和 S4MIL**：MambaMIL(0.680) > S4MIL(0.641) > TransMIL(0.654, ResNet 生存)。说明"针对 WSI 特性设计的 SSM（SR-Mamba）" > "直接套 S4" > "近似 self-attention"。
-> - **一个反直觉点**：**TransMIL 在分型任务上表现差**（BRACS-7* AUC 0.613，甚至低于 Mean-Pooling 0.658！）。原因：TransMIL 参数多易过拟合，小数据集（BRACS 分型）上崩。而 MambaMIL/简单 pooling 更稳。**这印证了 baseline set 的核心逻辑——不同方法在不同任务/数据规模上各有胜负，没有普适赢家**（呼应 [PathBench](../%5BArxiv%202025%5D%20PathBench/)）。
+> - **一个反直觉点**：**TransMIL 在分型任务上表现差**（BRACS-7* AUC 0.613，甚至低于 Mean-Pooling 0.658！）。原因：TransMIL 参数多易过拟合，小数据集（BRACS 分型）上崩。而 MambaMIL/简单 pooling 更稳。**这印证了 baseline set 的核心逻辑——不同方法在不同任务/数据规模上各有胜负，没有普适赢家**（呼应 [PathBench](../../%5BArxiv%202025%5D%20PathBench/)）。
 > - **对 CKMIL**：小数据分型任务上，复杂方法（TransMIL）可能不如简单方法——这是新方法必须小心的过拟合陷阱，也是 MeanPool sanity control 的价值所在。
 
 ![Table 3](../images/b068c7f9b1780abae55539305861b0aa4af6d72beab7c3d69078dfe1bb5514a8.jpg)
 
 *Table 3: Mamba 变体消融（7 数据集生存）。vanilla Mamba 0.662 < Bi-Mamba 0.665 < SR-Mamba 0.680。*
 
-> 💡 **Table 3 消融解读（SR-Mamba 的增益来源）**（Hao 批注）：三个 Mamba 变体对比是本文最关键的消融——**SR-Mamba (0.680) > Bi-Mamba (0.665) > vanilla Mamba (0.662)**。含义：(1) vanilla Mamba 单向扫描已不错（0.662，超 TransMIL）；(2) Bi-Mamba（双向）小幅提升（+0.3pp）；(3) **SR-Mamba 的重排序增益最大（+1.8pp over vanilla）**——证明"针对 WSI 散布结构的跨步重排序"比单纯双向扫描更有效。这个 clean ablation 正是 baseline set 强调的——MambaMIL 是 [GMMamba](../%5BICCV%202025%5D%20GMMamba/) 的 base control，GMMamba 需在此基础上证明 evidence selection 的额外增益。
+> 💡 **Table 3 消融解读（SR-Mamba 的增益来源）**（Hao 批注）：三个 Mamba 变体对比是本文最关键的消融——**SR-Mamba (0.680) > Bi-Mamba (0.665) > vanilla Mamba (0.662)**。含义：(1) vanilla Mamba 单向扫描已不错（0.662，超 TransMIL）；(2) Bi-Mamba（双向）小幅提升（+0.3pp）；(3) **SR-Mamba 的重排序增益最大（+1.8pp over vanilla）**——证明"针对 WSI 散布结构的跨步重排序"比单纯双向扫描更有效。这个 clean ablation 正是 baseline set 强调的——MambaMIL 是 [GMMamba](../../%5BICCV%202025%5D%20GMMamba/) 的 base control，GMMamba 需在此基础上证明 evidence selection 的额外增益。
 
 ## Conclusion
 
@@ -49,4 +49,4 @@ MambaMIL is the first application of Mamba in computational pathology, using SR-
 > - Q：MambaMIL 能直接在冻结 FM 特征上跑吗？
 > - A：能。输入 $X\in\mathbb{R}^{L\times D}$ 就是 patch 特征序列，换 UNI2/Virchow2 只改 D。原文已用 ResNet-50 和 PLIP 两种特征验证。
 > - Q：SR-Mamba 的排序会破坏可交换性吗？
-> - A：会引入顺序依赖（Mamba 本质是序列模型）。SR-Mamba 用两种排序（原序+重排）部分缓解——不押注单一顺序，而是让模型从两个扫描视角看。但严格来说仍不是排列不变的（与 [DeepSets](../%5BNeurIPS%202017%5D%20DeepSets/) 的可交换性有张力）——这是 SSM 类方法的固有取舍。
+> - A：会引入顺序依赖（Mamba 本质是序列模型）。SR-Mamba 用两种排序（原序+重排）部分缓解——不押注单一顺序，而是让模型从两个扫描视角看。但严格来说仍不是排列不变的（与 [DeepSets](../../%5BNeurIPS%202017%5D%20DeepSets/) 的可交换性有张力）——这是 SSM 类方法的固有取舍。

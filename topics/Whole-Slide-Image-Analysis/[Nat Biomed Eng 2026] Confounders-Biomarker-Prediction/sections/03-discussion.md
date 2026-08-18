@@ -25,7 +25,7 @@ The confounding influence... suggests that current models are not yet ready to r
 Although predicting biomarker status from routine H&E WSIs may appear to be a simple image-to-label mapping, it is considerably more complex because phenotypes in WSIs are rarely driven by a single factor. Our analyses show that current approaches fail to reliably learn biomarker-specific genotype–phenotype mapping; instead, they exploit aggregated phenotypes or cohort-specific associations as proxies. These findings motivate the need for methods that formalize the problem as causal, structured multilabel learning: explicitly encode dependencies among biomarkers in the label space, learn disentangled image representations guided by conditional-independence objectives, mitigate confounding via causal adjustment and counterfactual data augmentation and optimize for invariance and distributional robustness.
 
 > 💡 **未来方向解读 + 对本主题的启示**（Hao 批注）：作者开出的药方是一整套因果 ML：**标签空间显式编码 biomarker 依赖 + 条件独立目标学 disentangled 表征 + 因果调整/反事实增强 + 分布鲁棒 + 分层校准评估**。
-> - **对 WSI Analysis 主题**：这是对"刷 AUROC 范式"的根本性纠偏。与 [PathBench](../%5BArxiv%202025%5D%20PathBench/)（防数据泄漏的标准 benchmark）互补——一个管"评测标准"，一个管"评测维度（分层去混杂）"。
+> - **对 WSI Analysis 主题**：这是对"刷 AUROC 范式"的根本性纠偏。与 [PathBench](../../%5BArxiv%202025%5D%20PathBench/)（防数据泄漏的标准 benchmark）互补——一个管"评测标准"，一个管"评测维度（分层去混杂）"。
 > - **对 ReadySlide/压缩研究**：最直接的可复用方法论——**分层+permutation 协议**可用来验证"压缩/保留是否保住了因果诊断信号 vs 只保住了 shortcut（grade/染色/TMB 形态）"。若压缩后整体 AUROC 不掉但分层后崩，说明压缩保的是 shortcut。这把 memory 里"必须对抗 shortcut-learning"落到了可执行的检验上。
 
 ## 局限（作者自述）

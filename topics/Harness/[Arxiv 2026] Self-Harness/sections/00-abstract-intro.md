@@ -13,9 +13,9 @@
 The performance of LLM-based agents is jointly shaped by their base models and the **harnesses** that mediate their interaction with the environment. Because different models exhibit distinct behaviors, effective harness design is inherently model-specific. Yet agent harnesses are still largely engineered by human experts, a paradigm that scales poorly as modern LLMs become increasingly diverse and rapidly evolving. In this paper, we introduce **Self-Harness**, a new paradigm in which an LLM-based agent improves its own operating harness, **without relying on human engineers or stronger external agents**. We operationalize Self-Harness as an iterative loop with three stages: **Weakness Mining**, which identifies model-specific failure patterns from execution traces; **Harness Proposal**, which generates diverse yet minimal harness modifications tied to these failures; and **Proposal Validation**, which accepts candidate edits only after regression testing. We instantiate Self-Harness across Terminal-Bench-2.0, SWE-bench Verified, and AppWorld using a minimal initial harness and three base models from diverse families: MiniMax M2.5, Qwen3.5-35B-A3B, and GLM-5. Across all nine model–benchmark combinations, every final harness improves both held-in and held-out pass rates, with overall relative gains of **up to 132%**.
 
 > 💡 **本 topic 的锚论文（务必内化定位）**（Hao 批注）：这是 **Harness 新分类的主论文**，用户后续所有工作都围绕它展开。一句话抓住它：**把"改 harness"这件事从人类工程师手里，交给 agent 自己做**——而且是让**同一个固定模型**、在**当前 harness 下**，提出改进**自己未来行为**的 harness 编辑。三个阶段构成用户后续要改进的三个抓手：
-> - **Weakness Mining（失败挖掘）** → 后续可被 [Phantom-Guardrails](../%5BArxiv%202026%5D%20Phantom-Guardrails/) 的"幻觉失败"问题攻击、升级为反事实验证。
-> - **Harness Proposal（提案搜索）** → 后续可被 [GEPA](../%5BArxiv%202025%5D%20GEPA/) 的 Pareto/population 搜索升级（当前是 greedy 的 K-proposal→pick）。
-> - **Proposal Validation（提案验证）** → 与 [Agentic-Harness-Engineering](../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的 evidence ledger、[RHO](../%5BArxiv%202026%5D%20RHO-Self-Preference/) 的无标签自偏好信号密切相关。
+> - **Weakness Mining（失败挖掘）** → 后续可被 [Phantom-Guardrails](../../%5BArxiv%202026%5D%20Phantom-Guardrails/) 的"幻觉失败"问题攻击、升级为反事实验证。
+> - **Harness Proposal（提案搜索）** → 后续可被 [GEPA](../../%5BArxiv%202025%5D%20GEPA/) 的 Pareto/population 搜索升级（当前是 greedy 的 K-proposal→pick）。
+> - **Proposal Validation（提案验证）** → 与 [Agentic-Harness-Engineering](../../%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) 的 evidence ledger、[RHO](../../%5BArxiv%202026%5D%20RHO-Self-Preference/) 的无标签自偏好信号密切相关。
 
 > 💡 **术语澄清：harness 到底是什么**（Hao 批注）：harness = 模型与环境之间的**非参数脚手架**（non-parametric scaffolding）：system prompt、工具集、内存/状态管理、验证规则、权限策略、运行时控制、失败恢复流程、编排逻辑。**它不改模型权重**，只改"模型如何观察任务、采取动作、调工具、检查中间产物、产出最终答案"的执行协议。关键洞察：**很多重要的 agent 失败是这一层的失败，而非模型单次响应的失败**——agent 可能不检查产物就报成功、反复无效重试、在长上下文里丢失 source of truth、缺少恢复动作。所以改这一层能带来独立于模型能力的增益。
 
@@ -27,7 +27,7 @@ The performance of LLM-based agents is jointly shaped by their base models and t
 
 > 💡 **Figure 1 批读（三范式 = 本 topic 的坐标系）**（Hao 批注）：这张图定义了整个 Harness topic 的坐标系，务必记牢：
 > - **人类工程（human harness engineering）**：ReAct → Claude Code / Codex / OpenHands，全靠人类专家手调。问题：模型爆发式增长（不同模型行为/工具习惯/错误模式/prompt 敏感性各异），一个 harness 对 A 模型好、对 B 模型未必好，人工逐模型重调不可持续。
-> - **Meta-Harness（外部优化器）**：一个**更强的外部 agent** 优化**较弱的 target agent** 的 harness（[Meta-Harness](../%5BArxiv%202026%5D%20Meta-Harness/) 就是这条线的直接前作）。问题：外部指导可能昂贵、对前沿模型不可得、或与 target 模型的失败模式不匹配。
+> - **Meta-Harness（外部优化器）**：一个**更强的外部 agent** 优化**较弱的 target agent** 的 harness（[Meta-Harness](../../%5BArxiv%202026%5D%20Meta-Harness/) 就是这条线的直接前作）。问题：外部指导可能昂贵、对前沿模型不可得、或与 target 模型的失败模式不匹配。
 > - **Self-Harness（本文）**：把改进循环**内化到 target agent 自身**——固定模型在当前 harness 下，提出改进自己未来行为的 bounded 编辑。
 >
 > **用户的研究定位**：Self-Harness 的 Introduction "基本就是沿着 Meta-Harness 往前推一步"（external meta-agent → agent 自己）。所以要真正理解 Self-Harness 的 novelty 在哪、天花板在哪，必须先读透 Meta-Harness（见该篇批注的对比表）。

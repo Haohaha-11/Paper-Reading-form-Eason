@@ -20,7 +20,7 @@ Five TCGA cancer datasets: BRCA (869), BLCA (359), COADREAD (296), HNSC (392), S
 
 PIBD achieves best overall performance (0.699) across five datasets. Among multimodal methods, PIBD is superior in 4/5 benchmarks, outperforming second-best (SurvPath/CLAM-SB-FT 0.683) by 1.6% overall. Among IB-based methods, PIBD wins on all datasets with 0.5%-4.9% gains.
 
-> 💡 **Table 1 批读**（主结果）（Hao 批注）：PIBD 总体 0.699，超所有单模态、多模态、信息论类方法。相对姊妹作 [MOTCat](../%5BICCV%202023%5D%20MOTCat/)（0.681 overall，注意数据集不完全相同）和 SurvPath（0.683）提升约 1.6pp。**关键对比**：PIBD 击败其他 IB 类方法（MIB/DeepIMV/L-MIB）0.5-4.9pp——说明"为 bag 结构 + 弱监督专门设计的 PIB"比通用 IB 更适配病理生存任务。这印证了"原型近似 bag 分布"的必要性。
+> 💡 **Table 1 批读**（主结果）（Hao 批注）：PIBD 总体 0.699，超所有单模态、多模态、信息论类方法。相对姊妹作 [MOTCat](../../%5BICCV%202023%5D%20MOTCat/)（0.681 overall，注意数据集不完全相同）和 SurvPath（0.683）提升约 1.6pp。**关键对比**：PIBD 击败其他 IB 类方法（MIB/DeepIMV/L-MIB）0.5-4.9pp——说明"为 bag 结构 + 弱监督专门设计的 PIB"比通用 IB 更适配病理生存任务。这印证了"原型近似 bag 分布"的必要性。
 
 ## 4.3 Ablation Study
 
@@ -62,4 +62,4 @@ We propose PIBD addressing both "intra-modal redundancy" (via PIB modeling proto
 - **PID 的 CLUB（B.3）**：MI 用 vCLUB（Eq.31-34）上界估计；预测低维 C 条件高维 S 以防 mode collapse。
 - **抗数据污染（C.3, Table 5）**：担心 CTransPath 在 TCGA 上预训练造成泄漏，额外用 ImageNet-ResNet50 特征重测，PIBD 仍领先（0.671 overall）——说明优势非来自预训练泄漏。
 
-> 💡 **附录亮点 + 局限**（Hao 批注）：**C.3 的抗污染实验**值得关注——作者主动排除"CTransPath 见过 TCGA → 泄漏"的质疑，换 ImageNet 特征仍赢。这与本目录 [Confounders](../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 的关切（数据泄漏/混杂）呼应，是难得的严谨。**局限**：(1) 相似度度量（cosine）的选择作者自承需further study；(2) Irr 全局固定，非自适应；(3) 生存预测 C-Index 提升温和（1.6pp），且未做 [Confounders](../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 式的分层去混杂验证——PIBD 的"判别原型"是否也可能学到 grade/TMB proxy？这是可追问的交叉点。
+> 💡 **附录亮点 + 局限**（Hao 批注）：**C.3 的抗污染实验**值得关注——作者主动排除"CTransPath 见过 TCGA → 泄漏"的质疑，换 ImageNet 特征仍赢。这与本目录 [Confounders](../../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 的关切（数据泄漏/混杂）呼应，是难得的严谨。**局限**：(1) 相似度度量（cosine）的选择作者自承需further study；(2) Irr 全局固定，非自适应；(3) 生存预测 C-Index 提升温和（1.6pp），且未做 [Confounders](../../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 式的分层去混杂验证——PIBD 的"判别原型"是否也可能学到 grade/TMB proxy？这是可追问的交叉点。

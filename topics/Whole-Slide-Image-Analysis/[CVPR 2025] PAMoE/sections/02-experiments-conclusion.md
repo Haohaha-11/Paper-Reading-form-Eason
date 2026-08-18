@@ -25,7 +25,7 @@ Settings: 4 Prior Supervised Experts + 2 Free Experts, capacity factor c=2.0, α
 > 💡 **Table 1 批读（PAMoE 对 Transformer vs 图模型的差异）**（Hao 批注）：关键观察——**PAMoE 对 Transformer 类（TransMIL/LongViT）一致提升，对图类（PatchGCN）提升有限**。TransMIL+PAMoE 在 BRCA 达全局最优 0.694；LongViT+PAMoE 提升尤其明显（LUAD 0.615→0.644）。PatchGCN+PAMoE 则时好时坏。这个差异引出作者的核心假设（下）。对 baseline set：PAMoE 是"pathology-aware MoE routing"竞争解释，但**其增益依赖 backbone 的全局交互能力**——这是重要的适用边界。
 
 > 💡 **假设批读（PAMoE 为何只帮 Transformer）**（Hao 批注）：作者的假设很有洞察力——**PAMoE 的增益来自"不同 expert 以独特方式映射 patch、扩展了隐空间，使模型能捕获更多样的全局交互"**。这些交互需要**全局自注意力**（Transformer）来支撑；而 PatchGCN 只建模邻近 patch 的局部交互，无法利用 expert 扩展的隐空间多样性 → 增益受限。
-> - **含义**：PAMoE 不是独立的聚合器，而是**特征变换/路由增强器**，需搭配全局交互 backbone。这与 [MAMMOTH](../%5BICLR%202026%5D%20MAMMOTH/)（feature transformation）思路相通——都是"改进 aggregator 前的特征处理"。对 CKMIL/ReadySlide：若用 MoE 路由，需确保下游有全局交互能力才能兑现增益。
+> - **含义**：PAMoE 不是独立的聚合器，而是**特征变换/路由增强器**，需搭配全局交互 backbone。这与 [MAMMOTH](../../%5BICLR%202026%5D%20MAMMOTH/)（feature transformation）思路相通——都是"改进 aggregator 前的特征处理"。对 CKMIL/ReadySlide：若用 MoE 路由，需确保下游有全局交互能力才能兑现增益。
 
 ## 5.4 Interpretability
 
@@ -57,7 +57,7 @@ PAMoE: plug-and-play MoE-based module enabling end-to-end systematic learning of
 
 > 💡 **总结 + 对 baseline set 的定位**（Hao 批注）：PAMoE 在 baseline set 里：
 > - **排除的竞争解释**："关键只是 tissue heterogeneity + MoE routing"——若新方法超不过 TransMIL+PAMoE，说明增益不只来自组织异质性路由。
-> - **plug-and-play**：官方提供 TransMIL/LongViT/PatchGCN 集成，可与其他聚合器组合（类似 [MAMMOTH](../%5BICLR%202026%5D%20MAMMOTH/) 的 drop-in 定位）。
+> - **plug-and-play**：官方提供 TransMIL/LongViT/PatchGCN 集成，可与其他聚合器组合（类似 [MAMMOTH](../../%5BICLR%202026%5D%20MAMMOTH/) 的 drop-in 定位）。
 > - **适用边界明确**：只帮有全局交互的 Transformer 类，图类受限——这是诚实且重要的边界。
 > - **对 CKMIL/ReadySlide**：(1) needle vs panoramic 任务二分；(2) Expert-Choice routing 是"聚合即筛选"的 patch 保留机制；(3) 组织原型（tumor/stroma/immune/necrosis）是可复用的病理语义分组；(4) 软路由+先验监督 > 硬先验分配。
 

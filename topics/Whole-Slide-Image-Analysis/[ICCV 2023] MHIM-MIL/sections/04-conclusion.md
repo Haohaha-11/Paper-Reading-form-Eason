@@ -12,7 +12,7 @@
 
 This paper rethinks the impact of salient instances for MIL-based WSI classification algorithms. We demonstrate that attention-based MIL methods excessively prioritizing salient instances harm the generalization ability of the model. To address this issue, we have proposed several masked hard instance mining strategies that mask out salient patches and encourage the model to attend to informative regions for better discriminative learning. Through qualitative analysis, we have demonstrated that these strategies effectively alleviate the under-fitting problem of general AB-MIL to hard instances. We have also developed the MHIM-MIL framework that leverages momentum teacher and consistency loss to further enhance hard instance mining. Our experimental results demonstrate the superiority and generality of the MHIM-MIL framework over other latest methods. In future work, we plan to devise a more precise localization scheme for hard instances that can facilitate model training and convergence.
 
-> 💡 **机制拆解**（一句话复述逻辑链）（Hao 批注）：**发现（盯显著 instance 伤泛化）→ 对策（遮显著、挖难样本）→ 稳定器（动量 teacher + 一致性损失）→ 通用性（三 backbone 均涨）+ 高效（更省更稳）**。与 [ACMIL](../%5BECCV%202024%5D%20ACMIL/) 合读：两文从"过拟合/难样本"两个角度得出同一操作——**别让注意力只盯 Top-K**。ACMIL 无 teacher（STKIM 更轻），MHIM 有 teacher（一致性正则 + 更强通用性）。
+> 💡 **机制拆解**（一句话复述逻辑链）（Hao 批注）：**发现（盯显著 instance 伤泛化）→ 对策（遮显著、挖难样本）→ 稳定器（动量 teacher + 一致性损失）→ 通用性（三 backbone 均涨）+ 高效（更省更稳）**。与 [ACMIL](../../%5BECCV%202024%5D%20ACMIL/) 合读：两文从"过拟合/难样本"两个角度得出同一操作——**别让注意力只盯 Top-K**。ACMIL 无 teacher（STKIM 更轻），MHIM 有 teacher（一致性正则 + 更强通用性）。
 
 ## 附录要点（Appendix A–F）
 
@@ -26,7 +26,7 @@ This paper rethinks the impact of salient instances for MIL-based WSI classifica
 
 **Student 首层初始化（Sec. B.2）**：用预训练参数初始化 student 的首个 FC 层，降低 Siamese 结构的塌缩风险、加速 teacher 早期训练。Tab. 10 显示这对 MHIM 框架的迭代优化重要，但对普通 MIL 模型并非普适涨点技巧（有时反降）。
 
-> 💡 **附录技巧总评**（Hao 批注）：这些附录技巧暴露了 MHIM 的"工程复杂度"——要跑好需要：选对遮蔽策略（数据依赖）、调 $\beta_h/\beta_r/\beta_l$ 三个比率、开 mask decay、开 Randomly HAM、TransMIL 还要用首层 + voting、student 首层初始化。**相比 [ACMIL](../%5BECCV%202024%5D%20ACMIL/) 的 STKIM（只调 K/p 两个、无 teacher），MHIM 的调参负担明显更重**。这印证了 ACMIL 论文里"STKIM 更简单高效"的对比。对复现/落地：MHIM 上限更高、更通用，但需要更多调试耐心。
+> 💡 **附录技巧总评**（Hao 批注）：这些附录技巧暴露了 MHIM 的"工程复杂度"——要跑好需要：选对遮蔽策略（数据依赖）、调 $\beta_h/\beta_r/\beta_l$ 三个比率、开 mask decay、开 Randomly HAM、TransMIL 还要用首层 + voting、student 首层初始化。**相比 [ACMIL](../../%5BECCV%202024%5D%20ACMIL/) 的 STKIM（只调 K/p 两个、无 teacher），MHIM 的调参负担明显更重**。这印证了 ACMIL 论文里"STKIM 更简单高效"的对比。对复现/落地：MHIM 上限更高、更通用，但需要更多调试耐心。
 
 ## F. Limitation
 

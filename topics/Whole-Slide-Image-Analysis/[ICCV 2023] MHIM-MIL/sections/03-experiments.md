@@ -24,8 +24,8 @@ As shown in Table 1, max-pooling and mean-pooling perform poorly (insufficient m
 
 > 💡 **Table 1 批读**（主结果 = MHIM 的通用性证据）（Hao 批注）：
 > - **最优战绩**：MHIM(DSMIL) 在 C16 达 92.48% Acc / 96.49% AUC；TCGA 达 95.53% AUC。三个 backbone 装上 MHIM 后**全部**超越各自基线和所有对手。
-> - **关键点：通用外挂**。MHIM 不是一个新模型，而是一个能加到 ABMIL/TransMIL/DSMIL 上都涨点的框架——这与 [ACMIL](../%5BECCV%202024%5D%20ACMIL/) 的定位一致（都强调"可插任意注意力 MIL"）。
-> - **Max/Mean pooling 崩盘**：在 C16（阳性占比极小）上 max-pooling 落后 DTFD 13.87% AUC——再次印证"简单池化在稀疏阳性 WSI 上不行"，与 ACMIL Table 1 观察一致，也与 [SiMLP](../../ckmil-re-attn-mil/)"mean 池化够用"的结论形成有趣张力（差异来自特征质量 + 数据阳性占比）。
+> - **关键点：通用外挂**。MHIM 不是一个新模型，而是一个能加到 ABMIL/TransMIL/DSMIL 上都涨点的框架——这与 [ACMIL](../../%5BECCV%202024%5D%20ACMIL/) 的定位一致（都强调"可插任意注意力 MIL"）。
+> - **Max/Mean pooling 崩盘**：在 C16（阳性占比极小）上 max-pooling 落后 DTFD 13.87% AUC——再次印证"简单池化在稀疏阳性 WSI 上不行"，与 ACMIL Table 1 观察一致，也与 [SiMLP](../../../ckmil-re-attn-mil/)"mean 池化够用"的结论形成有趣张力（差异来自特征质量 + 数据阳性占比）。
 
 ![Table 2](../images/8ce9b5488f1bad653ede18d2e2227cea73c7e9b0b7b3486f1a4f407c18184d19.jpg)
 

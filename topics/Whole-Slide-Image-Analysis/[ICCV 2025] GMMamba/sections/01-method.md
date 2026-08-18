@@ -31,8 +31,8 @@ Location-based K-Means clustering (uses instance coordinates) generates groups. 
 > 💡 **机制拆解（IMM 的自适应 mask = evidence selection）**（Hao 批注）：IMM 是 GMMamba 相对 MambaMIL 的核心增量。流程：组内 BiMamba 建模 → **attention block 预测每个 instance 的注意力分数 → 丢弃分数最低的 $M_r$ 比例 instance（sparse mask）** → 剩余 instance 再过 BiMamba。含义：
 > - **在 Mamba 建模中插入 evidence selection**——不是均匀处理所有 instance（MambaMIL 的做法），而是**动态剪枝低价值 instance**，让 Mamba 只扫关键 instance。
 > - **好处**：既减冗余计算（少扫 instance）又减干扰（无信息特征不参与）。
-> - **vs [ACMIL](../%5BECCV%202024%5D%20ACMIL/) 的 STKIM**：STKIM 遮 Top-K 高注意力（逼模型看更多）；IMM 反过来**丢低注意力**（去冗余保关键）。两者哲学相反——ACMIL 怕过度集中、GMMamba 怕冗余稀释。这个对比很有意思：取决于问题是"注意力过度集中"还是"冗余过多"。
-> - **对 CKMIL/ReadySlide**：IMM 是"聚合器内做 evidence selection"的又一实现（类似 [PAMoE](../%5BCVPR%202025%5D%20PAMoE/) 的 expert-choice 丢 patch），且是可学习的自适应 mask。
+> - **vs [ACMIL](../../%5BECCV%202024%5D%20ACMIL/) 的 STKIM**：STKIM 遮 Top-K 高注意力（逼模型看更多）；IMM 反过来**丢低注意力**（去冗余保关键）。两者哲学相反——ACMIL 怕过度集中、GMMamba 怕冗余稀释。这个对比很有意思：取决于问题是"注意力过度集中"还是"冗余过多"。
+> - **对 CKMIL/ReadySlide**：IMM 是"聚合器内做 evidence selection"的又一实现（类似 [PAMoE](../../%5BCVPR%202025%5D%20PAMoE/) 的 expert-choice 丢 patch），且是可学习的自适应 mask。
 
 ## 3.4 Cross-Group Super-Feature Sampling (CSS)
 
@@ -46,4 +46,4 @@ Max-Pooling extracts salient features → initial super-feature $f_s^{max}$ (Eq.
 > - **Max-Pooling 起点**：先从各组抽最显著特征作初始 super-feature（$f_s^{max}$）——抓每组的"代表"。
 > - **cross-attention + MHA**：用 super-feature 作 query 跨组聚合判别信息——建模散布肿瘤区的长程依赖（一个组的肿瘤与另一个组的肿瘤关联）。
 > - **关联矩阵 Q 桥接局部全局**（Eq.11-12）：$f_s^{mha}$ 抓全局但可能丢组内局部细节，用 Q（super-feature 与各组表示的关联）把全局信息按关联度加权回各组 → 既全局又保局部。
-> - **对比 MambaMIL**：MambaMIL 靠 SR-Mamba 的重排序建模长程；GMMamba 用 CSS 的显式 super-feature 采样 + cross-attention。CSS 更像"先选组代表、再组间 attention"，是层次化的（组内 Mamba + 组间 attention）——与 [RetMIL](../%5BMICCAI%202024%5D%20RetMIL/) 的局部/全局两级思路相通。
+> - **对比 MambaMIL**：MambaMIL 靠 SR-Mamba 的重排序建模长程；GMMamba 用 CSS 的显式 super-feature 采样 + cross-attention。CSS 更像"先选组代表、再组间 attention"，是层次化的（组内 Mamba + 组间 attention）——与 [RetMIL](../../%5BMICCAI%202024%5D%20RetMIL/) 的局部/全局两级思路相通。
