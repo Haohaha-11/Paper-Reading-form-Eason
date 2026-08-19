@@ -15,7 +15,7 @@ GCE-MIL 不再把为分类而学的 attention 直接冒充证据，而是用 Suf
 1. 把 MIL 证据质量拆成三个互不蕴含的标准：只保留证据是否足够、删去证据是否真正伤害预测、训练时连续门控能否忠实恢复为推理时离散 patch 集合。
 2. 用 BRACS 递归充分子集实验诊断证据非唯一性：在 $k=8$ 时，每张 slide 平均有 2.2302 个互斥充分子集，72.67% 的 slide 至少存在两个。
 3. 提出 GCE wrapper：8 个冻结 TITAN 文本锚点与低秩 bridge 产生 patch–concept 响应，连续 selector 输出门控，noisy-OR 计算多源概念覆盖，阈值加边际增益修复输出离散证据。
-4. 预测主结果覆盖 9 个 backbone × 9 个数据集的 81 个配置；证据诊断、稳定性、定位、消融和成本采用更窄的专门实验范围，不能视为每个 81 配置都完整检查。
+4. 9 个 backbone × 9 个数据集的 81 个配置覆盖预测主结果，也覆盖 Table 4 汇总的 Sufficiency/Necessity keep-only 与 remove 干预；Table 8 的逐-backbone S/N/R（含 Recoverability）仅展开 BRACS、NSCLC、PANDA，消融、定位、稳定性和成本则各自采用更窄范围。
 5. 用同预算实验排除“只是多选了 patch”的解释：约 5% 证据比例下，GCE discrete 在 BRACS 上达到 0.748 Macro-F1、0.004 prediction gap、0.412 complement degradation。
 
 ## 📖 批读导航
@@ -35,7 +35,7 @@ GCE-MIL 不再把为分类而学的 attention 直接冒充证据，而是用 Suf
 
 | 指标或设置 | 数值 | 含义 |
 |---|---:|---|
-| 评估矩阵 | 9 backbone × 9 数据集 = 81 配置 | 检查 wrapper 的架构与任务兼容性 |
+| 评估矩阵 | 9 backbone × 9 数据集 = 81 配置 | 覆盖预测主结果与 Table 4 聚合 keep/remove 干预 |
 | 平均预测变化 | Macro-F1 +0.024；C-index +0.014 | 证据优化没有以普遍牺牲任务效用为代价 |
 | attention keep-only 变化 | −0.078 | 只保留高 attention patch 时证据不充分 |
 | attention remove 变化 | −0.033 | 删除高 attention patch 后模型大多仍能恢复 |
@@ -127,7 +127,7 @@ flowchart TD
 - 指标与机制对齐：每个 failure 都有明确干预、对应组件和消融数字。
 - 对证据非唯一性给出递归充分子集诊断，避免把单一排名当唯一真相。
 - 同一 noisy-OR utility 贯穿连续训练和离散修复，推理集合不是无关的 post-hoc top-k。
-- 预测主结果覆盖 81 个 backbone–dataset 配置；此外用三个分类集的 Table 8、BRACS 专项消融/预算、BRACS/LUAD encoder 表和独立 CAMELYON-16 定位形成分层证据。
+- 81 个 backbone–dataset 配置覆盖预测主结果与 Table 4 聚合 Sufficiency/Necessity；Table 8 的逐-backbone S/N/R/Recoverability 仅覆盖三个分类集，另由 BRACS 专项消融/预算、BRACS/LUAD encoder 表和独立 CAMELYON-16 定位形成分层证据。
 - 清楚限定理论只保证 coverage 层面的次模性质，没有夸大为分类全局最优。
 
 ### 局限与风险

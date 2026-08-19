@@ -1,6 +1,6 @@
 [← 返回 README](../README.md)
 
-> 💡 **claude 批注｜本节预览**: 9 backbone × 9 dataset 的 81 配置主要支撑预测主结果；Table 8 的证据诊断只覆盖三个分类集，组件/预算与同预算实验主要在 BRACS，encoder 泛化仅 BRACS/LUAD，CAMELYON-16 另作独立定位检查。各证据范围不能合并成“81 配置全量验证”。
+> 💡 **claude 批注｜本节预览**: 9 backbone × 9 dataset 的 81 配置覆盖预测主结果，也覆盖 Table 4 汇总的 Sufficiency/Necessity keep-only 与 remove 干预。Table 8 的逐-backbone S/N/R 与 Recoverability 只展开 BRACS、NSCLC、PANDA；组件/预算与同预算实验主要在 BRACS，encoder 泛化仅 BRACS/LUAD，CAMELYON-16 另作独立定位检查，稳定性和成本也各有专门范围。
 
 # 5 Experiments
 
@@ -41,7 +41,7 @@ The ablation also separates the three S/N/R mechanisms. Budget control gives the
 
 *Table 4: Intervention diagnostic. Values are changes relative to the full-bag score averaged over the nine-dataset benchmark.*
 
-> 💡 **claude 批注｜表 4 干预解读**: 同一 evidence budget 下，GCE keep-only 相对全包为 +0.004，attention top-k 为 −0.078；删除 GCE 证据导致 −0.176，删除 attention 仅 −0.033。前一列直接测 Sufficiency，后一列测 Necessity；两列必须成对看，才能排除“选太多”和“补集冗余”的混淆。
+> 💡 **claude 批注｜表 4 干预解读**: 该表是完整 9 dataset × 9 backbone 的聚合干预结果。GCE keep-only 相对全包为 +0.004，attention top-k 为 −0.078；删除 GCE 证据导致 −0.176，删除 attention 仅 −0.033。前一列测 Sufficiency，后一列测 Necessity；它们覆盖 81 配置，但不包含 Table 8 那种逐-backbone Recoverability 明细。
 
 ![Table 5](../images/dfd4172f5d2d52e855b7ff61775b5faf2c52847dec5628a4b2d2713cbc1165aa.jpg)
 
@@ -57,4 +57,4 @@ Figure 3 places the learned evidence mask next to the host attention map. The qu
 
 Table 4 reports the direct intervention diagnostic for Sufficiency and Necessity. Keeping attention top-k changes the full-bag score by ▽0.078, whereas keeping GCE evidence changes it by only △0.004; removing attention changes the score by ▽0.033, but removing GCE evidence causes a ▽0.176 drop. Table 5 controls for evidence size by forcing all subset rules to select approximately 5% of each BRACS bag. At the same budget, attention top-k reaches 0.597 Macro-F1 and 0.151 complement degradation, whereas discrete GCE reaches 0.748 and 0.412; the prediction gap falls from 0.029 to 0.004. The gains therefore do not come from selecting more tissue, but from recovering a subset that is sufficient, necessary, and discrete-faithful.
 
-> 💡 **claude 批注｜本节小结**: 主结果证明预测效用基本保持，Table 3 把组件接回三类 failure，Table 4/5 用 keep/remove 与同预算协议证明证据改进；仍需谨慎的是多数证据指标来自模型自身输出，真实病理因果只由 CAMELYON 定位作有限外部验证。
+> 💡 **claude 批注｜本节小结**: 81 配置覆盖预测主结果与 Table 4 聚合 keep/remove；Table 8 的逐-backbone S/N/R/Recoverability 仅三个分类集。Table 3、Table 5、encoder、稳定性、定位和成本各自范围更窄，不能反推为 81 配置逐项全量检查。
