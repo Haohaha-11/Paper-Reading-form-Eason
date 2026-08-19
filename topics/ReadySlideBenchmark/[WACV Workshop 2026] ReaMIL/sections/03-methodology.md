@@ -13,9 +13,9 @@ Following standard weakly supervised MIL, each slide s consists of a bag of patc
 Patch features are projected into a token space via $\tilde { x } _ { s , i } = W _ { \mathrm { f e a t } } x _ { s , i } + b _ { \mathrm { f e a t } } .$ , with optional positional embeddings $t _ { s , i } = \tilde { x } _ { s , i } + \mathrm { M L P } _ { \mathrm { p o s } } ( \mathrm { n o r m } ( c _ { s , i } ) )$ . The resulting tokens $T _ { s } ~ = ~ [ t _ { s , 1 } , \ldots , t _ { s , N _ { s } } ]$ are processed by a TransMIL backbone [17]: a learned [CLS] token is prepended to the sequence and passed through L transformer layers. The final CLS representation $h _ { \mathrm { C L S } } \in \mathbb { R } ^ { d _ { \mathrm { m o d e l } } }$ is mapped to class logits $\ell _ { s } = W _ { \mathrm { c l s } } h _ { \mathrm { C L S } } + b _ { \mathrm { c l s } } \in \mathbb { R } ^ { C }$ , and baseline training uses cross-entropy $\mathcal { L } _ { \mathrm { f u l l } } = \mathbf { C } \mathbf { E } ( \ell _ { s } , y _ { s } )$
 
 ![Figure 1](../images/ba5397be14a471f1eae75b65046e96bfe706e24d4bb067cdbb4c6540446a68de.jpg)  
-Figure 1. Overview of ReaMIL. Frozen UNI2-h features and patch coordinates are extracted from each WSI and mapped to tokens with positional embeddings. An evidence head produces soft selection scores $z \in ( 0 , 1 ) ^ { N }$ via a Concrete (Gumbel–sigmoid) gate, and defines three bags: the full bag x, a keep bag $z \cdot x .$ and a drop bag $( 1 - z ) \cdot x .$ All three bags are processed by a shared TransMIL encoder and slide head. Losses encourage (i) correct predictions on the full and keep bags (cross-entropy on $\ell _ { \mathrm { f u l l } }$ and $\ell _ { \mathrm { k e e p } }$ plus a sufficiency hinge at confidence \tau ), (ii) low true-class probability on the drop bag (exclusion), (iii) spatially compact selections (contiguity on coordinates), and (iv) a small evidence budget via an $\ell _ { 1 }$ penalty on z. At test time, the model outputs both slide predictions and ranked evidence coordinates. Reasoning metrics are computed by probing the top-K curve of true-class probability $p _ { y } ( K )$ : AUKC summarizes the area under this curve, and \protect \mathrm {MSK}@\tau measures the minimal number of tiles required to reach confidence \tau .
+*Figure 1. Overview of ReaMIL. Frozen UNI2-h features and patch coordinates are extracted from each WSI and mapped to tokens with positional embeddings. An evidence head produces soft selection scores $z \in ( 0 , 1 ) ^ { N }$ via a Concrete (Gumbel–sigmoid) gate, and defines three bags: the full bag x, a keep bag $z \cdot x .$ and a drop bag $( 1 - z ) \cdot x .$ All three bags are processed by a shared TransMIL encoder and slide head. Losses encourage (i) correct predictions on the full and keep bags (cross-entropy on $\ell _ { \mathrm { f u l l } }$ and $\ell _ { \mathrm { k e e p } }$ plus a sufficiency hinge at confidence $\tau$), (ii) low true-class probability on the drop bag (exclusion), (iii) spatially compact selections (contiguity on coordinates), and (iv) a small evidence budget via an $\ell _ { 1 }$ penalty on z. At test time, the model outputs both slide predictions and ranked evidence coordinates. Reasoning metrics are computed by probing the top-K curve of true-class probability $p _ { y } ( K )$: AUKC summarizes the area under this curve, and $\mathrm{MSK}@\tau$ measures the minimal number of tiles required to reach confidence $\tau$.*
 
-> 💡 **Figure 1 批读（claude 批注）**: 图中真正新增的接口只有 selector head 与三种 bag 构造；consumer 和分类头共享。这使比较控制得很干净，但训练成本约为三次 consumer forward。部署只需要一次 selector 排序加一次选中袋推理，论文却没有单独报告这一增量延迟，ReadySlide 应补真实 wall-clock 与 feature-I/O 成本。
+> 💡 **Figure 1 批读（claude 批注）**: 图中真正新增的接口只有 selector head 与三种 bag 构造；consumer 和分类头共享。这使比较控制得很干净，但训练成本约为三次 consumer forward。论文未明确部署时最终预测取自 full bag 还是 keep bag，也未给出需要几次 consumer forward；ReadySlide 应把推理图、wall-clock 与 feature-I/O 成本单独测清。
 
 ## 3.2. Evidence selection head
 
@@ -27,7 +27,7 @@ For each token $t _ { s , i } ,$ a small MLP computes a selection logit $a _ { s
 
 > 💡 **Equation 1 批读（claude 批注）**: 温度 $T$ 决定 gate 接近二值的速度；训练时噪声提供可微探索，测试时则按确定性的 logit $a_{s,i}$ 排序。因此训练目标学习的是排序与稀疏质量，而不是一个固定的 $K$。
 
-where $T > 0$ is the temperature. This yields soft selection scores $z _ { s , i } \in ( 0 , 1 )$ that approach binary values as $T  0$
+where $T \gt 0$ is the temperature. This yields soft selection scores $z _ { s , i } \in ( 0 , 1 )$ that approach binary values as $T \to 0$
 
 The scores define three views of each slide: the original bag $X _ { \mathrm { f u l l } } = X _ { s }$ , the evidence bag $X _ { \mathrm { k e e p } } = z _ { s } \odot X _ { s } ,$ and its complement $X _ { \mathrm { d r o p } } = ( 1 - z _ { s } ) \odot X _ { s }$ , where ⊙ denotes element-wise scaling. Since hard selection is nondifferentiable, we retain all tokens in the sequence but down-weight non-selected patches via soft masking. Each view is processed by the shared backbone to produce logits $\ell _ { \mathrm { f u l l } } , \ell _ { \mathrm { k e e p } } ,$ and $\ell _ { \mathrm { d r o p } } .$
 
@@ -81,7 +81,7 @@ Minimal Sufficient K (MSK). For each slide s and confidence threshold τ, we def
 
 *Equation 8: 每张 slide 达到置信度阈值的最小充分 tile 数。*
 
-> 💡 **MSK 指标批读（claude 批注）**: MSK 依赖真类标签、consumer 校准和阈值 $\tau$。两个 selector 的 MSK 差异可能来自 consumer 置信度尺度而非真实 evidence 质量，因此跨 consumer 比较必须先校准或改用相对 full-bag score 的阈值。
+> 💡 **MSK 指标批读（claude 批注）**: MSK 依赖真类标签、consumer 校准和阈值 $\tau$。两个 selector 的 MSK 差异可能来自 consumer 置信度尺度而非真实 evidence 质量，因此跨 consumer 比较必须先校准或改用相对 full-bag score 的阈值；同理，AUKC 也受整条 true-class probability 曲线的校准影响。
 
 MSK measures how many top-ranked patches are needed for the model to reach confidence τ.
 
@@ -91,7 +91,7 @@ Area Under K-Curve (AUKC). We also define the area under the K-curve in terms of
 
 *Equation 9: 归一化 top-K 置信度曲线下面积。*
 
-> 💡 **AUKC 指标批读（claude 批注）**: AUKC 奖励“少量 tile 即快速恢复置信度”的排序，但积分覆盖到全袋，后半段大量冗余 tile 可能掩盖小预算差异。ReadySlide 应同时报告预算区间的 partial AUKC，以及固定 $K$/比例下的性能。
+> 💡 **AUKC 指标批读（claude 批注）**: AUKC 奖励“少量 tile 即快速恢复置信度”的排序，但积分覆盖到全袋，后半段大量冗余 tile 可能掩盖小预算差异。ReadySlide 应同时报告预算区间的 partial AUKC，以及固定 $K$/比例下的性能；partial AUKC 只改善预算聚焦，并不消除跨 consumer 的校准依赖。
 
 ## 🔖 Section 总结
 

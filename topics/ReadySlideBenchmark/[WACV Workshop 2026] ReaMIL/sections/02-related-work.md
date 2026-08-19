@@ -16,7 +16,7 @@ Interpretability in MIL for pathology has largely relied on visualizing attentio
 
 The idea of constraining a model to rely on a small subset of inputs appears in selective prediction [9], budgeted or early-exit models, and rationalization methods that train differentiable selectors to pick a few tokens or patches so that a downstream predictor matches the full model using only the selected subset. Our work adapts this perspective to MIL: we attach a small selection head on top of a fixed MIL encoder and train it with losses enforcing sufficiency of the kept bag, exclusion of the dropped bag, spatial contiguity, and an explicit budget on selection rate (normalized selection mass). We quantify the resulting behavior with K-curves, minimal sufficient K (MSK), and area under the K-curve (AUKC)—metrics that capture how quickly confidence rises as diagnostic regions are added and how small a subset suffices for a diagnosis.
 
-> 💡 **术语核对（claude 批注）**: 文中此处称 “fixed MIL encoder”，实验部分更准确的说法是 frozen UNI2-h feature encoder + 从 baseline checkpoint warm-start 的 MIL 系统。复现时必须核对优化器是否冻结 TransMIL；否则 selector 与 consumer 可共同适应，不能把收益完全归因于 selector repair。
+> 💡 **术语核对（claude 批注）**: 文中此处称 “fixed MIL encoder”，但实验流程是 frozen UNI2-h feature encoder + 从 baseline checkpoint warm-start 并继续参与联合目标的 TransMIL consumer。因此 selector 与 consumer 会共同适应，本文不能等同于 strict frozen-consumer repair。
 
 ## 🔖 Section 总结
 

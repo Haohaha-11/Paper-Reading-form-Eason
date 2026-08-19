@@ -36,7 +36,7 @@ ReaMIL 在 frozen UNI2-h 特征与 TransMIL 之上增加轻量证据 selector，
 | 特征 / consumer | frozen UNI2-h（1536 维）/ TransMIL（512 维、8 heads、4 layers） |
 | NSCLC AUC | baseline 0.969 ± 0.006 → ReaMIL 0.983 ± 0.004 |
 | BRCA AUC | 0.897 ± 0.019 → 0.904 ± 0.011 |
-| PANDA AUC | 0.989 ± 0.003 → 0.985 ± 0.002 |
+| PANDA AUC | baseline 0.985 ± 0.002 → ReaMIL 0.989 ± 0.003 |
 | MSK@0.90 | BRCA 16.0；NSCLC 8.2；PANDA 7.2 tiles |
 | AUKC | BRCA 0.833；NSCLC 0.864；PANDA 0.811 |
 | NSCLC 选择率 | 完整模型 0.002；去除关键约束后 0.847–0.923 |
@@ -74,8 +74,8 @@ flowchart TD
 ### 局限 / 风险
 
 - 只测试 UNI2-h + TransMIL；selector ranking 是否依赖 FM/consumer 未知。
-- 冻结的是 feature encoder，MIL consumer 是否严格冻结并不清楚，不能直接等同于 frozen-consumer repair。
-- MSK 依赖真类、阈值与 consumer 校准，不宜未经校准跨 consumer 比较。
+- 冻结的是 UNI2-h feature encoder；TransMIL 从 baseline checkpoint warm-start 后继续参与联合目标优化，因此不是 strict frozen-consumer repair。
+- MSK 与 AUKC 都基于 true-class probability，依赖 consumer 的置信度尺度与校准，不宜未经校准跨 consumer 比较。
 - contiguity 偏好紧凑 ROI，可能伤害多灶、弥漫或长程形态任务。
 - 未报告 selector 与 keep-bag 推理的真实 wall-clock、显存和 I/O 节省。
 
@@ -83,15 +83,15 @@ flowchart TD
 
 - 构建 selector FM × consumer FM × budget 三维矩阵，检验同一排序是否跨 consumer 保持 utility。
 - 把 consumer 完全冻结，只训练 selector，区分“修选择”与“共同重训诊断器”。
-- 同时报告 calibrated MSK、固定预算性能、partial AUKC、drop necessity 与随机/oracle 上界。
+- 同时报告 calibrated MSK/AUKC、固定预算性能、partial AUKC、drop necessity 与随机/oracle 上界；partial AUKC 只聚焦小预算，不会自动消除校准依赖。
 - 把节省拆成昂贵 FM 编码、MIL 聚合、存储和端到端延迟，避免只报告 tile 数。
 
 ## 阅读 Q&A 记录
 
 - **Q: ReaMIL 是否已经完成严格的 diagnosis–selection 解耦？**  
   **A:** 部分完成。它增加独立 selector head，但 selector 与 TransMIL 通过共同损失训练；真正的严格解耦应冻结既有 consumer，仅改变 selector，并验证 full-bag prediction 不漂移。
-- **Q: MSK=8.2 是否能直接和另一 consumer 的 MSK 比？**  
-  **A:** 不能直接比。MSK 取决于真类置信度校准和阈值 0.90；跨 consumer 应先校准，或用相对 full-bag 置信度/性能保持率定义阈值。
+- **Q: MSK=8.2 或 AUKC=0.864 是否能直接和另一 consumer 比？**<br>
+  **A:** 不能直接比。两者都积分或阈值化 true-class probability，取决于 consumer 校准；跨 consumer 应先校准，或用相对 full-bag 置信度/性能保持率定义指标。
 - **Q: 低 sufficiency gap 为什么可能是坏结果？**  
   **A:** 如果 selector 保留 85%–92% tile，keep bag 几乎等于 full bag，gap 自然低。Table 3 说明必须和 selection rate 同时报。
 - **Q: ReadySlide 的主要差异化在哪里？**  
@@ -99,9 +99,9 @@ flowchart TD
 
 ## 📊 Citation Landscape
 
-**数据源与时间**: Semantic Scholar API，查询于 2026-08-19。  
+**数据源与时间**: Semantic Scholar API，2026-08-19 复查。ArXiv/paperId detail 在 10:11 UTC 因限流返回 HTTP 429；同日稍早成功响应提供下列 TLDR 与统计。references 和 recommendations 在 10:12 UTC 返回 HTTP 200。<br>
 **TLDR**: ReaMIL 为强 MIL backbone 增加轻量 selection head，并用 MSK、AUKC 与 contiguity 定量评估 WSI 证据效率。  
-**统计**: 19 篇参考文献；被引 1 次；influential citation 0 次。  
+**统计**: Semantic Scholar `referenceCount=19`、被引 1 次、influential citation 0 次；references endpoint 的 19 条中有 1 条无效的 “license agreement with IEEE”，论文正文实际列出 18 篇有效参考文献。<br>
 **入口**: [Semantic Scholar](https://www.semanticscholar.org/paper/ee87a775ecba46cefc6fed3b72070ffd69a310b5) · [Connected Papers](https://www.connectedpapers.com/main/2601.10073)
 
 ### 参考文献分组（高引用代表）
@@ -111,15 +111,15 @@ flowchart TD
 - **可微选择**: Gumbel-Softmax（6,613）；Concrete Distribution（2,981）；Selective Classification（1,073）。
 - **解释可靠性**: Is Attention Interpretable?（863）；Learning to Deceive with Attention（217）；Interpretability Survey（470）。
 
-### Semantic Scholar 推荐论文
+### Semantic Scholar 推荐论文（10:12 UTC 快照）
 
-1. PNEA-MIL: Positive-Negative Evidence Analysis（2026）
-2. CGRL: Concept-Guided Pruning and Representation Learning（2026，arXiv:2607.12556）
-3. Objective Design for Self-Supervised Slide-Level Aggregation over Frozen Pathology Foundation Features
-4. Test-Time Instance Selection for Improved Whole Slide Image Analysis（2026，arXiv:2608.14759）
-5. Uncertainty Estimation in Pathology Foundation Models via Deep Mutual Learning（2026）
-6. ProsMAE: Multi-Source MAE Pretraining（2026）
-7. TaxoMIL: Taxonomy-Constrained Learning（2026）
-8. Turning Pre-Trained Vision Transformers into End-to-End Histopathology WSI Models for Survival Prediction
-9. Multi-Teacher Distillation from Pathology Slide Foundation Models（2026）
-10. Adaptive Fusion of Pathology Foundation Models（2026）
+1. [PNEA-MIL: Positive-Negative Evidence Analysis](https://www.semanticscholar.org/paper/33c846b70a324494c90bdb439511dbadf77781cc)（2026，0 引用）
+2. [CGRL: Concept-Guided Pruning and Representation Learning](https://www.semanticscholar.org/paper/e6e255f80ebb3e99df00f7ecd1d91e1c8314051b)（2026，0 引用）
+3. [Objective Design for Self-Supervised Slide-Level Aggregation over Frozen Pathology Foundation Features](https://www.semanticscholar.org/paper/802f36329f348d615bf3cfb13aebe7378af6d524)（0 引用）
+4. [Test-Time Instance Selection for Improved Whole Slide Image Analysis](https://www.semanticscholar.org/paper/b0270ddd0a5b2eb3034c41a2adf26a140e6ad3dd)（2026，0 引用）
+5. [Uncertainty Estimation in Pathology Foundation Models via Deep Mutual Learning](https://www.semanticscholar.org/paper/1ed2c7fecf57f344e3d71db7bc11c62978094bd3)（2026，0 引用）
+6. [ProsMAE: Multi-Source MAE Pretraining](https://www.semanticscholar.org/paper/75123fea7d0b701dea9c2227243db42eb4a20990)（2026，0 引用）
+7. [TaxoMIL: Taxonomy-Constrained Learning](https://www.semanticscholar.org/paper/a792fd04c133580f59c794b9b74243f726ed3905)（2026，0 引用）
+8. [Turning Pre-Trained Vision Transformers into End-to-End Histopathology WSI Models for Survival Prediction](https://www.semanticscholar.org/paper/bf7fb8e0561c87f313a78f2c5757ed371b9fbb85)（1 引用）
+9. [Multi-Teacher Distillation from Pathology Slide Foundation Models](https://www.semanticscholar.org/paper/0c2ef5900a4f1dff8b0c1902eef4767548edd909)（2026，0 引用）
+10. [Adaptive Fusion of Pathology Foundation Models](https://www.semanticscholar.org/paper/bb4051a4f64256dd0f3a9dccb578cceaa50a0670)（2026，0 引用）
