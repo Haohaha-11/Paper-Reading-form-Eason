@@ -1,321 +1,167 @@
-![Paper Reading Banner](./banner.svg)
+![Paper Reading Lab Banner](./banner.svg)
 
-# Paper Reading 📚
+# Paper Reading · 个人文献阅读库
 
-Haojiang 的文献阅读仓库，按课题组织。每篇论文都有「批读格式」阅读笔记：原文完整保留 + 内嵌批注。
+> **A personal research library for deep, connected reading.**<br>
+> 从论文原文出发，沉淀机制理解、实验证据、研究边界与可复用问题。
 
----
+[![Topics](https://img.shields.io/badge/Topics-18-2563eb?style=flat-square)](./topics/)
+[![Paper Notes](https://img.shields.io/badge/Paper%20Notes-125-0f766e?style=flat-square)](./topics/)
+[![Annotated Sections](https://img.shields.io/badge/Annotated%20Sections-762-7c3aed?style=flat-square)](./topics/)
+[![Source PDFs](https://img.shields.io/badge/Source%20PDFs-122-d97706?style=flat-square)](./topics/)
+![Language](https://img.shields.io/badge/Notes-中文旁批-e11d48?style=flat-square)
 
-## 📅 每日待读
+这是我的个人文献阅读与研究积累仓库。它不是简单的 paper list，也不是把摘要重新改写一遍；目标是把每篇论文转化为可追溯、可比较、可继续追问的研究材料：
 
-| 日期 | 论文 | 课题 | 状态 | 反馈 |
-|------|------|------|------|------|
-| 2025-06-23 | [SAMPath](./topics/Medical-Compression/%5BArxiv%202025%5D%20SAMPath/) | Medical Compression | ⏳ 待读 | - |
-| 2025-06-23 | [VideoStreamThinking](./topics/video-VLM/%5BArxiv%202026%5D%20VideoStreamThinking/) | Video VLM | ⏳ 待读 | - |
-| 2025-06-23 | [ConsistencyVL](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20ConsistencyVL/) | VisMem for Med Image | ⏳ 待读 | - |
-| 2025-06-23 | [MedMO](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20MedMO/) | VisMem for Med Image | ⏳ 待读 | - |
-| 2025-06-23 | [TissueWSI](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202026%5D%20TissueWSI/) | Whole Slide Image Analysis | ⏳ 待读 | - |
-| 2025-06-23 | [FlashMemory-DSV4](./topics/TTT%20in%20LLM/%5BArxiv%202026%5D%20FlashMemory-DSV4/) | TTT in LLM | ⏳ 待读 | - |
-| 2025-06-23 | [ULRFM](./topics/Medical-Compression/%5BArxiv%202026%5D%20ULRFM/) | Medical Compression | ⏳ 待读 | - |
-| 2025-06-23 | [PathoLIC](./topics/Medical-Compression/%5BArxiv%202026%5D%20PathoLIC/) | Medical Compression | ⏳ 待读 | - |
-| 2025-06-24 | [Q-Zoom](./topics/VLM-Bottleneck-Analysis-and-Method-Design/encoding/%5BArxiv%202025%5D%20Q-Zoom/) +14 more | VLM Bottleneck Analysis | ⏳ 待读 | - |
-| 2025-06-28 | [ARPO](./topics/GRPO/%5BArxiv%202025%5D%20ARPO/) | GRPO | ⏳ 待读 | - |
+- **原文可追溯**：保留论文原文、PDF、MinerU 结构化结果与图表资产。
+- **理解嵌入上下文**：中文旁批直接放在原文段落、公式和图表附近。
+- **证据与主张分离**：记录核心数字、消融证据、适用边界与未被实验支持的推断。
+- **从单篇走向研究地图**：topic README 负责横向比较、竞争关系、novelty 边界和开放问题。
+- **持续演化**：阅读中的问题、复现判断与后续研究想法会继续回写到笔记。
 
----
+## 阅读工作流
 
-## 课题列表
+```mermaid
+flowchart LR
+    A["论文 PDF / arXiv"] --> B["MinerU 解析"]
+    B --> C["原文、图表与公式资产"]
+    C --> D["按原始大分节拆分"]
+    D --> E["中文行间批注与 Q&A"]
+    E --> F["单篇 README 综合"]
+    F --> G["Topic 研究地图"]
+    G --> H["实验设计与新问题"]
+    style E fill:#dbeafe,stroke:#2563eb
+    style G fill:#ccfbf1,stroke:#0f766e
+    style H fill:#fef3c7,stroke:#d97706
+```
 
-### 🎯 Blind Inverse Problems with Generative Priors
-生成先验下的参数化盲逆问题：算子未知时联合恢复图像 $x$、低维算子参数 $\varphi$ 与噪声 $\sigma$ 的后验，主线是 gauge-aware 联合后验采样与 SBC/coverage/CRPS 校准——追问何时真的得到联合贝叶斯后验，何时只是一组看似合理的样本。
-
-| 论文 | 会议 | 方法特点 |
-|------|------|----------|
-| [BlindDPS](./topics/Blind-Inverse-Problems-Generative-Priors/blind-joint-sampling/%5BCVPR%202023%5D%20BlindDPS/) | CVPR 2023 | 图像与核各建扩散模型、同一数据一致项并行 DPS 引导；偏差入口为 Jensen 点估计 + 独立先验，无 gauge/σ 联合/校准。核心基线。 |
-| [GibbsDDRM](./topics/Blind-Inverse-Problems-Generative-Priors/blind-joint-sampling/%5BICML%202023%5D%20GibbsDDRM/) | ICML 2023 | 部分塌缩 Gibbs：图像块 DDRM 谱域 + 算子块 Langevin，Prop 3.1 保平稳分布；与本课题联合核结构最接近。 |
-| [PRISM](./topics/Blind-Inverse-Problems-Generative-Priors/blind-joint-sampling/%5BArxiv%202025%5D%20PRISM/) | Arxiv 2025 | measurement-conditioned diffusion prior + split-Gibbs，报告像素级 SD/NLL/覆盖；不确定性最直接竞品，但低噪声过自信、缺 SBC/CRPS。 |
-| [Fast-Diffusion-EM](./topics/Blind-Inverse-Problems-Generative-Priors/blind-joint-sampling/%5BWACV%202024%5D%20Fast-Diffusion-EM/) | WACV 2024 | 扩散 E 步 + 快速 EM，核为共享单核 MAP 点估计；"用了不确定性却只输出点估计"的对照锚点。 |
-| [Instrument-Noise-Estimation](./topics/Blind-Inverse-Problems-Generative-Priors/blind-joint-sampling/%5BArxiv%202026%5D%20Instrument-Noise-Estimation/) | Arxiv 2026 | Giovannelli 的 Hyper-G-DPS：Gibbs 大循环联合估图像 + PSF 宽度 + 噪声偏置/方差，低维参数共轭直采、图像块 G-DPS；比 GibbsDDRM 多估噪声参数并给 ±2 PSD 覆盖式 UQ，但收敛"保证"含未量化的 forward≈backward 近似。 |
-| [Survey-Diffusion-Inverse](./topics/Blind-Inverse-Problems-Generative-Priors/survey/%5BArxiv%202024%5D%20Survey-Diffusion-Inverse/) | Arxiv 2024 | Daras 等综述：条件采样器家族图谱，渐近精确家族是校准最有意义的落点。 |
-| [Diffusion-Models-for-Inverse-Problems](./topics/Blind-Inverse-Problems-Generative-Priors/survey/%5BArxiv%202025%5D%20Diffusion-Models-for-Inverse-Problems/) | Arxiv 2025 | Chung 等综述：把每个方法归结为"对似然 score 做了什么近似"，梳理盲逆三法谱系。 |
-| [Beyond-Accuracy-Posterior-Fidelity](./topics/Blind-Inverse-Problems-Generative-Priors/posterior-calibration/%5BArxiv%202026%5D%20Beyond-Accuracy-Posterior-Fidelity/) | Arxiv 2026 | Qiu 等：精度≠分布一致，提出无需真后验的 score-KSD 诊断。 |
-| [Simulation-Based-Calibration](./topics/Blind-Inverse-Problems-Generative-Priors/posterior-calibration/%5BArxiv%202018%5D%20Simulation-Based-Calibration/) | Arxiv 2018 | Talts 等 SBC：rank histogram 检验模型内校准，"算法错误 vs 模型错误"的第一道闸门。 |
-| [Feynman-Kac-Bias-Stability](./topics/Blind-Inverse-Problems-Generative-Priors/posterior-calibration/%5BArxiv%202026%5D%20Feynman-Kac-Bias-Stability/) | Arxiv 2026 | Delgadino 等：Feynman–Kac 证明即便 prior score 精确 DPS 仍系统偏差、漏模态。 |
-| [Principled-Posterior-Matching](./topics/Blind-Inverse-Problems-Generative-Priors/posterior-calibration/%5BArxiv%202026%5D%20Principled-Posterior-Matching/) | Arxiv 2026 | Bai 等：近似目标致 mode collapse，提出目标级无偏 PPM；"样本离散≠已校准"。 |
-| [Exact-Posterior-Score](./topics/Blind-Inverse-Problems-Generative-Priors/posterior-calibration/%5BArxiv%202026%5D%20Exact-Posterior-Score/) | Arxiv 2026 | Mammadov 等：低维+可解析先验+已知线性算子下后验解析可得，作 SBC/coverage/CRPS 的 gold-standard 参考后验。 |
-
-📖 [Blind Inverse Problems with Generative Priors 详细总结](./topics/Blind-Inverse-Problems-Generative-Priors/README.md)
-
----
-
-### ⚡ One-Step Diffusion Super-Resolution
-单步 diffusion / flow 超分辨率：在保持生成先验感知质量的同时解决推理效率、保真-真实感权衡和可控性。
-
-| 论文 | 会议 | 方法特点 |
-|------|------|----------|
-| [RCOD-SR](./topics/One-Step-Diffusion-Super-Resolution/%5BAAAI%202026%5D%20RCOD-SR/) | AAAI 2026 | RCOD-SR 用 latent domain grouping、退化感知蒸馏和视觉 prompt 注入，让 one-step diffusion SR 具备推理时 realism 控制能力。 |
-| [CODSR](./topics/One-Step-Diffusion-Super-Resolution/%5BArxiv%202025%5D%20CODSR/) | Arxiv 2025 | CODSR 通过 LQ-guided feature modulation、区域自适应生成先验激活和 text-matching guidance，在单步 SR 中兼顾局部保真与感知质量。 |
-| [TinySR](./topics/One-Step-Diffusion-Super-Resolution/%5BArxiv%202025%5D%20TinySR/) | Arxiv 2025 | TinySR 面向实时 Real-ISR，把 one-step diffusion teacher 通过深度剪枝、VAE 压缩、模块移除和缓存压成轻量单步模型。 |
-| [OFTSR](./topics/One-Step-Diffusion-Super-Resolution/%5BICLR%202026%5D%20OFTSR/) | ICLR 2026 | OFTSR 用 conditional flow teacher 和 ODE trajectory alignment distillation 构建 one-step SR，并保留可调 fidelity-realism trade-off。 |
-| [OSEDiff](./topics/One-Step-Diffusion-Super-Resolution/%5BNeurIPS%202024%5D%20OSEDiff/) | NeurIPS 2024 | OSEDiff 将低质量图像直接作为扩散起点，用 latent-space VSD 把 Stable Diffusion 先验压缩到单步 Real-ISR 推理。 |
-
-📖 [One-Step Diffusion Super-Resolution 详细总结](./topics/One-Step-Diffusion-Super-Resolution/README.md)
-
----
-
-### 🧪 Diffision_Gzy
-单步 diffusion Real-ISR：聚焦 score distillation、timestep control 和 fidelity-realism trade-off，比较如何把多步生成先验压缩到一次前向推理中。
-
-| 论文 | 会议 | 方法特点 |
-|------|------|----------|
-| [TSD-SR](./topics/Diffision_Gzy/%5BCVPR%202025%5D%20TSD-SR/) | CVPR 2025 | TSD-SR 用 Target Score Distillation 和 DASM 修正 one-step VSD 的 score direction 与细节梯度，在 0.1362s 单步推理中提升 Real-ISR 感知质量。 |
-| [TADSR](./topics/Diffision_Gzy/%5BCVPR%202026%5D%20TADSR/) | CVPR 2026 | TADSR 用 Time-Aware VAE Encoder 和 Time-Aware VSD 把 timestep 变成 one-step SR 的 fidelity-realism 控制变量。 |
-
-📖 [Diffision_Gzy 详细总结](./topics/Diffision_Gzy/README.md)
-
----
-
-### 🧠 VisMem for Med Image
-latent vision memory / latent reasoning / medical image VLM：让医学影像模型持续保持视觉证据并调用隐式临床经验。
-
-| 论文 | 会议 | 方法特点 |
-|------|------|----------|
-| [AlignVLM](./topics/VisMem-for-Med-Image/%5BArxiv%202025%5D%20AlignVLM/) | Arxiv 2025 | AlignVLM 把 connector 视为 vision-language latent alignment 模块，用更强归纳偏置改善多模态文档理解。 |
-| [VisMem](./topics/VisMem-for-Med-Image/%5BArxiv%202025%5D%20VisMem/) | Arxiv 2025 | VisMem 提出 latent vision memory，通过 memory invocation 和 formation 缓解 VLM 长生成中的视觉 grounding 丢失。 |
-| [Latent-Space-Survey](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20Latent-Space-Survey/) | Arxiv 2026 | 这篇综述系统梳理 latent space 的基础、演进、机制、能力和展望，是理解 latent memory/reasoning 的概念地图。 |
-| [MedSynapse-V](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20MedSynapse-V/) | Arxiv 2026 | MedSynapse-V 面向医学 VLM，提出 latent diagnostic memory evolution，模拟临床专家在诊断时调用和演化隐式经验。 |
-| [Visual-Enhanced-Depth-Scaling](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20Visual-Enhanced-Depth-Scaling/) | Arxiv 2026 | Visual Enhanced Depth Scaling 针对 multimodal latent reasoning 中视觉 token 梯度不稳定与语言偏置，提出视觉重放和动态深度扩展。 |
-| [DMLR](./topics/VisMem-for-Med-Image/%5BArxiv%202025%5D%20DMLR/) | Arxiv 2025 | DMLR 提出 training-free 测试时动态潜空间推理：置信度引导的策略梯度优化 + 动态视觉注入，实现推理-感知自适应交错。 |
-| [MedVLThinker](./topics/VisMem-for-Med-Image/%5BArxiv%202025%5D%20MedVLThinker/) | Arxiv 2025 | MedVLThinker 是首个全开源医学多模态推理配方，揭示 RLVR > SFT 且 text-only > image-text 的反直觉发现，32B 匹配 GPT-4o。 |
-| [ConsistencyVL](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20ConsistencyVL/) | Arxiv 2026 | ConsistencyVL 将空间注意力与可靠性解耦，用跨视图一致性信号识别 VLM 中哪些视觉区域可信。 |
-| [MedMO](./topics/VisMem-for-Med-Image/%5BArxiv%202026%5D%20MedMO/) | Arxiv 2026 | MedMO 面向医学影像的 MLLM ground 与理解，增强模型在医学图像上的定位和诊断解释能力。 |
-
-📖 [VisMem for Med Image 详细总结](./topics/VisMem-for-Med-Image/README.md)
-
----
-
-### 🧩 Latent-Space Processing
-LLM latent reasoning / cache augmentation / CoT compression：把额外推理、记忆整理或思维链压缩放到连续表示、hidden state 或 kv-cache 中完成。
-
-| 论文 | 会议 | 方法特点 |
-|------|------|----------|
-| [Differentiable-Cache-Augmentation](./topics/Latent-Space-Processing/%5BArxiv%202024%5D%20Differentiable-Cache-Augmentation/) | Arxiv 2024 | DCA 用离线 coprocessor 读取 frozen LLM 的 kv-cache，生成动态 latent embeddings 追加回 cache，实现 cache-level latent deliberation。 |
-| [Compressed-Chain-of-Thought](./topics/Latent-Space-Processing/%5BArxiv%202024%5D%20Compressed-Chain-of-Thought/) | Arxiv 2024 | CCoT 把显式 CoT hidden states 压缩成 contentful continuous contemplation tokens，用 compression ratio 控制准确率/延迟折中。 |
-| [Latent-Implicit-Visual-Reasoning](./topics/Latent-Space-Processing/%5BArxiv%202025%5D%20Latent-Implicit-Visual-Reasoning/) | Arxiv 2025 | LIVR 用 latent visual reasoning tokens 和 visual bottleneck masking，让 LMM 在无显式视觉 CoT 监督下学习视觉中心推理。 |
-| [DMLR](./topics/Latent-Space-Processing/%5BArxiv%202026%5D%20DMLR/) | Arxiv 2026 | DMLR 在测试时优化 latent think tokens，并动态注入相关视觉 patches，提升多模态数学、视觉和组合推理。 |
-
-📖 [Latent-Space Processing 详细总结](./topics/Latent-Space-Processing/README.md)
-
----
-
-### 🩺 Medical Compression
-医学影像压缩 / whole-slide image storage / adaptive downscaling：围绕病理 WSI 的无损压缩、诊断保持型有损压缩、few-shot visual token compression、latent 表征压缩和可上采样的内容自适应下采样。
-
-| 论文 | 会议 | 方法特点 |
-|------|------|----------|
-| [AdaSlide](./topics/Medical-Compression/%5BNat%20Commun%202026%5D%20AdaSlide/) | Nature Communications 2026 | AdaSlide 用 RL Compression Decision Agent 按 patch 临床信息量选择保留或压缩，再用 Foundational Image Enhancer 复原，在 WSI 存储成本与诊断完整性之间做自适应权衡。 |
-| [DTC-WSI](./topics/Medical-Compression/%5BMIDL%202026%5D%20DTC-WSI/) | MIDL 2026 | DTC-WSI 用 importance network 和动态多阶段 token compression，把 bipartite soft matching token fusion 与 importance-guided pruning 结合，降低 WSI MIL 的 token aggregation 开销。 |
-| [WSIR2](./topics/Medical-Compression/%5BBSPC%202026%5D%20WSIR2/) | Biomedical Signal Processing and Control 2026 | WSIR2 用 cross-attention 重要性选择 top-k patches、合并非关键 token 并配轻量 classifier，面向 WSI MIL 诊断加速；已基于本地 PDF 补齐全文批读和图表。 |
-| [WISE](./topics/Medical-Compression/%5BArxiv%202025%5D%20WISE/) | Arxiv 2025 | WISE 面向 WSI 无损压缩，利用空白区编码、层次投影、bitmap 重排和字典编码处理高频且不规则的病理图像信息。 |
-| [FOCUS](./topics/Medical-Compression/%5BCVPR%202025%5D%20FOCUS/) | CVPR 2025 | FOCUS 用 pathology foundation model 与语言先验做三阶段 visual token compression，在 few-shot WSI 分类中保留诊断相关 patch 并过滤冗余视觉 token。 |
-| [Pathology-AE](./topics/Medical-Compression/%5BArxiv%202025%5D%20Pathology-AE/) | Arxiv 2025 | Pathology-AE 将 latent diffusion autoencoder 复用于病理压缩，用 pathology foundation model 感知指标微调，并用 K-means latent quantization 提升存储效率。 |
-| [NIC](./topics/Medical-Compression/%5BTPAMI%202020%5D%20NIC/) | IEEE TPAMI 2020 | NIC 把 gigapixel WSI patch 编成低维 embedding 网格，让 CNN 在压缩表示上用弱图像级标签完成分类、回归和可视化定位。 |
-| [CAR](./topics/Medical-Compression/%5BTIP%202020%5D%20CAR/) | IEEE TIP 2020 | CAR 学习内容自适应下采样 kernel 与 offsets，并用 SRNet 反向指导低分辨率图像保留可恢复细节。 |
-| [SAMPath](./topics/Medical-Compression/%5BArxiv%202025%5D%20SAMPath/) | Arxiv 2025 | SAMPath 用自然语言驱动病理图像分割，将 SAM 扩展到病理领域实现文本提示的任意分割。 |
-| [ULRFM](./topics/Medical-Compression/%5BArxiv%202026%5D%20ULRFM/) | MedIA 2026 | ULRFM 用 Transformer 上下文建模对病理 JPEG 做无损再压缩，9M+ tile 训练，最高减容 34.13%。 |
-| [PathoLIC](./topics/Medical-Compression/%5BArxiv%202026%5D%20PathoLIC/) | MedIA 2026 | PathoLIC 内容感知可变码率病理压缩，诊断区高保真、背景区高压缩，超 Aperio SVS 8×。 |
-
-📖 [Medical Compression 详细总结](./topics/Medical-Compression/README.md)
-
----
-
-### 🔁 TTT in LLM
-Test-Time Training / Test-Time Learning / long-context continual adaptation：让 LLM 在推理时用上下文或无标签测试数据更新 fast weights、LoRA 或部分权重，从而适应新信息和分布变化。
-
-| 论文 | 会议 | 方法特点 |
-|------|------|----------|
-| [Absorber-LLM](./topics/TTT%20in%20LLM/%5BArxiv%202026%5D%20Absorber-LLM/) | Arxiv 2026 | Absorber LLM 用 self-supervised causal synchronization 把历史上下文吸收到参数中，让无上下文更新模型在未来生成上匹配有完整上下文的原模型。 |
-| [Layer-Wise-Dynamic-TTA](./topics/TTT%20in%20LLM/%5BArxiv%202026%5D%20Layer-Wise-Dynamic-TTA/) | Arxiv 2026 | Layer-Wise Dynamic TTA 在无监督 sample-specific TTA 中用 layer-wise hypernetwork 动态调节各层 LoRA 更新强度，缓解固定学习率带来的过拟合与分布漂移。 |
-| [In-Place-TTT](./topics/TTT%20in%20LLM/%5BICLR%202026%5D%20In-Place-TTT/) | ICLR 2026 Oral | In-Place TTT 把 LLM MLP block 的 final projection matrix 当作 fast weights，用 LM-aligned objective 和 chunk-wise update 做可插拔 test-time training。 |
-| [TTT-E2E](./topics/TTT%20in%20LLM/%5BArxiv%202025%5D%20TTT-E2E/) | Arxiv 2025 | TTT-E2E 将 long-context LM 视作 continual learning，用测试时 next-token prediction 更新权重，并用训练时 meta-learning 学适合测试时学习的初始化。 |
-| [TLM](./topics/TTT%20in%20LLM/%5BICML%202025%5D%20TLM/) | ICML 2025 | TLM 把 LLM test-time learning 表述为无标签测试数据的 input perplexity minimization，用高困惑度样本选择和 LoRA 更新做域适应。 |
-| [TTT4LC](./topics/TTT%20in%20LLM/%5BArxiv%202025%5D%20TTT4LC/) | arXiv 2025 | TTT4LC 揭示长上下文 static attention 的 score dilution 导致 thinking tokens 失效，提出 Query-Only TTT 用梯度更新打破注意力静态限制。 |
-| [FlashMemory-DSV4](./topics/TTT%20in%20LLM/%5BArxiv%202026%5D%20FlashMemory-DSV4/) | arXiv 2026 | FlashMemory-DSV4 用 lookahead sparse attention 实现超长上下文的闪电索引，提升长序列处理效率。 |
-
-📖 [TTT in LLM 详细总结](./topics/TTT%20in%20LLM/README.md)
-
----
-
-### 🏭 Tech-repoorts
-工业界技术报告 / frontier model system reports：聚焦大模型架构、训练基础设施、推理系统、长上下文工程和评测协议。
-
-| 报告 | 来源 | 方法特点 |
-|------|------|----------|
-| [Claude Opus 4.7 System Card](./topics/Tech-repoorts/%5BSystem%20Card%202026%5D%20Claude-Opus-4.7/) | Anthropic System Card 2026 | Anthropic 2026 年 4 月 Opus 系统卡，适合看 frontier Claude 的 coding/agentic/search/long-context 能力、安全评估、RSP/ASL 部署边界和 agentic misuse / prompt injection 风险。 |
-| [Mythos Preview System Card](./topics/Tech-repoorts/%5BSystem%20Card%202026%5D%20Mythos-Preview/) | Anthropic System Card 2026 | Anthropic 2026 年 4 月 Mythos Preview 系统卡，补充 Claude 产品线中非标准命名模型的能力定位、安全边界和部署策略。 |
-| [Claude Sonnet 4.6 System Card](./topics/Tech-repoorts/%5BSystem%20Card%202026%5D%20Claude-Sonnet-4.6/) | Anthropic System Card 2026 | Anthropic 2026 年 2 月 Sonnet 线系统卡，覆盖 coding、agentic/search、long context、multimodal、harmlessness、alignment、agentic safety 与 ASL-3 部署判断。 |
-| [DeepSeek-V4-Pro](./topics/Tech-repoorts/%5BTech%20Report%202026%5D%20DeepSeek-V4-Pro/) | Hugging Face Technical Report 2026 | DeepSeek-V4 系列报告覆盖 1M context MoE 模型的 CSA/HCA hybrid attention、mHC、Muon、>32T token 训练、post-training 与工业推理基础设施。 |
-| [Attention-Residuals](./topics/Tech-repoorts/%5BTech%20Report%202026%5D%20Attention-Residuals/) | arXiv Technical Report 2026 | Kimi Team 将残差连接视为深度维度的信息聚合问题，用 Full/Block Attention Residuals 替换固定残差累加，并讨论可规模化训练/推理实现。 |
-
-📖 [Tech-repoorts 详细总结](./topics/Tech-repoorts/README.md)
-
----
-
-### 🌊 Continuous Latent Language Modeling
-连续潜空间语言建模：用 diffusion/flow 在连续嵌入空间中替代 token-level autoregressive，探索全局语义先验建模和文本-连续模态统一。
-
-| 论文 | 会议 | 方法特点 |
-|------|------|----------|
-| [Cola DLM](./topics/Continuous-Latent-Language-Modeling/%5BArxiv%202026%5D%20Cola-DLM/) | Arxiv 2026 | Cola DLM 提出层级化连续潜扩散语言模型：Text VAE → block-causal DiT prior → conditional decoding，将 diffusion 定义为 latent prior transport。 |
-| [ELF](./topics/Continuous-Latent-Language-Modeling/%5BArxiv%202026%5D%20ELF/) | Arxiv 2026 | ELF 用 Flow Matching 在连续嵌入空间建模语言，全程留在连续空间直到最后一步映射到 token，天然支持 CFG。 |
-
-📖 [Continuous Latent Language Modeling 详细总结](./topics/Continuous-Latent-Language-Modeling/README.md)
-
----
-
-### 🎬 Video VLM
-视频大语言模型：让 VLM 在视频流中同时观看和思考，实现流式视觉感知与推理的实时交错。
-
-| 论文 | 会议 | 方法特点 |
-|------|------|----------|
-| [VideoStreamThinking](./topics/video-VLM/%5BArxiv%202026%5D%20VideoStreamThinking/) | Arxiv 2026 | Video Streaming Thinking 让 VideoLLM 在视频流中边看边想，实现视觉感知与推理的同步交错。 |
-
-📖 [Video VLM 详细总结](./topics/video-VLM/README.md)
-
----
-
-### 🔬 Whole Slide Image Analysis
-全切片病理图像分析：从"像病理学家一样在 gigapixel 图像中空间推理与诊断"，到 MIL 注意力机制、多模态生存预测、病理基础模型（PFM）的高效部署与公正评测。核心追问：弱监督+超高分辨率+大量冗余下，模型学到的是诊断信号还是 shortcut/冗余？
-
-| 论文 | 会议 | 方法特点 |
-|------|------|----------|
-| [TissueWSI](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202026%5D%20TissueWSI/) | Arxiv 2026 | Tissue-Aware WSI Reasoning，像病理学家一样在组织空间上下文中推理，端到端空间定位与诊断。 |
-| [ACMIL](./topics/Whole-Slide-Image-Analysis/%5BECCV%202024%5D%20ACMIL/) | ECCV 2024 | 把 WSI-MIL 过拟合归因到"注意力过度集中"，用 MBA + STKIM 分散注意力（Top-10 占 85% 注意力）。 |
-| [MHIM-MIL](./topics/Whole-Slide-Image-Analysis/%5BICCV%202023%5D%20MHIM-MIL/) | ICCV 2023 | 反直觉遮高注意力"易 instance"、逼学"难 instance"；动量 Teacher-Student + 一致性损失。 |
-| [ILRA-MIL](./topics/Whole-Slide-Image-Analysis/%5BICLR%202023%5D%20ILRA-MIL/) | ICLR 2023 | 低秩性质 MIL：LRC 对比预训练 + 迭代低秩注意力（GAB+NLP），避免 O(n²)（速览卡，待补 PDF）。 |
-| [MOTCat](./topics/Whole-Slide-Image-Analysis/%5BICCV%202023%5D%20MOTCat/) | ICCV 2023 | 最优传输 co-attention 融合病理+基因组，全局结构一致性选 patch；UMBOT 降复杂度。 |
-| [PIBD](./topics/Whole-Slide-Image-Analysis/%5BICLR%202024%5D%20PIBD/) | ICLR 2024 | 信息瓶颈治两冗余：PIB（原型筛 patch）+ PID（解耦保模态特有信息）。留 25-40% patch 即可。 |
-| [EAGLE](./topics/Whole-Slide-Image-Analysis/%5BNat%20Commun%202026%5D%20DL-Efficient-Pathology/) | Nat Commun 2026 | CHIEF 选 25 tile + Virchow2 精提，43 任务超 patch 聚合，2.27s/slide；top-5 tile 超全部 mean pooling。 |
-| [LitePath](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202026%5D%20Deployment-Friendly-CPath/) | Arxiv 2026 | LiteFM 蒸馏(22.5M) + APS 选 patch，403.5× FLOP 削减，跑 $249 Jetson；提出 D-Score。 |
-| [PathBench](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202025%5D%20PathBench/) | Arxiv 2025 | 首个防泄漏、全私有的 PFM 基准（19 PFM×64 任务×5 癌种）；Virchow2/H-Optimus-1 最优、无普适赢家。 |
-| [Confounders-Biomarker-Prediction](./topics/Whole-Slide-Image-Analysis/%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) | Nat Biomed Eng 2026 | 批判研究：H&E→biomarker 被 grade/TMB/共依赖 biomarker 混杂，分层后 AUROC 大跌；给去混杂协议。 |
-| [DeepSets](./topics/Whole-Slide-Image-Analysis/%5BNeurIPS%202017%5D%20DeepSets/) | NeurIPS 2017 | MeanPool 理论根据：排列不变集合函数 = ρ(Σφ)。MIL baseline set 的 sanity control。 |
-| [TransMIL](./topics/Whole-Slide-Image-Analysis/%5BNeurIPS%202021%5D%20TransMIL/) | NeurIPS 2021 | correlated MIL + self-attention（Nyström + PPEG）；contextual aggregation baseline。 |
-| [MambaMIL](./topics/Whole-Slide-Image-Analysis/%5BMICCAI%202024%5D%20MambaMIL/) | MICCAI 2024 | Mamba SSM 线性长序列 + Sequence Reordering；高效长序列 baseline。 |
-| [RetMIL](./topics/Whole-Slide-Image-Analysis/%5BMICCAI%202024%5D%20RetMIL/) | MICCAI 2024 | 层次 retention（局部并行+全局串行），内存近常数；retention 长上下文 baseline。 |
-| [PAMoE](./topics/Whole-Slide-Image-Analysis/%5BCVPR%202025%5D%20PAMoE/) | CVPR 2025 | pathology-aware MoE：expert-choice 路由 + 组织原型监督，丢无关 patch。 |
-| [GMMamba](./topics/Whole-Slide-Image-Analysis/%5BICCV%202025%5D%20GMMamba/) | ICCV 2025 | 组内掩码 Mamba（IMM）+ 跨组超特征采样（CSS）；evidence selection + Mamba。 |
-| [MAMMOTH](./topics/Whole-Slide-Image-Analysis/%5BICLR%202026%5D%20MAMMOTH/) | ICLR 2026 | 多头 soft MoE 替换被忽略的线性层；task-specific 特征变换 > 聚合器（mean pooling 超复杂 MIL）。 |
-| [Shazam](./topics/Whole-Slide-Image-Analysis/%5BArxiv%202025%5D%20Shazam/) | Arxiv 2025 | 在线融合多 FM × 多层特征 + MoE 加权 + 在线蒸馏；多层 FM 表示融合。 |
-| [ILRA-MIL](./topics/Whole-Slide-Image-Analysis/%5BICLR%202023%5D%20ILRA-MIL/) | ICLR 2023 | 低秩 MIL：LRC 对比预训练 + 迭代低秩注意力（速览卡，待补 PDF）。 |
-
-📖 [Whole Slide Image Analysis 详细总结](./topics/Whole-Slide-Image-Analysis/README.md)
-
----
-
-### 🧭 ReadySlideBenchmark
-
-病理基础模型 Selector–Consumer–Budget 角色解耦 benchmark：研究 full-bag 诊断排名能否迁移到固定预算管线、selection utility 是否依赖 consumer 与预算，以及能否在保持诊断能力时修复同模型 selector。
-
-| 论文 | 状态 | 方法特点 |
+| 阅读层级 | 主要内容 | 适合解决的问题 |
 |---|---|---|
-| [From Patches to Patients](./topics/ReadySlideBenchmark/%5BMICCAI%202026%5D%20From-Patches-to-Patients/) | MICCAI 2026 | benchmark-first：测量 tile 榜到 slide 榜的分数/排名迁移，为 full-bag→budgeted 管线保序提供统计模板。 |
-| [EAGLE](./topics/ReadySlideBenchmark/%5BNat%20Commun%202026%5D%20EAGLE/) | Nat Commun 2026 | CHIEF 选 top-25、Virchow2 消费；跨-FM selector→consumer 固定配对与真实效率直接前作。 |
-| [FOCI](./topics/ReadySlideBenchmark/%5BArxiv%202026%5D%20FOCI/) | Arxiv 2026 | 完全冻结 WSI-MIL 后训练轻量 selector；SRP、MSK/Reach/AUKC/SHI 定量 selection headroom。 |
-| [ReaMIL](./topics/ReadySlideBenchmark/%5BWACV%20Workshop%202026%5D%20ReaMIL/) | WACV 2026 Workshop Oral | full/keep/drop 三视图与 sufficiency/exclusion/contiguity/budget，提供同模型 selector adaptation 路线。 |
-| [GCE-MIL](./topics/ReadySlideBenchmark/%5BArxiv%202026%5D%20GCE-MIL/) | Arxiv 2026 | 将 evidence failure 拆为 Sufficiency、Necessity、Recoverability，并从诊断推导修复组件。 |
+| **原始资产** | `paper.pdf`、`full.md`、`images/`、`content_list.json` | 原文究竟写了什么？图表和公式是否被正确引用？ |
+| **Section 批读** | 英文原文 + 中文旁批 + Figure/Table/Equation 解读 | 方法如何流动？每个实验支撑哪个 claim？ |
+| **单篇 README** | 一句话总结、贡献、关键数字、数据流、优缺点、Q&A | 这篇论文最值得记住什么？边界在哪里？ |
+| **Topic README** | 横向比较、研究谱系、novelty 审计、统一问题 | 多篇论文合起来说明了什么？下一步还能做什么？ |
 
-📖 [ReadySlideBenchmark 详细总结](./topics/ReadySlideBenchmark/README.md)
+## 精选研究主线
 
----
+| 研究主线 | 规模 | 为什么值得从这里开始 |
+|---|---:|---|
+| **[ReadySlideBenchmark](./topics/ReadySlideBenchmark/README.md)** | 5 篇 | 病理 FM 的 Selector–Consumer–Budget 角色解耦：比较“谁更会选、谁更会诊断、预算如何改变排名”。 |
+| **[Whole Slide Image Analysis](./topics/Whole-Slide-Image-Analysis/README.md)** | 18 篇 | 从 WSI 空间推理、MIL 注意力到病理基础模型、可信评测与部署效率的完整研究线。 |
+| **[Blind Inverse Problems](./topics/Blind-Inverse-Problems-Generative-Priors/README.md)** | 13 篇 | 围绕生成先验、盲算子、联合后验采样与 posterior calibration 建立方法和评测地图。 |
+| **[VLM Bottleneck Analysis](./topics/VLM-Bottleneck-Analysis-and-Method-Design/README.md)** | 17 篇 | 从 encoding、grounding、视觉调用、reward 到多图推理，系统定位多模态推理瓶颈。 |
+| **[Harness](./topics/Harness/README.md)** | 6 篇 | 研究 Agent 如何诊断、修改和验证自己的运行 harness，以及 self-improvement 的可靠性边界。 |
 
-### 🔍 VLM Bottleneck Analysis and Method Design
-VLM 瓶颈分析与方法设计：系统诊断视觉编码、推理过程、奖励设计、多图理解等环节的 failure mode，并针对性设计新方法。
+## 最近更新
 
-| 子类别 | 论文数 | 代表论文 |
-|--------|--------|----------|
-| encoding | 4 | Q-Zoom, CARES, iGVLM, Perceptual-Bandwidth-Bottleneck |
-| grounding | 1 | Vision-aligned Latent Reasoning |
-| hierarchical | 1 | Hierarchical Visual Cues Injection |
-| invoke | 2 | Iterative Evidence Refinement, Thinking with Visual Grounding |
-| reward | 3 | RegionReasoner, VisualPRM, Perception-centric PRM |
-| long-reasoning | 3 | Imagine Before Predict, VisMem, DMLR |
-| bottleneck | 1 | More Images More Problems |
-| multi-image | 1 | Dual Mechanisms Spatial Binding |
-| medical | 1 | MedSynapse-V |
+### 2026-08-19 · ReadySlideBenchmark
 
-📖 [VLM Bottleneck Analysis 详细总结](./topics/VLM-Bottleneck-Analysis-and-Method-Design/README.md)
+新增五篇 Selector–Consumer 核心批读，并完成跨 FM 角色矩阵、排名迁移、Sufficiency/Necessity/Recoverability 与部署成本的综合整理。
 
----
+- [From Patches to Patients](./topics/ReadySlideBenchmark/%5BMICCAI%202026%5D%20From-Patches-to-Patients/)
+- [EAGLE](./topics/ReadySlideBenchmark/%5BNat%20Commun%202026%5D%20EAGLE/)
+- [FOCI](./topics/ReadySlideBenchmark/%5BArxiv%202026%5D%20FOCI/)
+- [ReaMIL](./topics/ReadySlideBenchmark/%5BWACV%20Workshop%202026%5D%20ReaMIL/)
+- [GCE-MIL](./topics/ReadySlideBenchmark/%5BArxiv%202026%5D%20GCE-MIL/)
 
-### 🎯 GRPO
-GRPO (Group Relative Policy Optimization) 及其变体在 LLM/VLM 强化学习训练中的应用与改进。
+### 2026-08-18 · Harness
 
-| 论文 | 会议 | 方法特点 |
-|------|------|----------|
-| [ARPO](./topics/GRPO/%5BArxiv%202025%5D%20ARPO/) | Arxiv 2025 | Agentic Reinforced Policy Optimization：将 GRPO 与大模型 Agent 范式结合，用于强化学习策略优化。 |
+围绕 Self-Harness、Meta-Harness、AHE、RHO、GEPA 与 Phantom Guardrails，整理 Weakness Mining、Proposal Search、Validation 三阶段升级路线。
 
-📖 [GRPO 详细总结](./topics/GRPO/README.md)
+### 2026-08-11 · WSI MIL Baseline Set
 
----
+补齐 DeepSets、TransMIL、MambaMIL、MAMMOTH、PAMoE、GMMamba、RetMIL 与 Shazam，建立 foundation-model-era WSI MIL 主对比集。
 
-### 📝 Rebuttal
-论文审稿 rebuttal 与学术论证：多 Agent 协同攻击 LVLM 安全边界。
+## 研究地图
 
-| 论文 | 会议 | 方法特点 |
-|------|------|----------|
-| [Persuade-in-scene](./topics/Rebuttal/%5BArxiv%202025%5D%20Persuade-in-scene/) | CVPR 2026 | 多 Agent 排版越狱攻击 LVLM，视觉排版 + 文本协同绕过安全检测。 |
-| [CKMIL](./topics/Rebuttal/%5BArxiv%202025%5D%20CKMIL/) | Anonymous | 级联关键实例注意力 MIL，解决 WSI 实例间相关性与 O(n²) 复杂度的两难。 |
+### 病理与医学影像
 
-📖 [Rebuttal 详细总结](./topics/Rebuttal/README.md)
+| Topic | 论文 | 研究重点 |
+|---|---:|---|
+| [ReadySlideBenchmark](./topics/ReadySlideBenchmark/README.md) | 5 | 病理 FM selector–consumer 角色解耦、预算化诊断与部署验证 |
+| [Whole Slide Image Analysis](./topics/Whole-Slide-Image-Analysis/README.md) | 18 | WSI 空间推理、MIL、病理 FM、可信评测与高效部署 |
+| [CKMIL & Re-Attention MIL](./topics/ckmil-re-attn-mil/README.md) | 10 | 注意力基础、MIL 有效性、端到端 WSI 与 PFM adaptation |
+| [Medical Compression](./topics/Medical-Compression/README.md) | 11 | 医学图像/病理压缩、任务保持与 analysis-ready representation |
+| [VisMem for Med Image](./topics/VisMem-for-Med-Image/README.md) | 9 | 医学 VLM、视觉记忆、latent diagnostic reasoning |
 
----
+### 生成、复原与逆问题
 
-### 🔬 CKMIL & Re-Attention MIL
-CKMIL（级联关键实例注意力 MIL）与重注意力（re-attention）机制研究线：审视 MIL 注意力权重的空间/语义有效性，比较端到端 vs 特征提取范式，并探索注意力结构的底层设计（Swin/Attention Residuals/多层融合）对 WSI 聚合的影响。
+| Topic | 论文 | 研究重点 |
+|---|---:|---|
+| [Blind Inverse Problems with Generative Priors](./topics/Blind-Inverse-Problems-Generative-Priors/README.md) | 13 | 盲算子、扩散先验、联合后验采样与校准 |
+| [One-Step Diffusion Super-Resolution](./topics/One-Step-Diffusion-Super-Resolution/README.md) | 5 | 单步扩散 SR、蒸馏、效率与 fidelity–realism 权衡 |
+| [Diffision_Gzy](./topics/Diffision_Gzy/README.md) | 2 | score distillation、timestep control 与 Real-ISR |
 
-| 子类别 | 论文数 | 代表论文 |
-|--------|--------|----------|
-| attention-foundations | 3 | Swin-Transformer, Attention-Residuals, Attentive-Multilayer-Fusion-ViT |
-| mil-effectiveness | 2 | Spatial-Blindness-WSI-MIL, SSL-Enhances-Instance-MIL |
-| end-to-end-wsi | 2 | Revisiting-E2E-Slide-Supervision, EXAONE-Path2-E2E |
-| pfm-adaptation | 3 | Simplify-Slide-Finetune-PFM, SingleGPU-TaskAdapt-PFM, GigaPath-Flash |
+### 潜空间、多模态与模型能力
 
-📖 [CKMIL & Re-Attention MIL 详细总结](./topics/ckmil-re-attn-mil/README.md)
+| Topic | 论文 | 研究重点 |
+|---|---:|---|
+| [VLM Bottleneck Analysis and Method Design](./topics/VLM-Bottleneck-Analysis-and-Method-Design/README.md) | 17 | encoding、grounding、visual invocation、reward 与 multi-image bottleneck |
+| [TTT in LLM](./topics/TTT%20in%20LLM/README.md) | 13 | test-time training、memory、context adaptation 与在线更新 |
+| [Latent-Space Processing](./topics/Latent-Space-Processing/README.md) | 4 | latent reasoning、cache augmentation 与 CoT compression |
+| [Continuous Latent Language Modeling](./topics/Continuous-Latent-Language-Modeling/README.md) | 2 | 连续潜空间语言建模与非离散推理 |
+| [Video VLM](./topics/video-VLM/README.md) | 1 | 流式视频理解与边看边推理 |
+| [Attention](./topics/attention/%5BArxiv%5D%201706.03762/README.md) | 1 | Attention 机制的基础原理与可复用直觉 |
 
-### 🔧 Harness（Agent 自改进 harness）
+### Agent、优化与研究实践
 
-> 围绕锚论文 **Self-Harness** 组织：前 3 篇理解 novelty（前置/竞争工作），后 2 篇改进方法（Weakness Mining / Proposal Search / Validation 三阶段升级）。贯穿主线：self-assessment 双向不可信 → 需外部/反事实验证。
+| Topic | 论文 | 研究重点 |
+|---|---:|---|
+| [Harness](./topics/Harness/README.md) | 6 | Agent harness 的自诊断、自修改、搜索与可靠验证 |
+| [GRPO](./topics/GRPO/README.md) | 1 | Group Relative Policy Optimization 与 Agentic RL |
+| [Tech Reports](./topics/Tech-repoorts/README.md) | 5 | 前沿模型技术报告、训练配方与系统能力 |
+| [Rebuttal](./topics/Rebuttal/README.md) | 2 | 论文论证、审稿回应与研究主张边界 |
 
-| 论文 | 会议 | 方法特点 |
-|------|------|----------|
-| [Self-Harness](./topics/Harness/%5BArxiv%202026%5D%20Self-Harness/) | Arxiv 2026 | ⭐锚论文。agent 改进自己运行的 harness；三阶段 Weakness Mining→Proposal→Validation，9/9 组合双升最高 +132%。 |
-| [Meta-Harness](./topics/Harness/%5BArxiv%202026%5D%20Meta-Harness/) | Arxiv 2026 | 最直接前作。外部强编码 agent + 文件系统全 trace 访问 + population/Pareto 搜索 harness；raw trace 是命门。 |
-| [Agentic Harness Engineering](./topics/Harness/%5BArxiv%202026%5D%20Agentic-Harness-Engineering/) | Arxiv 2026 | 并行相似工作。三 observability 支柱 + evidence ledger；self-attribution 对 fix 可靠对 regression 盲。 |
-| [RHO](./topics/Harness/%5BArxiv%202026%5D%20RHO-Self-Preference/) | Arxiv 2026 | 无标签自偏好（self-validation + self-consistency + pairwise preference）；SWE-Bench Pro 59→78 无外部打分。 |
-| [GEPA](./topics/Harness/%5BArxiv%202025%5D%20GEPA/) | ICLR 2026 | 反射式 prompt 进化 + Pareto illumination 候选选择（+12.44% vs greedy）；治 Self-Harness 的 greedy 单谱系。 |
-| [Phantom Guardrails](./topics/Harness/%5BArxiv%202026%5D%20Phantom-Guardrails/) | Arxiv 2026 | 精准反问题：自改进 harness 会幻觉不存在的失败并加 guardrail；解法 = warrant-aware acceptance。 |
+**合计：18 个 topic，125 份论文笔记，762 个批读 section。**
 
-📖 [Harness 详细总结](./topics/Harness/README.md)
-
----
-
-## 论文文件夹结构
+## 一篇完整批读包含什么
 
 ```text
 [会议 年份] 论文名/
-├── README.md           # 论文概览 + Section 导航
-├── sections/           # 按论文大分节生成的批读笔记
-│   ├── 00-abstract.md
+├── README.md                 # 单篇入口：总结、贡献、关键数字、数据流、Q&A
+├── sections/                 # 按论文原始大分节组织
+│   ├── 00-abstract.md        # 原文 + 中文旁批
 │   ├── 01-introduction.md
+│   ├── 02-related-work.md
+│   ├── 03-methodology.md
+│   ├── 04-experiments.md
 │   └── ...
-├── full.md             # MinerU 解析全文
-├── images/             # MinerU 图片/公式/表格
-├── content_list.json   # 结构化内容
-└── paper.pdf           # 原始 PDF
+├── full.md                   # MinerU 解析全文
+├── images/                   # Figure、Table 与复杂公式原图
+├── content_list.json         # 结构化内容与资产映射
+└── paper.pdf                 # 原始论文 PDF
 ```
 
-## 命名规范
+每篇 README 通常包含：
 
-- 文件夹命名：`[会议 年份] 论文名`
-- Section 命名：按论文原始大分节生成，如 `00-abstract.md`、`01-introduction.md`、`02-related-work.md`、`03-methodology.md`。
-- 批读格式：原文完整保留，批注使用 `> 💡 **标题**: ...`。
+1. **一句话总结**：用一个明确判断说明论文真正做了什么。
+2. **核心贡献**：区分方法组件、实验贡献和科学结论。
+3. **批读导航**：从问题、方法、实验到附录逐节阅读。
+4. **关键数字**：保留最能验证或限制主张的结果。
+5. **数据流**：用 Mermaid 描述输入、中间表示、训练信号和输出。
+6. **优缺点与还能做什么**：连接当前研究问题，而不止复述作者结论。
+7. **阅读 Q&A**：记录复现、指标、因果解释和 novelty 判断中的关键疑问。
+8. **Citation Landscape**：结合 Semantic Scholar 追踪参考谱系与相邻工作。
+
+## 阅读原则
+
+- **忠于原文**：批注不能替代论文正文，也不把作者未验证的推断写成结论。
+- **Evidence before narrative**：先看表格、消融、负对照和统计单位，再接受故事线。
+- **区分模型行为与科学因果**：attention、keep/drop 或可视化只能支持其协议内的模型判断。
+- **比较必须保持共同对象**：排行榜迁移、跨模型比较和预算曲线都要先确认统计对象一致。
+- **明确成本边界**：tile 数、FLOPs、预提特征、I/O 和端到端 wall-clock 不是同一件事。
+- **保留开放问题**：好的笔记应说明“还不知道什么”，而不是把每篇论文包装成完整答案。
+
+## 如何使用这个仓库
+
+- **快速了解一个方向**：从对应的 topic README 开始，看论文谱系、统一问题和推荐顺序。
+- **深读一篇论文**：进入论文 README，再按导航阅读 `sections/` 中的原文与旁批。
+- **核对原始内容**：查看 `full.md`、`paper.pdf`、`images/` 与 `content_list.json`。
+- **做相关工作或 novelty 审计**：优先阅读 topic 中的横向比较、失败分类和“还能做什么”。
+
+---
+
+<div align="center">
+  <strong>Read deeply. Compare carefully. Keep the unanswered questions.</strong><br>
+  <sub>这是持续更新的个人阅读记录；观点会随着新论文、复现结果和研究进展继续修订。</sub>
+</div>

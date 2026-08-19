@@ -1,16 +1,134 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="260" viewBox="0 0 1200 260">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="260" viewBox="0 0 1200 260" role="img" aria-labelledby="title desc">
+  <title id="title">Paper Reading Lab</title>
+  <desc id="desc">A personal literature library banner with two friendly cartoon research robots reading papers and building a knowledge graph.</desc>
+
   <defs>
-    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#111827"/>
-      <stop offset="0.55" stop-color="#1e3a8a"/>
-      <stop offset="1" stop-color="#0f766e"/>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="0.52" stop-color="#172554"/>
+      <stop offset="1" stop-color="#115e59"/>
     </linearGradient>
+    <linearGradient id="robotBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e0f2fe"/>
+      <stop offset="1" stop-color="#93c5fd"/>
+    </linearGradient>
+    <linearGradient id="robotMint" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ccfbf1"/>
+      <stop offset="1" stop-color="#5eead4"/>
+    </linearGradient>
+    <linearGradient id="book" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fef3c7"/>
+      <stop offset="1" stop-color="#fbbf24"/>
+    </linearGradient>
+    <pattern id="dotGrid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#bfdbfe" opacity="0.14"/>
+    </pattern>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#020617" flood-opacity="0.35"/>
+    </filter>
   </defs>
-  <rect width="1200" height="260" rx="28" fill="url(#g)"/>
-  <circle cx="1020" cy="40" r="140" fill="#60a5fa" opacity="0.16"/>
-  <circle cx="108" cy="224" r="120" fill="#2dd4bf" opacity="0.16"/>
-  <text x="80" y="112" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="56" font-weight="800" fill="#fff">Paper Reading</text>
-  <text x="82" y="162" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" fill="#dbeafe">Original text preserved · Inline annotations · Topic-oriented literature maps</text>
-  <text x="82" y="198" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" fill="#ccfbf1">One-Step Diffusion SR · Diffision_Gzy · VisMem for Med Image · Latent-Space Processing</text>
-  <text x="82" y="224" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" fill="#ccfbf1">Medical Compression · TTT in LLM · Tech Reports · Continuous Latent LM · Video VLM · WSI Analysis</text>
+
+  <rect width="1200" height="260" rx="28" fill="url(#background)"/>
+  <rect width="1200" height="260" rx="28" fill="url(#dotGrid)"/>
+  <circle cx="1110" cy="28" r="145" fill="#60a5fa" opacity="0.10"/>
+  <circle cx="72" cy="254" r="125" fill="#2dd4bf" opacity="0.09"/>
+
+  <!-- Research graph behind the robots -->
+  <g stroke="#99f6e4" stroke-width="2" opacity="0.30">
+    <path d="M904 55 L1005 35 L1094 72 L1142 40" fill="none"/>
+    <path d="M1005 35 L1032 104 L1094 72 L1127 130" fill="none"/>
+    <path d="M904 55 L940 122 L1032 104" fill="none"/>
+  </g>
+  <g fill="#ccfbf1">
+    <circle cx="904" cy="55" r="5" opacity="0.75"/>
+    <circle cx="1005" cy="35" r="7" opacity="0.85"/>
+    <circle cx="1094" cy="72" r="5" opacity="0.75"/>
+    <circle cx="1142" cy="40" r="4" opacity="0.70"/>
+    <circle cx="940" cy="122" r="4" opacity="0.55"/>
+    <circle cx="1032" cy="104" r="6" opacity="0.75"/>
+    <circle cx="1127" cy="130" r="5" opacity="0.60"/>
+  </g>
+
+  <!-- Left: identity and method -->
+  <g font-family="Inter, Segoe UI, Arial, sans-serif">
+    <text x="66" y="44" font-size="14" font-weight="700" letter-spacing="3" fill="#5eead4">PERSONAL LITERATURE LAB</text>
+    <text x="64" y="99" font-size="50" font-weight="800" fill="#f8fafc">Paper Reading</text>
+    <text x="67" y="132" font-size="20" font-weight="500" fill="#dbeafe">A personal research library for deep, connected reading</text>
+    <text x="67" y="160" font-size="17" fill="#a7f3d0">原文保留 · 中文旁批 · 图表拆解 · 研究问题图谱</text>
+
+    <g transform="translate(66 184)">
+      <rect width="126" height="30" rx="15" fill="#1e3a8a" stroke="#60a5fa" stroke-opacity="0.65"/>
+      <circle cx="17" cy="15" r="5" fill="#60a5fa"/>
+      <text x="30" y="20" font-size="13" font-weight="600" fill="#dbeafe">Original Text</text>
+    </g>
+    <g transform="translate(202 184)">
+      <rect width="120" height="30" rx="15" fill="#134e4a" stroke="#5eead4" stroke-opacity="0.70"/>
+      <path d="M16 10h10M16 15h8M16 20h6" stroke="#5eead4" stroke-width="2" stroke-linecap="round"/>
+      <text x="35" y="20" font-size="13" font-weight="600" fill="#ccfbf1">Inline Notes</text>
+    </g>
+    <g transform="translate(332 184)">
+      <rect width="137" height="30" rx="15" fill="#312e81" stroke="#a5b4fc" stroke-opacity="0.70"/>
+      <circle cx="17" cy="15" r="3.5" fill="#a5b4fc"/>
+      <circle cx="27" cy="10" r="2.5" fill="#a5b4fc"/>
+      <circle cx="27" cy="20" r="2.5" fill="#a5b4fc"/>
+      <path d="M20 14l5-3M20 16l5 3" stroke="#a5b4fc" stroke-width="1.5"/>
+      <text x="38" y="20" font-size="13" font-weight="600" fill="#e0e7ff">Research Maps</text>
+    </g>
+    <text x="67" y="238" font-size="13" fill="#94a3b8">From papers to mechanisms, evidence, and reusable research questions.</text>
+  </g>
+
+  <!-- Reading robot -->
+  <g transform="translate(752 54)" filter="url(#shadow)">
+    <ellipse cx="91" cy="172" rx="76" ry="13" fill="#020617" opacity="0.24"/>
+    <path d="M84 9V0" stroke="#bfdbfe" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="84" cy="0" r="6" fill="#fbbf24"/>
+    <rect x="30" y="14" width="108" height="72" rx="24" fill="url(#robotBody)" stroke="#dbeafe" stroke-width="3"/>
+    <rect x="43" y="29" width="82" height="42" rx="16" fill="#0f172a"/>
+    <circle cx="66" cy="49" r="7" fill="#5eead4"/>
+    <circle cx="103" cy="49" r="7" fill="#5eead4"/>
+    <path d="M76 61 Q84 67 93 61" fill="none" stroke="#93c5fd" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="43" cy="61" r="5" fill="#fda4af" opacity="0.75"/>
+    <circle cx="125" cy="61" r="5" fill="#fda4af" opacity="0.75"/>
+    <rect x="39" y="88" width="92" height="72" rx="25" fill="url(#robotBody)" stroke="#dbeafe" stroke-width="3"/>
+    <rect x="70" y="103" width="28" height="18" rx="9" fill="#2563eb"/>
+    <circle cx="84" cy="112" r="4" fill="#bfdbfe"/>
+    <path d="M39 108 Q17 115 25 143" fill="none" stroke="#93c5fd" stroke-width="12" stroke-linecap="round"/>
+    <path d="M131 108 Q151 116 143 143" fill="none" stroke="#93c5fd" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="25" cy="143" r="8" fill="#dbeafe"/>
+    <circle cx="143" cy="143" r="8" fill="#dbeafe"/>
+
+    <!-- Open paper/book -->
+    <path d="M20 128 Q53 119 84 137V174Q52 156 20 166Z" fill="url(#book)" stroke="#fde68a" stroke-width="2"/>
+    <path d="M148 128 Q115 119 84 137V174Q116 156 148 166Z" fill="#fef3c7" stroke="#fde68a" stroke-width="2"/>
+    <path d="M84 137V174" stroke="#d97706" stroke-width="2"/>
+    <path d="M34 139h31M34 147h26M103 139h31M108 147h26" stroke="#92400e" stroke-width="2" opacity="0.55" stroke-linecap="round"/>
+    <circle cx="48" cy="164" r="3" fill="#f59e0b"/>
+    <circle cx="120" cy="164" r="3" fill="#f59e0b"/>
+  </g>
+
+  <!-- Knowledge-map robot -->
+  <g transform="translate(995 101)" filter="url(#shadow)">
+    <ellipse cx="80" cy="115" rx="72" ry="12" fill="#020617" opacity="0.22"/>
+    <path d="M78 5V-7" stroke="#99f6e4" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="78" cy="-10" r="6" fill="#fb7185"/>
+    <rect x="28" y="8" width="101" height="66" rx="23" fill="url(#robotMint)" stroke="#ccfbf1" stroke-width="3"/>
+    <rect x="41" y="22" width="75" height="38" rx="15" fill="#0f172a"/>
+    <path d="M57 41h12M87 41h12" stroke="#f8fafc" stroke-width="5" stroke-linecap="round"/>
+    <path d="M70 51 Q79 56 88 51" fill="none" stroke="#5eead4" stroke-width="3" stroke-linecap="round"/>
+    <rect x="37" y="77" width="84" height="51" rx="22" fill="url(#robotMint)" stroke="#ccfbf1" stroke-width="3"/>
+    <circle cx="79" cy="96" r="10" fill="#0f766e"/>
+    <circle cx="79" cy="96" r="4" fill="#99f6e4"/>
+    <path d="M38 91 Q18 85 12 66" fill="none" stroke="#5eead4" stroke-width="11" stroke-linecap="round"/>
+    <circle cx="11" cy="65" r="7" fill="#ccfbf1"/>
+    <path d="M121 91 Q143 82 147 61" fill="none" stroke="#5eead4" stroke-width="11" stroke-linecap="round"/>
+    <circle cx="148" cy="59" r="7" fill="#ccfbf1"/>
+
+    <!-- Magnifier and floating note -->
+    <circle cx="151" cy="43" r="17" fill="none" stroke="#fbbf24" stroke-width="5"/>
+    <path d="M164 56l13 13" stroke="#fbbf24" stroke-width="6" stroke-linecap="round"/>
+    <rect x="-15" y="31" width="42" height="30" rx="7" fill="#f8fafc" transform="rotate(-8 6 46)"/>
+    <path d="M-5 41h22M-5 48h17" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <rect x="0.75" y="0.75" width="1198.5" height="258.5" rx="27.25" fill="none" stroke="#bfdbfe" stroke-opacity="0.16" stroke-width="1.5"/>
 </svg>
