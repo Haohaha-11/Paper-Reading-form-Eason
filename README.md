@@ -212,6 +212,22 @@ Test-Time Training / Test-Time Learning / long-context continual adaptation：�
 
 ---
 
+### 🧭 ReadySlideBenchmark
+
+病理基础模型 Selector–Consumer–Budget 角色解耦 benchmark：研究 full-bag 诊断排名能否迁移到固定预算管线、selection utility 是否依赖 consumer 与预算，以及能否在保持诊断能力时修复同模型 selector。
+
+| 论文 | 状态 | 方法特点 |
+|---|---|---|
+| [From Patches to Patients](./topics/ReadySlideBenchmark/%5BMICCAI%202026%5D%20From-Patches-to-Patients/) | MICCAI 2026 | benchmark-first：测量 tile 榜到 slide 榜的分数/排名迁移，为 full-bag→budgeted 管线保序提供统计模板。 |
+| [EAGLE](./topics/ReadySlideBenchmark/%5BNat%20Commun%202026%5D%20EAGLE/) | Nat Commun 2026 | CHIEF 选 top-25、Virchow2 消费；跨-FM selector→consumer 固定配对与真实效率直接前作。 |
+| [FOCI](./topics/ReadySlideBenchmark/%5BArxiv%202026%5D%20FOCI/) | Arxiv 2026 | 完全冻结 WSI-MIL 后训练轻量 selector；SRP、MSK/Reach/AUKC/SHI 定量 selection headroom。 |
+| [ReaMIL](./topics/ReadySlideBenchmark/%5BWACV%20Workshop%202026%5D%20ReaMIL/) | WACV 2026 Workshop Oral | full/keep/drop 三视图与 sufficiency/exclusion/contiguity/budget，提供同模型 selector adaptation 路线。 |
+| [GCE-MIL](./topics/ReadySlideBenchmark/%5BArxiv%202026%5D%20GCE-MIL/) | Arxiv 2026 | 将 evidence failure 拆为 Sufficiency、Necessity、Recoverability，并从诊断推导修复组件。 |
+
+📖 [ReadySlideBenchmark 详细总结](./topics/ReadySlideBenchmark/README.md)
+
+---
+
 ### 🔍 VLM Bottleneck Analysis and Method Design
 VLM 瓶颈分析与方法设计：系统诊断视觉编码、推理过程、奖励设计、多图理解等环节的 failure mode，并针对性设计新方法。
 
