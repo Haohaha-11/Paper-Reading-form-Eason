@@ -2,7 +2,7 @@
 
 **作者**: Peter Neidlinger, Tim Lenz, ..., Jakob Nikolas Kather（Dresden / TU Dresden 等，KatherLab）
 **期刊**: Nature Communications 2026 (s41467-026-74918-9) | **年份**: 2026（accepted 2026-06）
-**链接**: [Nature](https://www.nature.com/articles/s41467-026-74918-9) · [Code](https://github.com/KatherLab/EAGLE)
+**链接**: [Nature](https://www.nature.com/articles/s41467-026-74918-9) · [arXiv](https://arxiv.org/abs/2502.13027) · [Code](https://github.com/KatherLab/EAGLE)
 
 ## 一句话总结
 
@@ -66,7 +66,7 @@ flowchart TD
 - **平均 AUROC 0.742，不足以替代临床**（定位辅助/分诊）。
 - **稀疏采样短板**：形态学/长程上下文任务（肺癌亚型、血管侵犯）dense encoder 更好；有漏罕见/分散线索的残余风险。
 - **CHIEF 偏癌症预训练** → 非癌任务选择可能失效。
-- **未做去混杂验证**：选的 25 tile 是承载因果信号还是 grade/染色 shortcut？未知（与 [Confounders](../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 呼应）。
+- **未做去混杂验证**：选的 25 tile 是承载因果信号还是 grade/染色 shortcut？未知（与 [Confounders](../../Whole-Slide-Image-Analysis/%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 呼应）。
 
 ### 还能做什么（对本课题 ReadySlide）
 - **EAGLE = "选择式压缩一次、强 FM 分析" 的病理实证**，几乎就是 ReadySlide "analysis-ready transfer" 的验证——可作为最强参照/基线。
@@ -74,6 +74,18 @@ flowchart TD
 - **选择 vs 压缩的 Pareto 对比**：EAGLE 离散选 tile vs ReadySlide 连续分辨率/码率分配，哪个更优？
 - **任务自适应保留率**：EAGLE 承认 25 是经验点、任务依赖——正对应 memory 里"importance→retention 任务分层"。
 - **补去混杂 + 负对照**：ReadySlide 的 allocator 评估应标配"显著超随机 + Lorenz/Gini 集中度 + 分层去混杂"。
+
+## Selector–Consumer Benchmark 专项审计
+
+| 角色 | EAGLE 的实现 | ReadySlideBenchmark 要追问 |
+|---|---|---|
+| Selector | CHIEF 在 CTransPath 粗特征上输出 task-agnostic attention ranking | 换 UNI2、Virchow2、CONCH 等 selector 后，budgeted ranking 是否仍优？ |
+| Consumer | Virchow2 只编码 top-25 tile，随后等权平均 | 同一 selector 面对不同 consumer 时 utility 是否稳定？ |
+| Budget | 主操作点固定为 25，并补 5/10/50/100 消融 | 最优预算是否随任务、consumer、病灶稀疏度而变？ |
+| Full-bag 参照 | 各 FM/聚合方法的完整 slide 表示 | full-bag diagnostic ranking 能否预测 budgeted selection ranking？ |
+| 部署收益 | 2.27 s/slide，昂贵 Virchow2 只跑 25 tile | 是否计入粗特征预计算、读取、缓存与 selector 成本？ |
+
+> 💡 **固定配对边界（claude 批注）**: EAGLE 证明了一个成功的跨模型配对 CHIEF→Virchow2，但没有穷举角色互换；因此它占据“不同病理模型分别选择与诊断”的系统实例，却没有回答哪个 FM 天生更适合 selector、排名是否跨 consumer 迁移、self-selection 是否最优。这正是 ReadySlideBenchmark 的核心差异化。
 
 ## 阅读 Q&A 记录
 
@@ -89,9 +101,17 @@ flowchart TD
 - **Q: 对 ReadySlide 最大启示？**
   A: EAGLE 是"选 25 tile = 极端保留反而更好"的最强证据，且 task-agnostic（选一次多任务复用），几乎就是 ReadySlide "压一次、任意 FM/任务分析"的实证。CHIEF 选择器可作 allocator 候选；负对照+集中度+去混杂应成为 allocator 评估标配。
 
+- **Q: EAGLE 是否证明 CHIEF 是普遍最好的 selector？**
+  A: 没有。它只系统验证 CHIEF→Virchow2 这一固定配对及若干 consumer/聚合消融，没有构建 selector×consumer 角色矩阵，也没有测试角色互换。
+
+- **Q: 2.27 秒是否等于完整端到端成本？**
+  A: 该数字包含 CTransPath 全图粗提、CHIEF 与 25 张 Virchow2 精提，是很强的部署证据；但跨 benchmark 仍需统一是否计入切 tile、磁盘 I/O、缓存和预提特征，避免与离线特征方法口径不一致。
+
 ## 📊 Citation Landscape
 
-> Nature 论文，Semantic Scholar 采集限流，据论文自身引用整理。
+**数据源与时间**: Semantic Scholar API，查询于 2026-08-19。当前 arXiv 条目尚未合并 Nature 版本，API 返回参考文献 0、被引 0、influential citation 0；因此下列关系按论文正文整理，不将缺失值解释为真实零引用。  
+**TLDR**: EAGLE 模仿病理学家只分析信息区域，通过系统负对照与注意力集中分析产生稳健、可审计的 WSI 表示。  
+**入口**: [Semantic Scholar](https://www.semanticscholar.org/paper/749833947ab3bb5a1bce35d448680b436bdb61d6) · [Connected Papers](https://www.connectedpapers.com/main/2502.13027)
 
 **核心组件 / 最相关**
 - CHIEF（Wang et al., Nature 2024）——task-agnostic slide-level 选择器，EAGLE 的选 tile 引擎。
@@ -102,6 +122,6 @@ flowchart TD
 - Benchmarking FMs（Neidlinger et al., Nat BME 2025）——本文的 benchmark 框架来源。
 
 **与本主题的关系**
-- 与 [PIBD](../%5BICLR%202024%5D%20PIBD/)/[ACMIL](../%5BECCV%202024%5D%20ACMIL/) 呼应："保留少数关键 patch/instance 更好"的三重独立证据。
-- 与 [Confounders](../%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 互补：EAGLE 未做去混杂，Confounders 提供了该补的协议。
-- 与 [PathBench](../%5BArxiv%202025%5D%20PathBench/) 互补：都在系统评测病理 FM。
+- 与 [PIBD](../../Whole-Slide-Image-Analysis/%5BICLR%202024%5D%20PIBD/)/[ACMIL](../../Whole-Slide-Image-Analysis/%5BECCV%202024%5D%20ACMIL/) 呼应："保留少数关键 patch/instance 更好"的三重独立证据。
+- 与 [Confounders](../../Whole-Slide-Image-Analysis/%5BNat%20Biomed%20Eng%202026%5D%20Confounders-Biomarker-Prediction/) 互补：EAGLE 未做去混杂，Confounders 提供了该补的协议。
+- 与 [PathBench](../../Whole-Slide-Image-Analysis/%5BArxiv%202025%5D%20PathBench/) 互补：都在系统评测病理 FM。
