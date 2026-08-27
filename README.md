@@ -5,10 +5,10 @@
 > **A personal research library for deep, connected reading.**<br>
 > 从论文原文出发，沉淀机制理解、实验证据、研究边界与可复用问题。
 
-[![Topics](https://img.shields.io/badge/Topics-18-2563eb?style=flat-square)](./topics/)
-[![Paper Notes](https://img.shields.io/badge/Paper%20Notes-125-0f766e?style=flat-square)](./topics/)
-[![Annotated Sections](https://img.shields.io/badge/Annotated%20Sections-762-7c3aed?style=flat-square)](./topics/)
-[![Source PDFs](https://img.shields.io/badge/Source%20PDFs-122-d97706?style=flat-square)](./topics/)
+[![Topics](https://img.shields.io/badge/Topics-19-2563eb?style=flat-square)](./topics/)
+[![Paper Notes](https://img.shields.io/badge/Paper%20Notes-127-0f766e?style=flat-square)](./topics/)
+[![Annotated Sections](https://img.shields.io/badge/Annotated%20Sections-780-7c3aed?style=flat-square)](./topics/)
+[![Source PDFs](https://img.shields.io/badge/Source%20PDFs-124-d97706?style=flat-square)](./topics/)
 ![Language](https://img.shields.io/badge/Notes-中文旁批-e11d48?style=flat-square)
 
 这是我的个人文献阅读与研究积累仓库。它不是简单的 paper list，也不是把摘要重新改写一遍；目标是把每篇论文转化为可追溯、可比较、可继续追问的研究材料：
@@ -51,8 +51,16 @@ flowchart LR
 | **[Blind Inverse Problems](./topics/Blind-Inverse-Problems-Generative-Priors/README.md)** | 13 篇 | 围绕生成先验、盲算子、联合后验采样与 posterior calibration 建立方法和评测地图。 |
 | **[VLM Bottleneck Analysis](./topics/VLM-Bottleneck-Analysis-and-Method-Design/README.md)** | 17 篇 | 从 encoding、grounding、视觉调用、reward 到多图推理，系统定位多模态推理瓶颈。 |
 | **[Harness](./topics/Harness/README.md)** | 6 篇 | 研究 Agent 如何诊断、修改和验证自己的运行 harness，以及 self-improvement 的可靠性边界。 |
+| **[VLA](./topics/VLA/README.md)** | 2 篇 | 从 RoboTwin 生成式数字孪生/双臂数据，连到 StarVLA 的模块化 backbone–action-head 系统与统一评测。 |
 
 ## 最近更新
+
+### 2026-08-28 · VLA
+
+新建 VLA Topic，完成 RoboTwin 与 StarVLA 两篇全文批读，建立“生成式数字孪生/专家演示 → 统一 VLA backbone/action head → 仿真与真机评测”的跨层研究路线。
+
+- [RoboTwin](./topics/VLA/%5BCVPR%202025%5D%20RoboTwin-%20Dual-Arm%20Robot%20Benchmark%20with%20Generative%20Digital%20Twins/README.md)
+- [StarVLA](./topics/VLA/%5BArxiv%202026%5D%20StarVLA-%20A%20Lego-like%20Codebase%20for%20Vision-Language-Action%20Model%20Developing/README.md)
 
 ### 2026-08-19 · ReadySlideBenchmark
 
@@ -102,6 +110,7 @@ flowchart LR
 | [Continuous Latent Language Modeling](./topics/Continuous-Latent-Language-Modeling/README.md) | 2 | 连续潜空间语言建模与非离散推理 |
 | [Video VLM](./topics/video-VLM/README.md) | 1 | 流式视频理解与边看边推理 |
 | [Attention](./topics/attention/%5BArxiv%5D%201706.03762/README.md) | 1 | Attention 机制的基础原理与可复用直觉 |
+| [VLA](./topics/VLA/README.md) | 2 | 双臂生成数据与 sim-to-real、VLA backbone–action-head 模块化、generalist 训练与统一评测 |
 
 ### Agent、优化与研究实践
 
@@ -112,7 +121,7 @@ flowchart LR
 | [Tech Reports](./topics/Tech-repoorts/README.md) | 5 | 前沿模型技术报告、训练配方与系统能力 |
 | [Rebuttal](./topics/Rebuttal/README.md) | 2 | 论文论证、审稿回应与研究主张边界 |
 
-**合计：18 个 topic，125 份论文笔记，762 个批读 section。**
+**合计：19 个 topic，127 份论文笔记，780 个批读 section。**
 
 ## 一篇完整批读包含什么
 
